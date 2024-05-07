@@ -1,0 +1,61 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    padding-top: 56px; /* Adjust for the fixed navbar */
+}
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+}
+.offcanvas-body {
+    padding-top: 3.5rem; /* Adjust for the offcanvas */
+}
+.custom-card {
+    width: 50%; /* Set width to 50% of the container */
+    height: 85vh; /* Set height to 50% of the viewport height */
+    margin-top: 30vh; /* Adjust top margin to center vertically */
+    right: 100px; /* 190px*/
+}
+.wrapper {
+    display: flex;
+    justify-content: left; /* Align items to the left */
+    padding-left: 10px; /* Adjust left padding for spacing */
+    padding-right: 15px; /* Adjust right padding for spacing */
+}
+
+
+.container {
+    padding-left: 10px; /* Adjust the left padding as needed */
+    padding-right: 10px; /* Adjust the right padding as needed */
+}
+
+.col-md-6 {
+    margin-left: 0px; /* Remove default left margin */
+    margin-right: 0px; /* Remove default right margin */
+}
+
+.p-3 {
+    margin: 0; /* Remove default margin */
+}
+
+/* Optional: Adjust form width */
+.form-control {
+    width: 10%; /* Make the form inputs full width */
+}
+

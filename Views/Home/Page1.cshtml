@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Page1";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form and Data Grid with Side Navigation</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        
+                        <form>
+                            <!-- Example form inputs -->
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput1" class="form-label">Label 1</label>
+                                <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Textbox 1" style=" width:300px">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleFormControlInput2" class="form-label">Label 2</label>
+                                <input type="email" class="form-control" id="exampleFormControlInput2" placeholder="Textbox 2" style=" width:300px">
+                            </div>
+                            <!-- More form inputs can be added here -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col" >
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Header 1</th>
+                                    <th scope="col">Header 2</th>
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Data 1</td>
+                                    <td>Data 2</td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
