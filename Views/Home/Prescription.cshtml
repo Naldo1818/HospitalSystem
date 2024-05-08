@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Prescription";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                                                      
+                                <div class="form-group row">
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Surname</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput2" class="form-label">Surgery Date</label>
+                                        <input type="date" class="form-control" id="exampleFormControlInput2" placeholder="Enter Date" value="2024-05-08" style=" width:300px">
+                                    </div> 
+                                </div>
+                                     
+
+                                <div class="form-group row">
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Pharmacist</label>
+                                    <select input class="form-control" placeholder="Pharmacist" style=" width:300px">
+                                        <option value="Sam Smith">Sam Smith</option>
+                                        <option value="Zane Truesdale">Zane Truesdale</option>
+                                    </select>
+                                </div>
+                                  
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Prescription Given Date</label>
+                                    <input type="date" class="form-control" id="exampleFormControlInput2" placeholder="Enter Date" value="2024-05-08" style=" width:300px">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Priority</label>
+                                    <select input class="form-control" placeholder="Priority" style=" width:300px">
+                                        <option value="Yes">Yes</option>
+                                        <option value="No">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                                    
+
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <button class="btn btn-danger" style=" width:70px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
+                                        <button class="btn btn-primary" style=" width:70px" type="submit">Next</button>
+                                    </div>
+                                </div>
+                                <!-- More form inputs can be added here -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Book Surgery</th>
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>
+                                        <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary">
+                                            Book Surgery
+                                        </button>
+                                    </td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
