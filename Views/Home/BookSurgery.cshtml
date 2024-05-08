@@ -1,0 +1,137 @@
+﻿@{
+    ViewData["Title"] = "Page1";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form and Data Grid with Side Navigation</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <div class="form-group row">
+                            <!-- Example form inputs -->
+                    <div class="form-group row">
+                                <div class="col-4">
+                                        <br>
+                                <label for="exampleFormControlInput1" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+                            </div>
+                                <div class="col-4">
+                                        <br>
+                                <label for="exampleFormControlInput1" class="form-label">Surname</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                            </div>
+                   </div>
+
+
+                    <div class="form-group row">
+
+                                    <div class="col-4">
+                                        <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Surgery Date</label>
+                                    <input type="date" class="form-control" id="exampleFormControlInput2" placeholder="Textbox 2" style=" width:300px">
+                                </div>
+
+                                     <div class="col-4">
+                                        <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Surgery Time</label>
+                                    <input type="time" class="form-control" id="exampleFormControlInput2" placeholder="Textbox 2" style=" width:300px">
+                                </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Theater</label>
+                                    <select input class="form-control" placeholder="Theater" style=" width:300px">
+                                        <option value="Theater 1">Theater 1</option>
+                                        <option value="Theater 2">Theater 2</option>
+                                        <option value="Theater 3">Theater 3</option>
+                                    </select>
+                                </div>
+                     </div>
+
+                    <div class="form-group row">
+
+                                <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput2" class="form-label">Search Treatment Name</label>
+                                    <input class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style=" width:300px">
+                                </div>
+
+                                <div class="col-4">
+                                        <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Treatment Name</label>
+                                    <select input class="form-control" placeholder="Treatment Name" style=" width:300px">
+                                        <option value="Drainage of Abscess">Drainage of Abscess</option>
+                                        <option value="Debridement">Debridement</option>
+                                        <option value="Arthroscopy">Arthroscopy</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-4">
+                                        <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Treatment Code</label>
+                                    <select input class="form-control" placeholder="Treatment Code" disabled style=" width:300px">
+                                        <option value="10060">10060</option>
+                                        <option value="11400">11400</option>
+                                        <option value="29876">29876</option>
+                                    </select>
+                                </div>
+                    </div>
+                   
+                    
+
+                    <div class="form-group row">
+                                    <div class="col-4">
+                                     <br>
+                                        <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
+                                        <button class="btn btn-danger" style=" width:70px" type="submit">Back</button>
+                                        <button class="btn btn-primary" style=" width:70px" type="submit">Save</button>
+                                    </div>
+                    </div>
+                            <!-- More form inputs can be added here -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Book Surgery</th>
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>
+                                        <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary">
+                                            Book Surgery
+                                        </button>
+                                    </td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

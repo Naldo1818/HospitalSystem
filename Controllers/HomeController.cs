@@ -26,6 +26,18 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult BookSurgery()
+        {
+            return View();
+        }
+        public IActionResult Prescription()
+        {
+            return View();
+        }
+        public IActionResult PrescriptionMedication()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
