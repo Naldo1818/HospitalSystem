@@ -8,5 +8,28 @@ namespace DEMO.Controllers
         {
             return View();
         }
+
+        public IActionResult PharmacistHomePage()
+        {
+            return View();
+        }
+
+        public IActionResult ManageMedicationStockPage() 
+        {
+            return View();
+        }
+
+
+        public IActionResult ViewAllActivePrescriptionsPage()
+        {
+            return View();
+        }
+
+        
+
+        public IActionResult ViewDailyUsageReport()
+        {
+            return View();
+        }
     }
 }
