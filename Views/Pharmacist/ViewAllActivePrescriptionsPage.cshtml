@@ -1,4 +1,121 @@
 ﻿@{
-    ViewData["Title"] = "ViewAllActivePrescriptions";
-    Layout = "_LayoutPharmacist";
+    ViewData["Title"] = "AllActivePrescriptions";
+    
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription</title>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Day Hospital</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    <!--End of top left navbar -->
+
+
+
+    <!--Sidebar-->
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Pharmacist Home Page</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+                <li class="nav-item">
+                    <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary">View all active prescriptions</a>
+
+                </li>
+
+
+                <li class="nav-item">
+                    <a asp-action="ManageMedicationStockPage" asp-controller="Pharmacist" class="btn btn-primary">Manage medication stock</a>
+
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a asp-action="ViewDailyUsageReport" asp-controller="Pharmacist" class="btn btn-primary">View daily stock usage report</a>
+
+                </li>
+
+                <li class="nav-item">
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-primary">Log out</a>
+
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
+
+
+
+    <div class="container">
+        <main role="main" class="pb-5">
+           
+
+
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <h1><center>Active Prescriptions</center></h1>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Patient Name</th>
+                                    <th scope="col">Patient Surname</th>
+                                    <th scope="col">Prescription</th>
+                                    <th scope="col">Urgent</th>
+
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>
+                                            <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View</a>
+
+                                             
+                                        
+                                    </td>
+                                    <td>Yes</td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+
+                                <tr>
+                                    <td>Jim</td>
+                                    <td>James</td>
+                                    <td>
+                                        <button type="submit" asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">
+                                            View
+                                        </button>
+                                    </td>
+                                    <td>No</td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+
+                              
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

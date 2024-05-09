@@ -1,5 +1,97 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "ManageMedicationStock";
 }
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/site2.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Pharmacist Home Page</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Day Hospital</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+
+                <li class="nav-item">
+                    <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary">View all active prescriptions</a>
+
+                </li>
+
+
+                <li class="nav-item">
+                    <a asp-action="ManageMedicationStockPage" asp-controller="Pharmacist" class="btn btn-primary">Manage medication stock</a>
+
+                </li>
+
+
+
+                <li class="nav-item">
+                    <a asp-action="ViewDailyUsageReport" asp-controller="Pharmacist" class="btn btn-primary">View daily stock usage report</a>
+
+                </li>
+
+                <li class="nav-item">
+                    <a asp-action="Index" asp-controller="Home" class="btn btn-primary">Log out</a>
+
+                </li>
+
+
+
+
+
+
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="container">
+        <main role="main" class="">
+            <div class="row">
+                <div class="card mt-5 custom-card" style="width:200px">
+                    <img src="https://via.placeholder.com/150" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Logged in as: Pharmacist</h5>
+                        <h5 class="card-title text-center">John Doe</h5>
+
+                        <br>
+                        <br>
+                        <hr>
+                        <br>
+                        <p class="card-text text-center">Prescriptions Check</p>
+                        <p class="card-text text-center">5</p>
+                        <p class="card-text text-center">Patient Surgery</p>
+                        <p class="card-text text-center">2</p>
+                        <hr>
+                    </div>
+                </div>
+
+                <div class="col-md-6" align="left">
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

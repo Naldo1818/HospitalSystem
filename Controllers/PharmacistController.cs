@@ -31,5 +31,18 @@ namespace DEMO.Controllers
         {
             return View();
         }
-    }
+
+        public IActionResult ViewSpecificPrescription()
+        {
+            return View();
+        }
+
+
+
+		public ActionResult PrescriptionApproved()
+		{
+			ViewBag.Message = "This is a pop-up message.";
+			return View();
+		}
+	}
 }
