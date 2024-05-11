@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Prescription List";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">First Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name" style=" width:300px">
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Surname</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Surname" style=" width:300px">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="exampleFormControlInput1"  style=" width:300px">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <td>
+                                    <div class="col-4">
+                                        <br>
+                                    <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary">
+                                        Filter
+                                    </button>
+                                </td>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist</th>
+                                    <th scope="col">Priority</th>
+                                    <th scope="col">Rejection Reason</th>
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>02/05/2024</td>
+                                    <td>Sam Smith</td>
+                                    <td>Invalid</td>
+                                    <td>Medication found that effects Patient</td>
+                                    <td>
+                                        <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary">
+                                            Check Prescription
+                                        </button>
+                                    </td>
+
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -26,7 +26,19 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult PatientList()
+        {
+            return View();
+        }
         public IActionResult BookSurgery()
+        {
+            return View();
+        }
+        public IActionResult ListSurgery()
+        {
+            return View();
+        }
+        public IActionResult EditSurgery()
         {
             return View();
         }
@@ -38,7 +50,20 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult PrescriptionList()
+        {
+            return View();
+        }
+        
+        public IActionResult MedicationInteraction()
+        {
+            return View();
+        }
 
+        public IActionResult ChangeMedication()
+        {
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -4,7 +4,15 @@ namespace DEMO.Controllers
 {
     public class AdminController : Controller
     {
-        public IActionResult Index()
+        public IActionResult AdminHome()
+        {
+            return View();
+        }
+        public IActionResult AddMedication()
+        {
+            return View();
+        }
+        public IActionResult AddActiveingredient()
         {
             return View();
         }

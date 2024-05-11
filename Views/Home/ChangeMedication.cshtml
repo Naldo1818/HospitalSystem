@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prescription</title>
+    <title>Medication Change</title>
 </head>
 <body>
     <div class="container">
@@ -16,23 +16,23 @@
                 <div class="col">
                     <div class="p-3 mt-5 border">
 
-						<form>
+                        <form>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Medication Name" style=" width:300px">
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin" style=" width:300px">
                                 </div>
-                                
+
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Quantity/Packs</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Amount" style=" width:300px">
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="1" style=" width:300px">
                                 </div>
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput2" class="form-label">Status</label>
-                                    <select input class="form-control" placeholder="Status" style=" width:300px">
+                                    <select input class="form-control" placeholder="Receiveed" style=" width:300px">
                                         <option value="Send">Send</option>
                                     </select>
                                 </div>
@@ -52,11 +52,11 @@
                                     </select>
                                 </div>
                             </div>
-                                <div class="form-group row">
+                            <div class="form-group row">
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput2" class="form-label">Urgency</label>
-                                    <select input class="form-control" placeholder="Urgency" style=" width:300px">
+                                    <select input class="form-control" placeholder="No" style=" width:300px">
                                         <option value="Yes">Yes</option>
                                         <option value="No">No</option>
                                     </select>
@@ -78,7 +78,7 @@
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput2" class="form-label">Eat</label>
-                                    <select input class="form-control" placeholder="Priority" style=" width:300px">
+                                    <select input class="form-control" placeholder="_" style=" width:300px">
                                         <option value="Before">Before</option>
                                         <option value="After">After</option>
                                         <option value="_">_</option>
@@ -90,8 +90,8 @@
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <button class="btn btn-danger" style=" width:70px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
-                                    <button class="btn btn-primary" style=" width:70px" type="submit">Add</button>
+                                    <button class="btn btn-danger" style=" width:100px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
+                                    <button class="btn btn-primary" style=" width:100px" type="submit">Update</button>
                                 </div>
                             </div>
                             <!-- More form inputs can be added here -->
@@ -131,7 +131,7 @@
                                     <td>2</td>
                                     <td>3</td>
                                     <td>Before</td>
-                                   
+
                                     <!-- More table data can be added here -->
                                 </tr>
                             </tbody>

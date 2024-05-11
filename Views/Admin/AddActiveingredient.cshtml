@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Medication Add";
+    Layout = "_LayoutAdmin";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Add</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Medication Name" style=" width:300px">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Active Ingredient Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Add Name" style=" width:300px">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">
+                                        Active Ingredient Strength(In mg)</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Add Amount" style=" width:300px">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <button class="btn btn-danger" style=" width:70px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
+                                    <button class="btn btn-primary" style=" width:70px" type="submit">Add</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Medication Name</th>
+                                    <th scope="col">Active Ingredient Name</th>
+                                    <th scope="col"> Active Ingredient Strength(In mg)</th>
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Advil</td>
+                                    <td>Ibuprofen</td>
+                                    <td>
+                                        200
+                                    </td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewData["Title"] = "Prescription List";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Interaction</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <!-- Your table Headings -->
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Allergy</th>
+                                    <th scope="col">Medication Name</th>
+                                    <th scope="col">Active Ingredient</th>
+                                    <th scope="col">Result</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <!-- Your table Content -->
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>02/05/2024</td>
+                                    <td>Penicillin</td>
+                                    <td>Cephalexin</td>
+                                    <td>Penicillin</td>
+                                    <td>Can Not give Patient</td>
+                                    <td>
+                                        <div class="col-4">
+                                        <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary">
+                                           Change Medication
+                                        </button>
+                                        </div>
+                                    </td>
+
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

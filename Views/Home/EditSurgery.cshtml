@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "BookSurgery";
+    ViewData["Title"] = "EditSurgery";
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Surgery</title>
+    <title>Edit Surgery</title>
 </head>
 <body>
     <div class="container">
@@ -17,37 +17,37 @@
                     <div class="p-3 mt-5 border">
 
                         <form>
-                            
-                    <div class="form-group row">
+
+                            <div class="form-group row">
                                 <div class="col-4">
-                                        <br>
-                                <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
-                            </div>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+                                </div>
                                 <div class="col-4">
-                                        <br>
-                                <label for="exampleFormControlInput1" class="form-label">Surname</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Surname</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                </div>
                             </div>
-                   </div>
 
 
-                    <div class="form-group row">
+                            <div class="form-group row">
 
-                                    <div class="col-4">
-                                        <br>
+                                <div class="col-4">
+                                    <br>
                                     <label for="exampleFormControlInput2" class="form-label">Surgery Date</label>
                                     <input type="date" class="form-control" id="exampleFormControlInput2" placeholder="Textbox 2" style=" width:300px">
                                 </div>
 
-                                     <div class="col-4">
-                                        <br>
+                                <div class="col-4">
+                                    <br>
                                     <label for="exampleFormControlInput2" class="form-label">Surgery Time</label>
                                     <input type="time" class="form-control" id="exampleFormControlInput2" placeholder="Textbox 2" style=" width:300px">
                                 </div>
 
-                                    <div class="col-4">
-                                        <br>
+                                <div class="col-4">
+                                    <br>
                                     <label for="exampleFormControlInput2" class="form-label">Theater</label>
                                     <select input class="form-control" placeholder="Theater" style=" width:300px">
                                         <option value="Theater 1">Theater 1</option>
@@ -55,18 +55,18 @@
                                         <option value="Theater 3">Theater 3</option>
                                     </select>
                                 </div>
-                     </div>
+                            </div>
 
-                    <div class="form-group row">
+                            <div class="form-group row">
 
                                 <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput2" class="form-label">Search Treatment Name</label>
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Search Treatment Name</label>
                                     <input class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style=" width:300px">
                                 </div>
-                    
+
                                 <div class="col-4">
-                                        <br>
+                                    <br>
                                     <label for="exampleFormControlInput2" class="form-label">Treatment Name</label>
                                     <select input class="form-control" placeholder="Treatment Name" style=" width:300px">
                                         <option value="Drainage of Abscess">Drainage of Abscess</option>
@@ -76,7 +76,7 @@
                                 </div>
 
                                 <div class="col-4">
-                                        <br>
+                                    <br>
                                     <label for="exampleFormControlInput2" class="form-label">Treatment Code</label>
                                     <select input class="form-control" placeholder="Treatment Code" disabled style=" width:300px">
                                         <option value="10060">10060</option>
@@ -84,28 +84,28 @@
                                         <option value="29876">29876</option>
                                     </select>
                                 </div>
-                        </div>
-                   
-                    <div class="form-group row">
-                                    <div class="col-4">
-                                     <br>
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
-                                </div>
-                    </div>
-                    <div class="form-group row">
+                            </div>
+
+                            <div class="form-group row">
                                 <div class="col-4">
-                                        <br>
-                                        <button class="btn btn-danger" style=" width:70px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
-                                    
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Book</button>
+                                    <br>
+                                    <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
                                 </div>
-                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <button class="btn btn-danger" style=" width:70px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
+
+                                    <button class="btn btn-primary" style=" width:70px" type="submit">Book</button>
+                                </div>
+                            </div>
                             <!-- More form inputs can be added here -->
                         </form>
                     </div>
                 </div>
             </div>
-        
+
         </main>
     </div>
 </body>
