@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Surgeon";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surgeon</title>
+</head>
+<body>
+
+    <div style="display: flex; gap: 20px;">
+    <div class="card" style="width: 18rem; margin-top: 48px;">
+            <img src="~/css/DnP.jpeg" class="card-img-top" alt="Doctor Patient">
+        <div class="card-body">
+            <h5 class="card-title">Patient List</h5>
+                <p class="card-text">Patients are the most important Thing in the Hospital. By clicking the button below you'll be able to Look throw a list of patients and book a surgery for anyone in need of one.</p>
+                <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="PatientList">Patient List</a>
+        </div>
+    </div>
+
+    <div class="card" style="width: 18rem; margin-top: 48px;">
+            <img src="~/css/DP.jpeg" class="card-img-top" alt="Doctor Prescription">
+        <div class="card-body">
+            <h5 class="card-title">Prescription list</h5>
+                <p class="card-text">The best way to communicate with your pharmacist is throw prescriptions. If you click on the button below, you'll be able to see all the prescriptions linked to your name. You will also see the current status of the prescription and if it has been approved or rejected.</p>
+                <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="PrescriptionList">Prescription List</a>
+
+        </div>
+    </div>
+        <div class="card" style="width: 18rem; margin-top: 48px;">
+            <img src="~/css/HB.jpeg" class="card-img-top" alt="Hospital Bed">
+            <div class="card-body">
+                <h5 class="card-title">Addmisions list</h5>
+                <p class="card-text">By clicking the button below, you will be able to view all current patients admitted in the day hospitals. From the you can also search for a specific patient and look at the vitals takin by the nurses</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

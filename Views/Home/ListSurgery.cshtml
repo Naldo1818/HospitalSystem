@@ -20,31 +20,21 @@
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="First Name" style=" width:300px">
+                                    <label for="exampleFormControlInput1" class="form-label">ID number </label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ID number " style=" width:300px">
                                 </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Surname" style=" width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="exampleFormControlInput1" style=" width:300px">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <td>
+                                <div class="form-group row">
                                     <div class="col-4">
                                         <br>
-                                        <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary">
-                                            Filter
-                                        </button>
+                                        <td>
+
+                                            <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary" style=" width:70px">
+                                                Search
+                                            </button>
+
+                                        </td>
                                     </div>
-                                </td>
-                            </div>
+                                </div>
                         </form>
                     </div>
                 </div>
@@ -56,22 +46,26 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th scope="col"> ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Edit Book Surgery</th>
+                                    <th scope="col">Give Prescription</th>
                                     <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
                                     <td>25/05/2025</td>
                                     <td>
-                                        <button type="submit" asp-action="BookSurgery" asp-controller="Home" class="btn btn-primary">
-                                            Edit Book Surgery
-                                        </button>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Give Prescription</a>
                                     </td>
                                     <!-- More table data can be added here -->
                                 </tr>

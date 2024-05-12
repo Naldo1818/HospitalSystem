@@ -26,6 +26,10 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult SurgeonHome()
+        {
+            return View();
+        }
         public IActionResult PatientList()
         {
             return View();
