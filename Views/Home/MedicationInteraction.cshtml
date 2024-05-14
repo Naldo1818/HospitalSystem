@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Prescription List";
+    ViewData["Title"] = "Medication Interaction Check";
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medication Interaction</title>
+    <title>Medication Interaction Check</title>
 </head>
 <body>
     <div class="container">
@@ -17,6 +17,11 @@
                 <div class="col">
                     <div class="p-3 mt-5 border">
                         <!-- Your table content here -->
+                        <h2>Medication Interaction Check</h2>
+                        <div class="col-4">
+                            <br>
+                            <a class="btn btn-danger" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Back</a>
+                        </div>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -44,6 +49,12 @@
                                     <td>
                                         <div class="col-4">
                                             <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="ChangeMedication">Change Medication</a>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="col-4">
+                                            <br>
+                                            <a class="btn btn-danger" aria-hidden="true" asp-controller="Home">Remove</a>
                                         </div>
                                     </td>
 

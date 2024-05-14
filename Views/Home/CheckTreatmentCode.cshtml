@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Surgery List";
+    ViewData["Title"] = "Treatments Codes List";
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surgery List</title>
+    <title>Treatments Codes List</title>
 </head>
 <body>
     <div class="container">
@@ -17,24 +17,25 @@
                     <div class="p-3 mt-5 border">
 
                         <form>
-                            <h2>Surgery List</h2>
+                            <h2>Treatments Codes List</h2>
+
+                           
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">ID number </label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ID number " style=" width:300px">
+                                    <label for="exampleFormControlInput1" class="form-label">Name </label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin " style=" width:300px">
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <td>
-
-                                            <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary" style=" width:70px">
-                                                Search
-                                            </button>
-
-                                        </td>
-                                    </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Surname </label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <a class="btn btn-danger" aria-hidden="true" asp-controller="Home" asp-action="patientAddmision">Back</a>
                                 </div>
                             </div>
                         </form>
@@ -52,6 +53,9 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Theatre</th>
+                                    <th scope="col">Treatment Codes</th>
                                     <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
@@ -61,17 +65,22 @@
                                     <td>Jin</td>
                                     <td>Woo</td>
                                     <td>25/05/2025</td>
+                                    <td>08:00 AM</td>
+                                    <td>Theatre 1</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
+                                      05725
                                     </td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+                                <tr>
+                                    <td>0120526958</td>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>25/05/2025</td>
+                                    <td>08:00 AM</td>
+                                    <td>Theatre 1</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Give Prescription</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                        24045
                                     </td>
                                     <!-- More table data can be added here -->
                                 </tr>

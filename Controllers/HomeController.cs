@@ -34,11 +34,32 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        
+        public IActionResult patientAddmision()
+        {
+            return View();
+        }
+        public IActionResult PatientAdd()
+        {
+            return View();
+        }
         public IActionResult BookSurgery()
         {
             return View();
         }
+        public IActionResult SurgeryTreatmentCode()
+        {
+            return View();
+        }
+        public IActionResult CheckTreatmentCode()
+        {
+            return View();
+        }
         public IActionResult ListSurgery()
+        {
+            return View();
+        }
+        public IActionResult vitalsAndHistory()
         {
             return View();
         }

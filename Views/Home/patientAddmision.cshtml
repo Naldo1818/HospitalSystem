@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Patient List";
+    ViewData["Title"] = "Addmisions List";
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient List</title>
+    <title>Addmisions List</title>
 </head>
 <body>
     <div class="container">
@@ -17,29 +17,25 @@
                     <div class="p-3 mt-5 border">
 
                         <form>
-                            <h2>Patient List</h2>
+                            <h2>Addmisions List</h2>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">ID number </label>
                                     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ID number " style=" width:300px">
                                 </div>
-                            </div>
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <br>
-                                <td>
-                               
-                                    <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary" style=" width:70px">
-                                            Search
-                                        </button>
-                                  
-                                </td>
-                            </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <a class="btn btn-success" aria-hidden="true" style="width:160px;" asp-controller="Home" asp-action="PatientAdd"> Add New Patient</a>
+                                        <td>
+
+                                            <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary" style=" width:70px">
+                                                Search
+                                            </button>
+
+                                        </td>
                                     </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -52,14 +48,15 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                   
                                     <th scope="col"> ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Contact Number</th>
-                                    <th scope="col">E-Mail<th>
-                                    
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Ward</th>
+                                    <th scope="col">Bed</th>
+                                    <th scope="col">Number</th>
+                                    <th scope="col">Theatre</th>
                                     <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
@@ -68,13 +65,16 @@
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>Male</td>
-                                    <td>0786953659</td>
-                                    <td>woo@gmail.com</td>
+                                    <td>25/05/2025</td>
+                                    <td>08:00 AM</td>
+                                    <td>Cardiology</td>
+                                    <td>101</td>
+                                    <td>12345</td>
+                                    <td>Theatre 1</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="BookSurgery">Book Surgery</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Check Treatment Codes</a>
                                     </td>
-                                    <!-- More table data can be added here -->
+                                     <!-- More table data can be added here -->
                                 </tr>
                             </tbody>
                         </table>
