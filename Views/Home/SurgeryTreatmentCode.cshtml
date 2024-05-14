@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Add Treatment Codes";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Treatment Codes</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2>Add Treatment Codes</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Search Treatment Name</label>
+                                    <input class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style=" width:300px">
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Treatment Name</label>
+                                    <select input class="form-control" placeholder="Treatment Name" style=" width:300px">
+                                        <option value="Drainage of Abscess">Drainage of Abscess</option>
+                                        <option value="Debridement">Debridement</option>
+                                        <option value="Arthroscopy">Arthroscopy</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Treatment Code</label>
+                                    <select input class="form-control" placeholder="Treatment Code" disabled style=" width:300px">
+                                        <option value="10060">10060</option>
+                                        <option value="11400">11400</option>
+                                        <option value="29876">29876</option>
+                                    </select>
+                                </div>
+                            </div> 
+
+                        <div class="form-group row">
+                                <div class="col-4">
+                                     <br>
+                                        <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <a class="btn btn-primary" aria-hidden="true" style="width:100px;"> Add</a>
+                                </div>
+                        </div>
+                        <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome">Save</a>
+                                </div>
+                            </div>
+                            <!-- More form inputs can be added here -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Theater</th>
+                                    <th scope="col">Treatment Name</th>
+                                    <th scope="col">Treatment Code</th>
+                                  
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>02/05/2024</td>
+                                    <td>Theater 1</td>
+                                    <td>Debridement</td>
+                                    <td>11400</td>
+                                    <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
+                                    
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

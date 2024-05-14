@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "BookSurgery";
+    ViewData["Title"] = "Book Surgery";
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -17,7 +17,7 @@
                     <div class="p-3 mt-5 border">
 
                         <form>
-                            
+                            <h2>Book Surgery</h2>
                     <div class="form-group row">
                                 <div class="col-4">
                                         <br>
@@ -58,46 +58,12 @@
                      </div>
 
                     <div class="form-group row">
+                                <div class="col-4">
+                                        <br>
+                                    <a class="btn btn-danger" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome">Back</a>
 
-                                <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput2" class="form-label">Search Treatment Name</label>
-                                    <input class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style=" width:300px">
-                                </div>
-                    
-                                <div class="col-4">
-                                        <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Treatment Name</label>
-                                    <select input class="form-control" placeholder="Treatment Name" style=" width:300px">
-                                        <option value="Drainage of Abscess">Drainage of Abscess</option>
-                                        <option value="Debridement">Debridement</option>
-                                        <option value="Arthroscopy">Arthroscopy</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-4">
-                                        <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Treatment Code</label>
-                                    <select input class="form-control" placeholder="Treatment Code" disabled style=" width:300px">
-                                        <option value="10060">10060</option>
-                                        <option value="11400">11400</option>
-                                        <option value="29876">29876</option>
-                                    </select>
-                                </div>
-                        </div>
-                   
-                    <div class="form-group row">
-                                    <div class="col-4">
-                                     <br>
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
-                                </div>
-                    </div>
-                    <div class="form-group row">
-                                <div class="col-4">
-                                        <br>
-                                        <button class="btn btn-danger" style=" width:70px" type="submit" asp-action="Index" asp-controller="Home">Back</button>
-                                    
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Book</button>
+                                   
+                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="SurgeryTreatmentCode">Next</a>
                                 </div>
                     </div>
                             <!-- More form inputs can be added here -->

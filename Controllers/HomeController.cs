@@ -26,7 +26,20 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult SurgeonHome()
+        {
+            return View();
+        }
         public IActionResult PatientList()
+        {
+            return View();
+        }
+        
+        public IActionResult patientAddmision()
+        {
+            return View();
+        }
+        public IActionResult PatientAdd()
         {
             return View();
         }
@@ -34,7 +47,19 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult SurgeryTreatmentCode()
+        {
+            return View();
+        }
+        public IActionResult CheckTreatmentCode()
+        {
+            return View();
+        }
         public IActionResult ListSurgery()
+        {
+            return View();
+        }
+        public IActionResult vitalsAndHistory()
         {
             return View();
         }
