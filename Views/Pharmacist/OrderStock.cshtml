@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Order Stock";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/site2.css" rel="stylesheet">
+</head>
+
+<body>
+
+
+    <label for="exampleFormControlInput1" class="form-label">Please select the level amount of Panado you want to order.</label>
+    <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
+
+  
+
+    <div>
+        <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary">Order</a>
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

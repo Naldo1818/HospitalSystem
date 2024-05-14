@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Page1";
+    Layout = "_LayoutNurse";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form and Data Grid with Side Navigation</title>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+
+                            <!-- Example form inputs -->
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Surname</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                            </div>
+
+
+
+
+
+
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
+                                    <button class="btn btn-danger" style=" width:70px" type="submit">Back</button>
+                                    <button class="btn btn-primary" style=" width:70px" type="submit">Save</button>
+                                </div>
+                            </div>
+                            <!-- More form inputs can be added here -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Book Surgery</th>
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>
+
+                                        <a asp-action="Page1" asp-controller="Home" class="btn btn-primary">
+                                            Book Surgery
+                                        </a>
+
+
+
+                                    </td>
+                                    <!-- More table data can be added here -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+

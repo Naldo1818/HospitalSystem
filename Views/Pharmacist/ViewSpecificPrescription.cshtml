@@ -31,8 +31,7 @@
 
 
             <form>
-                <div class="form-group row">
-                </div>
+                
 
                 <div class="form-group row">
                     <div class="col-4">
@@ -40,12 +39,42 @@
                         <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
                         <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
 
-                        <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
+                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
                         <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
 
-                        <label for="exampleFormControlInput1" class="form-label">Prescription</label>
-                        <textarea class="form-control" id="textAreaExample1" cols="50" rows="20"></textarea>
 
+                        <label for="exampleFormControlInput1" class="form-label">Prescription Date</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="14/05/2024" style=" width:300px">
+
+
+                        <label for="exampleFormControlInput1" class="form-label">Urgent</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Yes" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Medications Prescribed</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin & Diazepem" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Number of packs to dispense</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin-1 & Diazepem-2" style=" width:300px">
+
+
+                        <label for="exampleFormControlInput1" class="form-label">Amount to take</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=" Cephalexin- 2 & Diazepem 1" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Daily Amount</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin -1 & Diazepem - 3" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Take medication before or after eating?</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin- After,Diazepem-Before" style=" width:300px">
+
+
+                        <label for="exampleFormControlInput1" class="form-label">Reason for medication</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Flu" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Surgeon</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jack Black" style=" width:300px">
+
+
+                        
                     </div>
 
                 </div>
@@ -55,8 +84,8 @@
                 <div class="form-group row">
                     <div class="col-4">
                         <br>
-                        <a asp-action="PrescriptionApproved" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Approve </a>
-                        <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject Prescription</a>
+                        <a asp-action="DispenseMedication" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Approve </a>
+                        <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
                         <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
 
 

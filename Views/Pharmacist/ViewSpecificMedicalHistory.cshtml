@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "IndividualPatientMedicalHistory";
+}
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+
+
+
+
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <form>
+                
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <br>
+                        <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                 
+
+
+                        <label for="exampleFormControlInput1" class="form-label">Allergies</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Penicillin" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Conditions</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Acne" style=" width:300px">
+
+                        <label for="exampleFormControlInput1" class="form-label">Current Medications</label>
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Aspirin" style=" width:300px">
+
+                        
+
+
+                        
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group row">
+                    <div class="col-4">
+                        <br>
+                    
+                        <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+
+
+                    </div>
+                </div>
+                <!-- More form inputs can be added here -->
+            </form>
+
+
+
+
+
+
+        </main>
+    </div>
+
+
+
+
+</body>
+
+
+
+
+
+</html>
+
+
+
+
+
+
+
