@@ -77,6 +77,8 @@
                                 <tr>
                                     <th scope="col">Patient Name</th>
                                     <th scope="col">Patient Surname</th>
+                                    <th scope="col">Medical History</th>
+                                    <th scope="col">Vital History</th>
                                     <th scope="col">Prescription</th>
                                     <th scope="col">Urgent</th>
 
@@ -88,27 +90,59 @@
                                     <td>Jin</td>
                                     <td>Woo</td>
                                     <td>
+                                        <a asp-action="ViewSpecificMedicalHistory" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
+
+
+
+                                    </td>
+
+                                    <td>
+                                        <a asp-action="ViewSpecificVitalsHistory" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
+
+
+
+                                    </td>
+
+                                    <td>
                                             <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
 
                                              
                                         
                                     </td>
+
+                                    
                                     <td>Yes</td>
                                     <!-- More table data can be added here -->
                                 </tr>
 
                                 <tr>
                                     <td>Jim</td>
-                                    <td>James</td>
+                                    <td>Jones</td>
                                     <td>
-                                        <button type="submit" asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">
-                                            View in full
-                                        </button>
+                                        <a asp-action="MedicalHistoryIndividual" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
+
+
+
                                     </td>
+
+                                    <td>
+                                        <a asp-action="VitalHistoryIndividual" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
+
+
+
+                                    </td>
+
+                                    <td>
+                                        <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
+
+
+
+                                    </td>
+
+
                                     <td>No</td>
                                     <!-- More table data can be added here -->
                                 </tr>
-
                               
                             </tbody>
                         </table>

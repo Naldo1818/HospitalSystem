@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Prescription Rejection";
+    ViewData["Title"] = "Stock Ordered";
 }
 
 <!DOCTYPE html>
@@ -13,23 +13,25 @@
 
 <body>
 
-   
-    <label for="exampleFormControlInput1" class="form-label">Please indicate reason for rejecting Jin Woo's script.</label>
+    <div>
+        The amount of Panado required has been ordered
 
-    <div class="form-group">
-        <textarea class="form-control" id="exampleFormControlTextarea1" cols="600"></textarea>
+
+
+
     </div>
+
 
     <div>
-        <a asp-action="PrescriptionRejected" asp-controller="Pharmacist" class="btn btn-primary">Submit</a>
+        <a asp-action="ViewAllStock" asp-controller="Pharmacist" class="btn btn-primary">Okay</a>
 
     </div>
 
 
-   
 
 
-   
+
+
 
 
 

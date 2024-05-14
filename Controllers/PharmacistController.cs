@@ -51,5 +51,67 @@ namespace DEMO.Controllers
 
             return View();
         }
+
+
+        public ActionResult MedicationDispensed()
+        {
+
+            return View();
+        }
+
+        public ActionResult PrescriptionRejected()
+        {
+
+            return View();
+        }
+
+        public ActionResult AddMedication()
+        {
+
+            return View();
+        }
+
+
+        public ActionResult MedicationAdded()
+        {
+
+            return View();
+        }
+
+        public ActionResult ViewAllStock()
+        {
+
+            return View();
+        }
+
+
+        public ActionResult OrderStock()
+        {
+
+            return View();
+        }
+
+
+        public ActionResult StockOrdered()
+        {
+
+            return View();
+        }
+
+
+        public ActionResult ViewSpecificMedicalHistory()
+        {
+            return View();
+        }
+
+
+        public ActionResult ViewSpecificVitalsHistory()
+        {
+            return View();
+        }
+
+
+        
+
     }
 }
