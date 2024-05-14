@@ -39,10 +39,17 @@ namespace DEMO.Controllers
 
 
 
-		public ActionResult PrescriptionApproved()
+		public ActionResult DispenseMedication()
 		{
-			ViewBag.Message = "This is a pop-up message.";
+			
 			return View();
 		}
-	}
+
+
+        public ActionResult RejectScript()
+        {
+
+            return View();
+        }
+    }
 }

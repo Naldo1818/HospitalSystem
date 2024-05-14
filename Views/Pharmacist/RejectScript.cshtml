@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Prescription Rejection";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/site2.css" rel="stylesheet">
+</head>
+
+<body>
+
+   
+    <label for="exampleFormControlInput1" class="form-label">Please indicate reason for rejecting Jin Woo's script.</label>
+    <textarea class="form-control" id="textAreaExample1" cols="50" rows="20"></textarea>
+
+    
+    <div>
+        <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary">Submit</a>
+
+    </div>
+
+
+   
+
+
+   
+
+
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
