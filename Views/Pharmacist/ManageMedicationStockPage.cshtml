@@ -11,7 +11,7 @@
     <link href="~/css/site2.css" rel="stylesheet">
 </head>
 
-
+<body>
 
     <!--Top navbar-->
     <nav class="navbar navbar-dark bg-dark fixed-top">
@@ -98,20 +98,38 @@
         </div>
     </div>
 
-   
 
 
+    <div class="container">
+        <main role="main" class="pb-5">
+
+
+
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <a asp-action="AddMedication" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Add Medication</a>
+                        <a asp-action="ViewAllStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View Medication Stock</a>
+                        <a asp-action="ViewAllOrders" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View Stock Orders</a>
+
+                        <a asp-action="PharmacistMainPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+        </div>
+            
 
     
 
 
-        <a asp-action="AddMedication" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
-    <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
-    <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View Orders</a>
-
+      
 
        
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
