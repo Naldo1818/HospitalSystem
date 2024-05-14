@@ -110,7 +110,10 @@ namespace DEMO.Controllers
             return View();
         }
 
-
+        public ActionResult ViewAllOrders()
+            {
+            return View();
+        }
         
 
     }
