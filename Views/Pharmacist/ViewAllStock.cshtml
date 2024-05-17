@@ -1,25 +1,13 @@
 ﻿@{
     ViewData["Title"] = "AllMedicationStock";
+    Layout = "_LayoutPharmacist";
 
 }
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prescription</title>
-</head>
+
 <body>
 
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Day Hospital</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-    <!--End of top left navbar -->
     
 
 
@@ -90,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+            <a asp-action="ManageMedicationStockPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
         </main>
     </div>
 </body>

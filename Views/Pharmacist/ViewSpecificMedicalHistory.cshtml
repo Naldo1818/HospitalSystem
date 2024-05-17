@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "IndividualPatientMedicalHistory";
+    Layout = "_LayoutPharmacist";
 }
 
 
@@ -11,82 +12,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <link href="~/css/scollmenu.css" rel="stylesheet">
+    
+
 </head>
 
-
-
-
-
-<body>
+    <body>
     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                    </div>
-                </div>
-            </div>
+
+                        <form>
+                            <h2><center>Medical History</center></h2>
+                            <div class="form-group row">
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+                                    </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                    </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput2" class="form-label">Allergies</label>
 
 
+                                    <!--Find a suitable list box item-->
+
+                                        <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
+                                            <option>Disprin</option>
+                                            <option>Penicillin</option>
+                                            
+                                            
+                                        </select>
+
+                                
+                                   
+                                    </div>
+                                </div>
 
 
-            <form>
-                
+                                <div class="form-group row">
 
-                <div class="form-group row">
-                    <div class="col-4">
-                        <br>
-                        <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Conditions</label>
+                                    <select input class="form-control" placeholder="Pharmacist" style=" width:300px">
+                                        <option value="Acne">Acne</option>
+                                        <option value="Diabetes">Diabetes</option>
+                                    </select>
+                                </div>
 
-                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
-                 
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Current Medications</label>
+                                    
+                                    
+                                    <!--Find a suitable list box item-->
+                                    <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
+                                        <option>Diazepem</option>
+                                        <option>Aspirin</option>
+                                        
+                                    </select>
+                                </div>
+                                
+                            </div>
 
+           
+                                   
+                            <div style="align-content:end">
+                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back </a>
 
-                        <label for="exampleFormControlInput1" class="form-label">Allergies</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Penicillin" style=" width:300px">
+                            </div>
 
-                        <label for="exampleFormControlInput1" class="form-label">Conditions</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Acne" style=" width:300px">
-
-                        <label for="exampleFormControlInput1" class="form-label">Current Medications</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Aspirin" style=" width:300px">
-
-                        
-
-
-                        
-                    </div>
-
-                </div>
-
-
-
-                <div class="form-group row">
-                    <div class="col-4">
-                        <br>
-                    
-                        <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
-
-
-                    </div>
-                </div>
-                <!-- More form inputs can be added here -->
-            </form>
-
-
-
-
-
-
-        </main>
+                              
+                                <!-- More form inputs can be added here -->
+    </form>
+    </div>
+    </div>
     </div>
 
-
-
-
+    </main>
+    </div>
 </body>
+
+
+
+
+
 
 
 
