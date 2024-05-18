@@ -114,7 +114,15 @@ namespace DEMO.Controllers
             {
             return View();
         }
-        
+
+
+
+        public ActionResult ConfirmScriptRejectionPage()
+        {
+            return View();
+        }
+
+
 
     }
 }
