@@ -129,5 +129,16 @@ namespace DEMO.Controllers
         }
 
 
+        public ActionResult NewCurrentLevelPage()
+        {
+            return View();
+        }
+
+
+        public ActionResult CurrentLevelUpdatedPage()
+        {
+            return View();
+        }
+
     }
 }
