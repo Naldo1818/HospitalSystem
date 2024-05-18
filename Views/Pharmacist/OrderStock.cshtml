@@ -10,15 +10,85 @@
 <body>
 
 
-    <label for="exampleFormControlInput1" class="form-label">Please select the level amount of Panado you want to order.</label>
-    <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
+    
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
 
-  
+                        <form>
+                            <h2><center>Order Medication Stock</center></h2>
 
-    <div>
-        <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary">Order</a>
+                            <div class="form-group row">
 
+                                
+                                <div class="col-4">
+                                    <br>
+                                <label for="exampleFormControlInput1" class="form-label">Medications to be ordered</label>
+                                <!--Find a suitable list box item-->
+                                <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
+                                    <option>Panado</option>
+                                    <option>Insulin</option>
+
+                                </select>
+                                
+                            </div>
+
+
+
+
+
+
+
+
+                                <div class="col-4">
+
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Panado</label>
+
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="How many packs?" style=" width:200px">
+
+                                   
+                                    
+                                </div>
+
+
+
+                                <div class="col-4">
+                                    
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Insulin</label>
+
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="How many packs?" style=" width:200px">
+
+                                    
+
+                                    
+                                </div>
+
+                                
+                                
+                            
+                            </div>
+                            
+                            
+                        </form>
+
+                        <div class="d-flex justify-content-center align-items-center">
+                            <br />
+                            <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary">Order</a>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+        </main>
+        
     </div>
+    
 
 </body>
 </html>

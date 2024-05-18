@@ -8,25 +8,53 @@
 
 
 <body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
 
-    <div>
-        The amount of Panado required has been ordered
+                        <form>
+                            <h2><center>Stock Ordered</center></h2>
+                            <div style="display: flex; justify-content: center; align-items: center;">
+
+                                <br>
+                                The stock has been ordered.
+
+                            </div>
+
+                            <div style="display: flex; justify-content: center; align-items: center;">
+
+                                <br>
+                                <a asp-action="ViewAllOrders" asp-controller="Pharmacist" class="btn btn-primary">Okay</a>
 
 
 
 
+
+
+                            </div>
+                            
+                        </form>
+                            
+                    </div>
+                            
+                </div>
+                            
+            </div>
+            
+        </main>
+        
     </div>
+    
+
+    
 
 
-    <div>
-        <a asp-action="ViewAllStock" asp-controller="Pharmacist" class="btn btn-primary">Okay</a>
-
-    </div>
+    
 
 
-
-
-
+    
 
 
 

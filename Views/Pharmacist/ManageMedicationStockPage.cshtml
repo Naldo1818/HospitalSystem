@@ -18,27 +18,37 @@
                         <form>
                             <h2><center>Medication Stock Menu</center></h2>
 
-                            <div>
+                            <div style="display: flex; justify-content: center; align-items: center;">
                                 <a asp-action="AddMedication" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Add Medication</a>
 
                             </div>
+                            <br />
 
-
-                            <div>
+                            <div style="display: flex; justify-content: center; align-items: center;">
                                 <a asp-action="ViewAllStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View Medication Stock</a>
 
                             </div>
+                            <br />
 
-
-                            <div>
+                            <div style="display: flex; justify-content: center; align-items: center;">
                                 <a asp-action="ViewAllOrders" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View Stock Orders</a>
 
                             </div>
+                            <br />
 
-                            <div>
-                                <a asp-action="PharmacistMainPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <a asp-action="IncomingStockPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View Incoming Stock</a>
 
                             </div>
+
+                            <br />
+                            <div style="display: flex; justify-content: center; align-items: center;">
+                                <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+
+                            </div>
+
+
+                           
                             
                         </form>
                             

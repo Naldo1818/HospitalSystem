@@ -1,0 +1,182 @@
+﻿@{
+    ViewData["Title"] = "AllMedicationStock";
+    Layout = "_LayoutPharmacist";
+
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<body>
+
+    
+
+
+    <!--All Medication Stock-->
+    <div class="container">
+        <main role="main" class="pb-5">
+
+
+
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <!-- Your table content here -->
+                        <table class="table">
+                            <h1><center>Incoming Stock</center></h1>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Medication Name</th>
+                                    <th scope="col">Dosage Form</th>
+                                    
+                                    <th scope="col">Stock level</th>
+
+                                    
+                                    
+                                    
+
+                                    <!-- More table headers can be added here -->
+                                </tr>
+                            </thead>
+
+                            <!--Panado record-->
+                            <tbody>
+                                <tr>
+                                    <td>Panado</td>
+                                    <td>Tablet</td>
+                                    
+                                    
+                                    
+
+                                    <td>
+                                        5
+
+                                    </td>
+                                    
+
+
+                                    
+
+                                    <!-- More table data can be added here -->
+                                </tr>
+
+                               
+
+                            </tbody>
+
+
+                            
+
+
+
+                           
+
+
+                        </table>
+                        
+                        <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+
+
+    <!--Update Stock Levels-->
+    <div class="p-3 mt-5 border">
+        <!-- Your table content here -->
+        <table class="table">
+            <h1><center>Update Current levels</center></h1>
+            <thead>
+                <tr>
+                    <th scope="col">Medication Name</th>
+                    <th scope="col">Dosage Form</th>
+                    <th scope="col">Schedule</th>
+                    <th scope="col">Current level</th>
+
+                    <th scope="col">Re-order level</th>
+
+
+
+                    <!-- More table headers can be added here -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Panado</td>
+                    <td>Tablet</td>
+
+
+                    <td>
+                        Schedule 1
+
+
+                    </td>
+
+                    <td>
+                        2
+
+                    </td>
+
+                    <td>
+                        5
+
+                    </td>
+
+
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+
+
+            <tbody>
+                <tr>
+                    <td>Insulin</td>
+                    <td>Pill</td>
+
+
+                    <td>
+                        Schedule 2
+
+
+                    </td>
+
+                    <td>
+                        4
+
+                    </td>
+
+                    <td>
+                        6
+
+                    </td>
+
+
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+        </table>
+
+
+      
+
+    </div>
+
+
+
+</body>
+</html>

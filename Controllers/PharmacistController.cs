@@ -123,6 +123,11 @@ namespace DEMO.Controllers
         }
 
 
+        public ActionResult IncomingStockPage()
+        {
+            return View();
+        }
+
 
     }
 }

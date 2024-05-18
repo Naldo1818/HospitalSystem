@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PAGE1</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site2.css" rel="stylesheet">
+    <link href="~/css/site3.css" rel="stylesheet">
 
     
 </head>
@@ -36,15 +36,22 @@
                     <div class="card-body">
                         <h5 class="card-title text-center">Logged in as Pharmacist</h5>
                         <h5 class="card-title text-center">John Doe</h5>
-                        <br>
-                        <br>
+                        
                         <hr>
                         <br>
-                        <p class="card-text text-center">Active prescriptions</p>
-                        <p class="card-text text-center">2</p>
-                       <center>
+                        <p class="card-text text-center">Active prescriptions-2</p>
+                        
+                        <center>
                             <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View</a>
-                       </center>
+                        </center>
+                        <br>
+                        <br>
+
+                        <p class="card-text text-center">Incoming Stock-2</p>
+                        
+                        <center>
+                            <a asp-action="IncomingStockPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View</a>
+                        </center>
 
 
                         <hr>
@@ -68,9 +75,31 @@
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Home</a>
+                    <br />
+
+                    <strong>
+                        <header>DISPENSING</header>
+                    </strong>
                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">View all active prescriptions</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ManageMedicationStockPage">Manage medication stock</a>
+                    <br />
+
+                    <strong>
+                        <header>STOCK CONTROL</header>
+                    </strong>
+                   
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="AddMedication">Manage medication stock</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="IncomingStockPage">View Incoming Stock</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllStock">Order Stock</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllOrders">View Orders</a>
+
+
+
+                    
                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewDailyUsageReport">View daily stock usage report</a>
+                    
+                    
+                    
+                    <br />
                     <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="Index">Log out</a>
 
                 </li>
@@ -88,5 +117,64 @@
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!--
+        //This is code for the container and border
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2><center>Vitals History</center></h2>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>-->
 </body>
 </html>

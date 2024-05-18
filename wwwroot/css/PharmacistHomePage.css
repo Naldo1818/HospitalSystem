@@ -1,7 +1,6 @@
-
-
-.body {
-    background-image:src("'PharmacistHomePage image.jpg'");
+.body 
+{
+    background-image:url("'PharmacistHomePage image.jpg'");
     background-repeat:no-repeat;
     background-size:cover;
    
