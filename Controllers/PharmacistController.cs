@@ -140,5 +140,39 @@ namespace DEMO.Controllers
             return View();
         }
 
+
+        public ActionResult AddActiveIngredientsPage()
+        {
+            return View();
+
+        }
+
+
+        public ActionResult ActiveIngredientsAdded()
+        {
+            return View();
+
+        }
+
+
+        public ActionResult ViewActiveIngredientsPage()
+        {
+            return View();
+
+        }
+
+
+        public ActionResult ViewSpecificActiveIngredients()
+        {
+            return View();
+
+        }
+
+        public ActionResult ViewCurrentLevels()
+        {  
+            return View();
+        }
+
+
     }
 }
