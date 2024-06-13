@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Individual Patient Vitals History";
+    Layout = "_LayoutPharmacist";
 }
 
 
@@ -9,8 +10,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 
@@ -18,49 +19,105 @@
 
 
 <body>
-    <div class="container">
+     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                    </div>
-                </div>
-            </div>
 
-
-
-
-            <form>
-
+                        <form>
+                            <h2><center>Vitals History</center></h2>
+                          
 
                 <div class="form-group row">
-                    <div class="col-4">
-                        <br>
-                        <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
 
-                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                   
+                    
 
 
-                        <label for="exampleFormControlInput1" class="form-label">Heart rate:</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="70 bpm" style=" width:300px">
-                        <label for="exampleFormControlInput1" class="form-label">Time taken:</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="18:00" style=" width:300px">
+                        <div class="col-4">
+                            <br >
+                                        <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
+
+                        </div>
 
 
-                        <label for="exampleFormControlInput1" class="form-label">BP:</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="120/80 mmHg" style=" width:300px">
-                        <label for="exampleFormControlInput1" class="form-label">Time taken:</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="18:15" style=" width:300px">
+                                    
+                        <div class="col-4">
+                                        <br >
+                                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+
+                                    
+                        </div>
 
 
 
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">BP: 120/80 mmHg</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:00</label>
+                                </div>
+                        
+                        <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Heart rate: 70 bpm</label>
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Time taken: 08:15</label>
 
 
-                    </div>
+                        </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Blood oxygen level: 100%</label>
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Time taken: 08:25</label>
+
+                                    </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Respiratory rate: 18 breaths per minute</label>
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Time taken: 08:30</label>
+
+                                    </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Height: 160 cm</label>
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Time taken: 08:45</label>
+
+                                    </div>
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Weight: 60 kg</label>
+                                    <br>
+                                        <label for="exampleFormControlInput1" class="form-label">Time taken: 08:50</label>
+
+                                    </div>
+                        
+
+                        
+
+                        
+
+                        
+                        
+                      
+
+
+
+                  
 
                 </div>
+                
+                
 
 
 
@@ -75,6 +132,11 @@
                 </div>
                 <!-- More form inputs can be added here -->
             </form>
+
+        </div>
+    </div>
+        </div>
+
 
 
 

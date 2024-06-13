@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "AllOrders";
+    ViewData["Title"] = "ViewActiveIngredientsPage";
     Layout = "_LayoutPharmacist";
     
 }
@@ -17,13 +17,13 @@
                     <div class="p-3 mt-5 border">
                         <!-- Your table content here -->
                         <table class="table">
-                            <h1><center>Medication Stock Orders</center></h1>
+                            <h1><center>Active Ingredients</center></h1>
                             <thead>
                                 <tr>
                                     <th scope="col">Medication Name</th>
-                                    <th scope="col">Amount ordered</th>
+                                    <th scope="col">Active Ingredients</th>
                                     
-                                    <th scope="col">Order status</th>
+                                    
 
                                     <!-- More table headers can be added here -->
                                 </tr>
@@ -31,8 +31,8 @@
                             <tbody>
                                 <tr>
                                     <td>Panado</td>
-                                    <td>14</td>
-                                    <td>Fulfilled</td>
+                                    <td><a asp-action="ViewSpecificActiveIngredients" asp-controller="Pharmacist" class="btn btn-primary btn-lg">View in full</a></td>
+                                   
 
                                     
                                     <!-- More table data can be added here -->
@@ -43,19 +43,7 @@
                             </tbody>
 
 
-                            <tbody>
-                                <tr>
-                                    <td>Disprin</td>
-                                    <td>14</td>
-                                    <td>Placed</td>
-
-
-                                    <!-- More table data can be added here -->
-                                </tr>
-
-
-
-                            </tbody>
+                         
                         </table>
                     </div>
                 </div>

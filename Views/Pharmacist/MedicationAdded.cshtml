@@ -1,37 +1,71 @@
 ﻿@{
     ViewData["Title"] = "Medication Added";
+    Layout = "_LayoutPharmacist";
 }
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site2.css" rel="stylesheet">
-</head>
+
 
 <body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2><center>Medication Added</center></h2>
 
 
-    <label for="exampleFormControlInput1" class="form-label">The new medication has been added</label>
+                            <div style="display: flex; justify-content: center; align-items: center;">
 
-    
-    <div>
-        <a asp-action="AddMedication" asp-controller="Pharmacist" class="btn btn-primary">Okay</a>
+                                <br>
+                                The new medication has been added.
 
+
+
+
+
+
+                            </div>
+
+                            <div style="display: flex; justify-content: center; align-items: center;">
+
+                                <br>
+                                <a asp-action="AddMedication" asp-controller="Pharmacist" class="btn btn-primary">Okay</a>
+
+
+
+
+
+
+
+                            </div>
+                            
+
+
+                            
+                            
+                        </form>
+
+                        
+                    </div>
+
+                    
+                </div>
+                
+            </div>
+
+            
+        </main>
+
+        
     </div>
 
+    
 
 
 
-
-
-
-
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

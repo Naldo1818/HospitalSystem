@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Individual Prescription";
+    Layout = "_LayoutPharmacist";
 }
 
 
@@ -8,10 +9,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+
 
 
 
@@ -23,59 +21,121 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                    </div>
-                </div>
-            </div>
+
+                        <form>
+                            <h2><center>Prescription View</center></h2>
 
 
 
 
-            <form>
+            
                 
 
                 <div class="form-group row">
+
                     <div class="col-4">
                         <br>
                         <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
-
+                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
+                        
+                    </div>
+                                    
+                        
+                    <div class="col-4">
+                                    <br>
                         <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+                        
+                    </div>
 
-
+                                    
+                        
+                    <div class="col-4">
+                                    <br>
                         <label for="exampleFormControlInput1" class="form-label">Prescription Date</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="14/05/2024" style=" width:300px">
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="14/05/2024" style=" width:300px" readonly>
+                                    
+                    </div>
 
+                                
+                    <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Surgeon</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jack Black" style=" width:300px" readonly>
+                                
+                                
+                                
+                    </div>
 
+                                    
+                    <div class="col-4">
+                                    <br>
                         <label for="exampleFormControlInput1" class="form-label">Urgent</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Yes" style=" width:300px">
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Yes" style=" width:300px" readonly>
+                                   
+                    </div>
 
+                                    
+                    <div class="col-4">
+                                    <br>
                         <label for="exampleFormControlInput1" class="form-label">Medications Prescribed</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin & Diazepem" style=" width:300px">
+                        
+                                    <!--Find a suitable list box item-->
+                                    @* <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
+                                        <option>Cephalexin</option>
+                                        <option>Diazepem</option>
 
-                        <label for="exampleFormControlInput1" class="form-label">Number of packs to dispense</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin-1 & Diazepem-2" style=" width:300px">
-
-
-                        <label for="exampleFormControlInput1" class="form-label">Amount to take</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder=" Cephalexin- 2 & Diazepem 1" style=" width:300px">
-
-                        <label for="exampleFormControlInput1" class="form-label">Daily Amount</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin -1 & Diazepem - 3" style=" width:300px">
-
-                        <label for="exampleFormControlInput1" class="form-label">Take medication before or after eating?</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Cephalexin- After,Diazepem-Before" style=" width:300px">
+                                    </select>
 
 
-                        <label for="exampleFormControlInput1" class="form-label">Reason for medication</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Flu" style=" width:300px">
 
-                        <label for="exampleFormControlInput1" class="form-label">Surgeon</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jack Black" style=" width:300px">
+ *@
+
+
+
+
+                                    
+
+                                    <textarea name="large-text-area" rows="2" cols="30">
+Cephalexin
+Diazepem
+</textarea>
+                                    
+                                
+                    </div>
+
+
+
+
+
+                                <div class="col-4">
+                                    <br />
+                                    <label for="exampleFormControlInput1" class="form-label">Administration Instructions</label>
+
+                                    <textarea name="large-text-area" rows="10" cols="50">
+Administer 2 Cephalexin 2 times a day before eating.
+
+Administer 1 Diazepam 2 times a day after eating.
+</textarea>
+
+                                    </div>
+
+                        
 
 
                         
-                    </div>
+
+                        
+
+
+                        
+                    
+
+
+                               
+
+
+                                
 
                 </div>
 
@@ -84,7 +144,7 @@
                 <div class="form-group row">
                     <div class="col-4">
                         <br>
-                        <a asp-action="DispenseMedication" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Approve </a>
+                        <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Dispense </a>
                         <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
                         <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
 

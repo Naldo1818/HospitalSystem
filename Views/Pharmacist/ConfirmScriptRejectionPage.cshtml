@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "ConfirmScriptRejection";
+    Layout = "_LayoutPharmacist";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<body>
+     <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2><center>Confirm Script Rejection</center></h2>
+
+                            
+
+
+
+                            <center>
+                                Are you sure you want to reject the script for Jin Woo?
+                            </center>
+
+                            <div style="display: flex; justify-content: center; align-items: center;">
+
+                                <div class="form-group row">
+                                
+                                    
+                                    <a asp-action="PrescriptionRejected" asp-controller="Pharmacist" class="btn btn-primary">Yes</a>
+                                    
+
+
+                                </div>
+
+
+                                <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">No</a>
+
+
+
+
+
+                            </div>
+
+                           
+   
+
+    
+</form>
+    
+
+</div>
+    
+</div>
+    
+</div>
+
+    
+
+</div>
+    
+
+   
+
+
+   
+
+
+
+
+
+</body>
+</html>

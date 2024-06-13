@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Add Medication";
+    Layout = "_LayoutPharmacist";
 }
 
 
@@ -18,84 +19,172 @@
 
 
 <body>
+
+
+
+
     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                    </div>
-                </div>
-            </div>
 
 
 
 
-            <form>
                 
 
-                <div class="form-group row">
-                    <div class="col-4">
-                        <br>
-                        <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
+                            <h2><center>Add Medication</center></h2>
 
-                        <label for="exampleFormControlInput1" class="form-label">Dosage form</label>
-                        <div class="form-group row">
+                            <div class="form-group row">
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
+
+                                </div>
+
+
+
+                                <div class="col-4">
+
+                                    <br />
+                                    <label for="exampleFormControlInput1" class="form-label">Dosage form</label>
+                                    <div class="form-group row">
+                                        <div class="col-4">
+                                            <select input class="form-control" placeholder="Cephalexin" style=" width:300px">
+                                                <option value="Capsule">Capsule</option>
+                                                <option value="Powder">Powder</option>
+                                                <option value="Injection">Injection</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+
+
+                                <div class="col-4">
+
+                                    <br />
+
+                                    <label for="exampleFormControlInput1" class="form-label">Schedule</label>
+                                    <div class="form-group row">
+                                        <div class="col-4">
+                                            <select input class="form-control" style=" width:300px">
+                                                <option value="Schedule 1">Schedule 1</option>
+                                                <option value="Schedule 1">Schedule 2</option>
+                                                <option value="Schedule 1">Schedule 3</option>
+                                                <option value="Schedule 1">Schedule 4</option>
+                                                <option value="Schedule 1">Schedule 5</option>
+                                                <option value="Schedule 1">Schedule 6</option>
+
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
                             <div class="col-4">
-                                <select input class="form-control" placeholder="Cephalexin" style=" width:300px">
-                                    <option value="Capsule">Capsule</option>
-                                    <option value="Powder">Powder</option>
-                                    <option value="Injection">Injection</option>
-                                    
-                                </select>
+                                <br />
+                                <label for="exampleFormControlInput1" class="form-label">Current Level</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
                             </div>
-                        </div>
 
-                        <label for="exampleFormControlInput1" class="form-label">Schedule</label>
-                        <div class="form-group row">
-                            <div class="col-4">
-                                <select input class="form-control" style=" width:300px">
-                                    <option value="Schedule 1">Schedule 1</option>
-                                    <option value="Schedule 1">Schedule 2</option>
-                                    <option value="Schedule 1">Schedule 3</option>
-                                    <option value="Schedule 1">Schedule 4</option>
-                                    <option value="Schedule 1">Schedule 5</option>
-                                    <option value="Schedule 1">Schedule 6</option>
-                                    
 
-                                </select>
+
+                                <div class="col-4">
+                                    <br />
+                                    <label for="exampleFormControlInput1" class="form-label">Re-order level</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
+                                </div>
+
+
+
                             </div>
+
+                    </div>
+
+
+
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <br>
+                            <a asp-action="MedicationAdded" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Add </a>
+                            <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Back </a>
+
+
                         </div>
-
-                        <label for="exampleFormControlInput1" class="form-label">Re-order level</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
-
-
-
-                        
                     </div>
 
                 </div>
 
-
-
-                <div class="form-group row">
-                    <div class="col-4">
-                        <br>
-                        <a asp-action="MedicationAdded" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Add </a>
-                       
-
-                    </div>
-                </div>
                 <!-- More form inputs can be added here -->
-            </form>
-
-
+             
+                                        
+                
 
 
 
 
         </main>
+        
+
+
+        <table class="table">
+            <h1><center>Medication Stock</center></h1>
+            <thead>
+                <tr>
+                    <th scope="col">Medication Name</th>
+                    <th scope="col">Dosage Form</th>
+                    <th scope="col">Schedule</th>
+                    <th scope="col">Current level</th>
+
+                    <th scope="col">Re-order level</th>
+                    
+
+
+                    <!-- More table headers can be added here -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Panado</td>
+                    <td>Tablet</td>
+
+
+                    <td>
+                        Schedule 1
+
+
+                    </td>
+
+                    <td>
+                        2
+
+                    </td>
+
+                    <td>
+                        5
+
+                    </td>
+
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+        </table>
     </div>
 
 

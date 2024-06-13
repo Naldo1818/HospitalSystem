@@ -1,40 +1,92 @@
 ﻿@{
     ViewData["Title"] = "Prescription Rejection";
+    Layout = "_LayoutPharmacist";
 }
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site2.css" rel="stylesheet">
-</head>
+
 
 <body>
+     <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
 
-   
-    <label for="exampleFormControlInput1" class="form-label">Please indicate reason for rejecting Jin Woo's script.</label>
+                        <form>
+                            <h2><center>Reject Script</center></h2>
 
-    <div class="form-group">
-        <textarea class="form-control" id="exampleFormControlTextarea1" cols="600"></textarea>
-    </div>
+                            <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
 
-    <div>
-        <a asp-action="PrescriptionRejected" asp-controller="Pharmacist" class="btn btn-primary">Submit</a>
+                            </div>
 
-    </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+
+                            </div>
+                            
+                        </div>
+
+                            <div class="col-4">
+                                <br />
+                                <label for="exampleFormControlInput1" class="form-label">Please state reason for rejection.</label>
+
+                                <textarea name="large-text-area" rows="10" cols="50">
+                                   
+                                </textarea>
+
+                            </div>
 
 
-   
+                            <div class="form-group row">
+
+                                <div class="col-4">
+                                    <br>
+
+                                    <a asp-action="ConfirmScriptRejectionPage" asp-controller="Pharmacist" class="btn btn-primary">Reject</a>
+                                    <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">Cancel</a>
+
+                                </div>
+
+                               
+                          
+
+                            </div>
+
+                           
 
 
-   
+                            
+
+                          
+                            
+    
+    
+</form>
+    
+</div>
+    
+</div>
+    
+
+</div>
+
+</main>
 
 
+</div>
 
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+  
 </body>
 </html>
+
+

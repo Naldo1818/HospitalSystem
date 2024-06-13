@@ -1,29 +1,17 @@
 ﻿@{
     ViewData["Title"] = "AllMedicationStock";
+    Layout = "_LayoutPharmacist";
 
 }
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prescription</title>
-</head>
+
 <body>
 
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Day Hospital</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-    <!--End of top left navbar -->
     
 
 
-
+    <!--All Medication Stock-->
     <div class="container">
         <main role="main" class="pb-5">
 
@@ -34,7 +22,7 @@
                     <div class="p-3 mt-5 border">
                         <!-- Your table content here -->
                         <table class="table">
-                            <h1><center>Medication Stock</center></h1>
+                            <h1><center>All Stock</center></h1>
                             <thead>
                                 <tr>
                                     <th scope="col">Medication Name</th>
@@ -43,12 +31,14 @@
                                     <th scope="col">Current level</th>
 
                                     <th scope="col">Re-order level</th>
-                                    <th scope="col">Order Stock</th>
+                                    
                                     
 
                                     <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
+
+                            <!--Panado record-->
                             <tbody>
                                 <tr>
                                     <td>Panado</td>
@@ -64,6 +54,7 @@
                                     <td>
                                         2
 
+
                                     </td>
 
                                     <td>
@@ -73,12 +64,7 @@
                                     
 
 
-                                    <td>
-                                        <a asp-action="OrderStock" asp-controller="Pharmacist" class="btn btn-primary">Order</a>
-
-
-
-                                    </td>
+                                    
 
                                     <!-- More table data can be added here -->
                                 </tr>
@@ -86,12 +72,186 @@
                                
 
                             </tbody>
+
+
+                            <!--Disprin Record-->
+                            <tbody>
+                                <tr>
+                                    <td>Disprin</td>
+                                    <td>Tablet</td>
+
+
+                                    <td>
+                                        Schedule 2
+
+
+                                    </td>
+
+                                    <td>
+                                        7
+
+                                    </td>
+
+                                    <td>
+                                        6
+
+                                    </td>
+
+
+
+
+
+                                    <!-- More table data can be added here -->
+                                </tr>
+
+
+
+                            </tbody>
+
+
+
+                            <!--Insulin Record-->
+                            <tbody>
+                                <tr>
+                                    <td>Insulin</td>
+                                    <td>Pill</td>
+
+
+                                    <td>
+                                        Schedule 2
+
+
+                                    </td>
+
+                                    <td>
+                                        4
+
+                                    </td>
+
+                                    <td>
+                                        6
+
+                                    </td>
+
+
+
+
+
+                                    <!-- More table data can be added here -->
+                                </tr>
+
+
+
+                            </tbody>
+
+
                         </table>
+                        
+                        <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+
                     </div>
                 </div>
             </div>
-            <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
         </main>
     </div>
+
+
+
+
+    <!--Stock that needs to be ordered.-->
+
+   
+            <div class="p-3 mt-5 border">
+                <!-- Your table content here -->
+                <table class="table">
+                    <h1><center>Stock to be ordered</center></h1>
+                    <thead>
+                        <tr>
+                            <th scope="col">Medication Name</th>
+                            <th scope="col">Dosage Form</th>
+                            <th scope="col">Schedule</th>
+                            <th scope="col">Current level</th>
+
+                            <th scope="col">Re-order level</th>
+
+
+
+                            <!-- More table headers can be added here -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Panado</td>
+                            <td>Tablet</td>
+
+
+                            <td>
+                                Schedule 1
+
+
+                            </td>
+
+                            <td>
+                                2
+
+                            </td>
+
+                            <td>
+                                5
+
+                            </td>
+
+
+
+
+
+                            <!-- More table data can be added here -->
+                        </tr>
+
+
+
+                    </tbody>
+
+
+            <tbody>
+                <tr>
+                    <td>Insulin</td>
+                    <td>Pill</td>
+
+
+                    <td>
+                        Schedule 2
+
+
+                    </td>
+
+                    <td>
+                        4
+
+                    </td>
+
+                    <td>
+                        6
+
+                    </td>
+
+
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+                </table>
+
+
+                <a asp-action="OrderStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
+
+            </div>
+        
+
 </body>
 </html>

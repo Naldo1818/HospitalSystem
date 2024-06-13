@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "New CurrentLevel";
+    Layout = "_LayoutPharmacist";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2><center>New Current Level</center></h2>
+
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Panado" style=" width:300px" readonly>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Current Level</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="2" style=" width:200px" readonly>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Enter new current Level</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="2" style=" width:200px">
+
+                                </div>
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                            
+                            <a asp-action="CurrentLevelUpdatedPage" asp-controller="Pharmacist" class="btn btn-primary">Update</a>
+
+                            <a asp-action="IncomingStockPage" asp-controller="Pharmacist" class="btn btn-primary">Back</a>
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+
+</body>
+</html>
+
+
