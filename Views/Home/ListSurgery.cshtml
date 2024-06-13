@@ -8,6 +8,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surgery List</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <style>
+        #example {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -15,26 +23,13 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-
-                        <form>
+                        <form id="searchForm">
                             <h2>Surgery List</h2>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">ID number </label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ID number " style=" width:300px">
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <td>
-
-                                            <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary" style=" width:70px">
-                                                Search
-                                            </button>
-
-                                        </td>
-                                    </div>
+                                    <label for="searchInput" class="form-label">Name or Surname</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
                             </div>
                         </form>
@@ -44,15 +39,14 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
-                        <table class="table">
+                        <table id="example" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col"> ID number</th>
+                                    <th scope="col">ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Date</th>
-                                    <!-- More table headers can be added here -->
+                                    <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,18 +57,24 @@
                                     <td>25/05/2025</td>
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
-                                    </td>
-                                    <td>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Edit Treatment Codes</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Give Prescription</a>
-                                    </td>
-                                    <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
                                     </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
-                                    </td>
-                                    <!-- More table data can be added here -->
                                 </tr>
+                                <tr>
+                                    <td>0120526959</td>
+                                    <td>Rob</td>
+                                    <td>Dee</td>
+                                    <td>26/06/2026</td>
+                                    <td>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Edit Treatment Codes</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Give Prescription</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                    </td>
+                                </tr>
+                                <!-- Add more table rows here -->
                             </tbody>
                         </table>
                     </div>
@@ -82,5 +82,29 @@
             </div>
         </main>
     </div>
+    <script>
+        $(document).ready(function () {
+            var table = $('#example').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            // Custom search function for the search input
+            $('#searchInput').on('keyup', function () {
+                var searchText = this.value.trim(); // Trim whitespace
+                if (searchText === '') {
+                    $('#example').hide(); // Hide table if search input is empty
+                } else {
+                    $('#example').show(); // Show table if search input is not empty
+                    table.search(searchText).draw();
+                    if (table.page.info().recordsDisplay === 0) {
+                        $('#example').hide();
+                    }
+                }
+            });
+        });
+    </script>
+
 </body>
 </html>

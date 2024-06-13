@@ -8,6 +8,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vitals And History</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- Include DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -29,11 +34,7 @@
                                     <label for="exampleFormControlInput1" class="form-label">Surname</label>
                                     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
                                 </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Surgery Date</label>
-                                    <input type="date" class="form-control" id="exampleFormControlInput2" placeholder="Textbox 2" style=" width:300px">
-                                </div>
+                               
                             </div>
                             <div class="form-group row">
                                 <div class="col-4">
@@ -52,6 +53,39 @@
                     <div class="p-3 mt-5 border">
                         <!-- Your table content here -->
                         <label for="exampleFormControlInput2" class="form-label">Medical History</label>
+                        <label for="exampleFormControlInput2" class="form-label">Vitals</label>
+                        <table id="vitalsTable" class="display">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Time and Date</th>
+                                    <th scope="col">Height</th>
+                                    <th scope="col">Weight</th>
+                                    <th scope="col">Temperature</th>
+                                    <th scope="col">Blood Pressure</th>
+                                    <th scope="col">Pulse Rate</th>
+                                    <th scope="col">Respiratory Rate</th>
+                                    <th scope="col">Blood Oxygen</th>
+                                    <th scope="col">Blood Glucose Level</th>
+                                    <th scope="col">Vitals High Limit</th>
+                                    <th scope="col">Vitals Low Limit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-05-14 08:00</td>
+                                    <td>175 cm</td>
+                                    <td>70 kg</td>
+                                    <td>36.5°C</td>
+                                    <td>120/80 mmHg</td>
+                                    <td>80 bpm</td>
+                                    <td>16 breaths/min</td>
+                                    <td>98%</td>
+                                    <td>90 mg/dL</td>
+                                    <td>140/90 mmHg</td>
+                                    <td>90/60 mmHg</td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <label for="exampleFormControlInput2" class="form-label">Condistions</label>
                         <table class="table">
                             <thead>
@@ -97,43 +131,16 @@
                         </table>
                         
                         <br>
-                        <label for="exampleFormControlInput2" class="form-label">Vitals</label>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Time and Date</th>
-                                    <th scope="col">Height</th>
-                                    <th scope="col">Weight</th>
-                                    <th scope="col">Temperature</th>
-                                    <th scope="col">Blood Pressure</th>
-                                    <th scope="col">Pulse Rate</th>
-                                    <th scope="col">Respiratory Rate</th>
-                                    <th scope="col">Blood Oxygen</th>
-                                    <th scope="col">Blood Glucose Level</th>
-                                    <th scope="col">Vitals High Limit</th>
-                                    <th scope="col">Vitals Low Limit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>2024-05-14 08:00</td>
-                                    <td>175 cm</td>
-                                    <td>70 kg</td>
-                                    <td>36.5°C</td>
-                                    <td>120/80 mmHg</td>
-                                    <td>80 bpm</td>
-                                    <td>16 breaths/min</td>
-                                    <td>98%</td>
-                                    <td>90 mg/dL</td>
-                                    <td>140/90 mmHg</td>
-                                    <td>90/60 mmHg</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                      
                     </div>
                 </div>
             </div>
         </main>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#vitalsTable').DataTable();
+        });
+    </script>
 </body>
 </html>

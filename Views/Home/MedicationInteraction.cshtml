@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Medication Interaction Check";
     Layout = "_Layout2";
 }
@@ -9,6 +8,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medication Interaction Check</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </head>
 <body>
     <div class="container">
@@ -16,16 +19,13 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
                         <h2>Medication Interaction Check</h2>
-                        <div class="col-4">
-                            <br>
-                            <a class="btn btn-danger" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Back</a>
+                        <div class="mb-3">
+                            <a class="btn btn-danger" href="@Url.Action("PrescriptionList", "Home")">Back</a>
                         </div>
-                        <table class="table">
+                        <table class="table" id="example">
                             <thead>
                                 <tr>
-                                    <!-- Your table Headings -->
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
@@ -33,33 +33,26 @@
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Active Ingredient</th>
                                     <th scope="col">Result</th>
-
+                                    <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <!-- Your table Content -->
                                     <td>Jin</td>
                                     <td>Woo</td>
                                     <td>02/05/2024</td>
                                     <td>Penicillin</td>
                                     <td>Cephalexin</td>
                                     <td>Penicillin</td>
-                                    <td>Can Not give Patient</td>
+                                    <td>Cannot give Patient</td>
                                     <td>
-                                        <div class="col-4">
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="ChangeMedication">Change Medication</a>
+                                        <div class="d-flex">
+                                            <a class="btn btn-primary mr-2" href="@Url.Action("ChangeMedication", "Home")">Change Medication</a>
+                                            <a class="btn btn-danger" aria-hidden="true"> Remove</a>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="col-4">
-                                            <br>
-                                            <a class="btn btn-danger" aria-hidden="true" asp-controller="Home">Remove</a>
-                                        </div>
-                                    </td>
-
-                                    <!-- More table data can be added here Change Medication-->
                                 </tr>
+                                <!-- More table data can be added here -->
                             </tbody>
                         </table>
                     </div>
@@ -67,5 +60,15 @@
             </div>
         </main>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true
+            });
+        });
+    </script>
 </body>
 </html>
