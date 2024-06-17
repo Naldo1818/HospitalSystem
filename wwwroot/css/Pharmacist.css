@@ -1,4 +1,4 @@
-html {
+﻿html {
     font-size: 14px;
 }
 
@@ -17,6 +17,7 @@ body {
     /*background: linear-gradient(to right, #4CAF50, #00ffff);*/
     padding-top: 56px; /* Adjust for the fixed navbar */
 }
+
 .navbar {
     position: fixed;
     top: 0;
@@ -24,15 +25,18 @@ body {
     width: 100%;
     padding: 10px;
 }
+
 .offcanvas-body {
     padding-top: 3.5rem; /* Adjust for the offcanvas */
 }
+
 .custom-card {
     width: 50%; /* Set width to 50% of the container */
     height: 85vh; /* Set height to 50% of the viewport height */
     margin-top: 30vh; /* Adjust top margin to center vertically */
-    right: 100px; /* 190px*/
+    
 }
+
 .wrapper {
     display: flex;
     justify-content: left; /* Align items to the left */
@@ -60,6 +64,7 @@ body {
 .form-control {
     width: 10%; /* Make the form inputs full width */
 }
+
 .custom-button {
     background-color: #4CAF50;
     border: none;
