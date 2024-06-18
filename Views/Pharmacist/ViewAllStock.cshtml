@@ -5,6 +5,11 @@
 }
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
 
 <body>
 
@@ -248,6 +253,9 @@
         <!-- Your table content here -->
         <table class="table">
             <h1><center>Manual order</center></h1>
+            <center>
+                <input class="form-control" id="myInput" type="text" style="width: 50%; height: 40px;" placeholder="Search by medication name">
+            </center>
             <thead>
                 <tr>
                     <th scope="col">Medication Name</th>
@@ -256,13 +264,14 @@
                     <th scope="col">Current level</th>
 
                     <th scope="col">Re-order level</th>
+                    <th scope="col">Amount to order</th>
 
 
 
                     <!-- More table headers can be added here -->
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="myTable">
                 <tr>
                     <td>Panado</td>
                     <td>Tablet</td>
@@ -280,7 +289,7 @@
 
                     </td>
 
-
+                    <td><input type="text" name="textbox1" size="5" /></td>
 
 
 
@@ -292,7 +301,7 @@
             </tbody>
 
 
-            <tbody>
+            <tbody id="myTable">
                 <tr>
                     <td>Insulin</td>
                     <td>Pill</td>
@@ -309,6 +318,7 @@
                         6
 
                     </td>
+                    <td><input type="text" name="textbox1" size="5" /></td>
 
 
 
@@ -323,10 +333,19 @@
         </table>
 
 
-        <a asp-action="OrderStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
+        <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
 
     </div>
-        
+    <script>
+        $(document).ready(function(){
+          $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
+        });
+    </script>
 
 </body>
 </html>
