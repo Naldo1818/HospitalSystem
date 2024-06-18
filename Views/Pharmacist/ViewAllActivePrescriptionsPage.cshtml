@@ -38,9 +38,7 @@
                                     <th scope="col">Patient Name</th>
                                     <th scope="col">Patient Surname</th>
                                     <th scope="col">Ward</th>
-                                    <th scope="col">Nurse</th>
-                                    <th scope="col">Medical History</th>
-                                    <th scope="col">Vital History</th>
+                                    <th scope="col">Nurse</th>                                   
                                     <th scope="col">Prescription</th>
                                     <th scope="col">Urgent</th>
 
@@ -50,24 +48,12 @@
                             <tbody>
 
                                 <!--Jin Woo-->
-                                <tr>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>17</td>
-                                    <td>Jackie Brown</td>
-                                    <td>
-                                        <a asp-action="ViewSpecificMedicalHistory" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
-
-                                    <td>
-                                        <a asp-action="ViewSpecificVitalsHistory" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
+                                <tr class="highlighted-row">
+                                    <td><mark>Jin</mark></td>
+                                    <td><mark>Woo</mark></td>
+                                    <td><mark>17</mark></td>
+                                    <td><mark>Jackie Brown</mark></td>
+                                    
 
                                     <td>
                                             <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
@@ -76,30 +62,19 @@
                                         
                                     </td>
 
-                                    
-                                    <td>Yes</td>
+
+                                    <td><mark>Yes</mark></td>
+
                                     <!-- More table data can be added here -->
                                 </tr>
 
                                 <!--Janet Moss-->
                                 <tr>
-                                    <td>Janet</td>
-                                    <td>Moss</td>
-                                    <td>18</td>
-                                    <td>Natalie Hughes
-                                    <td>
-                                        <a asp-action="ViewSpecificMedicalHistory" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
-
-                                    <td>
-                                        <a asp-action="ViewSpecificVitalsHistory" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
+                                    <td><mark>Janet</mark></td>
+                                    <td><mark>Moss</mark></td>
+                                    <td><mark>18</mark></td>
+                                    <td><mark>Natalie Hughes</mark>
+                                   
 
                                     <td>
                                         <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
@@ -109,7 +84,7 @@
                                     </td>
 
 
-                                    <td>Yes</td>
+                                    <td><mark>Yes</mark></td>
                                     <!-- More table data can be added here -->
                                 </tr>
 
@@ -121,19 +96,7 @@
                                     <td>Jones</td>
                                     <td>19</td>
                                     <td>Joyce Meyer</td>
-                                    <td>
-                                        <a asp-action="MedicalHistoryIndividual" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
-
-                                    <td>
-                                        <a asp-action="VitalHistoryIndividual" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
+                                   
 
                                     <td>
                                         <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>

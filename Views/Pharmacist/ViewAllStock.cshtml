@@ -27,7 +27,7 @@
                                 <tr>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Dosage Form</th>
-                                    <th scope="col">Schedule</th>
+                                    
                                     <th scope="col">Current level</th>
 
                                     <th scope="col">Re-order level</th>
@@ -45,11 +45,7 @@
                                     <td>Tablet</td>
                                     
                                     
-                                    <td>
-                                        Schedule 1
-
-
-                                    </td>
+                                    
 
                                     <td>
                                         2
@@ -81,11 +77,7 @@
                                     <td>Tablet</td>
 
 
-                                    <td>
-                                        Schedule 2
-
-
-                                    </td>
+                                   
 
                                     <td>
                                         7
@@ -117,11 +109,6 @@
                                     <td>Pill</td>
 
 
-                                    <td>
-                                        Schedule 2
-
-
-                                    </td>
 
                                     <td>
                                         4
@@ -158,22 +145,23 @@
 
 
 
-    <!--Stock that needs to be ordered.-->
+    <!--Stock that needs to be ordered. The auto order-->
 
    
             <div class="p-3 mt-5 border">
                 <!-- Your table content here -->
                 <table class="table">
-                    <h1><center>Stock to be ordered</center></h1>
+                    <h1><center>Auto Order</center></h1>
                     <thead>
                         <tr>
                             <th scope="col">Medication Name</th>
                             <th scope="col">Dosage Form</th>
-                            <th scope="col">Schedule</th>
+                            
                             <th scope="col">Current level</th>
 
                             <th scope="col">Re-order level</th>
 
+                    <th scope="col">Amount to be ordered</th>
 
 
                             <!-- More table headers can be added here -->
@@ -185,11 +173,7 @@
                             <td>Tablet</td>
 
 
-                            <td>
-                                Schedule 1
-
-
-                            </td>
+                           
 
                             <td>
                                 2
@@ -200,6 +184,10 @@
                                 5
 
                             </td>
+
+                    <td><input type="text" name="textbox1"  size="5" /></td>
+
+                            
 
 
 
@@ -219,11 +207,98 @@
                     <td>Pill</td>
 
 
-                    <td>
-                        Schedule 2
+                  
 
+                    <td>
+                        4
 
                     </td>
+
+                    <td>
+                        6
+
+                    </td>
+
+
+                    <td><input type="text" name="textbox1" size="5" /></td>
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+                </table>
+
+
+                <a asp-action="OrderStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
+
+            </div>
+
+
+
+
+
+
+
+<!--Stock that needs to be ordered. Manual order-->
+    <div class="p-3 mt-5 border">
+        <!-- Your table content here -->
+        <table class="table">
+            <h1><center>Manual order</center></h1>
+            <thead>
+                <tr>
+                    <th scope="col">Medication Name</th>
+                    <th scope="col">Dosage Form</th>
+                    
+                    <th scope="col">Current level</th>
+
+                    <th scope="col">Re-order level</th>
+
+
+
+                    <!-- More table headers can be added here -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Panado</td>
+                    <td>Tablet</td>
+
+
+                   
+
+                    <td>
+                        2
+
+                    </td>
+
+                    <td>
+                        5
+
+                    </td>
+
+
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+
+
+            <tbody>
+                <tr>
+                    <td>Insulin</td>
+                    <td>Pill</td>
+
+
+                    
 
                     <td>
                         4
@@ -245,12 +320,12 @@
 
 
             </tbody>
-                </table>
+        </table>
 
 
-                <a asp-action="OrderStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
+        <a asp-action="OrderStock" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
 
-            </div>
+    </div>
         
 
 </body>
