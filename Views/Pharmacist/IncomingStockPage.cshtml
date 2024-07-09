@@ -97,7 +97,9 @@
                     <th scope="col">Current level</th>
 
                     <th scope="col">Re-order level</th>
-                    <th scope="col">Update Current Level</th>
+                    <th scope="col">Stock level received</th>
+
+                    
 
 
 
@@ -125,13 +127,9 @@
                         5
 
                     </td>
+                    <td><input type="text" name="textbox1" size="5" /></td>
 
-                    <td>
-                        <a asp-action="NewCurrentLevelPage" asp-controller="Pharmacist" class="btn btn-primary">Update</a>
-
-
-
-                    </td>
+                    
 
 
 
@@ -164,14 +162,9 @@
                         6
 
                     </td>
+                    <td><input type="text" name="textbox1" size="5" /></td>
 
-                    <td>
-                        <a asp-action="NewCurrentLevelPage" asp-controller="Pharmacist" class="btn btn-primary">Update</a>
-
-
-
-                    </td>
-
+                   
 
 
 
@@ -183,7 +176,7 @@
             </tbody>
         </table>
 
-
+        <a asp-action="CurrentLevelUpdatedPage" asp-controller="Pharmacist" class="btn btn-primary">Update</a>
       
 
     </div>

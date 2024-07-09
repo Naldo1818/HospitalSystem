@@ -9,13 +9,12 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
-
-
+<h1><center>Prescription View</center></h1>
 
 
 
 <body>
+    <!--Medical History-->
     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:1000px">
@@ -23,7 +22,239 @@
                     <div class="p-3 mt-5 border">
 
                         <form>
-                            <h2><center>Prescription View</center></h2>
+                            <h2><center>Medical History</center></h2>
+                            <div class="form-group row">
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Allergies</label>
+
+
+                                    <!--Find a suitable list box item-->
+                                    @*
+                                    <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
+                                    <option>Disprin</option>
+                                    <option>Penicillin</option>
+
+
+                                    </select> *@
+
+
+
+                                    <textarea name="large-text-area" rows="2" cols="30">
+Disprin
+Penicillin
+
+                                </textarea>
+
+
+
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Conditions</label>
+
+                                    <textarea name="large-text-area" rows="2" cols="30">
+Acne
+Diabetes
+
+                                </textarea>
+
+                                    @* <select input class="form-control" placeholder="Pharmacist" style=" width:300px">
+                                    <option value="Acne">Acne</option>
+                                    <option value="Diabetes">Diabetes</option>
+                                    </select> *@
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Current Medications</label>
+                                    <textarea name="large-text-area" rows="2" cols="30">
+Diazepem
+Aspirin
+
+                                </textarea>
+
+                                    <!--Find a suitable list box item-->
+                                    @* <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
+                                    <option>Diazepem</option>
+                                    <option>Aspirin</option>
+
+                                    </select> *@
+                                </div>
+
+                            </div>
+
+
+
+                            
+
+
+                            <!-- More form inputs can be added here -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <!--end of medical history-->
+
+
+
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2><center>Vitals History</center></h2>
+
+
+                            <div class="form-group row">
+
+
+
+
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
+
+                                </div>
+
+
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+
+
+                                </div>
+
+
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">BP: 120/80 mmHg</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:00</label>
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Heart rate: 70 bpm</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:15</label>
+
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Blood oxygen level: 100%</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:25</label>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Respiratory rate: 18 breaths per minute</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:30</label>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Height: 160 cm</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:45</label>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Weight: 60 kg</label>
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:50</label>
+
+                                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                            </div>
+
+
+
+
+
+                           
+                            <!-- More form inputs can be added here -->
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+        </main>
+    </div>
+<!--end of vitals-->
+
+
+
+
+
+
+
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1000px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+
+                        <form>
+                            <h2><center>Prescription</center></h2>
 
 
 
