@@ -31,6 +31,11 @@
                                     <label for="searchInput" class="form-label">Name or Surname</label>
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="dateInput" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="dateInput" style="width:300px">
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -45,6 +50,7 @@
                                     <th scope="col">ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
+                                    <th scope="col">Surgeon Name</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Actions</th>
                                 </tr>
@@ -54,7 +60,8 @@
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>25/05/2025</td>
+                                    <td>John Doe</td>
+                                    <td>2024-05-25</td>
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Edit Treatment Codes</a>
@@ -66,7 +73,8 @@
                                     <td>0120526959</td>
                                     <td>Rob</td>
                                     <td>Dee</td>
-                                    <td>26/06/2026</td>
+                                    <td>John Doe</td>
+                                    <td>2024-06-14</td>
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Edit Treatment Codes</a>
@@ -90,14 +98,19 @@
                 }
             });
 
-            // Custom search function for the search input
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim(); // Trim whitespace
-                if (searchText === '') {
-                    $('#example').hide(); // Hide table if search input is empty
+            // Custom search function for the search input and date input
+            $('#searchInput, #dateInput').on('keyup change', function () {
+                var searchText = $('#searchInput').val().trim(); // Trim whitespace
+                var dateText = $('#dateInput').val(); // Get date value
+                var dateFilter = dateText ? '^' + dateText + '$' : ''; // Format date filter for exact match
+
+                table.column(3).search(dateFilter, true, false); // Apply date filter to the Date column (index 3)
+                table.search(searchText).draw(); // Apply text search to all columns
+
+                if (searchText === '' && dateText === '') {
+                    $('#example').hide(); // Hide table if both search inputs are empty
                 } else {
-                    $('#example').show(); // Show table if search input is not empty
-                    table.search(searchText).draw();
+                    $('#example').show(); // Show table if either search input is not empty
                     if (table.page.info().recordsDisplay === 0) {
                         $('#example').hide();
                     }
@@ -105,6 +118,5 @@
             });
         });
     </script>
-
 </body>
 </html>

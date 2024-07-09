@@ -30,8 +30,9 @@
                                     <label for="searchInput" class="form-label">Name or Surname</label>
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
-                                <div class="col-4 align-self-end">
-                                    <button type="submit" asp-action="Page1" asp-controller="Home" class="btn btn-primary" style="width:70px">Search</button>
+                                <div class="col-4">
+                                    <label for="dateInput" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="dateInput" style="width:300px">
                                 </div>
                             </div>
                         </form>
@@ -53,6 +54,7 @@
                                     <th scope="col">Bed</th>
                                     <th scope="col">Number</th>
                                     <th scope="col">Nurse FullName</th>
+                                    <th scope="col">Admission Status</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -61,15 +63,17 @@
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>25/05/2025</td>
+                                    <td>2024-06-14</td>
                                     <td>08:00 AM</td>
                                     <td>Cardiology</td>
                                     <td>101</td>
                                     <td>12345</td>
                                     <td>Ariana Grande</td>
+                                    <td>Yes</td>
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Check Treatment Codes</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Admission Status Change</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -87,13 +91,18 @@
                 }
             });
 
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim();
-                if (searchText === '') {
+            $('#searchInput, #dateInput').on('keyup change', function () {
+                var searchText = $('#searchInput').val().trim();
+                var dateText = $('#dateInput').val();
+                var dateFilter = dateText ? '^' + dateText + '$' : '';
+
+                table.column(3).search(dateFilter, true, false);
+                table.search(searchText).draw();
+
+                if (searchText === '' && dateText === '') {
                     $('#example').hide();
                 } else {
                     $('#example').show();
-                    table.search(searchText).draw();
                     if (table.page.info().recordsDisplay === 0) {
                         $('#example').hide();
                     }

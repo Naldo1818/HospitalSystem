@@ -39,19 +39,32 @@
                                      
 
                                 <div class="form-group row">
-                                                                                                    
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput2" class="form-label">Surgeon Name</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput2" placeholder="Enter Name" value="John Doe" style=" width:300px">
+                                </div>
+
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput2" class="form-label">Prescription Given Date</label>
                                     <input type="date" class="form-control" id="exampleFormControlInput2" placeholder="Enter Date" value="2024-05-08" style=" width:300px">
                                 </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Urgency</label>
-                                    <select input class="form-control" placeholder="Urgency" style=" width:300px">
-                                        <option value="Yes">Yes</option>
-                                        <option value="No">No</option>
-                                    </select>
+
+                            
+                            <div class="col-4">
+                                <br>
+                                <label for="Urgency" class="form-label">Urgency</label>
+                                <div id="Urgency" class="form-control" style="width:300px; padding: 10px;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Urgency" id="Yes" value="Yes">
+                                        <label class="form-check-label" for="Yes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Urgency" id="No" value="No">
+                                        <label class="form-check-label" for="No">No</label>
+                                    </div>
                                 </div>
                             </div>
 
