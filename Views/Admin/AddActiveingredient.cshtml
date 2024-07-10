@@ -7,6 +7,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <title>Medication Add</title>
 </head>
 <body>
@@ -21,7 +26,7 @@
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Medication Name" style=" width:300px">
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Medication Name" style=" width:300px" disabled>
                                 </div>
                                 <div class="col-4">
                                     <br>
@@ -49,13 +54,13 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
-                        <table class="table">
+                        <table id="medicationTable" class="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Active Ingredient Name</th>
-                                    <th scope="col"> Active Ingredient Strength(In mg)</th>
+                                    <th scope="col">Active Ingredient Strength (In mg)</th>
+                                    <th scope="col">Action</th>
                                     <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
@@ -63,16 +68,21 @@
                                 <tr>
                                     <td>Advil</td>
                                     <td>Ibuprofen</td>
-                                    <td>
-                                        200
-                                    </td>
+                                    <td>200</td>
+                                    <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
                                     <!-- More table data can be added here -->
                                 </tr>
+                                <!-- Additional rows can be added here -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            <script>
+                $(document).ready(function() {
+                    $('#medicationTable').DataTable();
+                });
+            </script>
         </main>
     </div>
 </body>

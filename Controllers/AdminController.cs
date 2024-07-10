@@ -16,5 +16,13 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult AddUser()
+        {
+            return View();
+        }
+        public IActionResult ListUser()
+        {
+            return View();
+        }
     }
 }
