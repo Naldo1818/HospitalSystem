@@ -64,13 +64,33 @@
                                     }
                                 </script>
 
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Quantity/Units</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Amount" style=" width:300px">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput1" class="form-label"> Quantity/Units</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Add Amount" style=" width:300px">
+                                    </div>
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="medicationForm" class="form-label">Medication Form</label>
+                                    <select class="form-control" id="medicationForm" style="width:300px">
+                                        <option value="Tablets">Tablets</option>
+                                        <option value="Capsules">Capsules</option>
+                                        <option value="Liquids">Liquids</option>
+                                        <option value="Topical">Topical</option>
+                                        <option value="Patches">Patches</option>
+                                        <option value="Suppositories">Suppositories</option>
+                                        <option value="Inhalers">Inhalers</option>
+                                        <option value="Powders">Powders</option>
+                                        <option value="Drops">Drops</option>
+                                        <option value="Injectable Solutions">Injectable Solutions</option>
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="form-group row">
                                 <div class="col-4">
@@ -105,6 +125,7 @@
                                     <th scope="col">Prescription Date</th>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Quantity</th>
+                                    <th scope="col">Form</th>
                                     <th scope="col">Instructions</th>
                                     <th scope="col">Actions</th>
                                 </tr>
@@ -116,6 +137,7 @@
                                     <td>02/05/2024</td>
                                     <td>Cephalexin</td>
                                     <td>1</td>
+                                    <td>Tablets</td>
                                     <td>Please take once every 5 hours</td>
                                     <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
                                 </tr>
