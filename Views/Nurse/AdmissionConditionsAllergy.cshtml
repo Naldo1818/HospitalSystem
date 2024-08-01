@@ -1,0 +1,124 @@
+﻿@{
+    ViewData["Title"] = "Admission";
+    Layout = "_LayoutNurse";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission (Wards)</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <style>
+        .active-tab {
+            background-color: teal;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0"style="width:contain">
+            <div class="text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Admission</strong></h2>
+                    <p>Fill all form fields to go to the next step</p>
+                    <div class="row">
+                        <div class="col-md-12 mx-0">
+                            <form id="msform">
+                                <!-- progressbar -->
+                                <ul id="progressbar">
+                                    <input type="button" name="Contact Details" class="next action-button" onclick="showContactDetails()" value="Contact Details" />
+                                    <input type="button" name="Allergies and Conditions" class="next action-button" onclick="showAllergyConditions()" value="Allergies and Conditions" />
+                                    <input type="button" name="Current Medications" class="next action-button" onclick="showMedications()" value="Current Medications" />
+                                    <input type="button" name="Vitals" class="next action-button" onclick="showVitals()" value="Vitals" />
+                                </ul>
+                                <!-- fieldsets -->
+                                <fieldset id="f-1">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">Contact Details And Ward</h2>
+                                        <input type="email" name="email" placeholder="Email Id" required />
+                                        <input type="text" name="uname" placeholder="UserName" required />
+                                        <input type="password" name="pwd" placeholder="Password" required />
+                                        <input type="password" name="cpwd" placeholder="Confirm Password" required />
+                                        <input type="email" name="email" placeholder="Email Id" required />
+                                        <input type="text" name="uname" placeholder="UserName" required />
+                                        <input type="password" name="pwd" placeholder="Password" required />
+                                        <input type="password" name="cpwd" placeholder="Confirm Password" required />
+                                    </div>
+                                    <input type="button" name="next" class="next action-button" onclick="showAllergyConditions()" value="Next Step" />
+                                </fieldset>
+                                <fieldset id="f-2" style="display:none">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">Allergies and Conditions</h2>
+                                        <input type="text" name="allergies" placeholder="Allergies" />
+                                        <input type="text" name="conditions" placeholder="Existing Conditions" />
+                                    </div>
+                                    <input type="button" name="previous" class="previous action-button-previous" onclick="showContactDetails()" value="Previous" />
+                                    <input type="button" name="next" class="next action-button" onclick="showMedications()" value="Next Step" />
+                                </fieldset>
+                                <fieldset id="f-3" style="display:none">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">Current Medications</h2>
+                                        <input type="text" name="medications" placeholder="Current Medications" />
+                                    </div>
+                                    <input type="button" name="previous" class="previous action-button-previous" onclick="showAllergyConditions()" value="Previous" />
+                                    <input type="button" name="next" class="next action-button" onclick="showVitals()" value="Next Step" />
+                                </fieldset>
+                                <fieldset id="f-4" style="display:none">
+                                    <div class="form-card">
+                                        <h2 class="fs-title text-center">Vitals</h2>
+                                        <input type="text" name="Height" placeholder="Height" required />
+                                        <input type="text" name="Weight" placeholder="Weight" required />
+                                        <input type="text" name="SystolicBP" placeholder="Systolic BP" required />
+                                        <input type="text" name="DiastolicBP" placeholder="Diastolic BP" required />
+                                        <input type="text" name="Pulse" placeholder="Pulse" required />
+                                        <input type="text" name="BloodOxygen" placeholder="Blood Oxygen" required />
+                                        <input type="text" name="Respiration" placeholder="Respiration Rate" required />
+                                        <input type="text" name="BGL" placeholder="Blood Glucose Level" required />
+                                        <input type="text" name="BGLHigh" placeholder="Blood Glucose Level (High)" required />
+                                        <input type="text" name="Temperature" placeholder="Temperature" required />
+                                    </div>
+                                    <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
+                                    <input type="submit" name="submit" class="next action-button" value="Submit" />
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showContactDetails() {
+            $('#f-1').show('slow', 'swing');
+            $('#f-2, #f-3, #f-4').hide('slow', 'swing');
+            setActiveTab('Contact Details');
+        }
+        function showAllergyConditions() {
+            $('#f-2').show('slow', 'swing');
+            $('#f-1, #f-3, #f-4').hide('slow', 'swing');
+            setActiveTab('Allergies and Conditions');
+        }
+        function showMedications() {
+            $('#f-3').show('slow', 'swing');
+            $('#f-1, #f-2, #f-4').hide('slow', 'swing');
+            setActiveTab('Current Medications');
+        }
+        function showVitals() {
+            $('#f-4').show('slow', 'swing');
+            $('#f-1, #f-2, #f-3').hide('slow', 'swing');
+            setActiveTab('Vitals');
+        }
+        function setActiveTab(tabName) {
+            $('ul#progressbar input').removeClass('active-tab');
+            $('ul#progressbar input[name="' + tabName + '"]').addClass('active-tab');
+        }
+        $(document).ready(function () {
+            showContactDetails(); // Initialize to show the first step
+        });
+    </script>
+</body>
+</html>

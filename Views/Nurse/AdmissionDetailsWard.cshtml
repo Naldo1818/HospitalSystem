@@ -1,5 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Admission";
+    Layout = "_LayoutNurse";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission (Wards)</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1200px">
+                <div class="col">
+                    <div class="p-3 mt-2 border">
+
+                        <form>
+                            <h2>Admissions (Wards)</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <label for="searchInput" class="form-label">Name or Surname</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
+                                </div>
+                                <div class="col-4 align-self-end">
+                                    <button type="submit" asp-action="AdmittedPatients" asp-controller="Nurse" class="btn btn-primary" style="width:70px">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+
+
+        </main>
+    </div>
+</body>
+</html>
