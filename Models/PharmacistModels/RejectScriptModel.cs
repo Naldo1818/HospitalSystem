@@ -7,14 +7,11 @@ namespace DEMO.Models.PharmacistModels
     {
 
         [Key]
-        public int PatientID { get; set; }
+        public int RejectionID { get; set; }
 
 
-        [Required]
-        public string PatientName { get; set; }
-
-        [Required]
-        public string PatientSurname { get; set;}
+        [Key]
+        public int PrescriptionID { get; set; }
 
         [Required]
         public string RejectionReason { get; set;}

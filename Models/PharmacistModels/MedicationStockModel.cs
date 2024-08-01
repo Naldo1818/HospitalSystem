@@ -2,19 +2,16 @@
 
 namespace DEMO.Models.PharmacistModels
 {
-    public class AddMedicationModel
+    public class MedicationStockModel
 
     {
 
         [Key]
-        public int ID { get; set; }
+        public int StockID { get; set; }
 
 
         [Required]
-        public string MedicationName { get; set; }
-
-        [Required]
-        public string DosageForm { get; set;}
+        public int MedicationID { get; set; }
 
         [Required]
         public string Schedule { get; set;}
@@ -24,9 +21,6 @@ namespace DEMO.Models.PharmacistModels
 
         [Required]
         public int ReorderLevel { get; set;}
-
-        [Required]
-        public string ActiveIngredients { get; set;}
 
 
         

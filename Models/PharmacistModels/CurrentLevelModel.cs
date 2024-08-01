@@ -1,23 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DEMO.Models.PharmacistModels
 {
-    public class OrderStockModel
-
+    public class CurrentLevelModel
     {
-
         [Key]
-        public int OrederID { get; set; }
+        public int CurrentLevelID { get; set; }
 
-
+      
         [Required]
         public int StockID { get; set; }
 
         [Required]
-        public int Amount { get; set;}
+        public int LevelReceived { get; set; }
 
-        [Required]
-        public string Status { get; set; }
 
     }
 }
