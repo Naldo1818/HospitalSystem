@@ -8,21 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Treatment Codes</title>
-    <script>
-        function filterTreatmentNames() {
-            let input = document.getElementById('searchTreatmentInput').value.toLowerCase();
-            let treatmentSelect = document.getElementById('treatmentSelect');
-            let options = treatmentSelect.getElementsByTagName('option');
-            for (let i = 0; i < options.length; i++) {
-                let txtValue = options[i].textContent || options[i].innerText;
-                if (txtValue.toLowerCase().indexOf(input) > -1) {
-                    options[i].style.display = "";
-                } else {
-                    options[i].style.display = "none";
-                }
-            }
-        }
-    </script>
+   
 </head>
 <body>
     <div class="container">

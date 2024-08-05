@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Treatments Codes List";
+    ViewData["Title"] = "Edit Treatment Codes";
     Layout = "_Layout2";
 }
 <!DOCTYPE html>
@@ -7,7 +7,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Treatments Codes List</title>
+    <title>Edit Treatment Codes</title>
+
 </head>
 <body>
     <div class="container">
@@ -15,29 +16,70 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-
                         <form>
-                            <h2>Treatments Codes List</h2>
+                            <h2>Edit Treatment Codes</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Name</label>
+                                    <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style="width:300px" onkeyup="filterTreatmentNames()">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="treatmentSelect" class="form-label">Treatment Name</label>
+                                    <select id="treatmentSelect" class="form-control" style="width:300px" onchange="updateTreatmentCode()">
+                                        <option value="Drainage of Abscess">Drainage of Abscess</option>
+                                        <option value="Debridement">Debridement</option>
+                                        <option value="Arthroscopy">Arthroscopy</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="treatmentCode" class="form-label">Treatment Code</label>
+                                    <select id="treatmentCode" class="form-control" placeholder="Treatment Code" disabled style="width:300px">
+                                        <option value="11400">11400</option>
+                                        <option value="10060">10060</option>
+                                        <option value="29876">29876</option>
+                                    </select>
+                                </div>
 
-                           
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Name </label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin " style=" width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Surname </label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
-                                </div>
+                                <script>
+                                    function updateTreatmentCode() {
+                                        var treatmentSelect = document.getElementById('treatmentSelect');
+                                        var treatmentCodeSelect = document.getElementById('treatmentCode');
+
+                                        var treatmentCodes = {
+                                            "Drainage of Abscess": "10060",
+                                            "Debridement": "11400",
+                                            "Arthroscopy": "29876"
+                                        };
+
+                                        var selectedTreatment = treatmentSelect.value;
+                                        var selectedCode = treatmentCodes[selectedTreatment];
+
+                                        // Set the selected code in the treatment code dropdown
+                                        for (var i = 0; i < treatmentCodeSelect.options.length; i++) {
+                                            if (treatmentCodeSelect.options[i].value === selectedCode) {
+                                                treatmentCodeSelect.selectedIndex = i;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    // Initialize the treatment code based on the default selected treatment name
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        updateTreatmentCode();
+                                    });
+                                </script>
                             </div>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <a class="btn btn-danger" aria-hidden="true" asp-controller="Home" asp-action="patientAddmision">Back</a>
+                                    <a class="btn btn-primary" aria-hidden="true" style="width:100px;">Add</a>
                                 </div>
                             </div>
+
+                            <!-- More form inputs can be added here -->
                         </form>
                     </div>
                 </div>
@@ -49,14 +91,14 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col"> ID number</th>
+                                    <th scope="col">ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Surgeon Name</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Time</th>
-                                    <th scope="col">Theatre</th>
-                                    <th scope="col">Treatment Codes</th>
+                                    <th scope="col">Surgery Date</th>
+                                    <th scope="col">Surgery Time</th>
+                                    <th scope="col">Theater</th>
+                                    <th scope="col">Treatment Name</th>
+                                    <th scope="col">Treatment Code</th>
                                     <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
@@ -65,30 +107,34 @@
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>John Doe</td>
-                                    <td>25/05/2025</td>
-                                    <td>08:00 AM</td>
-                                    <td>Theatre 1</td>
-                                    <td>
-                                      05725
-                                    </td>
+                                    <td>2024-05-25</td>
+                                    <td>12:00 AM</td>
+                                    <td>Theater 2</td>
+                                    <td>Debridement</td>
+                                    <td>11400</td>
+                                    <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
                                     <!-- More table data can be added here -->
                                 </tr>
                                 <tr>
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>John Doe</td>
-                                    <td>25/05/2025</td>
-                                    <td>08:00 AM</td>
-                                    <td>Theatre 1</td>
-                                    <td>
-                                        24045
-                                    </td>
+                                    <td>2024-05-25</td>
+                                    <td>12:00 AM</td>
+                                    <td>Theater 2</td>
+                                    <td>Drainage of Abscess</td>
+                                    <td>10060</td>
+                                    <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
                                     <!-- More table data can be added here -->
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome">Save</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

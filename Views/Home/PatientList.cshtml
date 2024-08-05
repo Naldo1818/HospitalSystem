@@ -9,11 +9,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patient List</title>
 
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <!-- DataTables JS -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
@@ -22,10 +28,61 @@
         #example_wrapper {
             display: none;
         }
-    </style>
 
+        .modal-lg-custom {
+            max-width: 90% !important; /* Adjust as necessary */
+            width: 1000px; /* Fixed width, or adjust as needed */
+            
+        }
+
+
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 60px); /* Adjust based on header/footer height */
+            height: 80vh;
+        }
+
+        .modal-content {
+            flex: 1;
+           
+        }
+
+        .modal-content-custom{
+            position: relative;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            width: 105%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .2);
+            border-radius: .3rem;
+            outline: 0;
+            height: 61vh;
+        }
+           
+       
+
+        .modal-body {
+            overflow-y: auto; /* Enables scrolling if content overflows */
+            flex: 1 1 auto;
+        }
+
+        .row {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -2px;
+            margin-left: 0px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Main list-->
     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:1000px">
@@ -41,9 +98,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                            <div class="col-4">
+                                <div class="col-4">
                                     <br>
-                                    <a class="btn btn-success" aria-hidden="true" style="width:160px;" asp-controller="Home" asp-action="PatientAdd">Add New Patient</a>
+                                    <button type="button" class="btn btn-success" style="width:160px;" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
                                 </div>
                             </div>
                         </form>
@@ -76,7 +133,7 @@
                                     <td>0786953659</td>
                                     <td>woo@gmail.com</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="BookSurgery">Book Surgery</a>
+                                        <a class="btn btn-primary" data-toggle="modal" data-target="#bookSurgeryModal">Book Surgery</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -87,7 +144,7 @@
                                     <td>0786953659</td>
                                     <td>woo@gmail.com</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="BookSurgery">Book Surgery</a>
+                                        <a class="btn btn-primary" data-toggle="modal" data-target="#bookSurgeryModal">Book Surgery</a>
                                     </td>
                                 </tr>
                                 <!-- More table data can be added here -->
@@ -96,15 +153,263 @@
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
+    <!-- Modal for Booking Surgery -->
+    <div class="modal fade" id="bookSurgeryModal" tabindex="-1" role="dialog" aria-labelledby="bookSurgeryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookSurgeryModalLabel">Book Surgery</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <label for="nameInput" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="nameInput" placeholder="Jin" style="width:250px">
+                            </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="surnameInput" class="form-label">Surname</label>
+                                <input type="text" class="form-control" id="surnameInput" placeholder="Woo" style="width:250px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <label for="surgeonName" class="form-label">Surgeon Name</label>
+                                <input type="text" class="form-control" id="surgeonName" placeholder="Dan Carter" style="width:250px">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <label for="surgeryDate" class="form-label">Surgery Date</label>
+                                <input type="date" class="form-control" id="surgeryDate" style="width:250px">
+                            </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="surgeryTime" class="form-label">Surgery Time</label>
+                                <input type="time" class="form-control" id="surgeryTime" style="width:250px">
+                            </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="theater" class="form-label">Theater</label>
+                                <select class="form-control" id="theater" style="width:200px">
+                                    <option value="Theater 1">Theater 1</option>
+                                    <option value="Theater 2">Theater 2</option>
+                                    <option value="Theater 3">Theater 3</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="AdmissionStatus" class="form-label">Admission Status</label>
+                                <select class="form-control" id="v" style="width:200px">
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                            
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="nextButton">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Treatment Codes -->
+    <div class="modal fade" id="treatmentCodesModal" tabindex="-1" role="dialog" aria-labelledby="treatmentCodesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg-custom modal-dialog-centered" role="document">
+            <div class="modal-content-custom">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="treatmentCodesModalLabel">Add Treatment Codes</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <label for="searchTreatmentInput" class="form-label">Search Treatment Name</label>
+                                <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style="width:250px" onkeyup="filterTreatmentNames()">
+                            </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="treatmentSelect" class="form-label">Treatment Name</label>
+                                <select id="treatmentSelect" class="form-control" style="width:250px" onchange="updateTreatmentCode()">
+                                    <option value="Drainage of Abscess">Drainage of Abscess</option>
+                                    <option value="Debridement">Debridement</option>
+                                    <option value="Arthroscopy">Arthroscopy</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <br>
+                                <label for="treatmentCode" class="form-label">Treatment Code</label>
+                                <select id="treatmentCode" class="form-control" placeholder="Treatment Code" disabled style="width:250px">
+                                    <option value="11400">11400</option>
+                                    <option value="10060">10060</option>
+                                    <option value="29876">29876</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row" style="width:1000px">
+                    <div class="col">
+                        <div class="p-3 mt-5 border">
+                            <!-- Your table content here -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Surname</th>
+                                        <th scope="col">Prescription Date</th>
+                                        <th scope="col">Theater</th>
+                                        <th scope="col">Treatment Name</th>
+                                        <th scope="col">Treatment Code</th>
+                                        <th scope="col">Action</th>
+                                        <!-- More table headers can be added here -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Jin</td>
+                                        <td>Woo</td>
+                                        <td>02/05/2024</td>
+                                        <td>Theater 1</td>
+                                        <td>Debridement</td>
+                                        <td>11400</td>
+                                        <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
+                                        <!-- More table data can be added here -->
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- ModalAddPatient -->
+    <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPatientModalLabel">Add Patient</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <br>
+                            <label for="nameInput" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="nameInput" placeholder="Enter Name" style="width:250px">
+                        </div>
+                        <div class="col-4">
+                            <br>
+                            <label for="surnameInput" class="form-label">Surname</label>
+                            <input type="text" class="form-control" id="surnameInput" placeholder="Enter Surname" style="width:250px">
+                        </div>
+                        <div class="col-4">
+                            <br>
+                            <label for="idNumberInput" class="form-label">ID Number</label>
+                            <input type="text" class="form-control" id="idNumberInput" placeholder="Enter ID Number" style="width:250px">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <br>
+                            <label for="gender" class="form-label">Gender</label>
+                            <div id="gender" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
+                                <div class="form-check" style="margin: 0;">
+                                    <input class="form-check-input" type="radio" name="gender" id="male" value="Male">
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check" style="margin: 0;">
+                                    <input class="form-check-input" type="radio" name="gender" id="female" value="Female">
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <br>
+                            <label for="emailInput" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="emailInput" placeholder="Enter Email" style="width:250px">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" id="saveButton">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmSaveModalLabel">Confirm Save</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to save this patient?
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" href="@Url.Action("PatientList", "Home")">Yes</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+
     <script>
         $(document).ready(function () {
+            // Initialize DataTable
             var table = $('#example').DataTable({
                 "language": {
                     "zeroRecords": "No matching records found"
                 }
+            });
+
+            // Handle 'Next' button click
+            $('#nextButton').on('click', function () {
+                $('#bookSurgeryModal').modal('hide');
+                $('#treatmentCodesModal').modal('show');
+            });
+
+            // Handle 'Save' button click
+            $('#saveButton').on('click', function () {
+                $('#confirmSaveModal').modal('show');
+            });
+
+            // Ensure 'No' button closes the confirmation modal
+            $('#cancelSaveButton').on('click', function () {
+                $('#confirmSaveModal').modal('hide');
             });
 
             // Custom search function for the search input
@@ -122,5 +427,49 @@
             });
         });
     </script>
+    <script>
+        function filterTreatmentNames() {
+            let input = document.getElementById('searchTreatmentInput').value.toLowerCase();
+            let treatmentSelect = document.getElementById('treatmentSelect');
+            let options = treatmentSelect.getElementsByTagName('option');
+            for (let i = 0; i < options.length; i++) {
+                let txtValue = options[i].textContent || options[i].innerText;
+                if (txtValue.toLowerCase().indexOf(input) > -1) {
+                    options[i].style.display = "";
+                } else {
+                    options[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+    <script>
+        function updateTreatmentCode() {
+            var treatmentSelect = document.getElementById('treatmentSelect');
+            var treatmentCodeSelect = document.getElementById('treatmentCode');
+
+            var treatmentCodes = {
+                "Drainage of Abscess": "10060",
+                "Debridement": "11400",
+                "Arthroscopy": "29876"
+            };
+
+            var selectedTreatment = treatmentSelect.value;
+            var selectedCode = treatmentCodes[selectedTreatment];
+
+            // Set the selected code in the treatment code dropdown
+            for (var i = 0; i < treatmentCodeSelect.options.length; i++) {
+                if (treatmentCodeSelect.options[i].value === selectedCode) {
+                    treatmentCodeSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        // Initialize the treatment code based on the default selected treatment name
+        document.addEventListener('DOMContentLoaded', function () {
+            updateTreatmentCode();
+        });
+    </script>
+
 </body>
-</html
+</html>

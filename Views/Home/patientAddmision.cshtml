@@ -49,12 +49,11 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Date</th>
-                                    <th scope="col">Time</th>
+                                    <th scope="col">Surgery Time</th>
+                                    <th scope="col">Admitted Time</th>
                                     <th scope="col">Ward</th>
                                     <th scope="col">Bed</th>
-                                    <th scope="col">Number</th>
                                     <th scope="col">Nurse FullName</th>
-                                    <th scope="col">Admission Status</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -65,15 +64,15 @@
                                     <td>Woo</td>
                                     <td>2024-06-14</td>
                                     <td>08:00 AM</td>
+                                    <td>07:30 AM</td>
                                     <td>Cardiology</td>
                                     <td>101</td>
-                                    <td>12345</td>
                                     <td>Ariana Grande</td>
-                                    <td>Yes</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Check Treatment Codes</a>
+                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#treatmentModal">
+                                            Show Treatment Codes
+                                        </a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Admission Status Change</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -82,6 +81,42 @@
                 </div>
             </div>
         </main>
+    </div>
+    <!-- Treatment Modal -->
+    <div class="modal fade" id="treatmentModal" tabindex="-1" aria-labelledby="treatmentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="treatmentModalLabel">Treatment Codes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Table with treatment names and codes -->
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Treatment Name</th>
+                                <th scope="col">Code</th>
+                            </tr>
+                        </thead>
+                        <tbody id="treatmentTableBody">
+                            <tr>
+                                <td>Drainage of Abscess</td>
+                                <td>10060</td>
+                            </tr>
+                            <tr>
+                                <td>Debridement</td>
+                                <td>11400</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Edit</a>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         $(document).ready(function () {

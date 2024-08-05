@@ -52,6 +52,8 @@
                                     <th scope="col">Surname</th>
                                     <th scope="col">Surgeon Name</th>
                                     <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Theater</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -62,9 +64,14 @@
                                     <td>Woo</td>
                                     <td>John Doe</td>
                                     <td>2024-05-25</td>
+                                    <td>12:00 AM</td>
+                                    <td>Theater 2</td>
+                                    
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Edit Treatment Codes</a>
+                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#treatmentModal">
+                                            Show Treatment Codes
+                                        </a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Give Prescription</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
                                     </td>
@@ -75,9 +82,13 @@
                                     <td>Dee</td>
                                     <td>John Doe</td>
                                     <td>2024-06-14</td>
+                                    <td>12:00 AM</td>
+                                    <td>Theater 2</td>
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="EditSurgery">Edit Book Surgery</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Edit Treatment Codes</a>
+                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#treatmentModal">
+                                            Show Treatment Codes
+                                        </a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Prescription">Give Prescription</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
                                     </td>
@@ -85,6 +96,43 @@
                                 <!-- Add more table rows here -->
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Treatment Modal -->
+            <div class="modal fade" id="treatmentModal" tabindex="-1" aria-labelledby="treatmentModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="treatmentModalLabel">Treatment Codes</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Table with treatment names and codes -->
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Treatment Name</th>
+                                        <th scope="col">Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="treatmentTableBody">
+                                    <tr>
+                                        <td>Drainage of Abscess</td>
+                                        <td>10060</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Debridement</td>
+                                        <td>11400</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Edit</a>
+                        </div>
                     </div>
                 </div>
             </div>
