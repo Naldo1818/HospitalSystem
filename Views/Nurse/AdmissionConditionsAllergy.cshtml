@@ -16,6 +16,55 @@
             background-color: teal;
             color: white;
         }
+
+        .form-card {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .fs-title {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .vital-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .vital-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .vital-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .form-group .vital-group {
+            flex: 1;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -39,7 +88,7 @@
                                 <fieldset id="f-1">
                                     <div class="form-card">
                                         <h2 class="fs-title">Contact Details And Ward</h2>
-                                        <input type="email" name="email" placeholder="Email Id" required />
+                                        <input  type="email" name="email" placeholder="Email Id" required />
                                         <input type="text" name="uname" placeholder="UserName" required />
                                         <input type="password" name="pwd" placeholder="Password" required />
                                         <input type="password" name="cpwd" placeholder="Confirm Password" required />
@@ -70,17 +119,139 @@
                                 <fieldset id="f-4" style="display:none">
                                     <div class="form-card">
                                         <h2 class="fs-title text-center">Vitals</h2>
-                                        <input type="text" name="Height" placeholder="Height" required />
-                                        <input type="text" name="Weight" placeholder="Weight" required />
-                                        <input type="text" name="SystolicBP" placeholder="Systolic BP" required />
-                                        <input type="text" name="DiastolicBP" placeholder="Diastolic BP" required />
-                                        <input type="text" name="Pulse" placeholder="Pulse" required />
-                                        <input type="text" name="BloodOxygen" placeholder="Blood Oxygen" required />
-                                        <input type="text" name="Respiration" placeholder="Respiration Rate" required />
-                                        <input type="text" name="BGL" placeholder="Blood Glucose Level" required />
-                                        <input type="text" name="BGLHigh" placeholder="Blood Glucose Level (High)" required />
-                                        <input type="text" name="Temperature" placeholder="Temperature" required />
+
+                                        <div class="form-group">
+                                            <div class="vital-group">
+                                                <label for="Height">Height</label>
+                                                <select name="Height" required>
+                                                    <option value="" disabled selected>Select Height</option>
+                                                    <option value="150 cm">150 cm</option>
+                                                    <option value="160 cm">160 cm</option>
+                                                    <option value="170 cm">170 cm</option>
+                                                    <option value="180 cm">180 cm</option>
+                                                    <option value="190 cm">190 cm</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="vital-group">
+                                                <label for="Weight">Weight</label>
+                                                <select name="Weight" required>
+                                                    <option value="" disabled selected>Select Weight</option>
+                                                    <option value="50 kg">50 kg</option>
+                                                    <option value="60 kg">60 kg</option>
+                                                    <option value="70 kg">70 kg</option>
+                                                    <option value="80 kg">80 kg</option>
+                                                    <option value="90 kg">90 kg</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="vital-group">
+                                                <label for="SystolicBP">Systolic BP</label>
+                                                <select name="SystolicBP" required>
+                                                    <option value="" disabled selected>Select Systolic BP</option>
+                                                    <option value="100">100 mmHg</option>
+                                                    <option value="110">110 mmHg</option>
+                                                    <option value="120">120 mmHg</option>
+                                                    <option value="130">130 mmHg</option>
+                                                    <option value="140">140 mmHg</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="vital-group">
+                                                <label for="DiastolicBP">Diastolic BP</label>
+                                                <select name="DiastolicBP" required>
+                                                    <option value="" disabled selected>Select Diastolic BP</option>
+                                                    <option value="60">60 mmHg</option>
+                                                    <option value="70">70 mmHg</option>
+                                                    <option value="80">80 mmHg</option>
+                                                    <option value="90">90 mmHg</option>
+                                                    <option value="100">100 mmHg</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="vital-group">
+                                                <label for="Pulse">Pulse</label>
+                                                <select name="Pulse" required>
+                                                    <option value="" disabled selected>Select Pulse</option>
+                                                    <option value="60">60 bpm</option>
+                                                    <option value="70">70 bpm</option>
+                                                    <option value="80">80 bpm</option>
+                                                    <option value="90">90 bpm</option>
+                                                    <option value="100">100 bpm</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="vital-group">
+                                                <label for="BloodOxygen">Blood Oxygen</label>
+                                                <select name="BloodOxygen" required>
+                                                    <option value="" disabled selected>Select Blood Oxygen</option>
+                                                    <option value="90">90%</option>
+                                                    <option value="92">92%</option>
+                                                    <option value="94">94%</option>
+                                                    <option value="96">96%</option>
+                                                    <option value="98">98%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="vital-group">
+                                                <label for="Respiration">Respiration Rate</label>
+                                                <select name="Respiration" required>
+                                                    <option value="" disabled selected>Select Respiration Rate</option>
+                                                    <option value="12">12 breaths/min</option>
+                                                    <option value="14">14 breaths/min</option>
+                                                    <option value="16">16 breaths/min</option>
+                                                    <option value="18">18 breaths/min</option>
+                                                    <option value="20">20 breaths/min</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="vital-group">
+                                                <label for="BGL">Blood Glucose Level</label>
+                                                <select name="BGL" required>
+                                                    <option value="" disabled selected>Select Blood Glucose Level</option>
+                                                    <option value="70">70 mg/dL</option>
+                                                    <option value="90">90 mg/dL</option>
+                                                    <option value="110">110 mg/dL</option>
+                                                    <option value="130">130 mg/dL</option>
+                                                    <option value="150">150 mg/dL</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="vital-group">
+                                                <label for="BGLHigh">Blood Glucose Level (High)</label>
+                                                <select name="BGLHigh" required>
+                                                    <option value="" disabled selected>Select High Blood Glucose Level</option>
+                                                    <option value="200">200 mg/dL</option>
+                                                    <option value="220">220 mg/dL</option>
+                                                    <option value="240">240 mg/dL</option>
+                                                    <option value="260">260 mg/dL</option>
+                                                    <option value="280">280 mg/dL</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="vital-group">
+                                                <label for="Temperature">Temperature</label>
+                                                <select name="Temperature" required>
+                                                    <option value="" disabled selected>Select Temperature</option>
+                                                    <option value="36">36 °C</option>
+                                                    <option value="37">37 °C</option>
+                                                    <option value="38">38 °C</option>
+                                                    <option value="39">39 °C</option>
+                                                    <option value="40">40 °C</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
+
+
                                     <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
                                     <input type="submit" name="submit" class="next action-button" value="Submit" />
                                 </fieldset>
