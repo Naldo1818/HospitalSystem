@@ -71,6 +71,7 @@
         .header-labels {
             text-align: left;
             margin-bottom: 20px;
+            padding-left:50px;
         }
 
             .header-labels label {
@@ -137,11 +138,15 @@
             <div class="text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                     <h2><strong>Admission</strong></h2>
+                    <hr></hr>
                     <div class="header-labels">
+                        
                         <label>Name: </label>
                         <label>Surname:</label>
                         <label>Date:</label>
+                        
                     </div>
+                    <hr></hr>
                     <div class="row">
                         <div class="col-md-12 mx-0">
                             <form id="msform">
@@ -219,7 +224,7 @@
                                                     <label>Address</label>
                                                     <div class="address-group">
                                                         <label for="City">City</label>
-                                                        <select id="City" name="City" required>
+                                                        <select class="select2" id="City" name="City" required>
                                                             <option value="" disabled selected>Select City</option>
                                                             <!-- Add city options here -->
                                                             <option value="City1">City1</option>
@@ -228,7 +233,7 @@
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="Suburb">Suburb</label>
-                                                        <select id="Suburb" name="Suburb" required>
+                                                        <select class="select2" id="Suburb" name="Suburb" required>
                                                             <option value="" disabled selected>Select Suburb</option>
                                                             <!-- Add suburb options here -->
                                                             <option value="Suburb1">Suburb1</option>
@@ -237,7 +242,7 @@
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="Street">Street</label>
-                                                        <select id="Street" name="Street" required>
+                                                        <select class="select2" id="Street" name="Street" required>
                                                             <option value="" disabled selected>Select Street</option>
                                                             <!-- Add street options here -->
                                                             <option value="Street1">Street1</option>
@@ -246,7 +251,7 @@
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="PostalCode">Postal Code</label>
-                                                        <select id="PostalCode" name="PostalCode" required>
+                                                        <select class="select2" id="PostalCode" name="PostalCode" required>
                                                             <option value="" disabled selected>Select Postal Code</option>
                                                             <!-- Add postal code options here -->
                                                             <option value="12345">12345</option>
@@ -317,7 +322,7 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Medication">Current Medication</label>
-                                                    <select id="MedicationSelect" name="Medication">
+                                                    <select class="select2" id="MedicationSelect" name="Medication">
                                                         <option value="" disabled selected>Select Medication</option>
                                                         <option value="Aspirin">Aspirin</option>
                                                         <option value="Ibuprofen">Ibuprofen</option>
@@ -403,8 +408,8 @@
         </div>
     </div>
     <script>
-        // JavaScript functions to handle form navigation
         
+            // JavaScript functions to handle form navigation
         function showContactDetails() {
             $('#f-1').show('slow', 'swing');
             $('#f-2, #f-3, #f-4').hide('slow', 'swing');
@@ -431,8 +436,13 @@
         }
         $(document).ready(function () {
             showContactDetails(); // Initialize to show the first step
+
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: 'Select an option',
+                allowClear: true
+            });
         });
-    
 
         // JavaScript functions to handle dynamic list addition
         function addAllergy() {
