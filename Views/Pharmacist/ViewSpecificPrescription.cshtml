@@ -9,11 +9,34 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<h1><center>Prescription View</center></h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient List</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+   
+</head>
+
 
 
 
 <body>
+    <h1><center>Prescription View</center></h1>
     <!--Medical History-->
     <div class="container">
         <main role="main" class="pb-5">
@@ -375,16 +398,45 @@ Administer 1 Diazepam 2 times a day after eating.
                 <div class="form-group row">
                     <div class="col-4">
                         <br>
-                        <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Dispense </a>
-                        <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
-                        <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
-
-
-                    </div>
+                         <a class="btn btn-danger btn-lg" data-toggle="modal" data-target="#MedicationDispensedModal">Dispense</a>
+                         <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
+                         <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+                     </div>
                 </div>
                 <!-- More form inputs can be added here -->
             </form>
+                        <div class="modal fade" id="MedicationDispensedModal" tabindex="-1" role="dialog" aria-labelledby="MedicationDispensedModal" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="MedicationDispensedModal"></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" id="f-1">
 
+
+
+                                        <!-- Modal for Medication Dispensed -->
+                                        <form>
+                                            <h2><center>Prescription Dispensed</center></h2>
+
+                                            <div style="display: flex; justify-content: center; align-items: center;">
+
+                                                <br>
+                                                The prescription for Jin Woo has been dispensed.
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
 
 

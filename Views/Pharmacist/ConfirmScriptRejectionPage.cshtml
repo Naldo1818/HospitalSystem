@@ -5,6 +5,28 @@
 
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient List</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+
+</head>
 
 
 <body>
@@ -30,14 +52,59 @@
                                 <div class="form-group row">
                                 
                                     
-                                    <a asp-action="PrescriptionRejected" asp-controller="Pharmacist" class="btn btn-primary">Yes</a>
+                                
+
+                                    <a class="btn btn-primary" data-toggle="modal" data-target="#PrescriptionRejectedModal">Yes</a>
+                                    <a class="btn btn-primary" data-toggle="modal" data-target="#RejectScriptModal">No</a>
+
                                     
 
 
                                 </div>
 
+                                <div class="modal fade" id="PrescriptionRejectedModal" tabindex="-1" role="dialog" aria-labelledby="PrescriptionRejectedModal" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="PrescriptionRejectedModal">Rejected</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body" id="f-1">
 
-                                <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">No</a>
+
+
+                                                <!-- Modal for Prescription Rejected -->
+                                                <form>
+                                                    <h2><center>Prescription Rejected</center></h2>
+
+                                                    <div style="display: flex; justify-content: center; align-items: center;">
+
+                                                        <br>
+                                                        The prescription for Jin Woo has been rejected.
+                                                    </div>
+
+                                                </form>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+
+
+
+
+                                
 
 
 
