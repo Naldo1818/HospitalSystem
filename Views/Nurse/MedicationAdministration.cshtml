@@ -1,5 +1,251 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Medication Administration";
+    Layout = "_LayoutNurse";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission (Wards)</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <style>
+        .active-tab {
+            background-color: teal;
+            color: white;
+        }
+
+        .form-card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .row-two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .row-two-columns .vital-group {
+                flex: 1 1 48%;
+            }
+
+        .vital-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .vital-group {
+            text-align: left;
+        }
+
+            .vital-group input,
+            .vital-group select {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+                width: 100%;
+                max-width: 400px;
+                box-sizing: border-box;
+                height: 40px;
+                margin: 0;
+            }
+
+        .header-labels {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 50px;
+        }
+
+            .header-labels label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
+
+        .form-card hr {
+            margin: 20px 0;
+        }
+
+        .list-view-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+            .list-view-box p {
+                margin: 5px 0;
+                padding: 5px;
+                background-color: #f1f1f1;
+                border-radius: 3px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .list-view-box p span {
+                    flex-grow: 1;
+                }
+
+                .list-view-box p button {
+                    border: none;
+                    background-color: red;
+                    color: white;
+                    border-radius: 3px;
+                    padding: 5px;
+                    cursor: pointer;
+                }
+
+        .address-group {
+            margin-bottom: 10px;
+        }
+
+            .address-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .address-group select {
+                width: 100%;
+                padding: 8px;
+            }
+
+        /* Style for the scrollable dropdown */
+        .select2-container--default .select2-results {
+            max-height: 150px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0" style="width: contain;">
+            <div class="text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Administer Medication</strong></h2>
+                    <hr></hr>
+                    <div class="row-two-columns">
+                        <div class="header-labels">
+                            <label>Name: </label>
+                            <label>Surname:</label>
+                            <label>Date:</label>
+                        </div>
+                        <div class="header-labels">
+                            <label>Ward: </label>
+                            <label>Bed:</label>
+                        </div>
+                    </div>
+                    <hr></hr>
+                    <div class="row">
+                        <div class="col-md-12 mx-0">
+                            <form id="msform">
+                                <fieldset id="f-2">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">View Prescription</h2>
+                                        <div class="form-group">
+                                            <hr></hr>
+                                            <h4>Prescribed Medication</h4>
+                                            <hr></hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Medicine">Choose Medicine</label>
+                                                    <select class="select2" id="MedicineSelect">
+                                                        <option value="" disabled selected>Choose Medicine</option>
+                                                        <option value="Aspirin">Aspirin</option>
+                                                        <option value="Ibuprofen">Ibuprofen</option>
+                                                        <option value="Acetaminophen">Acetaminophen</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <hr></hr>
+                                                <h4>Quantity</h4>
+                                                <hr></hr>
+                                                <div class="row-two-columns">
+                                                    <div class="vital-group">
+                                                        <label for="Quantity">Enter Quantity</label>
+                                                        <input type="number" id="QuantityInput" min="1" step="1" />
+                                                    </div>
+                                                </div>
+                                                <br></br>
+                                                <button type="button" id="addMedicationButton">Add Medication</button>
+                                                <br></br>
+                                                <div class="list-view-box" id="PreMedicationList"></div>
+                                            </div>
+                                            <input type="button" name="previous" class="previous action-button-previous" value="Back" />
+                                            <input type="button" name="next" class="next action-button" value="Save" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: 'Select an option',
+                allowClear: true
+            });
+
+            // Function to add medication to the list view box
+            $('#addMedicationButton').on('click', function () {
+                // Retrieve the selected values
+                const medicine = $('#MedicineSelect').val();
+                const quantity = $('#QuantityInput').val();
+
+                // Check if both fields are selected
+                if (medicine && quantity) {
+                    // Create a new list item
+                    const listItem = $('<p></p>');
+                    listItem.html(
+                        `<span>Medicine: ${medicine}, Quantity: ${quantity}</span>
+                                 <button onclick="removeItem(this)">Remove</button>`
+                    );
+
+                    // Append the new list item to the list view box
+                    $('#PreMedicationList').append(listItem);
+
+                    // Clear the select input and quantity input
+                    $('#MedicineSelect').val(null).trigger('change');
+                    $('#QuantityInput').val('');
+                } else {
+                    alert('Please select both medicine and enter quantity.');
+                }
+            });
+        });
+
+        // Function to remove a list item
+        function removeItem(button) {
+            const p = button.parentElement;
+            p.remove();
+        }
+    </script>
+</body>
+</html>

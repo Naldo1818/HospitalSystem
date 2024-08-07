@@ -10,11 +10,18 @@ namespace DEMO.Models.PharmacistModels
         public int RejectionID { get; set; }
 
 
-        [Key]
+        
         public int PrescriptionID { get; set; }
 
         [Required]
         public string RejectionReason { get; set;}
+
+
+        public int NurseID {  get; set; }
+
+
+
+
         
         
     }
