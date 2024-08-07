@@ -9,8 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admission (Wards)</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         .active-tab {
             background-color: teal;
@@ -18,7 +20,7 @@
         }
 
         .form-card {
-            max-width: 600px;
+            max-width: 900px;
             margin: 20px auto;
             padding: 20px;
             border: 1px solid #ccc;
@@ -27,53 +29,124 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .fs-title {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
+        .form-group {
+            margin-bottom: 30px;
         }
 
-        .vital-group {
+        .row-two-columns {
             display: flex;
-            flex-direction: column;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
+
+            .row-two-columns .vital-group {
+                flex: 1 1 48%;
+            }
 
         .vital-group label {
+            display: block;
             margin-bottom: 5px;
             font-weight: bold;
             color: #333;
         }
 
-        .vital-group select {
-            padding: 10px;
+        .vital-group {
+            text-align: left;
+        }
+
+            .vital-group input,
+            .vital-group select {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+                width: 100%;
+                max-width: 400px;
+                box-sizing: border-box;
+                height: 40px;
+                margin: 0;
+            }
+
+        .header-labels {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left:50px;
+        }
+
+            .header-labels label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
+
+        .form-card hr {
+            margin: 20px 0;
+        }
+
+        .list-view-box {
             border: 1px solid #ccc;
             border-radius: 5px;
-            background-color: #fff;
-            font-size: 16px;
-            color: #333;
-        }
-        
-        .form-group {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
         }
 
-        .form-group .vital-group {
-            flex: 1;
+            .list-view-box p {
+                margin: 5px 0;
+                padding: 5px;
+                background-color: #f1f1f1;
+                border-radius: 3px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .list-view-box p span {
+                    flex-grow: 1;
+                }
+
+                .list-view-box p button {
+                    border: none;
+                    background-color: red;
+                    color: white;
+                    border-radius: 3px;
+                    padding: 5px;
+                    cursor: pointer;
+                }
+
+        .address-group {
+            margin-bottom: 10px;
         }
 
-        
+            .address-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .address-group select {
+                width: 100%;
+                padding: 8px;
+            }
+
     </style>
 </head>
 <body>
     <div class="container-fluid" id="grad1">
-        <div class="row justify-content-center mt-0"style="width:contain">
+        <div class="row justify-content-center mt-0" style="width: contain;">
             <div class="text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                     <h2><strong>Admission</strong></h2>
-                    <p>Fill all form fields to go to the next step</p>
+                    <hr></hr>
+                    <div class="header-labels">
+                        
+                        <label>Name: </label>
+                        <label>Surname:</label>
+                        <label>Date:</label>
+                        
+                    </div>
+                    <hr></hr>
                     <div class="row">
                         <div class="col-md-12 mx-0">
                             <form id="msform">
@@ -88,173 +161,245 @@
                                 <fieldset id="f-1">
                                     <div class="form-card">
                                         <h2 class="fs-title">Contact Details And Ward</h2>
-                                        <input  type="email" name="email" placeholder="Email Id" required />
-                                        <input type="text" name="uname" placeholder="UserName" required />
-                                        <input type="password" name="pwd" placeholder="Password" required />
-                                        <input type="password" name="cpwd" placeholder="Confirm Password" required />
-                                        <input type="email" name="email" placeholder="Email Id" required />
-                                        <input type="text" name="uname" placeholder="UserName" required />
-                                        <input type="password" name="pwd" placeholder="Password" required />
-                                        <input type="password" name="cpwd" placeholder="Confirm Password" required />
+                                        <div class="form-group">
+                                            <hr></hr>
+                                            <h4>Ward Details</h4>
+                                            <hr></hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Ward">Ward</label>
+                                                    <select class="select2" name="Ward" required>
+                                                        <option value="" disabled selected>Select Ward</option>
+                                                        <option value="Ward1">Ward 1</option>
+                                                        <option value="Ward2">Ward 2</option>
+                                                        <option value="Ward3">Ward 3</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="Status">Status</label>
+                                                    <select class="select2" name="Status" required>
+                                                        <option value="" disabled selected>Select Status</option>
+                                                        <option value="Active">Active</option>
+                                                        <option value="Inactive">Inactive</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="Bed">Bed</label>
+                                                    <select class="select2" name="Bed" required>
+                                                        <option value="" disabled selected>Select Bed</option>
+                                                        <option value="Bed1">Bed 1</option>
+                                                        <option value="Bed2">Bed 2</option>
+                                                        <option value="Bed3">Bed 3</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <hr></hr>
+                                            <h4>Contact Details</h4>
+                                            <hr></hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="DOB">Date of Birth</label>
+                                                    <input type="date" id="DOB" name="DOB" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="Phone">Phone Number</label>
+                                                    <input type="tel" id="Phone" name="Phone" placeholder="e.g. 011 123 4567" pattern="^(0[1-9]\d{1,2}) \d{4} \d{4}$" required>
+                                                    <small>Enter a phone number in the format: 011 123 4567</small>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="Email">Email</label>
+                                                    <input type="email" name="Email" placeholder="example@example.com" required>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <p></p>
+                                                    <label>Address</label>
+                                                    <div class="address-group">
+                                                        <label for="City">City</label>
+                                                        <select class="select2" id="City" name="City" required>
+                                                            <option value="" disabled selected>Select City</option>
+                                                            <!-- Add city options here -->
+                                                            <option value="City1">City1</option>
+                                                            <option value="City2">City2</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="address-group">
+                                                        <label for="Suburb">Suburb</label>
+                                                        <select class="select2" id="Suburb" name="Suburb" required>
+                                                            <option value="" disabled selected>Select Suburb</option>
+                                                            <!-- Add suburb options here -->
+                                                            <option value="Suburb1">Suburb1</option>
+                                                            <option value="Suburb2">Suburb2</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="address-group">
+                                                        <label for="Street">Street</label>
+                                                        <select class="select2" id="Street" name="Street" required>
+                                                            <option value="" disabled selected>Select Street</option>
+                                                            <!-- Add street options here -->
+                                                            <option value="Street1">Street1</option>
+                                                            <option value="Street2">Street2</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="address-group">
+                                                        <label for="PostalCode">Postal Code</label>
+                                                        <select class="select2" id="PostalCode" name="PostalCode" required>
+                                                            <option value="" disabled selected>Select Postal Code</option>
+                                                            <!-- Add postal code options here -->
+                                                            <option value="12345">12345</option>
+                                                            <option value="67890">67890</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <input type="button" name="next" class="next action-button" onclick="showAllergyConditions()" value="Next Step" />
                                     </div>
-                                    <input type="button" name="next" class="next action-button" onclick="showAllergyConditions()" value="Next Step" />
                                 </fieldset>
                                 <fieldset id="f-2" style="display:none">
                                     <div class="form-card">
                                         <h2 class="fs-title">Allergies and Conditions</h2>
-                                        <input type="text" name="allergies" placeholder="Allergies" />
-                                        <input type="text" name="conditions" placeholder="Existing Conditions" />
+                                        <div class="form-group">
+                                            <hr></hr>
+                                            <h4>Allergies</h4>
+                                            <hr></hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Allergies">Select Allergy</label>
+                                                    <select class="select2" id="AllergySelect">
+                                                        <option value="" disabled selected>Select Allergy</option>
+                                                        <option value="Peanuts">Peanuts</option>
+                                                        <option value="Shellfish">Shellfish</option>
+                                                        <option value="Pollen">Pollen</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <br></br>
+                                            <button type="button" onclick="addAllergy()">Add Allergy</button>
+                                            <br></br>
+                                            <div class="list-view-box" id="AllergyList"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <hr></hr>
+                                            <h4>Conditions</h4>
+                                            <hr></hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Condition">Select Condition</label>
+                                                    <select class="select2" id="ConditionSelect">
+                                                        <option value="" disabled selected>Select Condition</option>
+                                                        <option value="Diabetes">Diabetes</option>
+                                                        <option value="Hypertension">Hypertension</option>
+                                                        <option value="Asthma">Asthma</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <br></br>
+                                            <button type="button" onclick="addCondition()">Add Condition</button>
+                                            <br></br>
+                                            <div class="list-view-box" id="ConditionList"></div>
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous" onclick="showContactDetails()" value="Previous" />
+                                        <input type="button" name="next" class="next action-button" onclick="showMedications()" value="Next Step" />
                                     </div>
-                                    <input type="button" name="previous" class="previous action-button-previous" onclick="showContactDetails()" value="Previous" />
-                                    <input type="button" name="next" class="next action-button" onclick="showMedications()" value="Next Step" />
                                 </fieldset>
                                 <fieldset id="f-3" style="display:none">
                                     <div class="form-card">
                                         <h2 class="fs-title">Current Medications</h2>
-                                        <input type="text" name="medications" placeholder="Current Medications" />
+                                        <div class="form-group">
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Medication">Current Medication</label>
+                                                    <select class="select2" id="MedicationSelect" name="Medication">
+                                                        <option value="" disabled selected>Select Medication</option>
+                                                        <option value="Aspirin">Aspirin</option>
+                                                        <option value="Ibuprofen">Ibuprofen</option>
+                                                        <option value="Acetaminophen">Acetaminophen</option>
+                                                        <!-- Add more options as needed -->
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <br></br>
+                                            <button type="button" onclick="addMedication()">Add Medication</button>
+                                            <br></br>
+                                            <div class="list-view-box" id="MedicationList"></div>
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous" onclick="showAllergyConditions()" value="Previous" />
+                                        <input type="button" name="next" class="next action-button" onclick="showVitals()" value="Next Step" />
                                     </div>
-                                    <input type="button" name="previous" class="previous action-button-previous" onclick="showAllergyConditions()" value="Previous" />
-                                    <input type="button" name="next" class="next action-button" onclick="showVitals()" value="Next Step" />
                                 </fieldset>
                                 <fieldset id="f-4" style="display:none">
-                                    <div class="form-card">
-                                        <h2 class="fs-title text-center">Vitals</h2>
-
-                                        <div class="form-group">
-                                            <div class="vital-group">
-                                                <label for="Height">Height</label>
-                                                <select name="Height" required>
-                                                    <option value="" disabled selected>Select Height</option>
-                                                    <option value="150 cm">150 cm</option>
-                                                    <option value="160 cm">160 cm</option>
-                                                    <option value="170 cm">170 cm</option>
-                                                    <option value="180 cm">180 cm</option>
-                                                    <option value="190 cm">190 cm</option>
-                                                </select>
+                                        <div class="form-card">
+                                            <h2 class="fs-title">Vitals</h2>
+                                            <div class="form-group">
+                                                <hr></hr>
+                                                
+                                                <div class="row-two-columns">
+                                                    <div class="vital-group">
+                                                        <label for="Height">Height (cm)</label>
+                                                        <input type="number" name="Height" min="100" max="250" value="180" placeholder="cm">
+                                                    </div>
+                                                    <div class="vital-group">
+                                                        <label for="Weight">Weight (kg)</label>
+                                                        <input type="number" name="Weight" min="20" max="250" value="60">
+                                                    </div>
+                                                </div>
+                                                <div class="row-two-columns">
+                                                    <div class="vital-group">
+                                                        <label for="SystolicBP">Systolic BP (mmHg)</label>
+                                                        <input type="number" name="SystolicBP" min="80" max="150" value="100">
+                                                    </div>
+                                                    <div class="vital-group">
+                                                        <label for="DiastolicBP">Diastolic BP (mmHg)</label>
+                                                        <input type="number" name="DiastolicBP" min="40" max="100" value="60">
+                                                    </div>
+                                                </div>
+                                                <div class="row-two-columns">
+                                                    <div class="vital-group">
+                                                        <label for="Pulse">Pulse (bpm)</label>
+                                                        <input type="number" name="Pulse" min="50" max="100" value="60">
+                                                    </div>
+                                                    <div class="vital-group">
+                                                        <label for="BloodOxygen">Blood Oxygen (%)</label>
+                                                        <input type="number" name="BloodOxygen" min="90" max="100" value="95">
+                                                    </div>
+                                                </div>
+                                                <div class="row-two-columns">
+                                                    <div class="vital-group">
+                                                        <label for="Respiration">Respiration Rate (Breaths/min)</label>
+                                                        <input type="number" name="Respiration" min="10" max="30" value="15">
+                                                    </div>
+                                                    <div class="vital-group">
+                                                        <label for="BGL">Blood Glucose Level (mg/dL)</label>
+                                                        <input type="number" name="BGL" min="50" max="170" value="90">
+                                                    </div>
+                                                </div>
+                                                <div class="row-two-columns">
+                                                    <div class="vital-group">
+                                                        <label for="BGLHigh">High Blood Glucose Level (mg/dL)</label>
+                                                        <input type="number" name="BGLHigh" min="190" max="300" value="220">
+                                                    </div>
+                                                    <div class="vital-group">
+                                                        <label for="Temperature">Temperature (°C)</label>
+                                                        <input type="number" name="Temperature" min="30.0" max="40.0" value="34">
+                                                    </div>
+                                                </div>
                                             </div>
-
-                                            <div class="vital-group">
-                                                <label for="Weight">Weight</label>
-                                                <select name="Weight" required>
-                                                    <option value="" disabled selected>Select Weight</option>
-                                                    <option value="50 kg">50 kg</option>
-                                                    <option value="60 kg">60 kg</option>
-                                                    <option value="70 kg">70 kg</option>
-                                                    <option value="80 kg">80 kg</option>
-                                                    <option value="90 kg">90 kg</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="vital-group">
-                                                <label for="SystolicBP">Systolic BP</label>
-                                                <select name="SystolicBP" required>
-                                                    <option value="" disabled selected>Select Systolic BP</option>
-                                                    <option value="100">100 mmHg</option>
-                                                    <option value="110">110 mmHg</option>
-                                                    <option value="120">120 mmHg</option>
-                                                    <option value="130">130 mmHg</option>
-                                                    <option value="140">140 mmHg</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="vital-group">
-                                                <label for="DiastolicBP">Diastolic BP</label>
-                                                <select name="DiastolicBP" required>
-                                                    <option value="" disabled selected>Select Diastolic BP</option>
-                                                    <option value="60">60 mmHg</option>
-                                                    <option value="70">70 mmHg</option>
-                                                    <option value="80">80 mmHg</option>
-                                                    <option value="90">90 mmHg</option>
-                                                    <option value="100">100 mmHg</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="vital-group">
-                                                <label for="Pulse">Pulse</label>
-                                                <select name="Pulse" required>
-                                                    <option value="" disabled selected>Select Pulse</option>
-                                                    <option value="60">60 bpm</option>
-                                                    <option value="70">70 bpm</option>
-                                                    <option value="80">80 bpm</option>
-                                                    <option value="90">90 bpm</option>
-                                                    <option value="100">100 bpm</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="vital-group">
-                                                <label for="BloodOxygen">Blood Oxygen</label>
-                                                <select name="BloodOxygen" required>
-                                                    <option value="" disabled selected>Select Blood Oxygen</option>
-                                                    <option value="90">90%</option>
-                                                    <option value="92">92%</option>
-                                                    <option value="94">94%</option>
-                                                    <option value="96">96%</option>
-                                                    <option value="98">98%</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="vital-group">
-                                                <label for="Respiration">Respiration Rate</label>
-                                                <select name="Respiration" required>
-                                                    <option value="" disabled selected>Select Respiration Rate</option>
-                                                    <option value="12">12 breaths/min</option>
-                                                    <option value="14">14 breaths/min</option>
-                                                    <option value="16">16 breaths/min</option>
-                                                    <option value="18">18 breaths/min</option>
-                                                    <option value="20">20 breaths/min</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="vital-group">
-                                                <label for="BGL">Blood Glucose Level</label>
-                                                <select name="BGL" required>
-                                                    <option value="" disabled selected>Select Blood Glucose Level</option>
-                                                    <option value="70">70 mg/dL</option>
-                                                    <option value="90">90 mg/dL</option>
-                                                    <option value="110">110 mg/dL</option>
-                                                    <option value="130">130 mg/dL</option>
-                                                    <option value="150">150 mg/dL</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="vital-group">
-                                                <label for="BGLHigh">Blood Glucose Level (High)</label>
-                                                <select name="BGLHigh" required>
-                                                    <option value="" disabled selected>Select High Blood Glucose Level</option>
-                                                    <option value="200">200 mg/dL</option>
-                                                    <option value="220">220 mg/dL</option>
-                                                    <option value="240">240 mg/dL</option>
-                                                    <option value="260">260 mg/dL</option>
-                                                    <option value="280">280 mg/dL</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="vital-group">
-                                                <label for="Temperature">Temperature</label>
-                                                <select name="Temperature" required>
-                                                    <option value="" disabled selected>Select Temperature</option>
-                                                    <option value="36">36 °C</option>
-                                                    <option value="37">37 °C</option>
-                                                    <option value="38">38 °C</option>
-                                                    <option value="39">39 °C</option>
-                                                    <option value="40">40 °C</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
-                                    <input type="submit" name="submit" class="next action-button" value="Submit" />
-                                </fieldset>
+                                            <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
+                                            <input type="submit" name="submit" class="next action-button" value="Submit" />
+                                        </fieldset>
                             </form>
                         </div>
                     </div>
@@ -263,6 +408,8 @@
         </div>
     </div>
     <script>
+        
+            // JavaScript functions to handle form navigation
         function showContactDetails() {
             $('#f-1').show('slow', 'swing');
             $('#f-2, #f-3, #f-4').hide('slow', 'swing');
@@ -289,7 +436,46 @@
         }
         $(document).ready(function () {
             showContactDetails(); // Initialize to show the first step
+
+            // Initialize Select2
+            $('.select2').select2({
+                placeholder: 'Select an option',
+                allowClear: true
+            });
         });
+
+        // JavaScript functions to handle dynamic list addition
+        function addAllergy() {
+            const allergySelect = document.getElementById('AllergySelect');
+            const allergy = allergySelect.options[allergySelect.selectedIndex].text;
+            const allergyList = document.getElementById('AllergyList');
+            const p = document.createElement('p');
+            p.innerHTML = `<span>${allergy}</span><button type="button" onclick="removeItem(this)">Remove</button>`;
+            allergyList.appendChild(p);
+        }
+
+        function addCondition() {
+            const conditionSelect = document.getElementById('ConditionSelect');
+            const condition = conditionSelect.options[conditionSelect.selectedIndex].text;
+            const conditionList = document.getElementById('ConditionList');
+            const p = document.createElement('p');
+            p.innerHTML = `<span>${condition}</span><button type="button" onclick="removeItem(this)">Remove</button>`;
+            conditionList.appendChild(p);
+        }
+
+        function addMedication() {
+            const medicationSelect = document.getElementById('MedicationSelect');
+            const medication = medicationSelect.options[medicationSelect.selectedIndex].text;
+            const medicationList = document.getElementById('MedicationList');
+            const p = document.createElement('p');
+            p.innerHTML = `<span>${medication}</span><button type="button" onclick="removeItem(this)">Remove</button>`;
+            medicationList.appendChild(p);
+        }
+
+        function removeItem(button) {
+            const p = button.parentElement;
+            p.remove();
+        }
     </script>
 </body>
 </html>
