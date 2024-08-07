@@ -3,19 +3,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DEMO.Models.NurseModels
 {
-    public class AllergyModel
-
+    public class Condition
     {
-
         [Key]
-        public int AllergyID { get; set; }
+        public int ConditionID { get; set; }
 
         [Required]
-        public string AllergyName { get; set; }
+        public string ConditionName { get; set; }
 
-        
         [ForeignKey("ActiveingredientID")]
         public int ActiveingredientID { get; set; }
-            
     }
 }

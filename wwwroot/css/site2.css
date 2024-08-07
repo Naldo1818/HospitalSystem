@@ -29,7 +29,7 @@ body {
 }
 .custom-card {
     width: 50%; /* Set width to 50% of the container */
-    height: 85vh; /* Set height to 50% of the viewport height */
+    height: 100vh; /* Set height to 50% of the viewport height */
     margin-top: 30vh; /* Adjust top margin to center vertically */
     right: 100px; /* 190px*/
 }

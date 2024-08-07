@@ -15,10 +15,11 @@ namespace DEMO.Models
 
         [Required]
         public int Quantity { get; set; }
-
+        [Required]
+        public int Schedule { get; set; }
         [Required]
         public string Instructions { get; set; }
-
+        
 
     }
 }
