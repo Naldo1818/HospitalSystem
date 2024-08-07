@@ -42,30 +42,38 @@
        </div>
     </div>
 
-    <div class="container">
-        <main role="main" class="">
+    <div class="container-fluid">
+        <main role="main" >
 			<div class="row">
-				<div class="card mt-5 custom-card" style="width:200px">
-					<img src="https://via.placeholder.com/150" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
-					<div class="card-body">
-                        <h5 class="card-title text-center">Surgeon</h5>
-						<h5 class="card-title text-center">John Doe</h5>
-						<p class="card-text text-center">Email: john.doe@example.com</p>
-						<br>
-						<br>
-						<hr>
-						<br>
-						<p class="card-text text-center">Prescriptions Check</p>
-						<p class="card-text text-center">5</p>
-						<p class="card-text text-center">Patient Surgery</p>
-						<p class="card-text text-center">2</p>
-						<hr>
-					</div>
-				</div>
-                
                 <div class="col-md-9" align="left">
                     @RenderBody()
                 </div>
+                <div class="col-md-3 d-flex justify-content-end" align="right">
+                    <div class="card mt-5 custom-card" style="width:250px">
+                        <img src="https://via.placeholder.com/150" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Surgeon</h5>
+                            <h5 class="card-title text-center">John Doe</h5>
+                            <p class="card-text text-center">Email: john.doe@example.com</p>
+                            <hr>
+                            <br>
+                            <p class="card-text text-center">Prescriptions Prescribed</p>
+                            <p class="card-text text-center">1</p>
+                            <p class="card-text text-center">Prescriptions Accepted</p>
+                            <p class="card-text text-center">2</p>
+                            <p class="card-text text-center">Prescriptions Rejected</p>
+                            <p class="card-text text-center">1</p>
+                            <br>
+                            <hr>
+                            <br>
+                            <p class="card-text text-center">Surgeries For Today</p>
+                            <p class="card-text text-center">2</p>
+                            <hr>
+                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Index">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+               
             </div>
         </main>
     </div>

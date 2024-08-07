@@ -7,12 +7,12 @@ namespace DEMO.Models
         [Key]
         public int BookingID { get; set; }
         [Required]
-        public int SurgeonID { get; set; }
+        public int AccountID { get; set; }
         [Required]
         public int PatientID { get; set; }
 
         [Required]
-        public TimeOnly SurgeryTime { get; set; }
+        public string SurgeryTime { get; set; }
 
         [Required]
         public DateOnly SurgeryDate { get; set; }

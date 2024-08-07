@@ -12,48 +12,56 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <style>
-        #example {
-            display: none;
+        .dataTables_wrapper {
+            margin-top: 20px;
         }
+
+            .dataTables_wrapper .dataTables_paginate {
+                margin-top: 20px;
+            }
     </style>
 </head>
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-
                         <form>
                             <h2>Prescription List</h2>
-                               <div class="form-group row">
+                            <div class="form-group row">
                                 <div class="col-4">
                                     <br>
                                     <label for="searchInput" class="form-label">Name or Surname</label>
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
                             </div>
+                            <div class="form-group row mt-3">
+                                <div class="col-12">
+                                    <button type="button" id="showRejected" class="btn btn-secondary">Show Rejected</button>
+                                    <button type="button" id="showAccepted" class="btn btn-secondary">Show Accepted</button>
+                                    <button type="button" id="showPrescribed" class="btn btn-secondary">Show Prescribed</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto ;display:none" id="rejectedRow">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
-                        <table id="example" class="display" style="width:100%">
+                        <h2>Prescription Rejected</h2>
+                        <table id="rejectedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    
-                                    <th scope="col"> ID number</th>
+                                    <th scope="col">ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
                                     <th scope="col">Pharmacist</th>
-                                    <th scope="col">Priority</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Rejection Reason</th>
                                     <th scope="col">Actions</th>
-                                    <!-- More table headers can be added here -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -63,13 +71,81 @@
                                     <td>Woo</td>
                                     <td>02/05/2024</td>
                                     <td>Sam Smith</td>
-                                    <td>Invalid</td>
-                                    <td>Medication found that effects Patient</td>
+                                    <td>Rejected</td>
+                                    <td>Medication found that affects Patient</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction"> Check Prescription</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Check Prescription</a>
                                     </td>
-
-                                    <!-- More table data can be added here                                              -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:auto;display:none" id="acceptedRow">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <h2>Prescription Accepted</h2>
+                        <table id="acceptedTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID number</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Rejection Reason</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0120526958</td>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>02/05/2024</td>
+                                    <td>Sam Smith</td>
+                                    <td>Accepted</td>
+                                    <td>N/a</td>
+                                    <td>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Check Prescription</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:auto ;display:none" id="prescribedRow">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <h2>Prescription Prescribed</h2>
+                        <table id="prescribedTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID number</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Rejection Reason</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0120526958</td>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>02/05/2024</td>
+                                    <td>Sam Smith</td>
+                                    <td>Prescribed</td>
+                                    <td>N/a</td>
+                                    <td>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Check Prescription</a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -80,7 +156,20 @@
     </div>
     <script>
         $(document).ready(function () {
-            var table = $('#example').DataTable({
+            // Initialize DataTables
+            var rejectedTable = $('#rejectedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            var acceptedTable = $('#acceptedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            var prescribedTable = $('#prescribedTable').DataTable({
                 "language": {
                     "zeroRecords": "No matching records found"
                 }
@@ -90,15 +179,55 @@
             $('#searchInput').on('keyup', function () {
                 var searchText = this.value.trim(); // Trim whitespace
                 if (searchText === '') {
-                    $('#example').hide(); // Hide table if search input is empty
+                    $('#rejectedRow').show();
+                    $('#acceptedRow').show();
+                    $('#prescribedRow').show();
                 } else {
-                    $('#example').show(); // Show table if search input is not empty
-                    table.search(searchText).draw();
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
+                    rejectedTable.search(searchText).draw();
+                    acceptedTable.search(searchText).draw();
+                    prescribedTable.search(searchText).draw();
+
+                    if (rejectedTable.page.info().recordsDisplay === 0) {
+                        $('#rejectedRow').hide();
+                    } else {
+                        $('#rejectedRow').show();
+                    }
+
+                    if (acceptedTable.page.info().recordsDisplay === 0) {
+                        $('#acceptedRow').hide();
+                    } else {
+                        $('#acceptedRow').show();
+                    }
+
+                    if (prescribedTable.page.info().recordsDisplay === 0) {
+                        $('#prescribedRow').hide();
+                    } else {
+                        $('#prescribedRow').show();
                     }
                 }
             });
+
+            // Button click handlers
+            $('#showRejected').on('click', function () {
+                $('#rejectedRow').show();
+              
+                $('#acceptedRow').hide();
+                $('#prescribedRow').hide();
+            });
+
+            $('#showAccepted').on('click', function () {
+                $('#acceptedRow').show();
+                $('#rejectedRow').hide();
+                $('#prescribedRow').hide();
+            });
+
+            $('#showPrescribed').on('click', function () {
+                $('#prescribedRow').show();
+                $('#rejectedRow').hide();
+                $('#acceptedRow').hide();
+            });
+
+            
         });
     </script>
 </body>
