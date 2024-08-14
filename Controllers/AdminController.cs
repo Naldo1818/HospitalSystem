@@ -24,5 +24,9 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult ListMedication()
+        {
+            return View();
+        }
     }
 }

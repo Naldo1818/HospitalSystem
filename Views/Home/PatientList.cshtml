@@ -87,8 +87,8 @@
         <main role="main" class="pb-5">
             <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
-                        <form id="searchForm">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <form id="searchForm" >
                             <h2>Patient List</h2>
                             <div class="form-group row">
                                 <div class="col-4">
@@ -110,7 +110,7 @@
 
             <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <!-- Your table content here -->
                         <table id="example" class="table display">
                             <thead>
@@ -195,22 +195,40 @@
                             </div>
                             <div class="col-4">
                                 <br>
-                                <label for="surgeryTime" class="form-label">Surgery Time</label>
-                                <select class="form-control" id="theater" style="width:200px">
-                                    <option value="AM">AM</option>
-                                    <option value="PM">PM</option>
-                                </select>
+                                <label class="form-label">Surgery Time</label>
+                                <div id="Theater" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
+                                    <div class="form-check" style="margin: 0;">
+                                        <input class="form-check-input" type="radio" name="time" id="AM" value="AM">
+                                        <label class="form-check-label" for="AM">AM</label>
+                                    </div>
+
+                                    <div class="form-check" style="margin: 0;">
+                                        <input class="form-check-input" type="radio" name="time" id="PM" value="PM">
+                                        <label class="form-check-label" for="PM">PM</label>
+                                    </div>
+                                   
+                                </div>
                             </div>
                             <div class="col-4">
                                 <br>
-                                <label for="theater" class="form-label">Theater</label>
-                                <select class="form-control" id="theater" style="width:200px">
-                                    <option value="Theater 1">Theater 1</option>
-                                    <option value="Theater 2">Theater 2</option>
-                                    <option value="Theater 3">Theater 3</option>
-                                </select>
-                               
+                                <label for="Theater" class="form-label">Theater</label>
+                                <div id="Theater" class="form-control" style="width:250px; padding: 10px; display: inline-table; justify-content: space-around; align-items: center;">
+
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="Theater 1" value="Theater 1">
+                                        <label class="form-check-label" for="Theater 1">Theater 1</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="Theater 2" value="Theater 2">
+                                        <label class="form-check-label" for="Theater 2">Theater 2</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="Before Surgery" value="Before Surgery">
+                                        <label class="form-check-label" for="Theater 3">Theater 3</label>
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="col-4">
                                 <br>
                                 <label for="AdmissionStatus" class="form-label">Admission Status</label>
@@ -356,6 +374,11 @@
                             <br>
                             <label for="emailInput" class="form-label">Email</label>
                             <input type="text" class="form-control" id="emailInput" placeholder="Enter Email" style="width:250px">
+                        </div>
+                        <div class="col-4">
+                            <br>
+                            <label for="ContactNumberInput" class="form-label">Contact Number</label>
+                            <input type="text" class="form-control" id="ContactNumberInput" placeholder="Enter Contact Number" style="width:250px">
                         </div>
                     </div>
                 </div>

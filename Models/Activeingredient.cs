@@ -14,7 +14,5 @@ namespace DEMO.Models
         [Required]
         public int ActiveIngredientStrength { get; set; }
 
-
-
     }
 }

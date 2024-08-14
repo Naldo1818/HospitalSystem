@@ -27,7 +27,7 @@
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border">
                         <form>
@@ -38,6 +38,7 @@
                                     <input type="text" class="form-control" id="medicationName" placeholder="Add Medication" style="width:300px">
                                 </div>
                                 <div class="col-4">
+                                    <!-- Update Form -->
                                     <br>
                                     <label for="medicationForm" class="form-label">Medication Form</label>
                                     <select class="form-control" id="medicationForm" style="width:300px">
@@ -55,8 +56,8 @@
                                 </div>
                                 <div class="col-4">
                                     <br>
-                                    <label for="medicationAmount" class="form-label">Medication Amount</label>
-                                    <input type="text" class="form-control" id="medicationAmount" placeholder="Add Amount" style="width:300px">
+                                    <label for="schedule" class="form-label">Schedule</label>
+                                    <input type="text" class="form-control" id="schedule" placeholder="Add Amount" style="width:300px">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -70,7 +71,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border">
                         <table id="medicationTable" class="table table-striped">
@@ -78,7 +79,7 @@
                                 <tr>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Medication Form</th>
-                                    <th scope="col">Medication Amount</th>
+                                    <th scope="col">Schedule</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
@@ -86,10 +87,11 @@
                                 <tr>
                                     <td>Advil</td>
                                     <td>Tablets</td>
-                                    <td>20</td>
+                                    <td>6</td>
                                     <td>
                                         <a class="btn btn-danger" href="#">Remove</a>
                                         <a class="btn btn-primary" href="#">Active Ingredients</a>
+                                        <!-- Add Active imgredient MODAL-->
                                     </td>
                                    
                                 </tr>

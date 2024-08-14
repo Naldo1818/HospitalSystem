@@ -4,10 +4,10 @@ namespace DEMO.Models
 {
     public class TreatmentCodes
     {
-        [Required]
+        [Key]
         public int TreatmentCodeID { get; set; }
         [Required]
-        public int PrescriptionID { get; set; }
+        public int BookingID { get; set; }
         
         [Required]
         public string TreatmentName { get; set; }

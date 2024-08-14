@@ -1,4 +1,6 @@
+using DEMO.Data;
 using DEMO.Models;
+using DEMO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,16 +8,59 @@ namespace DEMO.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
+            _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
+
+        }
+        [HttpPost]
+        public IActionResult Index(LoginViewModel login)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _dbContext.Accounts.SingleOrDefault(u => u.Username == login.Username && u.Password == login.Password);
+
+                if (user != null)
+                {
+                    if (user.Role == "Admin")
+                    {
+                        return RedirectToAction("AdminLanding");
+                    }
+                    else if (user.Role == "Surgeon")
+                    {
+                       
+                        return RedirectToAction("SurgeonHome");
+                    }
+                    else if (user.Role == "Pharmacist")
+                    {
+                        
+                        return RedirectToAction("PharmacistHome");
+                    }
+                   
+                    else if (user.Role == "Nurse")
+                    {
+                        return RedirectToAction("NurseHome");
+                    }
+                   
+                    //else if (user.Role == "Patient")
+                    //{
+                    //int idAccount = _dbContext.PatientsInfo.FirstOrDefault(p => p.Email == model.Email)?.IDPatient ?? 0;
+                    //    return RedirectToAction("PatientLanding", new { idPatient });
+                    //}
+                }
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+            }
+            return View(login);
         }
 
         public IActionResult Privacy()
@@ -81,6 +126,10 @@ namespace DEMO.Controllers
         }
         
         public IActionResult MedicationInteraction()
+        {
+            return View();
+        }
+        public IActionResult InfoSurgeon()
         {
             return View();
         }

@@ -8,17 +8,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription List</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
     <style>
-        .dataTables_wrapper {
-            margin-top: 20px;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            padding-top: 100px; /* Increased padding to push content down */
         }
 
-            .dataTables_wrapper .dataTables_paginate {
-                margin-top: 20px;
-            }
+        /* Center the modal vertically and horizontally */
+        .modal-dialog-centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 1rem); /* Adjust height to accommodate for Bootstrap's padding */
+        }
+
+        /* Ensure modal content does not stretch too wide */
+        .modal-content {
+            width: 180%;
+            max-width: 900px;
+        }
+
+        /* Center content inside modal body */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -26,7 +64,7 @@
         <main role="main" class="pb-5">
             <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <form>
                             <h2>Prescription List</h2>
                             <div class="form-group row">
@@ -49,7 +87,7 @@
             </div>
             <div class="row" style="width:auto ;display:none" id="rejectedRow">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <h2>Prescription Rejected</h2>
                         <table id="rejectedTable" class="display" style="width:100%">
                             <thead>
@@ -60,7 +98,6 @@
                                     <th scope="col">Prescription Date</th>
                                     <th scope="col">Pharmacist</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Rejection Reason</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -68,13 +105,14 @@
                                 <tr>
                                     <td>0120526958</td>
                                     <td>Jin</td>
-                                    <td>Woo</td>
+                                    <td>Can</td>
                                     <td>02/05/2024</td>
                                     <td>Sam Smith</td>
                                     <td>Rejected</td>
-                                    <td>Medication found that affects Patient</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Check Prescription</a>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
+                                            Check Prescription
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -84,7 +122,7 @@
             </div>
             <div class="row" style="width:auto;display:none" id="acceptedRow">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <h2>Prescription Accepted</h2>
                         <table id="acceptedTable" class="display" style="width:100%">
                             <thead>
@@ -103,13 +141,15 @@
                                 <tr>
                                     <td>0120526958</td>
                                     <td>Jin</td>
-                                    <td>Woo</td>
+                                    <td>Sag</td>
                                     <td>02/05/2024</td>
                                     <td>Sam Smith</td>
                                     <td>Accepted</td>
                                     <td>N/a</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Check Prescription</a>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
+                                            Check Prescription
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -119,7 +159,7 @@
             </div>
             <div class="row" style="width:auto ;display:none" id="prescribedRow">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <h2>Prescription Prescribed</h2>
                         <table id="prescribedTable" class="display" style="width:100%">
                             <thead>
@@ -128,7 +168,6 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
-                                    <th scope="col">Pharmacist</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Rejection Reason</th>
                                     <th scope="col">Actions</th>
@@ -140,11 +179,12 @@
                                     <td>Jin</td>
                                     <td>Woo</td>
                                     <td>02/05/2024</td>
-                                    <td>Sam Smith</td>
                                     <td>Prescribed</td>
                                     <td>N/a</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="MedicationInteraction">Check Prescription</a>
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
+                                            Check Prescription
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -154,6 +194,55 @@
             </div>
         </main>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="medicationModalLabel">Medication Interaction Check</h5>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="example">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Surname</th>
+                                <th scope="col">Prescription Date</th>
+                                <th scope="col">Allergy</th>
+                                <th scope="col">Medication Name</th>
+                                <th scope="col">Medication Active Ingredient</th>
+                                <th scope="col">Active Ingredient</th>
+                                <th scope="col">Result</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jin</td>
+                                <td>Woo</td>
+                                <td>02/05/2024</td>
+                                <td>Penicillin</td>
+                                <td>Cephalexin</td>
+                                <td>Penicillin</td>
+                                <td>Cannot give Patient</td>
+                                <td>
+                                    <div class="d-flex">
+                                        <a class="btn btn-primary mr-2" href="@Url.Action("ChangeMedication", "Home")">Change Medication</a>
+                                        <a class="btn btn-danger" aria-hidden="true">Remove</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- More table data can be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
             // Initialize DataTables
@@ -210,7 +299,6 @@
             // Button click handlers
             $('#showRejected').on('click', function () {
                 $('#rejectedRow').show();
-              
                 $('#acceptedRow').hide();
                 $('#prescribedRow').hide();
             });
@@ -226,9 +314,9 @@
                 $('#rejectedRow').hide();
                 $('#acceptedRow').hide();
             });
-
-            
         });
     </script>
 </body>
 </html>
+
+

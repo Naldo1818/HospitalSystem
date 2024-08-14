@@ -1,39 +1,35 @@
-﻿@{
+﻿@model DEMO.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
     Layout = "_Layout";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <style>
-       
-    </style>
 </head>
 <body>
     <div class="card">
         <h1>Login</h1>
-        <form action="#" method="post">
+        <form asp-action="Index" method="post">
             <div>
-                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input asp-for="Username" class="form-control" placeholder="Username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <br />
+            <div>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div>
-                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input class="btn custom-button" type="submit" value="Login" />
             </div>
-            <div>
-                <button type="submit" asp-action="Page1" asp-controller="Home" class="btn custom-button">
-                    Login
-                </button>
-               
-
-
-                
-            </div>
-
-          
-            
         </form>
+
         
 			
 
