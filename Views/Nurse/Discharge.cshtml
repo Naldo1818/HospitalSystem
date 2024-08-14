@@ -1,5 +1,281 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Discharge Patient";
+    Layout = "_LayoutNurse";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discharge Patient</title>
+
+    <!-- Bootstrap CSS (required for modal functionality) -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+    <!-- jQuery (required for Bootstrap's JS) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- Bootstrap JS (required for modal functionality) -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        .active-tab {
+            background-color: teal;
+            color: white;
+        }
+
+        .form-card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .row-two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .row-two-columns .vital-group {
+                flex: 1 1 48%;
+            }
+
+        .vital-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .vital-group {
+            text-align: left;
+        }
+
+            .vital-group input,
+            .vital-group select {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+                width: 100%;
+                max-width: 400px;
+                box-sizing: border-box;
+                height: 40px;
+                margin: 0;
+            }
+
+        .header-labels {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 50px;
+        }
+
+            .header-labels label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
+
+        .form-card hr {
+            margin: 20px 0;
+        }
+
+        .list-view-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+            .list-view-box p {
+                margin: 5px 0;
+                padding: 5px;
+                background-color: #f1f1f1;
+                border-radius: 3px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .list-view-box p span {
+                    flex-grow: 1;
+                }
+
+                .list-view-box p button {
+                    border: none;
+                    background-color: red;
+                    color: white;
+                    border-radius: 3px;
+                    padding: 5px;
+                    cursor: pointer;
+                }
+
+        .address-group {
+            margin-bottom: 10px;
+        }
+
+            .address-group label {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+            .address-group select {
+                width: 100%;
+                padding: 8px;
+            }
+
+        .vital-group .radio-group {
+            display: flex;
+            align-items: center;
+        }
+
+            .vital-group .radio-group label {
+                margin-left: 5px;
+                font-size: 14px;
+            }
+
+            .vital-group .radio-group input {
+                width: auto;
+                height: auto;
+            }
+
+        /* Style for the scrollable dropdown */
+        .select2-container--default .select2-results {
+            max-height: 150px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0" style="width: contain;">
+            <div class="text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Discharge Patient</strong></h2>
+                    <hr>
+                    <div class="row-two-columns">
+                        <div class="header-labels">
+                            <label>Name: </label>
+                            <label>Surname:</label>
+                            <label>Date:</label>
+                        </div>
+                        <div class="header-labels">
+                            <label>Ward: </label>
+                            <label>Bed: </label>
+                            <label>Gender: </label>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12 mx-0">
+                            
+                                
+                            <div class="form-card">
+                                <div class="form-group">
+                                    <h4>Discharge Patient</h4>
+                                    <hr>
+                                    <div class="row-two-columns">
+                                        <div class="vital-group">
+                                            <label for="Surgeon">Surgeon:</label>
+                                            <select class="select2" id="SurgeonSelect">
+                                                <option value="" disabled selected>Choose Surgeon</option>
+                                                <option value="Surgeon1">Surgeon1</option>
+                                                <option value="Surgeon2">Surgeon2</option>
+                                                <option value="Surgeon3">Surgeon3</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row-two-columns">
+                                        <div class="vital-group">
+                                            <label for="AdmissionDate">Admission Date:</label>
+                                            <input type="date" id="AdmissionDate" name="AdmissionDate" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="row-two-columns">
+                                        <div class="vital-group">
+                                            <label for="DisDate">Discharge Date:</label>
+                                            <input type="date" id="DisDate" name="DisDate" required>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <input type="button" name="previous" class="previous action-button-previous" value="Back" />
+                                    <input type="button" name="discharge" class="next action-button" value="Discharge" id="dischargeButton" />
+
+                                </div>
+
+                                <!-- Discharge Confirmation Modal -->
+                                <div class="modal fade" id="confirmDischargeModal" tabindex="-1" role="dialog" aria-labelledby="confirmDischargeModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="confirmDischargeModalLabel">Confirm Discharge</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to discharge this patient?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <a class="btn btn-primary" href="@Url.Action("PatientRecords", "Nurse")">Yes</a>
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelDischargeButton">No</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // Initialize Select2 with searchable functionality
+            $('.select2').select2({
+                placeholder: 'Select an option',
+                allowClear: true
+            });
+
+            // Display the confirmation modal when the "Discharge" button is clicked
+            $('#dischargeButton').on('click', function () {
+                $('#confirmDischargeModal').modal('show');
+            });
+
+            // Ensure 'No' button closes the confirmation modal
+            $('#cancelDischargeButton').on('click', function () {
+                $('#confirmDischargeModal').modal('hide');
+            });
+        });
+
+        // Function to remove a list item
+        function removeItem(button) {
+            const p = button.parentElement;
+            p.remove();
+        }
+    </script>
+
+</body>
+</html>
