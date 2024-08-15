@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var userName = Context.Session.GetString("UserName");
+    var userSurname = Context.Session.GetString("UserSurname");
+    var userEmail = Context.Session.GetString("UserEmail");
+}
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -92,8 +98,8 @@
                         <img src="https://via.placeholder.com/150" class="card-img-top rounded-circle" alt="Placeholder Image">
                         <div class="card-body">
                             <h5 class="card-title">Surgeon</h5>
-                            <h5 class="card-title">John Doe</h5>
-                            <p class="card-text">Email: john.doe@example.com</p>
+                            <h5 class="card-title">@ViewBag.UserName @ViewBag.UserSurname</h5>
+                            <p class="card-text">Email: @ViewBag.UserEmail</p>
                             <hr>
                             <p class="card-text">Prescriptions Prescribed</p>
                             <p class="card-text">1</p>
@@ -106,7 +112,7 @@
                             <p class="card-text">Surgeries For Today</p>
                             <p class="card-text">2</p>
                             <hr>
-                            <a class="btn btn-primary" aria-hidden="true" href="#">Log Out</a>
+                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Index">Log Out</a>
                         </div>
                     </div>
                 </div>

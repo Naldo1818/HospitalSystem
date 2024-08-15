@@ -14,6 +14,18 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+// Add session services
+builder.Services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true; // Ensures the cookie is only accessible via HTTP requests
+    options.Cookie.IsEssential = true; // Make the session cookie essential
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +46,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-
+app.UseSession(); // Enable session middleware
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

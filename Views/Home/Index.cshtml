@@ -13,18 +13,30 @@
     <title>Login Page</title>
 </head>
 <body>
+    <style>
+        .card {
+            height: 500px; /* Adjust the height as needed */
+            padding: 20px; /* Optional: add padding for better spacing */
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1); /* Optional: add some shadow for better appearance */
+        }
+    </style>
     <div class="card">
         <h1>Login</h1>
+         <br />
+        <br />
         <form asp-action="Index" method="post">
+            <h4>Username</h4>
             <div>
                 <input asp-for="Username" class="form-control" placeholder="Username" />
                 <span asp-validation-for="Username" class="text-danger"></span>
             </div>
             <br />
+            <h4>Password</h4>
             <div>
                 <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+            <br />
             <div>
                 <input class="btn custom-button" type="submit" value="Login" />
             </div>
