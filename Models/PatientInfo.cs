@@ -17,7 +17,7 @@ namespace DEMO.Models
         [Required]
         public string Email { get; set; }
         [Required]
-        public int IDNumber { get; set; }
+        public string IDNumber { get; set; }
 
       
 

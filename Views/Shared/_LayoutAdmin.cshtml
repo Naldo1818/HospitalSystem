@@ -1,9 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var userName = Context.Session.GetString("UserName");
+    var userSurname = Context.Session.GetString("UserSurname");
+    var userEmail = Context.Session.GetString("UserEmail");
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAGE1</title>
+    <title>Apollo+</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/site2.css" rel="stylesheet">
 </head>
@@ -69,6 +74,8 @@
 
                     <a class="nav-link active" aria-hidden="true" asp-controller="Admin" asp-action="ListMedication" style="font-size: 1.3rem;">Medication List</a>
 
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Admin" asp-action="ListTreatmentCodes" style="font-size: 1.3rem;">Treatment Codes List</a>
+
                 
                 </li>
             </ul>
@@ -83,21 +90,23 @@
                 </div>
                 <div class="col-md-3 d-flex justify-content-end" align="right">
 				<div class="card mt-5 custom-card" style="width:250px">
-					<img src="https://via.placeholder.com/150" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
+                        <img src="~/css/user.png" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
 					<div class="card-body">
                         <h5 class="card-title text-center">Admin</h5>
-						<h5 class="card-title text-center">Dan Cater</h5>
-						<p class="card-text text-center">Email: dan.cater@example.com</p>
+                            <h4 class="card-title">@ViewBag.UserName @ViewBag.UserSurname</h4>
+                            <p class="card-text">Email: @ViewBag.UserEmail</p>
 						<br>
 						<br>
 						<hr>
 						<br>
+                        <p class="card-text text-center">Number of Accounts</p>
+                        <p class="card-text text-center">0</p>
 						<p class="card-text text-center">Number of Medication</p>
 						<p class="card-text text-center">0</p>
-						<p class="card-text text-center">Number of Accounts</p>
-						<p class="card-text text-center">0</p>
+						<p class="card-text text-center">Number of Treatment Codes</p>
+                        <p class="card-text text-center">0</p>
 						<hr>
-                            <a class="btn btn-primary" aria-hidden="true" href="#">Log Out</a>
+                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Index">Log Out</a>
 					</div>
 				</div>
              </div>

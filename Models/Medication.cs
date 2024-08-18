@@ -4,7 +4,7 @@ namespace DEMO.Models
 {
     public class Medication
     {
-           //Move Quantity and Instructions
+         
         [Key]
         public int MedicationID { get; set; }
 

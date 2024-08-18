@@ -1,0 +1,246 @@
+﻿@{
+    ViewData["Title"] = "Treatment Code Add";
+    Layout = "_LayoutAdmin";
+}
+@model DEMO.ViewModels.TreatmentCodesListViewModal
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+   
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <form id="addTreatmentCodeForm" method="post" action="@Url.Action("AddTreatmentCode", "Admin")">
+                              <div class="form-group row">
+                                <div class="col-4">
+                                    <h1>Treatment Code Page</h1>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+
+                                <div class="col-4">
+                                    <label for="treatmentNameInput" class="form-label">Treatment Description</label>
+                                    <input type="text" class="form-control" name="TreatmentName" placeholder="Enter Treatment Description" style="width:400px">
+                                </div>
+                               
+                                <div class="col-4">
+                                    <label for="TreatmentCodeInput" class="form-label">Treatment Code(ICD-10 Code)</label>
+                                    <input type="text" class="form-control" name="TreatmentCode" placeholder="Enter ICD-10 Code" style="width:250px">
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br />
+                                        <button type="button" id="saveTreatmentButton" class="btn btn-primary">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <table id="TreatmentCodeTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Treatment Code(ICD-10 Code)</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var TreatmentCodes in Model.AllTreatmentCodes)
+                                {
+                                    <tr>
+                                        <td width="30%">@TreatmentCodes.TreatmentName</td>
+                                        <td width="30%">@TreatmentCodes.TreatmentCode</td>
+                                       
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-primary"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editTreatmentModal"
+                                                   data-treatment-name="@TreatmentCodes.TreatmentName"
+                                                   data-treatment-code="@TreatmentCodes.TreatmentCode"
+                                                   data-treatment-code-id="@TreatmentCodes.TreatmentCodeID">Edit Treatment Code</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirmation ADD TreatmentCodes Modal -->
+            <div class="modal fade" id="confirmTreatmentModal" tabindex="-1" role="dialog" aria-labelledby="confirmTreatmentModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmTreatmentModalLabel">Confirm Save</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to add this Treatment Code?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveTreatmentButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Treatment Modal -->
+            <div class="modal fade" id="editTreatmentModal" role="dialog" tabindex="-1" aria-labelledby="editTreatmentModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editTreatmentModal">Edit Treatment Code</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editTreatmentForm" method="post" action="@Url.Action("EditTreatmentCodes", "Admin")">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <input type="hidden" id="TreatmentCodeID" name="TreatmentCodeID" />
+                                        <br>
+                                        <label for="TreatmentNameInput" class="form-label" style="width:250px">Treatment Description</label>
+                                        <input type="text" class="form-control" name="TreatmentName" placeholder="Enter Treatment Description" style="width:470px">
+                                    </div>
+                                </div>
+
+                                    <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="TreatmentCodeInput" class="form-label">Treatment Code</label>
+                                        <input type="text" class="form-control" name="TreatmentCode" placeholder="Enter Treatment Code" style="width:250px">
+                                    </div>
+                                 </div>
+                                
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="mainEditTreatmentButton" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirmation Edit TreatmentCodes  Modal -->
+            <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmTreatmentModalLabel">Confirm Save</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save this edited Treatment Code?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveEditButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                $(document).ready(function () {
+                    // Initialize DataTable
+                    $('#TreatmentCodeTable').DataTable();
+
+                    // Handle 'Add Treatment Code' button click
+                    $('#saveTreatmentButton').on('click', function () {
+                        $('#confirmTreatmentModal').modal('show');
+                    });
+
+                    // Handle confirmation of saving treatment code
+                    $('#confirmTreatmentModal .btn-primary').on('click', function () {
+                        $.ajax({
+                            url: '@Url.Action("AddTreatmentCode", "Admin")',
+                            type: 'POST',
+                            data: $('#addTreatmentCodeForm').serialize(),
+                            success: function (response) {
+                                // Redirect to the treatment codes list after successful addition
+                                window.location.href = '@Url.Action("ListTreatmentCodes", "Admin")';
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Error occurred:", error);
+                            }
+                        });
+                    });
+
+                    // Handle 'Edit Treatment Code' button click
+                    $('#mainEditTreatmentButton').on('click', function () {
+                        $('#confirmEditModal').modal('show');
+                    });
+
+                    // Ensure 'No' button closes the confirmation modals
+                    $('#confirmEditModal .btn-secondary').on('click', function () {
+                        $('#confirmEditModal').modal('hide');
+                    });
+
+                    $('#confirmTreatmentModal .btn-secondary').on('click', function () {
+                        $('#confirmTreatmentModal').modal('hide');
+                    });
+
+                    // Populate edit modal with existing data
+                    $('#editTreatmentModal').on('show.bs.modal', function (event) {
+                        var button = $(event.relatedTarget); // Button that triggered the modal
+                        var TreatmentName = button.data('treatment-name');
+                        var TreatmentCode = button.data('treatment-code');
+                        var TreatmentCodeID = button.data('treatment-code-id');
+
+                        var modal = $(this);
+                        modal.find('input[name="TreatmentName"]').val(TreatmentName);
+                        modal.find('input[name="TreatmentCode"]').val(TreatmentCode);
+                        modal.find('input[name="TreatmentCodeID"]').val(TreatmentCodeID);
+                    });
+                });
+                $(document).ready(function () {
+                    $('#saveEditButton').on('click', function () {
+                        $.ajax({
+                            url: '@Url.Action("EditTreatmentCodes", "Admin")',
+                            type: 'POST',
+                            data: $('#editTreatmentForm').serialize(),
+                            success: function (response) {
+                                // Handle success response
+                                window.location.href = '@Url.Action("ListTreatmentCodes", "Admin")'; // Redirect to User List
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle error response
+                                console.log(error);
+                            }
+                        });
+                    });
+                });
+            </script>
+
+        </main>
+    </div>
+</body>
+</html>
