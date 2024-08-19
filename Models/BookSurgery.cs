@@ -19,7 +19,6 @@ namespace DEMO.Models
 
         [Required]
         public string Theater { get; set; }
-        [Required]
-        public string AdmissionStatus { get; set; }
+       
     }
 }

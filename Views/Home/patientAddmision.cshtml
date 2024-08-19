@@ -20,9 +20,9 @@
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <form>
                             <h2>Admissions List</h2>
                             <div class="form-group row">
@@ -31,6 +31,7 @@
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
                                 <div class="col-4">
+                                    <!-- Fix Date filter -->
                                     <label for="dateInput" class="form-label">Date</label>
                                     <input type="date" class="form-control" id="dateInput" style="width:300px">
                                 </div>
@@ -39,9 +40,9 @@
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <table id="example" class="display" style="width:100%">
                             <thead>
                                 <tr>
@@ -62,8 +63,25 @@
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>2024-06-14</td>
-                                    <td>08:00 AM</td>
+                                    <td>08/13/2024</td>
+                                    <td>AM</td>
+                                    <td>07:30 AM</td>
+                                    <td>Cardiology</td>
+                                    <td>101</td>
+                                    <td>Ariana Grande</td>
+                                    <td>
+                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#treatmentModal">
+                                            Show Treatment Codes
+                                        </a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>0120526958</td>
+                                    <td>Jin</td>
+                                    <td>Can</td>
+                                    <td>07/13/2024</td>
+                                    <td>AM</td>
                                     <td>07:30 AM</td>
                                     <td>Cardiology</td>
                                     <td>101</td>
@@ -126,14 +144,16 @@
                 }
             });
 
-            $('#searchInput, #dateInput').on('keyup change', function () {
+            // Function to filter the table
+            function filterTable() {
                 var searchText = $('#searchInput').val().trim();
                 var dateText = $('#dateInput').val();
-                var dateFilter = dateText ? '^' + dateText + '$' : '';
 
-                table.column(3).search(dateFilter, true, false);
+                // If dateText is empty, no filtering is applied
+                table.column(3).search(dateText ? dateText : '', true, false);
                 table.search(searchText).draw();
 
+                // Show or hide table based on search results
                 if (searchText === '' && dateText === '') {
                     $('#example').hide();
                 } else {
@@ -142,7 +162,13 @@
                         $('#example').hide();
                     }
                 }
-            });
+            }
+
+            // Event listeners for search and date input changes
+            $('#searchInput, #dateInput').on('keyup change', filterTable);
+
+            // Initial filter to apply on page load if there are pre-existing values
+            filterTable();
         });
     </script>
 </body>

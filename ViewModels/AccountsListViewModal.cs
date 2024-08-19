@@ -1,10 +1,11 @@
+﻿using DEMO.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace DEMO.Models
+namespace DEMO.ViewModels
 {
-    public class Accounts
-    {
-        [Key]
+    public class AccountsListViewModal
+    {//RegisterPatient
+        [Required]
         public int AccountID { get; set; }
         [Required]
         public string Name { get; set; }
@@ -15,19 +16,21 @@ namespace DEMO.Models
         [Required]
         public string Password { get; set; }
         [Required]
-        public string ContactNumber { get; set; }
+        public int ContactNumber { get; set; }
         [Required]
         public int RegistrationNumber { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]
-        public string Status { get; set; }
+        public string status { get; set; }
         [Required]
         public string Role { get; set; }
 
 
 
-
-
+        //List
+        public Accounts accounts { get; set; }
+        public List<Accounts> AllAccounts { get; set; }
     }
 }
+

@@ -1,39 +1,47 @@
-﻿@{
+﻿@model DEMO.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
     Layout = "_Layout";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-    <style>
-       
-    </style>
 </head>
 <body>
+    <style>
+        .card {
+            height: 500px; /* Adjust the height as needed */
+            padding: 20px; /* Optional: add padding for better spacing */
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1); /* Optional: add some shadow for better appearance */
+        }
+    </style>
     <div class="card">
-        <h1>Login</h1>
-        <form action="#" method="post">
+        <h1>Apollo+</h1>
+         <br />
+        <br />
+        <form asp-action="Index" method="post">
+            <h4>Username</h4>
             <div>
-                <input type="text" id="username" name="username" placeholder="Username" required>
+                <input asp-for="Username" class="form-control" placeholder="Username" />
+                <span asp-validation-for="Username" class="text-danger"></span>
             </div>
+            <br />
+            <h4>Password</h4>
             <div>
-                <input type="password" id="password" name="password" placeholder="Password" required>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+            <br />
             <div>
-                <button type="submit" asp-action="Page1" asp-controller="Home" class="btn custom-button">
-                    Login
-                </button>
-               
-
-
-                
+                <input class="btn custom-button" type="submit" value="Login" />
             </div>
-
-          
-            
         </form>
+
         
 			
 

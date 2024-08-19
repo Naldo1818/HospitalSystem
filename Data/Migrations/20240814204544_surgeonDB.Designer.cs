@@ -4,6 +4,7 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240814204544_surgeonDB")]
+    partial class surgeonDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,9 +33,8 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountID"));
 
-                    b.Property<string>("ContactNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ContactNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -53,15 +55,15 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -81,6 +83,12 @@ namespace DEMO.Data.Migrations
                     b.Property<string>("ActiveIngredientName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ActiveIngredientStrength")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MedicationID")
+                        .HasColumnType("int");
 
                     b.HasKey("ActiveingredientID");
 
@@ -141,28 +149,6 @@ namespace DEMO.Data.Migrations
                     b.ToTable("Medication");
                 });
 
-            modelBuilder.Entity("DEMO.Models.MedicationActiveIngredient", b =>
-                {
-                    b.Property<int>("MedicationActiveingredientID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationActiveingredientID"));
-
-                    b.Property<int>("ActiveIngredientStrength")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ActiveingredientID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MedicationID")
-                        .HasColumnType("int");
-
-                    b.HasKey("MedicationActiveingredientID");
-
-                    b.ToTable("MedicationActiveIngredient");
-                });
-
             modelBuilder.Entity("DEMO.Models.MedicationInstructions", b =>
                 {
                     b.Property<int>("InstructionsID")
@@ -209,9 +195,8 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("IDNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("IDNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -265,9 +250,11 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TreatmentCodeID"));
 
-                    b.Property<string>("TreatmentCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("BookingID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TreatmentCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("TreatmentName")
                         .IsRequired()

@@ -1,21 +1,64 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var userName = Context.Session.GetString("UserName");
+    var userSurname = Context.Session.GetString("UserSurname");
+    var userEmail = Context.Session.GetString("UserEmail");
+}
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAGE1</title>
+    <title>Apollo+</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/site2.css" rel="stylesheet">
 </head>
 <body>
+    <style>
+        
+        .custom-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 15px; /* Reduced margin-top to move the card higher */
+        }
 
+            .custom-card img {
+                width: 100px;
+                height: 100px;
+            }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-text {
+            margin: 5px 0;
+        }
+
+        .btn-primary {
+            margin-top: 0px;
+        }
+        .sideBar{
+            margin-top:-1rem;
+        }
+
+</style>
     <nav class="navbar navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
           
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-              <a class="navbar-brand" href="#">Website Name</a>
+              <a class="navbar-brand" href="#">Apollo+</a>
         </div>
     </nav>
 
@@ -37,43 +80,42 @@
                     <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="PrescriptionList" style="font-size: 1.3rem;">Prescription List</a>
 
                     <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="patientAddmision" style="font-size: 1.3rem;">Addmisions list</a>
+
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="InfoSurgeon" style="font-size: 1.3rem;">Info</a>
                 </li>
             </ul>
        </div>
     </div>
 
     <div class="container-fluid">
-        <main role="main" >
-			<div class="row">
+        <main role="main">
+            <div class="row">
                 <div class="col-md-9" align="left">
                     @RenderBody()
                 </div>
-                <div class="col-md-3 d-flex justify-content-end" align="right">
-                    <div class="card mt-5 custom-card" style="width:250px">
-                        <img src="https://via.placeholder.com/150" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
+                <div id="sideBar" class="col-md-3 d-flex justify-content-end" align="right">
+                    <div class="card custom-card" style="width: 250px;">
+                        <img src="https://via.placeholder.com/150" class="card-img-top rounded-circle" alt="Placeholder Image">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Surgeon</h5>
-                            <h5 class="card-title text-center">John Doe</h5>
-                            <p class="card-text text-center">Email: john.doe@example.com</p>
+                            <h5 class="card-title">Surgeon</h5>
+                            <h4 class="card-title">@ViewBag.UserName @ViewBag.UserSurname</h4>
+                            <p class="card-text">Email: @ViewBag.UserEmail</p>
                             <hr>
-                            <br>
-                            <p class="card-text text-center">Prescriptions Prescribed</p>
-                            <p class="card-text text-center">1</p>
-                            <p class="card-text text-center">Prescriptions Accepted</p>
-                            <p class="card-text text-center">2</p>
-                            <p class="card-text text-center">Prescriptions Rejected</p>
-                            <p class="card-text text-center">1</p>
-                            <br>
+                            <p class="card-text">Prescriptions Prescribed</p>
+                            <p class="card-text">1</p>
+                            <p class="card-text">Prescriptions Accepted</p>
+                            <p class="card-text">2</p>
+                            <p class="card-text">Prescriptions Rejected</p>
+                            <p class="card-text">1</p>
                             <hr>
-                            <br>
-                            <p class="card-text text-center">Surgeries For Today</p>
-                            <p class="card-text text-center">2</p>
+                            <hr>
+                            <p class="card-text">Surgeries For Today</p>
+                            <p class="card-text">2</p>
                             <hr>
                             <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Index">Log Out</a>
                         </div>
                     </div>
                 </div>
-               
             </div>
         </main>
     </div>

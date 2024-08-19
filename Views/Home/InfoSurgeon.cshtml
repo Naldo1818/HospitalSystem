@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Info";
+    Layout = "_Layout2";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bay Breeze Day Hospital</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align items to the top */
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            padding-top: 100px; /* Increased padding to push content down */
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 100px; /* Added margin to push the container down */
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .info {
+            margin-bottom: 20px;
+        }
+        .info h2 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #444;
+        }
+        .info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Bay Breeze Day Hospital</h1>
+    <div class="info">
+        <h2>Address</h2>
+        <p>1 8th Avenue</p>
+        <p>Summerstrand</p>
+        <p>Gqeberha</p>
+        <p>Eastern Cape, 6001</p>
+    </div>
+    <div class="info">
+        <h2>Contact Information</h2>
+        <p><strong>Phone:</strong> 041 583 2121</p>
+        <p><strong>Email:</strong> <a href="mailto:baybreeze@gmail.com">baybreeze@gmail.com</a></p>
+    </div>
+    <div class="info">
+        <h2>Practice Manager</h2>
+        <p><strong>ID:</strong> PR123456</p>
+    </div>
+    <div class="info">
+        <h2>Purchase Manager</h2>
+        <p><strong>Email:</strong> <a href="mailto:nmostert@nmmu.ac.za">nmostert@nmmu.ac.za</a></p>
+    </div>
+</div>
+
+</body>
+</html>
+
+

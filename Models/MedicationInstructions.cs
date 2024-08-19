@@ -6,7 +6,7 @@ namespace DEMO.Models
     {
         [Key]
         public int InstructionsID { get; set; }
-
+       
         [Required]
         public int PrescriptionID { get; set; }
 
@@ -15,6 +15,9 @@ namespace DEMO.Models
 
         [Required]
         public string Instructions { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
 
 
     }

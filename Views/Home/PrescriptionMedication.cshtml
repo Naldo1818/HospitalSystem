@@ -22,7 +22,7 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="offcanvas offcanvas-start text-bg-dark"  tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
         <div class="offcanvas-header">
             <h3 id="offcanvasSidebarLabel">Patient Information</h3>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -44,8 +44,8 @@
                 </li>
 
                 <li class="nav-item">
-                   <p>Medical History</p>
-                    <p>Conditions  - None</p>
+                    <p>Medical History</p>
+                    <p>Medical Conditions - None</p>
                     <p>Allergies - None</p>
                     <p>Current Medication - None</p>
                 </li>
@@ -56,65 +56,64 @@
                 <li class="nav-item">
                     <p style="font-size: 1.2rem;">Latest Vitals</p>
                     <div style="max-height: 300px; overflow-y: auto;">
-                    <table class="table table-dark table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Time </th>
-                                <th scope="col">Height</th>
-                                <th scope="col">Weight</th>
-                                <th scope="col">Temperature</th>
-                                <th scope="col">Blood Pressure</th>
-                                <th scope="col">Pulse Rate</th>
-                                <th scope="col">Respiratory Rate</th>
-                                <th scope="col">Blood Oxygen</th>
-                                <th scope="col">Blood Glucose Level</th>
-                                <th scope="col">Vitals High Limit</th>
-                                <th scope="col">Vitals Low Limit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>2024-05-14</td>
-                                <td>08:00</td>
-                                <td>175 cm</td>
-                                <td>70 kg</td>
-                                <td>36.5°C</td>
-                                <td>120/80 mmHg</td>
-                                <td>80 bpm</td>
-                                <td>16 breaths/min</td>
-                                <td>98%</td>
-                                <td>90 mg/dL</td>
-                                <td>140/90 mmHg</td>
-                                <td>90/60 mmHg</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        <table class="table table-dark table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Height</th>
+                                    <th scope="col">Weight</th>
+                                    <th scope="col">Temperature</th>
+                                    <th scope="col">Blood Pressure</th>
+                                    <th scope="col">Pulse Rate</th>
+                                    <th scope="col">Respiratory Rate</th>
+                                    <th scope="col">Blood Oxygen</th>
+                                    <th scope="col">Blood Glucose Level</th>
+                                    <th scope="col">Vitals High Limit</th>
+                                    <th scope="col">Vitals Low Limit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2024-05-14</td>
+                                    <td>08:00</td>
+                                    <td>175 cm</td>
+                                    <td>70 kg</td>
+                                    <td>36.5°C</td>
+                                    <td>120/80 mmHg</td>
+                                    <td>80 bpm</td>
+                                    <td>16 breaths/min</td>
+                                    <td>98%</td>
+                                    <td>90 mg/dL</td>
+                                    <td>140/90 mmHg</td>
+                                    <td>90/60 mmHg</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </li>
-              </ul>
+            </ul>
         </div>
-      
     </div>
 
     <div id="main" class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <form>
                             <h2>Add Medication</h2>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="searchTreatmentInput" class="form-label">Medication Name Filter</label>
-                                    <input type="text" class="form-control" id="searchTreatmentInput" placeholder="Medication Name Filter" style="width:300px" oninput="filterTreatmentNames()">
+                                    <label for="searchMedicationInput" class="form-label">Medication Name Filter</label>
+                                    <input type="text" class="form-control" id="searchMedicationInput" placeholder="Medication Name Filter" style="width:300px" oninput="filterMedicationNames()">
                                 </div>
 
                                 <div class="col-4">
                                     <br>
-                                    <label for="treatmentSelect" class="form-label">Medication Name Selected</label>
-                                    <select class="form-control" id="treatmentSelect" style="width:300px">
+                                    <label for="medicationSelect" class="form-label">Medication Name Selected</label>
+                                    <select class="form-control" id="medicationSelect" style="width:300px">
                                         <option value="Cephalexin">Cephalexin</option>
                                         <option value="Diazepem">Diazepem</option>
                                         <option value="Ibiprofen">Ibiprofen</option>
@@ -126,9 +125,9 @@
                                     </select>
                                 </div>
                                 <script>
-                                    function filterTreatmentNames() {
-                                        const filter = document.getElementById('searchTreatmentInput').value.toLowerCase();
-                                        const select = document.getElementById('treatmentSelect');
+                                    function filterMedicationNames() {
+                                        const filter = document.getElementById('searchMedicationInput').value.toLowerCase();
+                                        const select = document.getElementById('medicationSelect');
                                         const options = select.getElementsByTagName('option');
 
                                         for (let i = 0; i < options.length; i++) {
@@ -142,29 +141,29 @@
                                         }
                                     }
                                 </script>
-
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label"> Quantity/Units</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Add Amount" style=" width:300px">
+                                    <label for="medicationForm" class="form-label">Medication Form</label>
+                                    <select class="form-control" id="medicationForm" style="width:300px">
+                                        <option value="Tablets">Tablets</option>
+                                        <option value="Capsules">Capsules</option>
+                                        <option value="Liquids">Liquids</option>
+                                        <option value="Topical">Topical</option>
+                                        <option value="Patches">Patches</option>
+                                        <option value="Suppositories">Suppositories</option>
+                                        <option value="Inhalers">Inhalers</option>
+                                        <option value="Powders">Powders</option>
+                                        <option value="Drops">Drops</option>
+                                        <option value="Injectable Solutions">Injectable Solutions</option>
+                                    </select>
                                 </div>
+                               
 
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <br>
-                                        <label for="medicationForm" class="form-label">Medication Form</label>
-                                        <select class="form-control" id="medicationForm" style="width:300px">
-                                            <option value="Tablets">Tablets</option>
-                                            <option value="Capsules">Capsules</option>
-                                            <option value="Liquids">Liquids</option>
-                                            <option value="Topical">Topical</option>
-                                            <option value="Patches">Patches</option>
-                                            <option value="Suppositories">Suppositories</option>
-                                            <option value="Inhalers">Inhalers</option>
-                                            <option value="Powders">Powders</option>
-                                            <option value="Drops">Drops</option>
-                                            <option value="Injectable Solutions">Injectable Solutions</option>
-                                        </select>
+                                        <label for="exampleFormControlInput1" class="form-label">Quantity/Units</label>
+                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Add Amount" style="width:300px">
                                     </div>
                                 </div>
                             </div>
@@ -172,8 +171,8 @@
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Instructions</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Enter Instructions" style="width:800px">
+                                    <label for="instructionsInput" class="form-label">Instructions</label>
+                                    <input type="text" class="form-control" id="instructionsInput" placeholder="Enter Instructions" style="width:900px">
                                 </div>
                             </div>
 
@@ -196,9 +195,9 @@
                 </div>
             </div>
 
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
                         <table id="example" class="table display">
                             <thead>
                                 <tr>
@@ -223,15 +222,21 @@
                                     <td>Please take once every 5 hours</td>
                                     <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
                                 </tr>
+                               
                             </tbody>
+                        
+                            <tfoot>
+                                <tr>
+                                    <td><a class="btn btn-primary" aria-hidden="true" style="width:70px" asp-controller="Home" asp-action="SurgeonHome">Save</a>
+                                    </td>
+                                </tr>
+                                </tfoot>
                         </table>
                     </div>
-                        <div class="col-4">
-                            <a class="btn btn-primary" aria-hidden="true" style="width:70px" asp-controller="Home" asp-action="SurgeonHome">Save</a>
-                        </div>
-                    </div>
+                   
                 </div>
-           </main>
+            </div>
+        </main>
     </div>
     <script>
         $(document).ready(function () {

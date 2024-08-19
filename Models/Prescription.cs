@@ -13,11 +13,12 @@ namespace DEMO.Models
 
         [Required]
         public string Urgency { get; set; }
+        [Required]
+        public string Take { get; set; }
 
         [Required]
         public string Status { get; set; }
-        [Required]
-        public string RejectionID { get; set; }
+       
 
     }
 }

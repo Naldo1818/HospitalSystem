@@ -1,7 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Medication Add";
+    ViewData["Title"] = "User List";
     Layout = "_LayoutAdmin";
 }
+@model DEMO.ViewModels.AccountsListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,30 +23,84 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
-    <title>Medication Add</title>
+    <title>User List</title>
+    <style>
+        #example_wrapper {
+            display: none;
+        }
+
+        .modal-lg-custom {
+            max-width: 90% !important; /* Adjust as necessary */
+            width: 1000px; /* Fixed width, or adjust as needed */
+        }
+
+
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 60px); /* Adjust based on header/footer height */
+            height: 80vh;
+        }
+
+        .modal-content {
+            flex: 1;
+        }
+
+        .modal-content-custom {
+            position: relative;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            width: 105%;
+            pointer-events: auto;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0, 0, 0, .2);
+            border-radius: .3rem;
+            outline: 0;
+            height: 61vh;
+        }
+
+
+
+        .modal-body {
+            overflow-y: auto; /* Enables scrolling if content overflows */
+            flex: 1 1 auto;
+        }
+
+        .row {
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            margin-right: -2px;
+            margin-left: 0px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+             <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
-                        <form>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <h1>User Page</h1>
-                                    <br>
-                                    <button class="btn btn-primary" style="width:100px" type="submit">Add User</button>
-                                </div>
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <form id="searchForm">
+                            <div class="form-group">
+                                <h1>User Page</h1>
+                                <br>
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#addUserModal">Add New User</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1000px">
+
+            <div class="row" style="width:auto">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
-                        <table id="medicationTable" class="table table-striped">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <h1>Users</h1>
+                        <table id="activeUsersTable" class="table table-striped">
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
@@ -55,57 +110,338 @@
                                     <th scope="col">Contact Number</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Role</th>
+                                    <th scope="col">Registration Number</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>John</td>
-                                    <td>Doe</td>
-                                    <td>johndoe</td>
-                                    <td>password123</td>
-                                    <td>+1234567890</td>
-                                    <td>john.doe@example.com</td>
-                                    <td>Surgeon</td>
-                                    <td>
-                                        <button class="btn btn-primary">Edit</button>
-                                        <button class="btn btn-danger">Deactivate</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Jane</td>
-                                    <td>Smith</td>
-                                    <td>janesmith</td>
-                                    <td>password456</td>
-                                    <td>+0987654321</td>
-                                    <td>jane.smith@example.com</td>
-                                    <td>Pharmacist</td>
-                                    <td>
-                                        <button class="btn btn-primary">Edit</button>
-                                        <button class="btn btn-danger">Deactivate</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Emily</td>
-                                    <td>Jones</td>
-                                    <td>emilyjones</td>
-                                    <td>password789</td>
-                                    <td>+1122334455</td>
-                                    <td>emily.jones@example.com</td>
-                                    <td>Nurse</td>
-                                    <td>
-                                        <button class="btn btn-primary">Edit</button>
-                                        <button class="btn btn-danger">Deactivate</button>
-                                    </td>
-                                </tr>
+                                @foreach (var Accounts in Model.AllAccounts)
+                                {
+                                    <tr>
+                                        <td width="15%">@Accounts.Name</td>
+                                        <td width="15%">@Accounts.Surname</td>
+                                        <td width="15%">@Accounts.Username</td>
+                                        <td width="15%">@Accounts.Password</td>
+                                        <td width="15%">@Accounts.ContactNumber</td>
+                                        <td width="15%">@Accounts.Email</td>
+                                        <td width="15%">@Accounts.Role</td>
+                                        <td width="15%">@Accounts.RegistrationNumber</td>
+                                        <td width="15%">@Accounts.Status</td>
+                                        
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-primary"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editUserModal"
+                                                   data-name="@Accounts.Name"
+                                                   data-surname="@Accounts.Surname"
+                                                   data-username="@Accounts.Username"
+                                                   data-password="@Accounts.Password"
+                                                   data-contact-number="@Accounts.ContactNumber"
+                                                   data-email="@Accounts.Email"
+                                                   data-role="@Accounts.Role"
+                                                   data-registration-number="@Accounts.RegistrationNumber"
+                                                   data-status="@Accounts.Status"
+                                                   data-accounts-id="@Accounts.AccountID">Edit Profile</a>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+                     
+
+            <!-- Add User Modal -->
+            <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addUserForm" method="post" action="@Url.Action("AddUser", "Admin")">
+                                <div class="form-group row">
+                                 <div class="col-4">
+                                      
+                                        <br>
+                                        <label for="nameInput" class="form-label">Name</label>
+                                        <input type="text" class="form-control" name="Name" placeholder="Enter Name" style="width:250px">
+                                </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="surnameInput" class="form-label">Surname</label>
+                                        <input type="text" class="form-control" name="Surname" placeholder="Enter Surname" style="width:250px">
+                                </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="usernameInput" class="form-label">Username</label>
+                                        <input type="text" class="form-control" name="Username" placeholder="Enter Username" style="width:250px">
+                                </div>
+<br />                          </div>
+                                <div class="form-group row">
+                                    <br>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="passwordInput" class="form-label">Password</label>
+                                        <input type="text" class="form-control" name="Password" placeholder="Enter Password" style="width:250px">
+                                </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="ContactNumberInput" class="form-label">Contact Number</label>
+                                        <input type="text" class="form-control" name="ContactNumber" placeholder="Enter Contact Number" style="width:250px">
+                                </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="emailInput" class="form-label">Email</label>
+                                        <input type="text" class="form-control" name="Email" placeholder="Enter Email " style="width:250px">
+                                </div>
+                                   
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="registrationNumberInput" class="form-label">RegistrationNumber</label>
+                                        <input type="text" class="form-control" name="RegistrationNumber" placeholder="Enter Registration Number " style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                    <label for="modalRole" class="form-label">Role</label>
+                                        <select name="Role" class="form-select">
+                                        <option>Surgeon</option>
+                                        <option>Pharmacist</option>
+                                        <option>Nurse</option>
+                                    </select>
+                                </div>
+                                     <div class="col-4">
+                                        <br>
+                                    <label for="modalStatus" class="form-label">Status</label>
+                                        <select name="Status" class="form-select">
+                                        <option>Active</option>
+                                        <option>Inactive</option>
+                                    </select>
+                                </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="mainSaveAccountButton" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirmation Modal -->
+            <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmSaveModalLabel">Confirm Save</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save this user?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveAccountButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit User Modal -->
+            <div class="modal fade" id="editUserModal" role="dialog" tabindex="-1" aria-labelledby="editUserModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editUserModal">Edit User</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editUserForm" method="post" action="@Url.Action("EditUser", "Admin")">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <input type="hidden" id="AccountID" name="AccountID" />
+                                        <br>
+                                        <label for="nameInput" class="form-label">Name</label>
+                                        <input type="text" class="form-control" name="Name" placeholder="Enter Name" style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="surnameInput" class="form-label">Surname</label>
+                                        <input type="text" class="form-control" name="Surname" placeholder="Enter Surname" style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="usernameInput" class="form-label">Username</label>
+                                        <input type="text" class="form-control" name="Username" placeholder="Enter Username" style="width:250px">
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="form-group row">
+                                    <br>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="passwordInput" class="form-label">Password</label>
+                                        <input type="text" class="form-control" name="Password" placeholder="Enter Password" style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="ContactNumberInput" class="form-label">Contact Number</label>
+                                        <input type="text" class="form-control" name="ContactNumber" placeholder="Enter Contact Number" style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="emailInput" class="form-label">Email</label>
+                                        <input type="text" class="form-control" name="Email" placeholder="Enter Email " style="width:250px">
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="registrationNumberInput" class="form-label">RegistrationNumber</label>
+                                        <input type="text" class="form-control" name="RegistrationNumber" placeholder="Enter Registration Number " style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="modalRole" class="form-label">Role</label>
+                                        <select name="Role" class="form-select">
+                                            <option>Surgeon</option>
+                                            <option>Pharmacist</option>
+                                            <option>Nurse</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="modalStatus" class="form-label">Status</label>
+                                        <select name="Status" class="form-select">
+                                            <option>Active</option>
+                                            <option>Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="mainEditAccountButton" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmation Edit Modal -->
+            <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmEditModalLabel">Confirm Save</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save this edit?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveEditButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <script>
                 $(document).ready(function () {
-                    $('#medicationTable').DataTable();
+                    $('#activeUsersTable').DataTable();
+                });
+
+                // Handle 'Save' button click
+                $('#mainSaveAccountButton').on('click', function () {
+                    $('#confirmSaveModal').modal('show');
+                });
+                // Ensure 'No' button closes the confirmation modal
+                $('#cancelSaveButton').on('click', function () {
+                    $('#confirmSaveModal').modal('hide');
+                });
+
+
+                // Handle 'Save' button click
+                $('#mainEditAccountButton').on('click', function () {
+                    $('#confirmEditModal').modal('show');
+                });
+                // Ensure 'No' button closes the confirmation modal
+                $('#cancelSaveButton').on('click', function () {
+                    $('#confirmEditModal').modal('hide');
+                });
+            </script>
+            <script>
+                $(document).ready(function () {
+                    $('#saveAccountButton').on('click', function () {
+                        $.ajax({
+                            url: '@Url.Action("AddUser", "Admin")',
+                            type: 'POST',
+                            data: $('#addUserForm').serialize(),
+                            success: function (response) {
+                                // Handle success response
+                                window.location.href = '@Url.Action("ListUser", "Admin")'; // Redirect to User List
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle error response
+                                console.log(error);
+                            }
+                        });
+                    });
+                });
+                $('#editUserModal').on('show.bs.modal', function (event) {
+                    var button = $(event.relatedTarget); // Button that triggered the modal
+                    var name = button.data('name');
+                    var surname = button.data('surname');
+                    var username = button.data('username');
+                    var password = button.data('password');
+                    var contactNumber = button.data('contact-number');
+                    var email = button.data('email');
+                    var role = button.data('role');
+                    var registrationNumber = button.data('registration-number');
+                    var status = button.data('status');
+                    var accountId = button.data('accounts-id');
+
+                    var modal = $(this);
+                    modal.find('input[name="Name"]').val(name);
+                    modal.find('input[name="Surname"]').val(surname);
+                    modal.find('input[name="Username"]').val(username);
+                    modal.find('input[name="Password"]').val(password);
+                    modal.find('input[name="ContactNumber"]').val(contactNumber);
+                    modal.find('input[name="Email"]').val(email);
+                    modal.find('input[name="RegistrationNumber"]').val(registrationNumber);
+                    modal.find('select[name="Role"]').val(role);
+                    modal.find('select[name="Status"]').val(status);
+                    modal.find('input[name="AccountID"]').val(accountId);
+                });
+
+            </script>
+            <script>
+                $(document).ready(function () {
+                    $('#saveEditButton').on('click', function () {
+                        $.ajax({
+                            url: '@Url.Action("EditUser", "Admin")',
+                            type: 'POST',
+                            data: $('#editUserForm').serialize(),
+                            success: function (response) {
+                                // Handle success response
+                                window.location.href = '@Url.Action("ListUser", "Admin")'; // Redirect to User List
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle error response
+                                console.log(error);
+                            }
+                        });
+                    });
                 });
             </script>
         </main>

@@ -1,0 +1,36 @@
+﻿@{
+    ViewData["Title"] = "Admin Home";
+    Layout = "_LayoutAdmin";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <br />
+    <br />
+    <h1 style=" text-align: center;">Welcome Admin</h1>
+    <div style="display: flex; gap: 20px;  padding-left: 180px;">
+        <div class="card" style="width: 18rem; margin-top: 48px;">
+            <img src="~/css/users.png" class="card-img-top" alt="Doctor Patient">
+            <div class="card-body">
+                <h5 class="card-title">User List</h5>
+                <p class="card-text">In a day hospital system, the user list includes healthcare professionals like doctors, nurses, and pharmacists involved in patient care, as well as administrative staff who handle records, scheduling, and billing. It also features support personnel such as receptionists and housekeeping staff. Users are categorized by their roles and access levels to ensure efficient management and communication within the hospital.</p>
+                <a class="btn btn-primary" aria-hidden="true" asp-controller="Admin" asp-action="ListUser">User List</a>
+            </div>
+        </div>
+        <div class="card" style="width: 18rem; margin-top: 48px;">
+            <img src="~/css/medication.jpeg" class="card-img-top" alt="Doctor Prescription">
+            <div class="card-body">
+                <h5 class="card-title">Prescription list</h5>
+                <p class="card-text">In a day hospital system, the medication list is a vital inventory of all drugs and therapies, detailing medication names, dosages, forms, administration routes, and special handling instructions. It may also include information on interactions, side effects, and patient-specific notes. Keeping this list current ensures accurate medication administration and effective patient treatment.</p>
+                <a class="btn btn-primary" aria-hidden="true" asp-controller="Admin" asp-action="ListMedication">Medication List</a>
+
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
