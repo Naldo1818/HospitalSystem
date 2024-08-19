@@ -55,5 +55,9 @@ namespace DEMO.Controllers
             return View();
         }
         
+        public IActionResult ModalTest()
+        {
+            return View();
+        }
     }
 }
