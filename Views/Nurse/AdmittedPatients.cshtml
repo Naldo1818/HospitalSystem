@@ -1,5 +1,111 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Patient Records";
+    Layout = "_LayoutNurse";
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Records</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <style>
+        .container {
+            padding-top: 50px;
+        }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:1200px">
+                <div class="col">
+                    <div class="p-3 mt-2 border">
+
+                        <form>
+                            <h2>Admissions List</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <label for="searchInput" class="form-label">Name or Surname</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
+                                </div>
+                                <div class="col-4 align-self-end">
+                                    <button type="submit" asp-action="AdmittedPatients" asp-controller="Nurse" class="btn btn-primary" style="width:70px">Search</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1200px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <table id="example" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID Number</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
+                                    <th scope="col">Ward</th>
+                                    <th scope="col">Bed</th>
+                                    <th scope="col">Number</th>
+                                    <th scope="col">Admit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0120526958</td>
+                                    <td>Jin</td>
+                                    <td>Woo</td>
+                                    <td>25/05/2025</td>
+                                    <td>08:00 AM</td>
+                                    <td>Cardiology</td>
+                                    <td>101</td>
+                                    <td>12345</td>
+                                    <td>Ariana Grande</td>
+                                    <td>
+                                        <a class="btn btn-success" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords">Patient Information</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration">Administer Medication</a>
+                                        <a class="btn btn-danger" aria-hidden="true" asp-controller="Nurse" asp-action="Vital">Retake Vitals</a>
+                                        <a class="btn btn-secondary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection">Collect Medication</a>
+                                        <a class="btn btn-info" aria-hidden="true" asp-controller="Nurse" asp-action="DischargeList">Discharge</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var table = $('#example').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            $('#searchInput').on('keyup', function () {
+                var searchText = this.value.trim();
+                if (searchText === '') {
+                    $('#example').hide();
+                } else {
+                    $('#example').show();
+                    table.search(searchText).draw();
+                    if (table.page.info().recordsDisplay === 0) {
+                        $('#example').hide();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

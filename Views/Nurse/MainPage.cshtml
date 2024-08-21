@@ -17,74 +17,38 @@
                 <div class="col">
                     <div class="p-3 mt-5 border">
 
-                        <form>
-                            
-                                <!-- Example form inputs -->
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput1" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
-                                    </div>
+                        <h1 style=" text-align: center;">Welcome Nurse</h1>
+                        <div style="display: flex; gap: 20px;  padding-left: 180px;">
+                            <div class="card" style="width: 18rem; margin-top: 48px;">
+                                <img src="~/css/DnP.jpeg" class="card-img-top" alt="Doctor Patient">
+                                <div class="card-body">
+                                    <h5 class="card-title">Patient List</h5>
+                                    <p class="card-text">Patients are the most important Thing in the Hospital. By clicking the button below you'll be able to Look throw a list of patients and book a surgery for anyone in need of one.</p>
+                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords">Patient List</a>
                                 </div>
+                            </div>
+                            <div class="card" style="width: 18rem; margin-top: 48px;">
+                                <img src="~/css/DP.jpeg" class="card-img-top" alt="Doctor Prescription">
+                                <div class="card-body">
+                                    <h5 class="card-title">Booking list</h5>
+                                    <p class="card-text">This will take the Nurse to the bookings made by the surgeon to view the bookings and allow for admission of patients to the system.</p>
+                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="ViewSurgeryBooking">Booking list</a>
 
-
-                                <div class="form-group row">
-
-                                    
                                 </div>
-
-                                
-                                
-
-
-
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
-                                        <button class="btn btn-danger" style=" width:70px" type="submit">Back</button>
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Save</button>
-                                    </div>
+                            </div>
+                            <div class="card" style="width: 18rem; margin-top: 48px;">
+                                <img src="~/css/HB.jpeg" class="card-img-top" alt="Hospital Bed">
+                                <div class="card-body">
+                                    <h5 class="card-title">Admissions list</h5>
+                                    <p class="card-text">By clicking the button below, you will be able to view all current patients admitted in the day hospitals. From the you can also search for a specific patient and look at the vitals takin by the nurses</p>
+                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmittedPatients">Admission List</a>
                                 </div>
-                                <!-- More form inputs can be added here -->
-                        </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    
-                                    <!-- More table headers can be added here -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    
-                                    <td>
-                                        
-                                            
-                                       
-                                       
-                                        
-                                    </td>
-                                    <!-- More table data can be added here -->
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            
         </main>
     </div>
 </body>

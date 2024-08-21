@@ -12,7 +12,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <style>
-        #example {
+        .container {
+            padding-top: 50px;
         }
     </style>
 </head>
@@ -68,8 +69,8 @@
                                     <td>12345</td>
                                     <td>Ariana Grande</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Check Treatment Codes</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                       
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Discharge">Discharge Patient</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -89,16 +90,17 @@
             });
 
             $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim();
-                if (searchText === '') {
-                    $('#example').hide();
-                } else {
-                    $('#example').show();
-                    table.search(searchText).draw();
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
+                var searchText = this.value.trim().toLowerCase();
+                table.rows().every(function () {
+                    var data = this.data();
+                    var name = data[1].toLowerCase();
+                    var surname = data[2].toLowerCase();
+                    if (name.includes(searchText) || surname.includes(searchText)) {
+                        $(this.node()).show();
+                    } else {
+                        $(this.node()).hide();
                     }
-                }
+                });
             });
         });
     </script>
