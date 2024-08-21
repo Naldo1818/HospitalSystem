@@ -69,7 +69,7 @@
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <br />
-                                        <button type="button" id="saveMedicationButton" class="btn btn-primary">Add</button>
+                                        <button type="button" id="openMedicationButton" class="btn btn-primary">Add</button>
                                     </div>
                                 </div>
                             </div>
@@ -164,7 +164,7 @@
                                     <div class="form-group row">
                                     <div class="col-4">
                                         <br />
-                                        <button type="button" id="mainSaveActiveIngredientButton" class="btn btn">Save</button>
+                                        <button type="button" id="mainSaveActiveIngredientButton" class="btn btnbtn-primary">Save</button>
                                     </div>
                                 </div>
 
@@ -236,7 +236,7 @@
                 });
 
                 // Handle 'Add Medication Code' button click
-                $('#saveMedicationButton').on('click', function () {
+                $('#openMedicationButton').on('click', function () {
                     $('#confirmMedicationModal').modal('show');
                 });
                 // Ensure 'No' button closes the confirmation modal
@@ -244,7 +244,7 @@
                     $('#confirmMedicationModal').modal('hide');
                 });
                 // Handle confirmation of saving Medication code
-                $('#confirmMedicationModal .btn-primary').on('click', function () {
+                $('#saveMedicationButton .btn-primary').on('click', function () {
                     $.ajax({
                         url: '@Url.Action("AddMedication", "Admin")',
                         type: 'POST',

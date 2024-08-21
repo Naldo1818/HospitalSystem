@@ -112,7 +112,7 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <!-- Your table content here -->
+                      
                         <table id="example" class="table display">
                             <thead>
                                 <tr>
@@ -408,49 +408,8 @@
             $('#f-2, #f-1').toggle('slow', 'swing')
         }
     </script>
-    <script>
-        function filterTreatmentNames() {
-            let input = document.getElementById('searchTreatmentInput').value.toLowerCase();
-            let treatmentSelect = document.getElementById('treatmentSelect');
-            let options = treatmentSelect.getElementsByTagName('option');
-            for (let i = 0; i < options.length; i++) {
-                let txtValue = options[i].textContent || options[i].innerText;
-                if (txtValue.toLowerCase().indexOf(input) > -1) {
-                    options[i].style.display = "";
-                } else {
-                    options[i].style.display = "none";
-                }
-            }
-        }
-    </script>
-    <script>
-        function updateTreatmentCode() {
-            var treatmentSelect = document.getElementById('treatmentSelect');
-            var treatmentCodeSelect = document.getElementById('treatmentCode');
-
-            var treatmentCodes = {
-                "Drainage of Abscess": "10060",
-                "Debridement": "11400",
-                "Arthroscopy": "29876"
-            };
-
-            var selectedTreatment = treatmentSelect.value;
-            var selectedCode = treatmentCodes[selectedTreatment];
-
-            // Set the selected code in the treatment code dropdown
-            for (var i = 0; i < treatmentCodeSelect.options.length; i++) {
-                if (treatmentCodeSelect.options[i].value === selectedCode) {
-                    treatmentCodeSelect.selectedIndex = i;
-                    break;
-                }
-            }
-        }
-
-        // Initialize the treatment code based on the default selected treatment name
-        document.addEventListener('DOMContentLoaded', function () {
-            updateTreatmentCode();
-        });
-    </script>
+   
+  
     <script>
         $(document).ready(function () {
             $('#savePatientButton').on('click', function () {

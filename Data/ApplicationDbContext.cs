@@ -18,7 +18,7 @@ namespace DEMO.Data
         public DbSet<TreatmentCodes> TreatmentCodes { get; set; }
         public DbSet<Prescription> Prescription { get; set; }
         public DbSet<MedicationInstructions> MedicationInstructions { get; set; }
-        
+        public DbSet<SurgeryTreatmentCode> SurgeryTreatmentCode { get; set; }
         public DbSet<MedicationActiveIngredient> MedicationActiveIngredient { get; set; }
     }
 }

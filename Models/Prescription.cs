@@ -9,6 +9,8 @@ namespace DEMO.Models
         [Required]
         public int BookingID { get; set; }
         [Required]
+        public int AccountID { get; set; }
+        [Required]
         public DateOnly DateGiven { get; set; }
 
         [Required]

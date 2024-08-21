@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "Add Treatment Codes";
+    Layout = "_Layout2";
+}
+@model DEMO.ViewModels.BookingTreatmentCodesViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Treatment Codes</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <form id="addTreatmentForm" method="post" action="@Url.Action("AddTreatmentCode", "Home")">
+                            <h2>Add Treatment Codes</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <input type="hidden" id="bookingID" name="BookingID" value="@ViewBag.BookSurgeryID" />
+                                    <br>
+                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Name</label>
+                                    <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style="width:300px" onkeyup="filterTreatmentNames()">
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="treatmentSelect" class="form-label">Treatment Description</label>
+                                    <select id="treatmentSelect" name="treatmentCodeID" class="form-control" style="width:400px" onchange="updateTreatmentCode()">
+                                        <option value="">Select a Treatment Description</option>
+                                        @foreach (var treatment in Model.AllTreatmentCodes)
+                                        {
+                                            <option value="@treatment.TreatmentCodeID">@treatment.TreatmentName</option>
+                                        }
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <button type="button" id="openTreatmentButton" class="btn btn-primary">Add</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Surgery Date</th>
+                                    <th scope="col">Surgery Time</th>
+                                    <th scope="col">Theater</th>
+                                    <th scope="col">Treatment Description</th>
+                                    <th scope="col">Treatment Code</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ingredientTableBody">
+                                @foreach (var Data in Model.AllcombinedData)
+                                {
+                                    <tr>
+                                        <td>@Data.Name</td>
+                                        <td>@Data.Surname</td>
+                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.SurgeryTime</td>
+                                        <td>@Data.Theater</td>
+                                        <td>@Data.TreatmentName</td>
+                                        <td>@Data.TreatmentCode</td>
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-warning">Remove</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome">Close</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmation ADD Treatment Modal -->
+            <div class="modal fade" id="confirmTreatmentModal" tabindex="-1" role="dialog" aria-labelledby="confirmTreatmentModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmTreatmentModalLabel">Confirm Save</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to add this Treatment?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveTreatmentButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelSaveButton">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Ensure the document is fully loaded before running the scripts
+        $(document).ready(function () {
+            function filterTreatmentNames() {
+                const input = document.getElementById('searchTreatmentInput');
+                const filter = input.value.toLowerCase();
+                const select = document.getElementById('treatmentSelect');
+                const options = select.options;
+
+                for (let i = 0; i < options.length; i++) {
+                    const option = options[i];
+                    const treatmentName = option.textContent.toLowerCase();
+
+                    if (treatmentName.includes(filter)) {
+                        option.style.display = ''; // Show option
+                    } else {
+                        option.style.display = 'none'; // Hide option
+                    }
+                }
+            }
+
+            function updateTreatmentCode() {
+                const select = document.getElementById('treatmentSelect');
+                const selectedValue = select.value;
+                document.getElementById('treatmentCodeID').value = selectedValue;  // Ensure this matches the name attribute in the form
+            }
+
+            $('#openTreatmentButton').on('click', function () {
+                $('#confirmTreatmentModal').modal('show');
+            });
+
+            $('#cancelSaveButton').on('click', function () {
+                $('#confirmTreatmentModal').modal('hide');
+            });
+
+            $('#saveTreatmentButton').on('click', function () {
+                $.ajax({
+                    url: '@Url.Action("AddTreatmentCode", "Home")',
+                    type: 'POST',
+                    data: $('#addTreatmentForm').serialize(),
+                    success: function (response) {
+                        window.location.href = '@Url.Action("SurgeryTreatmentCodes", "Home")';
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error occurred:", error);
+                    }
+                });
+            });
+
+            // Bind the filter function to the keyup event
+            $('#searchTreatmentInput').on('keyup', filterTreatmentNames);
+        });
+    </script>
+</body>
+</html>

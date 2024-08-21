@@ -1,4 +1,5 @@
 using DEMO.Data;
+using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -120,8 +121,6 @@ namespace DEMO.Controllers
 
             return View();
         }
-
-
         public IActionResult PatientList()
         {
             var allPatients = _dbContext.PatientInfo.ToList();
@@ -212,15 +211,45 @@ namespace DEMO.Controllers
                 _dbContext.BookSurgery.Add(booking);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("SurgeryTreatmentCode", new { id = booking.BookingID });
+                return RedirectToAction("SurgeryTreatmentCodes", new { id = booking.BookingID });
             }
 
             // If validation fails, redisplay the form with errors
             return View("PatientList", model);
             
         }
-        public IActionResult SurgeryTreatmentCode(int id)
+        public IActionResult SurgeryTreatmentCodes(int id)
         {
+            var combinedData = (from b in _dbContext.BookSurgery
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                join stc in _dbContext.SurgeryTreatmentCode on b.BookingID equals stc.BookingID
+                                join tc in _dbContext.TreatmentCodes on stc.TreatmentCodeID equals tc.TreatmentCodeID
+                                where b.BookingID == id
+                                select new BookingTreatmentCodesViewModel
+                                {
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater,
+
+                                    TreatmentName = tc.TreatmentName,
+                                    TreatmentCode = tc.TreatmentCode
+                                }).ToList();
+
+            var allTreatmentCodes = _dbContext.TreatmentCodes.ToList();
+            if (allTreatmentCodes == null)
+            {
+                allTreatmentCodes = new List<TreatmentCodes>();
+            }
+
+            // Create the view model
+            var viewModel = new BookingTreatmentCodesViewModel
+            {
+                AllcombinedData = combinedData,
+                AllTreatmentCodes = allTreatmentCodes,
+            };
             var booking = _dbContext.BookSurgery.Find(id);
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
@@ -232,24 +261,123 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
+            return View(viewModel);
         }
-        public IActionResult CheckTreatmentCode()
+
+        [HttpPost]
+        public IActionResult AddTreatmentCode(SurgeryTreatmentCode model)
         {
+            if (ModelState.IsValid)
+            {
+                SurgeryTreatmentCode newSurgeryTreatmentCode = new SurgeryTreatmentCode
+                {
+                    BookingID = model.BookingID,
+                    TreatmentCodeID = model.TreatmentCodeID
+                };
+
+                _dbContext.SurgeryTreatmentCode.Add(newSurgeryTreatmentCode);
+                _dbContext.SaveChanges();
+
+                // Redirect to SurgeryTreatmentCodes with the BookingID
+                return RedirectToAction("SurgeryTreatmentCodes", new { id = model.BookingID });
+            }
+
+            // If validation fails, redisplay the form with errors
+            return View("SurgeryTreatmentCodes", model);
+        }
+        
+
+        public IActionResult CheckTreatmentCode(int bookingId)
+        {
+            var allTreatmentCodes = _dbContext.TreatmentCodes.ToList();
+            if (allTreatmentCodes == null)
+            {
+                allTreatmentCodes = new List<TreatmentCodes>();
+            }
+            var combinedData = (from st in _dbContext.SurgeryTreatmentCode
+                                join t in _dbContext.TreatmentCodes on st.TreatmentCodeID equals t.TreatmentCodeID
+                                join b in _dbContext.BookSurgery on st.BookingID equals b.BookingID
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                where st.BookingID == bookingId
+                                select new EditTreatmentListViewModel
+                                 {
+                                    TreatmentName = t.TreatmentName,
+                                    TreatmentCode = t.TreatmentCode,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Name = p.Name,
+                                    Surname= p.Surname
+                                }).ToList();
+
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var booking = _dbContext.BookSurgery.Find(bookingId);
 
+            var viewModel = new EditTreatmentListViewModel
+            {
+                AllcombinedData = combinedData,
+                AllTreatmentCodes = allTreatmentCodes
+            };
+
+            ViewBag.BookSurgeryID = bookingId;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult EditTreatment(SurgeryTreatmentCode model)
+        {
+            if (ModelState.IsValid)
+            {
+                SurgeryTreatmentCode newEditTreatment = new SurgeryTreatmentCode
+                {
+                    BookingID = model.BookingID,
+                    TreatmentCodeID = model.TreatmentCodeID
+                };
+
+                _dbContext.SurgeryTreatmentCode.Add(newEditTreatment);
+                _dbContext.SaveChanges();
+
+                // Redirect to SurgeryTreatmentCodes with the BookingID
+                return RedirectToAction("CheckTreatmentCode", new { id = model.BookingID });
+            }
+
+            // If validation fails, redisplay the form with errors
+            return View("CheckTreatmentCode", model);
         }
         public IActionResult ListSurgery()
         {
-            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+            var combinedData = (from b in _dbContext.BookSurgery
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                where b.AccountID == accountID
+                                select new SurgeryListViewModel
+                                {   BookingID=b.BookingID,
+                                    PatientID=b.PatientID,
+                                    AccountID=b.AccountID,
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater
+                                }).ToList();
+
+            var viewModel = new SurgeryListViewModel
+            {
+                AllcombinedData = combinedData,
+               
+            };
+
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
@@ -258,7 +386,35 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult AddPrescription(Prescription model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Assuming you have a DbContext and SurgeryBooking model
+                Prescription newPrescription = new Prescription
+                {
+                    BookingID = model.BookingID,
+                    AccountID = model.AccountID,
+                    DateGiven = model.DateGiven,
+                    Urgency = model.Urgency,
+                    Take = model.Take,
+                    Status = model.Status,
+
+                };
+
+                _dbContext.Prescription.Add(newPrescription);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("PrescriptionMedication", new { id = newPrescription.PrescriptionID });
+
+            }
+
+            // If validation fails, redisplay the form with errors
+            return View("ListSurgery", model);
+
         }
         public IActionResult vitalsAndHistory()
         {
@@ -273,19 +429,31 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             return View();
         }
-        public IActionResult EditSurgery()
+        [HttpPost]
+        public IActionResult EditSurgery(BookSurgery model)
         {
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
+            if (ModelState.IsValid)
+            {
+                var booking = _dbContext.BookSurgery.FirstOrDefault(p => p.BookingID == model.BookingID);
 
-            ViewBag.UserAccountID = accountID;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
-            return View();
+                if (booking != null)
+                {
+                    // Update the existing account with new values
+                    booking.PatientID = model.PatientID;
+                    booking.AccountID = model.AccountID;
+                    booking.SurgeryTime = model.SurgeryTime;
+                    booking.SurgeryDate = model.SurgeryDate;
+                    booking.Theater = model.Theater;
+
+                    _dbContext.SaveChanges();
+                }
+
+                return RedirectToAction("ListSurgery");
+            }
+
+            return View(model);
         }
+
         public IActionResult Prescription()
         {
             var accountID = HttpContext.Session.GetString("UserAccountId");
@@ -299,18 +467,73 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             return View();
         }
-        public IActionResult PrescriptionMedication()
+        public IActionResult PrescriptionMedication(int id)
         {
+            var combinedData = (from pr in _dbContext.Prescription
+                                join bs in _dbContext.BookSurgery on pr.BookingID equals bs.BookingID
+                                join p in _dbContext.PatientInfo on bs.PatientID equals p.PatientID
+                                join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
+                                join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                                where pr.PrescriptionID == id
+                                select new PrescriptionMedicationViewModel
+                                {
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+                                    DateGiven = pr.DateGiven,
+                                    Status = pr.Status,
+                                    MedicationName = m.MedicationName,
+                                    Quantity = mi.Quantity,
+                                    MedicationForm = m.MedicationForm,
+                                    Instructions = mi.Instructions
+                                }).ToList();
+
+            var allMedication = _dbContext.Medication.ToList();
+            if (allMedication == null)
+            {
+                allMedication = new List<Medication>();
+            }
+            var viewModel = new PrescriptionMedicationViewModel
+            {
+                CombinedData = combinedData,
+                AllMedication = allMedication,
+            };
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var Prescription = _dbContext.Prescription.Find(id);
 
+            ViewBag.PrescriptionID = id;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult AddMedication(MedicationInstructions model)
+        {
+            if (ModelState.IsValid)
+            {
+                // IDs not Going IN
+                MedicationInstructions newMedicationInstructions = new MedicationInstructions
+                {
+                    PrescriptionID = model.PrescriptionID,
+                    MedicationID = model.MedicationID,
+                    Instructions = model.Instructions,
+                    Quantity = model.Quantity
+             
+                };
+
+                _dbContext.MedicationInstructions.Add(newMedicationInstructions);
+                _dbContext.SaveChanges();
+
+                return RedirectToAction("PrescriptionMedication", new { id = model.PrescriptionID });
+            }
+
+            // If validation fails, redisplay the form with errors
+            return View("ListSurgery", model);
+
         }
         public IActionResult PrescriptionList()
         {

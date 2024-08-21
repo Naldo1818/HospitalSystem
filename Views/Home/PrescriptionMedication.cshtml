@@ -2,6 +2,7 @@
     ViewData["Title"] = "Add Medication";
     Layout = "_Layout2";
 }
+@model DEMO.ViewModels.PrescriptionMedicationViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,6 +28,7 @@
             <h3 id="offcanvasSidebarLabel">Patient Information</h3>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
+
         <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
@@ -101,7 +103,7 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form>
+                        <form id="addMedicationForm" method="post" action="@Url.Action("AddMedication", "Home")">
                             <h2>Add Medication</h2>
                             <div class="form-group row">
                                 <div class="col-4">
@@ -109,70 +111,40 @@
                                     <label for="searchMedicationInput" class="form-label">Medication Name Filter</label>
                                     <input type="text" class="form-control" id="searchMedicationInput" placeholder="Medication Name Filter" style="width:300px" oninput="filterMedicationNames()">
                                 </div>
-
                                 <div class="col-4">
                                     <br>
-                                    <label for="medicationSelect" class="form-label">Medication Name Selected</label>
-                                    <select class="form-control" id="medicationSelect" style="width:300px">
-                                        <option value="Cephalexin">Cephalexin</option>
-                                        <option value="Diazepem">Diazepem</option>
-                                        <option value="Ibiprofen">Ibiprofen</option>
-                                        <option value="Tylenol">Tylenol</option>
-                                        <option value="Oxycodone">Oxycodone</option>
-                                        <option value="Hydrocodone">Hydrocodone</option>
-                                        <option value="Ciprofloxacin">Ciprofloxacin</option>
-                                        <option value="Zofran">Zofran</option>
+                                    <label for="medicationSelect" class="form-label">Medication Name</label>
+                                    <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required>
+                                        <option value="">Select a Description</option>
+                                        @foreach (var medication in Model.AllMedication)
+                                        {
+                                            <option value="@medication.MedicationID">@medication.MedicationName</option>
+                                        }
                                     </select>
                                 </div>
-                                <script>
-                                    function filterMedicationNames() {
-                                        const filter = document.getElementById('searchMedicationInput').value.toLowerCase();
-                                        const select = document.getElementById('medicationSelect');
-                                        const options = select.getElementsByTagName('option');
-
-                                        for (let i = 0; i < options.length; i++) {
-                                            const option = options[i];
-                                            const text = option.text.toLowerCase();
-                                            if (text.includes(filter)) {
-                                                option.style.display = '';
-                                            } else {
-                                                option.style.display = 'none';
-                                            }
-                                        }
-                                    }
-                                </script>
                                 <div class="col-4">
                                     <br>
                                     <label for="medicationForm" class="form-label">Medication Form</label>
-                                    <select class="form-control" id="medicationForm" style="width:300px">
-                                        <option value="Tablets">Tablets</option>
-                                        <option value="Capsules">Capsules</option>
-                                        <option value="Liquids">Liquids</option>
-                                        <option value="Topical">Topical</option>
-                                        <option value="Patches">Patches</option>
-                                        <option value="Suppositories">Suppositories</option>
-                                        <option value="Inhalers">Inhalers</option>
-                                        <option value="Powders">Powders</option>
-                                        <option value="Drops">Drops</option>
-                                        <option value="Injectable Solutions">Injectable Solutions</option>
+                                    <select class="form-control" id="medicationForm" style="width:300px" disabled>
+                                        <option value="">Select a Description</option>
+                                        @foreach (var medication in Model.AllMedication)
+                                        {
+                                            <option>@medication.MedicationForm</option>
+                                        }
                                     </select>
                                 </div>
-                               
 
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <br>
                                         <label for="exampleFormControlInput1" class="form-label">Quantity/Units</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Add Amount" style="width:300px">
+                                        <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Add Amount" style="width:300px">
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="instructionsInput" class="form-label">Instructions</label>
-                                    <input type="text" class="form-control" id="instructionsInput" placeholder="Enter Instructions" style="width:900px">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="instructionsInput" class="form-label">Instructions</label>
+                                        <input type="text" class="form-control" id="instructions" name="instructions" placeholder="Enter Instructions" style="width:600px">
+                                    </div>
                                 </div>
                             </div>
 
@@ -183,7 +155,8 @@
                                 </div>
                                 <div class="col-4">
                                     <br>
-                                    <button class="btn btn-primary" style="width:70px" type="submit">Add</button>
+                                    <input type="hidden" id="PrescriptionID" name="PrescriptionID" value="@ViewBag.PrescriptionID">
+                                    <button type="button" id="openMedicationButton" class="btn btn-primary">Add</button>
                                 </div>
                                 <div class="col-4">
                                     <br>
@@ -208,32 +181,59 @@
                                     <th scope="col">Quantity</th>
                                     <th scope="col">Form</th>
                                     <th scope="col">Instructions</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>02/05/2024</td>
-                                    <td>Cephalexin</td>
-                                    <td>30</td>
-                                    <td>Tablets</td>
-                                    <td>Please take once every 5 hours</td>
-                                    <td><a class="btn btn-danger" aria-hidden="true">Remove</a></td>
-                                </tr>
-                               
+                                @foreach (var item in Model.CombinedData)
+                                {
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Surname</td>
+                                        <td>@item.DateGiven</td>
+                                        <td>@item.MedicationName</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.MedicationForm</td>
+                                        <td>@item.Instructions</td>
+                                        <td>@item.Status</td>
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-warning">Remove</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
-                        
+
                             <tfoot>
                                 <tr>
-                                    <td><a class="btn btn-primary" aria-hidden="true" style="width:70px" asp-controller="Home" asp-action="SurgeonHome">Save</a>
+                                    <td>
+                                        <a class="btn btn-primary" aria-hidden="true" style="width:70px" asp-controller="Home" asp-action="SurgeonHome">Save</a>
                                     </td>
                                 </tr>
-                                </tfoot>
+                            </tfoot>
                         </table>
                     </div>
-                   
+
+                </div>
+            </div>
+            <!-- Confirmation Modal -->
+            <div class="modal fade" id="confirmMedicationModal" tabindex="-1" role="dialog" aria-labelledby="confirmMedicationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmMedicationModalLabel">Confirm Save</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to add this Medication ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveMedicationButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -242,6 +242,47 @@
         $(document).ready(function () {
             $('#example').DataTable();
         });
+        // Handle 'Add Medication Code' button click
+        $('#openMedicationButton').on('click', function () {
+            $('#confirmMedicationModal').modal('show');
+        });
+        // Ensure 'No' button closes the confirmation modal
+        $('#cancelSaveButton').on('click', function () {
+            $('#confirmMedicationModal').modal('hide');
+        });
+        // Handle confirmation of saving Medication code
+        $('#saveMedicationButton').on('click', function () {
+
+            $.ajax({
+                url: '@Url.Action("AddMedication", "Home")',
+                type: 'POST',
+                data: $('#addMedicationForm').serialize(),
+                success: function (response) {
+                    window.location.href = '@Url.Action("PrescriptionMedication", "Home", new { PrescriptionId = ViewBag.PrescriptionID })';
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error occurred:", error);
+                }
+            });
+        });
+
+    </script>
+    <script>
+        function filterMedicationNames() {
+            const filter = document.getElementById('searchMedicationInput').value.toLowerCase();
+            const select = document.getElementById('medicationSelect');
+            const options = select.getElementsByTagName('option');
+
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                const text = option.text.toLowerCase();
+                if (text.includes(filter)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+        }
     </script>
 </body>
 </html>
