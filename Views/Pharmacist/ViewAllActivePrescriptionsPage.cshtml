@@ -1,8 +1,10 @@
 ﻿@{
     ViewData["Title"] = "AllActivePrescriptions";
     Layout = "_LayoutPharmacist";
-    
 }
+
+@model IEnumerable<DEMO.Models.Prescription>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,108 +14,47 @@
 </head>
 <body>
 
-  
-
-
-
-    
-
-
     <!--Table-->
-
     <div class="container">
         <main role="main" class="pb-5">
-           
-
-
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
+                        <h1><center>Active Prescriptions</center></h1>
                         <table class="table">
-                            <h1><center>Active Prescriptions</center></h1>
-
                             <thead>
                                 <tr>
                                     <th scope="col">Patient Name</th>
                                     <th scope="col">Patient Surname</th>
-                                    <th scope="col">Ward</th>
-                                    <th scope="col">Nurse</th>                                   
-                                    <th scope="col">Prescription</th>
+                                    <th scope="col">Surgeon</th>
+                                    <th scope="col">Date Given</th>
                                     <th scope="col">Urgent</th>
-
-                                    <!-- More table headers can be added here -->
+                                    <th scope="col">Prescription</th>
+                                   
                                 </tr>
                             </thead>
                             <tbody>
+                                 @* @foreach (var Prescription in Model)
+                                {
+                                    <tr>
 
-                                <!--Jin Woo-->
-                                <tr class="highlighted-row">
-                                    <td><mark>Jin</mark></td>
-                                    <td><mark>Woo</mark></td>
-                                    <td><mark>17</mark></td>
-                                    <td><mark>Jackie Brown</mark></td>
-                                    
 
-                                    <td>
-                                            <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-                                             
+                                        <td>@Prescription.DateGiven</td>
+                                        <td>@Prescription.Status</td>
                                         
-                                    </td>
 
-
-                                    <td><mark>Yes</mark></td>
-
-                                    <!-- More table data can be added here -->
-                                </tr>
-
-                                <!--Janet Moss-->
-                                <tr>
-                                    <td><mark>Janet</mark></td>
-                                    <td><mark>Moss</mark></td>
-                                    <td><mark>18</mark></td>
-                                    <td><mark>Natalie Hughes</mark>
-                                   
-
-                                    <td>
-                                        <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
-
-
-                                    <td><mark>Yes</mark></td>
-                                    <!-- More table data can be added here -->
-                                </tr>
-
-
-
-                                <!--Jim Jones-->
-                                <tr>
-                                    <td>Jim</td>
-                                    <td>Jones</td>
-                                    <td>19</td>
-                                    <td>Joyce Meyer</td>
-                                   
-
-                                    <td>
-                                        <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                                    </td>
-
-
-                                    <td>No</td>
-                                    <!-- More table data can be added here -->
-                                </tr>
-
+                                        <td>@Prescription.Urgency</td>
+                                       
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist"  class="btn btn-primary">View in full</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }  *@
                             </tbody>
                         </table>
-                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back </a>
-
+                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
                     </div>
                 </div>
             </div>
