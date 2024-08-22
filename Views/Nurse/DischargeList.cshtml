@@ -2,6 +2,7 @@
     ViewData["Title"] = "Discharge Patients";
     Layout = "_LayoutNurse";
 }
+@model DEMO.ViewModels.PatientListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -58,7 +59,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                @foreach (var Patient in Model.AllPatients)
+                                {
+                                    <tr>
+                                        <td width="15%">@Patient.IDNumber</td>
+                                        <td width="15%">@Patient.Name</td>
+                                        <td width="15%">@Patient.Surname</td>
+                                        <td width="15%">@Patient.Gender</td>
+                                        <td width="15%">@Patient.ContactNumber</td>
+                                        <td width="15%">@Patient.Email</td>
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-primary"
+                                                   data-toggle="modal"
+                                                   data-target="#bookSurgeryModal"
+                                                   data-name="@Patient.Name"
+                                                   data-surname="@Patient.Surname"
+                                                   data-patient-id="@Patient.PatientID">Book Surgery</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                                @* <tr>
                                     <td>0120526958</td>
                                     <td>Jin</td>
                                     <td>Woo</td>
@@ -72,7 +94,7 @@
                                        
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Discharge">Discharge Patient</a>
                                     </td>
-                                </tr>
+                                </tr> *@
                             </tbody>
                         </table>
                     </div>
