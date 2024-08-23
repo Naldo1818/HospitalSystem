@@ -3,7 +3,10 @@
     Layout = "_LayoutPharmacist";
 }
 
-@model IEnumerable<DEMO.Models.Prescription>
+
+
+@model IEnumerable<DEMO.ViewModels.ViewActivePrescriptionsModel> 
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -20,7 +23,6 @@
             <div class="row" style="width:1000px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <h1><center>Active Prescriptions</center></h1>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -28,30 +30,15 @@
                                     <th scope="col">Patient Surname</th>
                                     <th scope="col">Surgeon</th>
                                     <th scope="col">Date Given</th>
+                                    <th scope="col">Status</th>
                                     <th scope="col">Urgent</th>
                                     <th scope="col">Prescription</th>
                                    
                                 </tr>
                             </thead>
                             <tbody>
-                                 @* @foreach (var Prescription in Model)
-                                {
-                                    <tr>
-
-
-                                        <td>@Prescription.DateGiven</td>
-                                        <td>@Prescription.Status</td>
-                                        
-
-                                        <td>@Prescription.Urgency</td>
-                                       
-                                        <td>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a asp-action="ViewSpecificPrescription" asp-controller="Pharmacist"  class="btn btn-primary">View in full</a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }  *@
+                                
+                                
                             </tbody>
                         </table>
                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>

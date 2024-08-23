@@ -1,13 +1,61 @@
 ﻿using DEMO.Data;
+using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace DEMO.Controllers
 {
     public class PharmacistController : Controller
     {
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public PharmacistController(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        {
+            _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public IActionResult ViewAllActivePrescriptionsPage()
+            {
+            return View();
+        }
+
+        //public async Task<IActionResult> ViewAllActivePrescriptionsPage()
+
+        //{
+        //    var accountIDString = HttpContext.Session.GetString("UserAccountId");
+        //    if (!int.TryParse(accountIDString, out int accountID))
+        //    {
+        //        // Handle the case where accountID is not available or is invalid
+        //        accountID = 0; // Or handle as required
+        //    }
+
+        //    var activescripts = await _dbContext.Prescription
+        //        .ToListAsync();
+
+           
+        //    var userName = HttpContext.Session.GetString("UserName");
+        //    var userSurname = HttpContext.Session.GetString("UserSurname");
+        //    var userEmail = HttpContext.Session.GetString("UserEmail");
+
+        //    ViewBag.UserAccountID = accountID;
+        //    ViewBag.UserName = userName;
+        //    ViewBag.UserSurname = userSurname;
+        //    ViewBag.UserEmail = userEmail;
+
+        //    return View(activescripts);
+        //}
+
+
+
+
         public IActionResult Index()
         {
             return View();
@@ -24,13 +72,7 @@ namespace DEMO.Controllers
         }
 
 
-        public IActionResult ViewAllActivePrescriptionsPage()
-
-        {
-            
-
-            return View();
-        }
+       
 
 
        
