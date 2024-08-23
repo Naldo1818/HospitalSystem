@@ -2,6 +2,7 @@
     ViewData["Title"] = "Prescription List";
     Layout = "_Layout2";
 }
+@model DEMO.ViewModels.PrescriptionListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,6 +80,7 @@
                                     <button type="button" id="showRejected" class="btn btn-secondary">Show Rejected</button>
                                     <button type="button" id="showAccepted" class="btn btn-secondary">Show Accepted</button>
                                     <button type="button" id="showPrescribed" class="btn btn-secondary">Show Prescribed</button>
+                                    <button type="button" id="showAll" class="btn btn-secondary">Show All</button>
                                 </div>
                             </div>
                         </form>
@@ -140,7 +142,7 @@
                             <tbody>
                                 <tr>
                                     <td>0120526958</td>
-                                    <td>Jin</td>
+                                    <td>Carlos</td>
                                     <td>Sag</td>
                                     <td>02/05/2024</td>
                                     <td>Sam Smith</td>
@@ -168,25 +170,34 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
+                                    <th scope="col">Urgency</th>
+                                    <th scope="col">Take</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Rejection Reason</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>02/05/2024</td>
-                                    <td>Prescribed</td>
-                                    <td>N/a</td>
-                                    <td>
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
-                                            Check Prescription
-                                        </button>
-                                    </td>
-                                </tr>
+                                 @foreach (var Data in Model.AllPrescribed)
+                                {
+                                    <tr>
+                                        <td>@Data.IDNumber</td>
+                                        <td>@Data.Name</td>
+                                        <td>@Data.Surname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td>@Data.Urgency</td>
+                                        <td>@Data.Take</td>
+                                        <td>@Data.Status</td>
+                                        <td>
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
+                                                Check Prescription
+                                            </button>
+                                            <a class="btn btn-primary ml-2" href="@Url.Action("ChangeMedication", "Home")">
+                                                Edit Prescription
+                                            </a>
+                                        </td>
+
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -212,7 +223,6 @@
                                 <th scope="col">Medication Name</th>
                                 <th scope="col">Medication Active Ingredient</th>
                                 <th scope="col">Active Ingredient</th>
-                                <th scope="col">Result</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -245,55 +255,82 @@
 
     <script>
         $(document).ready(function () {
-            // Initialize DataTables
-            var rejectedTable = $('#rejectedTable').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
-            });
+            $(document).ready(function () {
+                // Initialize DataTables
+                var rejectedTable = $('#rejectedTable').DataTable({
+                    "language": {
+                        "zeroRecords": "No matching records found"
+                    }
+                });
 
-            var acceptedTable = $('#acceptedTable').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
-            });
+                var acceptedTable = $('#acceptedTable').DataTable({
+                    "language": {
+                        "zeroRecords": "No matching records found"
+                    }
+                });
 
-            var prescribedTable = $('#prescribedTable').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
-            });
+                var prescribedTable = $('#prescribedTable').DataTable({
+                    "language": {
+                        "zeroRecords": "No matching records found"
+                    }
+                });
 
-            // Custom search function for the search input
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim(); // Trim whitespace
-                if (searchText === '') {
+                // Custom search function for the search input
+                $('#searchInput').on('keyup', function () {
+                    var searchText = this.value.trim(); // Trim whitespace
+                    if (searchText === '') {
+                        $('#rejectedRow').show();
+                        $('#acceptedRow').show();
+                        $('#prescribedRow').show();
+                    } else {
+                        rejectedTable.search(searchText).draw();
+                        acceptedTable.search(searchText).draw();
+                        prescribedTable.search(searchText).draw();
+
+                        if (rejectedTable.page.info().recordsDisplay === 0) {
+                            $('#rejectedRow').hide();
+                        } else {
+                            $('#rejectedRow').show();
+                        }
+
+                        if (acceptedTable.page.info().recordsDisplay === 0) {
+                            $('#acceptedRow').hide();
+                        } else {
+                            $('#acceptedRow').show();
+                        }
+
+                        if (prescribedTable.page.info().recordsDisplay === 0) {
+                            $('#prescribedRow').hide();
+                        } else {
+                            $('#prescribedRow').show();
+                        }
+                    }
+                });
+
+                // Button click handlers
+                $('#showRejected').on('click', function () {
+                    $('#rejectedRow').show();
+                    $('#acceptedRow').hide();
+                    $('#prescribedRow').hide();
+                });
+
+                $('#showAccepted').on('click', function () {
+                    $('#acceptedRow').show();
+                    $('#rejectedRow').hide();
+                    $('#prescribedRow').hide();
+                });
+
+                $('#showPrescribed').on('click', function () {
+                    $('#prescribedRow').show();
+                    $('#rejectedRow').hide();
+                    $('#acceptedRow').hide();
+                });
+
+                $('#showAll').on('click', function () { // New button click handler
                     $('#rejectedRow').show();
                     $('#acceptedRow').show();
                     $('#prescribedRow').show();
-                } else {
-                    rejectedTable.search(searchText).draw();
-                    acceptedTable.search(searchText).draw();
-                    prescribedTable.search(searchText).draw();
-
-                    if (rejectedTable.page.info().recordsDisplay === 0) {
-                        $('#rejectedRow').hide();
-                    } else {
-                        $('#rejectedRow').show();
-                    }
-
-                    if (acceptedTable.page.info().recordsDisplay === 0) {
-                        $('#acceptedRow').hide();
-                    } else {
-                        $('#acceptedRow').show();
-                    }
-
-                    if (prescribedTable.page.info().recordsDisplay === 0) {
-                        $('#prescribedRow').hide();
-                    } else {
-                        $('#prescribedRow').show();
-                    }
-                }
+                });
             });
 
             // Button click handlers

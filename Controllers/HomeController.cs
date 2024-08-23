@@ -4,6 +4,7 @@ using DEMO.Models;
 using DEMO.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
@@ -537,7 +538,35 @@ namespace DEMO.Controllers
         }
         public IActionResult PrescriptionList()
         {
-            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+            var Prescribed = (from p in _dbContext.PatientInfo
+                              join bs in _dbContext.BookSurgery
+            on p.PatientID equals bs.PatientID
+                              join pr in _dbContext.Prescription
+                              on bs.BookingID equals pr.BookingID
+                              where pr.Status == "Prescribed" && pr.AccountID == accountID
+                              select new PrescriptionListViewModal
+                              {
+                                  IDNumber = p.IDNumber,
+                                  Name = p.Name,
+                                  Surname=p.Surname,
+                                  DateGiven = pr.DateGiven,
+                                  Urgency = pr.Urgency,
+                                  Take = pr.Take,
+                                  Status = pr.Status
+                              }).ToList();
+
+            var viewModel = new PrescriptionListViewModal
+            {
+                AllPrescribed = Prescribed,
+
+            };
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
@@ -546,7 +575,7 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
+            return View(viewModel);
         }
         
         public IActionResult MedicationInteraction()

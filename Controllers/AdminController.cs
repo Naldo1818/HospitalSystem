@@ -1,8 +1,12 @@
 ﻿using DEMO.Data;
 using DEMO.Models;
+using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace DEMO.Controllers
 {
@@ -63,7 +67,7 @@ namespace DEMO.Controllers
             }
             return View();
         }
-       
+
         public IActionResult ListUser()
         {
             var allAccounts = _dbContext.Accounts.ToList();
@@ -97,6 +101,7 @@ namespace DEMO.Controllers
                     Surname = model.Surname,
                     Username = model.Username,
                     Password = model.Password,
+                    RegistrationNumber=model.RegistrationNumber,
                     ContactNumber = model.ContactNumber,
                     Email = model.Email,
                     Role = model.Role,
@@ -107,13 +112,82 @@ namespace DEMO.Controllers
                 _dbContext.Accounts.Add(newAccount);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("ListUser");
-            }
+                return RedirectToAction("SendEmail", new { id = newAccount.AccountID });
+            
+        }
 
             // If validation fails, redisplay the form with errors
             return View("ListUser", model);
         }
+
+       
+        public IActionResult SendEmail(int id)
+        {
+            // Fetch the user based on AccountID
+            var user = _dbContext.Accounts
+                                   .FirstOrDefault(p => p.AccountID == id);
+            if (user == null)
+            {
+                return NotFound(); // Return 404 if user is not found
+            }
+
+            // Prepare the view model
+            var viewModel = new EmailViewModel
+            {
+                AccountID = user.AccountID,
+                FullName = $"{user.Name} {user.Surname}",
+                Email = user.Email,
+                Username = user.Username,
+                Password = user.Password, // Only for example; usually, passwords are not shared like this
+                Notes = string.Empty // Initial empty notes
+            };
+
+            return View(viewModel); // Return the view with the model
+        }
+
+        //FIX EMAIL!!!!
         [HttpPost]
+        public async Task<IActionResult> SendEmail(int id, string notes)
+        {
+            var user = _dbContext.Accounts
+                                  .FirstOrDefault(p => p.AccountID == id);
+
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Day Hospital-  Apollo+", "noreply@dayhospital.com"));
+            emailMessage.To.Add(new MailboxAddress(user.Role, user.Email));
+            emailMessage.Subject = "User Added";
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = $@"
+         <h3>User Information</h3>
+         <p><strong>Name:</strong> {user.Name} {user.Surname}</p>
+         <h3>Account Has Been Added</h3>
+</n>
+         <p><strong>Username:</strong> {user.Username}</p>
+         <p><strong>Password:</strong> {user.Password}</p>        
+</n>
+         <h3>Notes</h3>
+         <p>{notes}</p>"
+            };
+
+            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+
+                client.Authenticate("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
+                await client.SendAsync(emailMessage);
+                client.Disconnect(true);
+
+            }
+
+            TempData["SuccessMessage"] = "Email sent successfully.";
+            return RedirectToAction("AdminHome", "Admin");
+        }
+    
+       [HttpPost]
         public IActionResult EditUser(Accounts model)
         {
             if (ModelState.IsValid)

@@ -381,22 +381,9 @@
                 });
             </script>
             <script>
-                $(document).ready(function () {
-                    $('#saveAccountButton').on('click', function () {
-                        $.ajax({
-                            url: '@Url.Action("AddUser", "Admin")',
-                            type: 'POST',
-                            data: $('#addUserForm').serialize(),
-                            success: function (response) {
-                                // Handle success response
-                                window.location.href = '@Url.Action("ListUser", "Admin")'; // Redirect to User List
-                            },
-                            error: function (xhr, status, error) {
-                                // Handle error response
-                                console.log(error);
-                            }
-                        });
-                    });
+                // Handle the "Yes" button click in the confirmation modal
+                $('#saveAccountButton').on('click', function () {
+                    $('#addUserForm').submit(); // Submit the form
                 });
                 $('#editUserModal').on('show.bs.modal', function (event) {
                     var button = $(event.relatedTarget); // Button that triggered the modal
