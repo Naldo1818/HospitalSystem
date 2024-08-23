@@ -116,7 +116,7 @@
                         <table id="example" class="table display">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID number</th>
+                                   
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Gender</th>
@@ -129,7 +129,7 @@
                                 @foreach (var Patient in Model.AllPatients)
                                 {
                                     <tr>
-                                        <td width="15%">@Patient.IDNumber</td>
+                                      
                                         <td width="15%">@Patient.Name</td>
                                         <td width="15%">@Patient.Surname</td>
                                         <td width="15%">@Patient.Gender</td>
@@ -388,18 +388,35 @@
             });
 
             // Custom search function for the search input
-            $('#exampleFormControlInput1').on('keyup', function () {
-                var searchText = this.value.trim(); // Trim whitespace
-                if (searchText === '') {
-                    $('#example_wrapper').hide(); // Hide table if search input is empty
-                } else {
-                    $('#example_wrapper').show(); // Show table if search input is not empty
-                    table.search(searchText).draw();
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example_wrapper').hide();
+            $(document).ready(function () {
+                $('#exampleFormControlInput1').on('keyup', function () {
+                    var searchText = this.value.trim(); // Trim whitespace
+
+                    if (searchText === '') {
+                        $('#example_wrapper').hide(); // Hide table if search input is empty
+                    } else {
+                        // Make AJAX request to search the database
+                        $.ajax({
+                            url: '@Url.Action("SearchByID", "Home")', // Update with your controller and action
+                            type: 'GET',
+                            data: { id: searchText },
+                            success: function (response) {
+                                // Update table with search results
+                                if (response.length > 0) {
+                                    table.clear().rows.add(response).draw();
+                                    $('#example_wrapper').show();
+                                } else {
+                                    $('#example_wrapper').hide();
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.log(error);
+                            }
+                        });
                     }
-                }
+                });
             });
+
         });
         function Next1(){
             $('#f-1, #f-2').toggle('slow','swing')
