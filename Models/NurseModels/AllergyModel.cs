@@ -9,12 +9,8 @@ namespace DEMO.Models.NurseModels
 
         [Key]
         public int AllergyID { get; set; }
-
-        [Required]
-        public string AllergyName { get; set; }
-
         
-        [ForeignKey("ActiveingredientID")]
+        [Key]
         public int ActiveingredientID { get; set; }
             
     }

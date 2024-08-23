@@ -1,6 +1,6 @@
 ﻿namespace DEMO.Models.NurseModels
 {
-    public class PatientRecordsModel
+    public class Address
     {
     }
 }
