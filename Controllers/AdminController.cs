@@ -168,8 +168,12 @@ namespace DEMO.Controllers
          <p><strong>Password:</strong> {user.Password}</p>        
 </n>
          <h3>Notes</h3>
-         <p>{notes}</p>"
+         <p>{notes}</p> 
+</n> 
+          Kind Regards 
+          Apollo+"
             };
+
 
             emailMessage.Body = bodyBuilder.ToMessageBody();
 
