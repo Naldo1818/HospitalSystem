@@ -51,13 +51,13 @@ namespace DEMO.Controllers
                     else if (user.Role == "Pharmacist")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
-                        return RedirectToAction("PharmacistHomePage", new { AccountID });
+                        return RedirectToAction("PharmacistHomePage","Pharmacist", new { AccountID });
                     }
                    
                     else if (user.Role == "Nurse")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
-                        return RedirectToAction("MainPage", new { AccountID });
+                        return RedirectToAction("MainPage","Nurse", new { AccountID });
                         
                     }
 
