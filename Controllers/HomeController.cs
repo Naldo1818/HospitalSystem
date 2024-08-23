@@ -51,13 +51,13 @@ namespace DEMO.Controllers
                     else if (user.Role == "Pharmacist")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
-                        return RedirectToAction("PharmacistHomePage", new { AccountID });
+                        return RedirectToAction("PharmacistHomePage","Pharmacist", new { AccountID });
                     }
                    
                     else if (user.Role == "Nurse")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
-                        return RedirectToAction("MainPage", new { AccountID });
+                        return RedirectToAction("MainPage","Nurse", new { AccountID });
                         
                     }
 
@@ -126,7 +126,7 @@ namespace DEMO.Controllers
         }
         public IActionResult PatientList()
         {
-            var allPatients = _dbContext.PatientInfo.ToList();
+            var allPatients = _dbContext.PatientInfo.OrderBy(a => a.Name).ToList();
             var viewModel = new PatientListViewModal
             {
                 AllPatients = allPatients,
@@ -241,7 +241,7 @@ namespace DEMO.Controllers
                                     TreatmentCode = tc.TreatmentCode
                                 }).ToList();
 
-            var allTreatmentCodes = _dbContext.TreatmentCodes.ToList();
+            var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
             if (allTreatmentCodes == null)
             {
                 allTreatmentCodes = new List<TreatmentCodes>();
@@ -292,7 +292,7 @@ namespace DEMO.Controllers
 
         public IActionResult CheckTreatmentCode(int bookingId)
         {
-            var allTreatmentCodes = _dbContext.TreatmentCodes.ToList();
+            var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
             if (allTreatmentCodes == null)
             {
                 allTreatmentCodes = new List<TreatmentCodes>();
@@ -310,7 +310,7 @@ namespace DEMO.Controllers
                                     SurgeryTime = b.SurgeryTime,
                                     Name = p.Name,
                                     Surname= p.Surname
-                                }).ToList();
+                                }).OrderBy(a => a.Name).ToList();
 
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
@@ -373,7 +373,7 @@ namespace DEMO.Controllers
                                     SurgeryDate = b.SurgeryDate,
                                     SurgeryTime = b.SurgeryTime,
                                     Theater = b.Theater
-                                }).ToList();
+                                }).OrderBy(a => a.Name).ToList();
 
             var viewModel = new SurgeryListViewModel
             {
@@ -488,9 +488,9 @@ namespace DEMO.Controllers
                                     Quantity = mi.Quantity,
                                     MedicationForm = m.MedicationForm,
                                     Instructions = mi.Instructions
-                                }).ToList();
+                                }).OrderBy(a => a.Name).ToList();
 
-            var allMedication = _dbContext.Medication.ToList();
+            var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
             if (allMedication == null)
             {
                 allMedication = new List<Medication>();
@@ -562,7 +562,7 @@ namespace DEMO.Controllers
                                   Urgency = pr.Urgency,
                                   Take = pr.Take,
                                   Status = pr.Status
-                              }).ToList();
+                              }).OrderBy(a => a.Name).ToList();
 
             var viewModel = new PrescriptionListViewModal
             {
