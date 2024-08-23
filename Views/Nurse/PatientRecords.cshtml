@@ -12,7 +12,74 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <style>
-        #example {
+        .container{
+            padding-top:50px;
+        }
+        .form-card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .row-two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .row-two-columns .vital-group {
+                flex: 1 1 48%;
+            }
+
+        .vital-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .vital-group {
+            text-align: left;
+        }
+
+            .vital-group input,
+            .vital-group select {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+                width: 100%;
+                max-width: 400px;
+                box-sizing: border-box;
+                height: 40px;
+                margin: 0;
+            }
+
+        .header-labels {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 50px;
+        }
+
+            .header-labels label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
+
+        .modal-header, .modal-footer {
+            border: none;
+        }
+
+            .modal-footer button {
+                min-width: 100px;
+            }
         }
     </style>
 </head>
@@ -30,9 +97,7 @@
                                     <label for="searchInput" class="form-label">Name or Surname</label>
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
-                                <div class="col-4 align-self-end">
-                                    <button type="submit" asp-action="AdmittedPatients" asp-controller="Nurse" class="btn btn-primary" style="width:70px">Search</button>
-                                </div>
+                                
                             </div>
                         </form>
                     </div>
@@ -68,7 +133,7 @@
                                     <td>12345</td>
                                     <td>Ariana Grande</td>
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionConditionsAllergy">Admit Patient</a>
+                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionPage">Admit Patient</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -88,16 +153,17 @@
             });
 
             $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim();
-                if (searchText === '') {
-                    $('#example').hide();
-                } else {
-                    $('#example').show();
-                    table.search(searchText).draw();
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
+                var searchText = this.value.trim().toLowerCase();
+                table.rows().every(function () {
+                    var data = this.data();
+                    var name = data[1].toLowerCase();
+                    var surname = data[2].toLowerCase();
+                    if (name.includes(searchText) || surname.includes(searchText)) {
+                        $(this.node()).show();
+                    } else {
+                        $(this.node()).hide();
                     }
-                }
+                });
             });
         });
     </script>

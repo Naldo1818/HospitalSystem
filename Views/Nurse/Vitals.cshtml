@@ -1,109 +1,255 @@
 ﻿@{
-    ViewData["Title"] = "Page1";
+    ViewData["Title"] = "Medication Collection";
     Layout = "_LayoutNurse";
 }
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form and Data Grid with Side Navigation</title>
+    <title>Surgery Bookings</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <style>
+        .container {
+            padding-top: 50px;
+        }
+        .active-tab {
+            background-color: teal;
+            color: white;
+        }
+
+        .form-card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .header-section {
+            margin-bottom: 20px;
+            padding-left: 50px;
+        }
+
+        .header-labels {
+            display: flex;
+            justify-content: space-between; /* Distribute space between columns */
+        }
+
+            .header-labels div {
+                flex: 1; /* Ensure each column takes equal space */
+                text-align: center; /* Center align labels in each column */
+                margin-right: 20px; /* Add margin for spacing */
+            }
+
+                .header-labels div:last-child {
+                    margin-right: 0; /* Remove margin from the last column */
+                }
+
+            .header-labels label {
+                display: block;
+                font-size: 18px;
+                color: #333;
+                margin-bottom: 10px;
+            }
+
+        .form-card hr {
+            margin: 20px 0;
+        }
+
+        .list-view-box {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+            .list-view-box p {
+                margin: 5px 0;
+                padding: 5px;
+                background-color: #f1f1f1;
+                border-radius: 3px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .list-view-box p span {
+                    flex-grow: 1;
+                }
+
+                .list-view-box p button {
+                    border: none;
+                    background-color: red;
+                    color: white;
+                    border-radius: 3px;
+                    padding: 5px;
+                    cursor: pointer;
+                }
+
+        .row-two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .vital-group {
+            text-align: left;
+            flex: 1 1 48%;
+        }
+
+            .vital-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .vital-group input,
+            .vital-group select {
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+                width: 100%;
+                max-width: 400px;
+                box-sizing: border-box;
+                height: 40px;
+                margin: 0;
+            }
+
+            .vital-group .radio-group {
+                display: flex;
+                align-items: center;
+            }
+
+                .vital-group .radio-group label {
+                    margin-left: 5px;
+                    font-size: 14px;
+                }
+
+                .vital-group .radio-group input {
+                    width: auto;
+                    height: auto;
+                }
+
+        /* Style for the scrollable dropdown */
+        .select2-container--default .select2-results {
+            max-height: 150px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:fit-content">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-
-                        <form>
-                            <div class="p-3 mt-5 border">
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput1" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
-                                    </div>
-                                </div>
-
-
-                                <div class="form-group row">
-                                </div>
-
-
-
-
-
-
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Search</button>
-                                        <button class="btn btn-danger" style=" width:70px" type="submit">Back</button>
-                                        <button class="btn btn-primary" style=" width:70px" type="submit">Save</button>
-                                    </div>
-                                </div>
-                                <!-- Your table content here -->
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">PatientName</th>
-                                            <th scope="col">Ward</th>
-                                            <th scope="col">Bed</th>
-                                            <th scope="col">Height</th>
-                                            <th scope="col">Weight</th>
-                                            <th scope="col">BloodPressure</th>
-                                            <th scope="col">RespirationRate</th>
-                                            <th scope="col">BloodOxygen</th>
-                                            <th scope="col">Temperature</th>
-                                            <th scope="col">Pulse</th>
-                                            <th scope="col">Retake</th>
-
-
-                                            <!-- More table headers can be added here -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Jin</td>
-                                            <td>Ward 1</td>
-                                            <td>Bed 1</td>
-                                            <td>180</td>
-                                            <td>75</td>
-                                            <td>120/60</td>
-                                            <td>80</td>
-                                            <td>100</td>
-                                            <td>30</td>
-                                            <td>80</td>
-                                            <td><input type="button" name="next" class="action-button" value="Retake" /></td>
-                                            
-                                            <!-- More table data can be added here -->
-                                        </tr>
-                                    </tbody>
-                                </table>
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0" style="width: contain;">
+            <div class="text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Retake Vitals</strong></h2>
+                    <hr></hr>
+                    <div class="header-section">
+                        <div class="header-labels">
+                            <div>
+                                <label>Name: </label>
+                                <label>Surname:</label>
+                                <label>Date:</label>
                             </div>
-                            <!-- Example form inputs -->
-                            
-                            <!-- More form inputs can be added here -->
-                        </form>
+                            <div>
+                                <label>Ward: </label>
+                                <label>Bed:</label>
+                            </div>
+                            <div>
+                                <label>Height: </label>
+                                <label>Weight:</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr></hr>
+                    <div class="row">
+                        <div class="col-md-12 mx-0">
+                            <form id="msform">
+                                <fieldset id="f-4">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">Vitals</h2>
+                                        <div class="form-group">
+                                            <hr></hr>
+
+                                            
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="SystolicBP">Systolic BP (mmHg)</label>
+                                                    <input type="number" name="SystolicBP" min="80" max="150" value="100">
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="DiastolicBP">Diastolic BP (mmHg)</label>
+                                                    <input type="number" name="DiastolicBP" min="40" max="100" value="60">
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Pulse">Pulse (bpm)</label>
+                                                    <input type="number" name="Pulse" min="50" max="100" value="60">
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="BloodOxygen">Blood Oxygen (%)</label>
+                                                    <input type="number" name="BloodOxygen" min="90" max="100" value="95">
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Respiration">Respiration Rate (Breaths/min)</label>
+                                                    <input type="number" name="Respiration" min="10" max="30" value="15">
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="BGL">Blood Glucose Level (mg/dL)</label>
+                                                    <input type="number" name="BGL" min="50" max="170" value="90">
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="BGLHigh">High Blood Glucose Level (mg/dL)</label>
+                                                    <input type="number" name="BGLHigh" min="190" max="300" value="220">
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="Temperature">Temperature (°C)</label>
+                                                    <input type="number" name="Temperature" min="30.0" max="40.0" value="34">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
+                                        <input type="submit" name="submit" class="next action-button" value="Submit" />
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-                       
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            // Initialize Select2 with searchable functionality
+            $('.select2').select2({
+                placeholder: 'Select an option',
+                allowClear: true
+            });
+        });
+
+        // Function to remove a list item
+        function removeItem(button) {
+            const p = button.parentElement;
+            p.remove();
+        }
+    </script>
 </body>
 </html>
-

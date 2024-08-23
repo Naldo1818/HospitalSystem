@@ -14,10 +14,7 @@ namespace DEMO.Controllers
             return View();
 
         }
-        public IActionResult AdmissionPageVital()
-        {
-            return View();
-        }
+        
         public IActionResult Discharge()
         {
             return View();
@@ -30,11 +27,8 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        public IActionResult AdmissionDetailsWard()
-        {
-            return View();
-        }
-        public IActionResult AdmissionConditionsAllergy()
+        
+        public IActionResult AdmissionPage()
         {
             return View();
         }
@@ -54,10 +48,10 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        
-        public IActionResult ModalTest()
+        public IActionResult InfoNurse()
         {
             return View();
         }
+        
     }
 }

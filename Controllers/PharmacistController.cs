@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DEMO.Data;
+using DEMO.Models;
+using DEMO.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DEMO.Controllers
 {
@@ -21,11 +25,45 @@ namespace DEMO.Controllers
 
 
         public IActionResult ViewAllActivePrescriptionsPage()
+
         {
+            
+
             return View();
         }
 
-        
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public IActionResult ViewDailyUsageReport()
         {

@@ -1,4 +1,4 @@
-﻿Surgery Bookings@{
+﻿@{
     ViewData["Title"] = "Medication Collection";
     Layout = "_LayoutNurse";
 }
@@ -9,9 +9,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surgery Bookings</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <style>
+        .container {
+            padding-top: 50px;
+        }
         .active-tab {
             background-color: teal;
             color: white;
@@ -128,9 +133,16 @@
                 padding: 8px;
             }
 
+        .CollectionInput {
+            transform: scale(0.7);
+            transform-origin: top left;
+            margin: 0; /* Optional: remove any extra spacing */
+            float: left;
+        }
+
         .vital-group .radio-group {
             display: flex;
-            align-items: center;
+            align-items: left;
         }
 
             .vital-group .radio-group label {
@@ -138,10 +150,11 @@
                 font-size: 14px;
             }
 
-            .vital-group .radio-group input {
-                width: auto;
-                height: auto;
+            .vital-group .radio-group input[type="radio"] {
+                width: 15px;
+                height: 15px;
             }
+
         /* Style for the scrollable dropdown */
         .select2-container--default .select2-results {
             max-height: 150px; /* Adjust the height as needed */
@@ -174,7 +187,6 @@
                                 <fieldset id="f-2">
                                     <div class="form-card">
                                         <div class="form-group">
-                                         
                                             <h4>Collection Information</h4>
                                             <hr></hr>
                                             <div class="row-two-columns">
@@ -192,33 +204,49 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Surgeon">Surgeon:</label>
-                                                    <input type="text" id="SurgeonInput" min="1" step="1" />
+                                                    <input type="text" value="" id="SurgeonInput" min="1" step="1" disabled/>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Collection">Collection</label>
-                                                    <input type="radio" id="CollectionInput" />
+                                                    <input type="radio" id="CollectionInput" class="CollectionInput" onclick="toggleRadio(this)" />
                                                 </div>
                                             </div>
+
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
-                                                    <label for="Date">Date</label>
+                                                    <label for="Date">Date:</label>
                                                     <input type="date" id="Date" name="Date" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
-                                                    <label for="Time">Time</label>
+                                                    <label for="Time">Time:</label>
                                                     <input type="time" required />
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="PreMedication">Prescription Medication:</label>
-                                                    <div class="list-view-box" id="PreMedicationList"></div>
+                                                    <table id="PreMedicationTable" class="display" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Medication Name</th>
+                                                                <th>Dosage</th>
+                                                                <th>Frequency</th>
+                                                                <th>Start Date</th>
+                                                                <th>End Date</th>
+                                                                <th>Notes</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="PreMedicationList">
+                                                            <!-- Data rows will be inserted here -->
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
+
                                             <input type="button" name="previous" class="previous action-button-previous" value="Back" />
                                             <input type="button" name="next" class="next action-button" value="Save" />
                                         </div>
@@ -232,11 +260,33 @@
         </div>
     </div>
     <script>
+        function toggleRadio(radio) {
+            if (radio.wasChecked) {
+                radio.checked = false;
+            }
+            radio.wasChecked = radio.checked;
+        }
+
         $(document).ready(function () {
             // Initialize Select2 with searchable functionality
             $('.select2').select2({
                 placeholder: 'Select an option',
                 allowClear: true
+            });
+            $('#PreMedicationTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "columnDefs": [
+                    { "width": "20%", "targets": 0 },
+                    { "width": "15%", "targets": 1 },
+                    { "width": "15%", "targets": 2 },
+                    { "width": "15%", "targets": 3 },
+                    { "width": "15%", "targets": 4 },
+                    { "width": "20%", "targets": 5 }
+                ]
             });
         });
 
@@ -245,6 +295,8 @@
             const p = button.parentElement;
             p.remove();
         }
+        
+
     </script>
 </body>
 </html>
