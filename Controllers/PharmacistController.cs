@@ -1,13 +1,36 @@
 ﻿using DEMO.Data;
+using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 
 namespace DEMO.Controllers
 {
     public class PharmacistController : Controller
     {
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public PharmacistController(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+        {
+            _dbContext = dbContext;
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task<IActionResult> ViewAllActivePrescriptionsPage()
+
+        {
+            var activePrescriptions = await _dbContext.Prescription
+            
+            .ToListAsync();
+
+            return View(activePrescriptions);
+        }
         public IActionResult Index()
         {
             return View();
@@ -24,13 +47,7 @@ namespace DEMO.Controllers
         }
 
 
-        public IActionResult ViewAllActivePrescriptionsPage()
-
-        {
-            
-
-            return View();
-        }
+       
 
 
        
