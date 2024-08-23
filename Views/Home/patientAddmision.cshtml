@@ -62,23 +62,6 @@
                                 <tr>
                                     <td>0120526958</td>
                                     <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>08/13/2024</td>
-                                    <td>AM</td>
-                                    <td>07:30 AM</td>
-                                    <td>Cardiology</td>
-                                    <td>101</td>
-                                    <td>Ariana Grande</td>
-                                    <td>
-                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#treatmentModal">
-                                            Show Treatment Codes
-                                        </a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
                                     <td>Can</td>
                                     <td>07/13/2024</td>
                                     <td>AM</td>
@@ -86,11 +69,35 @@
                                     <td>Cardiology</td>
                                     <td>101</td>
                                     <td>Ariana Grande</td>
-                                    <td>
-                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#treatmentModal">
-                                            Show Treatment Codes
-                                        </a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                    <td> @*   <div class="w-100 btn-group" role="group">
+                                        <a class="btn btn-primary"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#editBookingModal"
+                                           data-name="@Data.Name"
+                                           data-surname="@Data.Surname"
+                                           data-surgery-date="@Data.SurgeryDate"
+                                           data-surgery-time="@Data.SurgeryTime"
+                                           data-theater="@Data.Theater"
+                                           data-booking-id="@Data.BookingID"
+                                           data-account-id="@Data.AccountID"
+                                           data-patient-id="@Data.PatientID">Edit Booking</a>
+                                    </div>
+                                    <a class="btn btn-primary"
+                                       href="@Url.Action("CheckTreatmentCode", "Home", new { bookingId = Data.BookingID })">
+                                        Show Treatment Codes
+                                    </a>
+                                    <div class="w-100 btn-group" role="group">
+                                        <a class="btn btn-primary"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#addPrescriptionModal"
+                                           data-name="@Data.Name"
+                                           data-surname="@Data.Surname"
+                                           data-booking-id="@Data.BookingID"
+                                           data-account-id="@Data.AccountID"
+                                           data-patient-id="@Data.PatientID">Give Prescription</a>
+                                    </div> *@
+
+                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -99,42 +106,6 @@
                 </div>
             </div>
         </main>
-    </div>
-    <!-- Treatment Modal -->
-    <div class="modal fade" id="treatmentModal" tabindex="-1" aria-labelledby="treatmentModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="treatmentModalLabel">Treatment Codes</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Table with treatment names and codes -->
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Treatment Name</th>
-                                <th scope="col">Code</th>
-                            </tr>
-                        </thead>
-                        <tbody id="treatmentTableBody">
-                            <tr>
-                                <td>Drainage of Abscess</td>
-                                <td>10060</td>
-                            </tr>
-                            <tr>
-                                <td>Debridement</td>
-                                <td>11400</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="CheckTreatmentCode">Edit</a>
-                </div>
-            </div>
-        </div>
     </div>
     <script>
         $(document).ready(function () {

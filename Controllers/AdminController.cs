@@ -145,7 +145,7 @@ namespace DEMO.Controllers
             return View(viewModel); // Return the view with the model
         }
 
-        //FIX EMAIL!!!!
+       
         [HttpPost]
         public async Task<IActionResult> SendEmail(int id, string notes)
         {
@@ -153,7 +153,7 @@ namespace DEMO.Controllers
                                   .FirstOrDefault(p => p.AccountID == id);
 
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Day Hospital-  Apollo+", "noreply@dayhospital.com"));
+            emailMessage.From.Add(new MailboxAddress("Day Hospital -  Apollo+(Group 9 - 4Year)", "noreply@dayhospital.com"));
             emailMessage.To.Add(new MailboxAddress(user.Role, user.Email));
             emailMessage.Subject = "User Added";
 
@@ -230,8 +230,10 @@ namespace DEMO.Controllers
                                                }).ToList();
 
             // Fetch additional lists if needed
-            var allMedication = _dbContext.Medication.ToList();
-            var activeIngredients = _dbContext.Activeingredient.ToList();
+            var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
+            var activeIngredients = _dbContext.Activeingredient
+          .OrderBy(a => a.ActiveIngredientName)
+          .ToList();
 
             // Create the view model
             var viewModel = new MedicationListViewModel
@@ -297,7 +299,7 @@ namespace DEMO.Controllers
 
         public IActionResult ListTreatmentCodes()
         {
-            var allTreatmentCodes = _dbContext.TreatmentCodes.ToList();
+            var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
             var viewModel = new TreatmentCodesListViewModal
             {
                 AllTreatmentCodes = allTreatmentCodes,
