@@ -37,25 +37,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>@item.patientInfo.Name</td>
-                                        <td>@item.patientInfo.Surname</td>
-                                       
-                                        <td>@($"{item.accounts.Name} {item.accounts.Surname}")</td>
-
-
-                                        
-
-                                        <td>@item.prescription.DateGiven</td>
-                                        <td>@item.prescription.Status</td>
-                                        <td>@item.prescription.Urgency</td>
-                                        <td>@item.prescription.Take</td>
-                                        
-                                        
-                                    </tr>
-                                }
+                              
                                 
                             </tbody>
                         </table>

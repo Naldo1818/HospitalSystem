@@ -22,14 +22,49 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IActionResult> ViewAllActivePrescriptionsPage()
+        public IActionResult ViewAllActivePrescriptionsPage()
 
         {
-            var activePrescriptions = await _dbContext.Prescription
-            
-            .ToListAsync();
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
 
-            return View(activePrescriptions);
+            var Prescribed = (from p in _dbContext.PatientInfo
+                              join bs in _dbContext.BookSurgery
+            on p.PatientID equals bs.PatientID
+                              join pr in _dbContext.Prescription
+                              on bs.BookingID equals pr.BookingID
+                              where  pr.AccountID == accountID
+                              select new PrescriptionListViewModal
+                              {
+                                  
+                                  Name = p.Name,
+                                  Surname = p.Surname,
+                                  
+                                  DateGiven = pr.DateGiven,
+                                  Status = pr.Status,
+                                  Urgency = pr.Urgency,
+                                  Take = pr.Take,
+                                  
+                              }).OrderBy(a => a.Name).ToList();
+
+            var viewModel = new PrescriptionListViewModal
+            {
+                AllPrescribed = Prescribed,
+
+            };
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            return View(viewModel);
         }
         public IActionResult Index()
         {

@@ -8,11 +8,15 @@ namespace DEMO.Models.PharmacistModels
 
         [Key]
         public int RejectionID { get; set; }
-        [Required]
-        public int InstructionsID { get; set; }
+       
         [Required]
         public string RejectionReason { get; set;}
-                     
-        
+        [Required]
+        public int PrescriptionID {  get; set; }
+
+        [Required]
+        public int AccountID { get; set; }
+
+
     }
 }
