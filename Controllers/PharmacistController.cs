@@ -22,8 +22,19 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        //public IActionResult ViewAllActivePrescriptionsPage()
+            
+        //{
+        //    return View();
+        //}
+
+
         public IActionResult ViewAllActivePrescriptionsPage()
-            {
+
+        {
+            //var scripts = _dbContext.Prescription.ToList();
+            //return View(scripts);
+
             return View();
         }
 
@@ -40,7 +51,7 @@ namespace DEMO.Controllers
         //    var activescripts = await _dbContext.Prescription
         //        .ToListAsync();
 
-           
+
         //    var userName = HttpContext.Session.GetString("UserName");
         //    var userSurname = HttpContext.Session.GetString("UserSurname");
         //    var userEmail = HttpContext.Session.GetString("UserEmail");
