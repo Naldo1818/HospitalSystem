@@ -11,7 +11,6 @@ namespace DEMO.Models.NurseModels
         [Required]
         public string ConditionName { get; set; }
 
-        [ForeignKey("ActiveingredientID")]
-        public int ActiveingredientID { get; set; }
+       
     }
 }
