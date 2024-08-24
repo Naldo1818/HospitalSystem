@@ -31,7 +31,7 @@ namespace DEMO.Data
         public DbSet<AdmittedPatientsModel> AdmittedPatientsModel { get; set; }
         public DbSet<PatientVitals> PatientVitals { get; set; }
 
-        public DbSet<PharmacyMedicationModel> PharmacyMedicationTableInfo { get; set; }
+       public DbSet<PharmMedModel> PharmMeds { get; set; }
 
        
 

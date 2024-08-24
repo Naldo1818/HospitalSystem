@@ -299,29 +299,29 @@ namespace DEMO.Controllers
 
 
         //Adding my Pharmacy Medication
-        [HttpGet]
-        public ActionResult AddMedication()
-        {
-            PharmacyMedicationModel pharmacymedication = new PharmacyMedicationModel();
-            return View(pharmacymedication);
-        }
+        //[HttpGet]
+        //public ActionResult AddMedication()
+        //{
+        //    PharmacyMedicationModel pharmacymedication = new PharmacyMedicationModel();
+        //    return View(pharmacymedication);
+        //}
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> AddMedication([Bind
+        //public async Task<IActionResult> AddMedication([Bind
 
-            ("PharmacyMedicationlID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel,ActiveIngredientsAndStrength")]
-        PharmacyMedicationModel pharmacymedication)
-        {
-            if (ModelState.IsValid)
-            {
-                _dbContext.Add(pharmacymedication);
-                await _dbContext.SaveChangesAsync();
-                return RedirectToAction("MedicationAdded", "Pharmacist");
-            }
-            return View(pharmacymedication);
-        }
+        //    ("PharmacyMedicationlID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel,ActiveIngredientsAndStrength")]
+        //PharmacyMedicationModel pharmacymedication)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _dbContext.Add(pharmacymedication);
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("MedicationAdded", "Pharmacist");
+        //    }
+        //    return View(pharmacymedication);
+        //}
 
 
 
