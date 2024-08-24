@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using System.Diagnostics;
 
 namespace DEMO.Controllers
@@ -537,6 +538,98 @@ namespace DEMO.Controllers
             // If validation fails, redisplay the form with errors
             return View("ListSurgery", model);
 
+        }
+       
+        public IActionResult SendPatientEmail(int id)
+        {
+            var prescriptionDetails = (from p in _dbContext.Prescription
+                                       join b in _dbContext.BookSurgery on p.BookingID equals b.BookingID
+                                       join pa in _dbContext.PatientInfo on b.PatientID equals pa.PatientID
+                                       where p.PrescriptionID == id
+                                       select new
+                                       {
+                                           b.SurgeryTime,
+                                           b.SurgeryDate,
+                                           b.Theater,
+                                           pa.Name,
+                                           pa.Surname,
+                                           pa.ContactNumber,
+                                           pa.Email
+                                       }).FirstOrDefault();
+
+            // Prepare the view model
+            var viewModel = new PatientEmailViewModel
+            {
+                SurgeryDate = prescriptionDetails.SurgeryDate,
+                SurgeryTime = prescriptionDetails.SurgeryTime,
+                FullName = $"{prescriptionDetails.Name} {prescriptionDetails.Surname}",
+
+                Theater = prescriptionDetails.Theater,
+                ContactNumber = prescriptionDetails.ContactNumber,
+                Email = prescriptionDetails.Email, // Only for example; usually, passwords are not shared like this
+                Notes = string.Empty // Initial empty notes
+            };
+
+            return View(viewModel); // Return the view with the model
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendPatientEmail(int id, string notes)
+        {
+
+            var prescriptionDetails = (from p in _dbContext.Prescription
+                                       join b in _dbContext.BookSurgery on p.BookingID equals b.BookingID
+                                       join pa in _dbContext.PatientInfo on b.PatientID equals pa.PatientID
+                                       where p.PrescriptionID == id
+                                       select new
+                                       {
+                                           b.SurgeryTime,
+                                           b.SurgeryDate,
+                                           b.Theater,
+                                           pa.Name,
+                                           pa.Surname,
+                                           pa.ContactNumber,
+                                           pa.Email
+                                       }).FirstOrDefault();
+
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Day Hospital -  Apollo+(Group 9 - 4Year)", "noreply@dayhospital.com"));
+            emailMessage.To.Add(new MailboxAddress("Patient", prescriptionDetails.Email));
+            emailMessage.Subject = "User Added";
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = $@"
+         <h3>User Information</h3>
+         <p><strong>Name:</strong> {prescriptionDetails.Name} {prescriptionDetails.Surname}</p>
+         <p><strong>Contact Details:</strong> {prescriptionDetails.ContactNumber} {prescriptionDetails.Email}</p>
+         <h3>You have been Booked for the following surgery</h3>
+</n>
+         <p><strong>Theater:</strong> {prescriptionDetails.Theater}</p>
+         <p><strong>SurgeryTime:</strong> {prescriptionDetails.SurgeryTime}</p>        
+</n>
+         <h3>Notes</h3>
+         <p>{notes}</p>
+</n> 
+          Kind Regards 
+          Apollo+"""
+            };
+
+            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+
+                client.Authenticate("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
+                await client.SendAsync(emailMessage);
+                client.Disconnect(true);
+
+            }
+
+            TempData["SuccessMessage"] = "Email sent successfully.";
+            return RedirectToAction("AdminHome", "Admin");
         }
         public IActionResult PrescriptionList()
         {

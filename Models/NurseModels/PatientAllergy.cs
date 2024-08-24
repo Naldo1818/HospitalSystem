@@ -1,0 +1,17 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DEMO.Models.NurseModels
+{
+    public class PatientAllergy
+    {
+        [Key]
+        public int patientAllergyID {  get; set; }
+
+        [Required]
+        public int PatientID { get; set; }
+
+        [Required]
+        public string AllergyID { get; set;}
+
+    }
+}

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Discharge Patients";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.PatientListViewModal
+@* @model DEMO.ViewModels.PatientListViewModal *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,10 +59,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var Patient in Model.AllPatients)
-                                {
+                                
                                     <tr>
-                                        <td width="15%">@Patient.IDNumber</td>
+                                        @* <td width="15%">@Patient.IDNumber</td>
                                         <td width="15%">@Patient.Name</td>
                                         <td width="15%">@Patient.Surname</td>
                                         <td width="15%">@Patient.Gender</td>
@@ -77,24 +76,25 @@
                                                    data-surname="@Patient.Surname"
                                                    data-patient-id="@Patient.PatientID">Book Surgery</a>
                                             </div>
+                                    </td> *@
+                                    <tr>
+                                        <td>0120526958</td>
+                                        <td>Jin</td>
+                                        <td>Woo</td>
+                                        <td>25/05/2025</td>
+                                        <td>08:00 AM</td>
+                                        <td>Cardiology</td>
+                                        <td>101</td>
+                                        <td>12345</td>
+                                        <td>Ariana Grande</td>
+                                        <td>
+
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Discharge">Discharge Patient</a>
                                         </td>
                                     </tr>
-                                }
-                                @* <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>25/05/2025</td>
-                                    <td>08:00 AM</td>
-                                    <td>Cardiology</td>
-                                    <td>101</td>
-                                    <td>12345</td>
-                                    <td>Ariana Grande</td>
-                                    <td>
-                                       
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Discharge">Discharge Patient</a>
-                                    </td>
-                                </tr> *@
+                                   
+                                
+                                   
                             </tbody>
                         </table>
                     </div>
