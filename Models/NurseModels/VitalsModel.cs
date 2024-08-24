@@ -1,12 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Org.BouncyCastle.Bcpg.Sig;
+using System.ComponentModel.DataAnnotations;
 
 namespace DEMO.Models.NurseModels
 {
     public class VitalsModel
     {
         [Key]
-        public int VitalsID {  get; set; }
+        public int VitalsID { get; set; }
         [Required]
+        
+        [RegularExpression("")]
         public int AdmittedPatientID { get; set; }
         [Required]
         public int Height { get; set; }
@@ -28,5 +31,7 @@ namespace DEMO.Models.NurseModels
         public int BloodGlucoseLevel { get; set; }
         [Required]
         public int Temperature { get; set; }
+        [Required]
+        public TimeOnly TimeOnly { get; set; }
     }
 }

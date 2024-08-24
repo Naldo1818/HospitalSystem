@@ -23,6 +23,6 @@ namespace DEMO.Data
         public DbSet<SurgeryTreatmentCode> SurgeryTreatmentCode { get; set; }
         public DbSet<MedicationActiveIngredient> MedicationActiveIngredient { get; set; }
         public DbSet<PatientAllergy> PatientAllergy { get; set; }
-        public DbSet<RejectScriptModel> RejectScriptModel { get; set; }
+        public DbSet<RejectedScriptsModel> RejectScriptModel { get; set; }
     }
 }

@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
-namespace DEMO.Models.PharmacistModels
+namespace DEMO.Models
 {
-    public class RejectedScriptsModel
+    public class DispensedScriptsModel
         
     {
 
         [Key]
-        public int RejectionID { get; set; }
+        public int DispensedScriptsID { get; set; }
        
-        [Required]
-        public string RejectionReason { get; set;}
+      
         [Required]
         public int PrescriptionID {  get; set; }
 
