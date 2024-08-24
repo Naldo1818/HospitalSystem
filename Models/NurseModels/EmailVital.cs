@@ -8,12 +8,13 @@ namespace DEMO.Models.NurseModels
         public int AccountID { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Notes { get; set; }
+        
+        
+        public int PatientID { get; set; }
 
         [Required]
-        public VitalsModel Vitals { get; set; }
+        public List<RetakeVitals> Vitals { get; set; }
+        public string Notes { get; set; }
 
     }
 }

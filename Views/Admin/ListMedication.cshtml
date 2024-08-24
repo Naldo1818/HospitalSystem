@@ -25,7 +25,7 @@
 
     <title>Medication Add</title>
 </head>
-<body>
+<body>///
     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:auto">
@@ -33,18 +33,21 @@
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form id="addMedicationForm" method="post" action="@Url.Action("AddMedication", "Admin")">
                             <div class="form-group row">
-                                <div class="col-4">
+                                <div class="col-12">
                                     <h1>Medication Page</h1>
                                 </div>
                             </div>
-                                <div class="form-group row">
-                                
-                                <div class="col-4">
-                                     <label for="medicationName" class="form-label">Medication Name</label>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <h2>Medication Section</h2>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <label for="medicationName" class="form-label">Medication Name</label>
                                     <input type="text" class="form-control" name="medicationName" placeholder="Enter Medication Name" style="width:300px">
                                 </div>
-                                <div class="col-4">
-                               
+                                <div class="col-md-4">
                                     <label for="medicationForm" class="form-label">Medication Form</label>
                                     <select class="form-control" name="medicationForm" style="width:300px">
                                         <option value="">Select a Description</option>
@@ -59,15 +62,13 @@
                                         <option value="Suspension">Suspension</option>
                                         <option value="Syrup">Syrup</option>
                                         <option value="Tablets">Tablets</option>
-
-                                       
                                     </select>
                                 </div>
-                                <div class="col-4">
+                                <div class="col-md-4">
                                     <label for="schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="schedule" style="width:300px">
+                                    <select class="form-control" name="schedule" style="width:300px" id="schedule">
                                         <option value="">Select a Description</option>
-                                        <option value="1">Schedule 0</option>
+                                        <option value="0">Schedule 0</option>
                                         <option value="1">Schedule 1</option>
                                         <option value="2">Schedule 2</option>
                                         <option value="3">Schedule 3</option>
@@ -76,15 +77,50 @@
                                         <option value="6">Schedule 6</option>
                                     </select>
                                 </div>
-
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br />
-                                        <button type="button" id="openMedicationButton" class="btn btn-primary">Add</button>
-                                    </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <h2>Active Ingredient Section</h2>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col">
+                                    <label for="activeIngredient" class="form-label">Active Ingredient</label>
+                                    <input type="text" class="form-control" style="width:300px" id="activeIngredient" placeholder="Enter active ingredient">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="strength" class="form-label">Strength</label>
+                                    <input type="text" class="form-control" style="width:300px" id="strength" placeholder="Enter strength">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button type="button" id="addRow" class="btn btn-primary">Add Row</button>
+                                    <br></br>
+                                </div>
+                               
+                            </div>
+                            <div class="form-group row">
+                              <div class="col-12">
+                                    <table class="table table-bordered" id="dynamicTable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Active Ingredient</th>
+                                                <th scope="col">Strength</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Rows will be added here dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12 text-center">
+                                    <button type="button" id="openMedicationButton" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -122,6 +158,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Confirmation ADD Medication Modal -->
             <div class="modal fade" id="confirmMedicationModal" tabindex="-1" role="dialog" aria-labelledby="confirmMedicationModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -135,12 +172,11 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" id="saveMedicationButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelSaveButton">No</button>
                         </div>
                     </div>
                 </div>
             </div>
-
 
             <!-- Modal Active Ingredient Structure -->
             <div class="modal fade modal-lg" id="activeIngredientModal" tabindex="-1" aria-labelledby="activeIngredientModalLabel" aria-hidden="true">
@@ -154,32 +190,27 @@
                             <form id="activeIngredientForm" method="post" action="@Url.Action("AddActiveingredient", "Admin")">
                                 <div class="form-group row">
                                     <input type="hidden" id="MedicationID" name="MedicationID" />
-
-                                 <div class="col-4">
+                                    <div class="col-4">
                                         <label for="activeingredientName" class="form-label">Active Ingredient Name</label>
-                                         <select class="form-control" id="activeingredientName" name="activeingredientID" style="width:250px" required>
-                                         <option value="">Select an active ingredient</option>
+                                        <select class="form-control" id="activeingredientName" name="activeingredientID" style="width:250px" required>
+                                            <option value="">Select an active ingredient</option>
                                             @foreach (var ingredient in Model.ActiveIngredients)
                                             {
-                                          <option value="@ingredient.ActiveingredientID">@ingredient.ActiveIngredientName</option>
+                                                <option value="@ingredient.ActiveingredientID">@ingredient.ActiveIngredientName</option>
                                             }
-                                          </select>
-</div>
-                                  <div class="col-4">
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
                                         <label for="activeingredientStrength" class="form-label">Active Ingredient Strength(In mg)</label>
                                         <input type="number" class="form-control" id="activeingredientStrength" name="activeingredientStrength" style="width:250px" required>
                                     </div>
                                 </div>
-
-
-                                    <div class="form-group row">
+                                <div class="form-group row">
                                     <div class="col-4">
                                         <br />
-                                        <button type="button" id="mainSaveActiveIngredientButton" class="btn btnbtn-primary">Save</button>
+                                        <button type="button" id="mainSaveActiveIngredientButton" class="btn btn-primary">Save</button>
                                     </div>
                                 </div>
-
-
                                 <div class="row">
                                     <div class="col">
                                         <div class="p-3 mt-5 border" style="background-color: white;">
@@ -199,10 +230,10 @@
                                                             <td>@MedicationActiveIngredient.MedicationName</td>
                                                             <td>@MedicationActiveIngredient.ActiveIngredientName</td>
                                                             <td>@MedicationActiveIngredient.ActiveIngredientStrength</td>
-                                                             <td>
-                                                                 <div class="w-100 btn-group" role="group">
+                                                            <td>
+                                                                <div class="w-100 btn-group" role="group">
                                                                     <a class="btn btn-warning">Remove</a>
-                                                                 </div>
+                                                                </div>
                                                             </td>
                                                         </tr>
                                                     }
@@ -216,11 +247,9 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
-                        </div>
-                   
+                    </div>
                 </div>
             </div>
-
 
             <!-- Confirmation ActiveIngredient Modal -->
             <div class="modal fade" id="confirmActiveIngredientModal" tabindex="-1" role="dialog" aria-labelledby="confirmActiveIngredientModalLabel" aria-hidden="true">
@@ -235,7 +264,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" id="saveActiveIngredientButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelSaveButton">No</button>
                         </div>
                     </div>
                 </div>
@@ -244,69 +273,83 @@
             <script>
                 $(document).ready(function () {
                     $('#medicationTable').DataTable();
-                });
 
-                // Handle 'Add Medication Code' button click
-                $('#openMedicationButton').on('click', function () {
-                    $('#confirmMedicationModal').modal('show');
-                });
-                // Ensure 'No' button closes the confirmation modal
-                $('#cancelSaveButton').on('click', function () {
-                    $('#confirmMedicationModal').modal('hide');
-                });
-                // Handle confirmation of saving Medication code
-                $('#saveMedicationButton .btn-primary').on('click', function () {
-                    $.ajax({
-                        url: '@Url.Action("AddMedication", "Admin")',
-                        type: 'POST',
-                        data: $('#addMedicationForm').serialize(),
-                        success: function (response) {
-                            // Redirect to the treatment codes list after successful addition
-                            window.location.href = '@Url.Action("ListMedication", "Admin")';
-                        },
-                        error: function (xhr, status, error) {
-                            console.log("Error occurred:", error);
+                    $('#openMedicationButton').on('click', function () {
+                        $('#confirmMedicationModal').modal('show');
+                    });
+
+                    $('#cancelSaveButton').on('click', function () {
+                        $('#confirmMedicationModal').modal('hide');
+                    });
+
+                    $('#saveMedicationButton').on('click', function () {
+                        $.ajax({
+                            url: '@Url.Action("AddMedication", "Admin")',
+                            type: 'POST',
+                            data: $('#addMedicationForm').serialize(),
+                            success: function (response) {
+                                window.location.href = '@Url.Action("ListMedication", "Admin")';
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Error occurred:", error);
+                            }
+                        });
+                    });
+
+                    $('#addRow').click(function () {
+                        var activeIngredient = $('#activeIngredient').val();
+                        var strength = $('#strength').val();
+
+                        if (activeIngredient && strength) {
+                            var rowHtml = `<tr>
+                                                <td>${activeIngredient}</td>
+                                                <td>${strength}</td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-sm deleteRow">Delete</button>
+                                                </td>
+                                            </tr>`;
+
+                            $('#dynamicTable tbody').append(rowHtml);
+
+                            $('#dynamicTable').on('click', '.deleteRow', function () {
+                                $(this).closest('tr').remove();
+                            });
+                            $('#activeIngredient').val('');
+                            $('#strength').val('');
+                        } else {
+                            alert('Please fill out both fields.');
                         }
                     });
-                });
 
+                    $('#activeIngredientModal').on('show.bs.modal', function (event) {
+                        var button = $(event.relatedTarget);
+                        var medicationId = button.data('medication-id');
+                        var modal = $(this);
+                        modal.find('input[name="MedicationID"]').val(medicationId);
+                    });
 
+                    $('#mainSaveActiveIngredientButton').on('click', function () {
+                        $('#confirmActiveIngredientModal').modal('show');
+                    });
 
+                    $('#cancelSaveButton').on('click', function () {
+                        $('#confirmActiveIngredientModal').modal('hide');
+                    });
 
-                $('#activeIngredientModal').on('show.bs.modal', function (event) {
-                    var button = $(event.relatedTarget); // Button that triggered the modal
-                    var medicationId = button.data('medication-id');
-
-                    var modal = $(this);
-                    modal.find('input[name="MedicationID"]').val(medicationId);
-                });
-
-
-
-
-                // Handle 'Add Treatment Code' button click
-                $('#mainSaveActiveIngredientButton').on('click', function () {
-                    $('#confirmActiveIngredientModal').modal('show');
-                });
-                // Ensure 'No' button closes the confirmation modal
-                $('#cancelSaveButton').on('click', function () {
-                    $('#confirmEditModal').modal('hide');
-                });
-                // Handle confirmation of saving treatment code
-                $('#saveActiveIngredientButton').on('click', function () {
-                    $.ajax({
-                        url: '@Url.Action("AddActiveingredient", "Admin")',
-                        type: 'POST',
-                        data: $('#activeIngredientForm').serialize(),
-                        success: function (response) {
-                            window.location.href = '@Url.Action("ListMedication", "Admin")';
-                        },
-                        error: function (xhr, status, error) {
-                            console.log("Error occurred:", error);
-                        }
+                    $('#saveActiveIngredientButton').on('click', function () {
+                        $.ajax({
+                            url: '@Url.Action("AddActiveingredient", "Admin")',
+                            type: 'POST',
+                            data: $('#activeIngredientForm').serialize(),
+                            success: function (response) {
+                                window.location.href = '@Url.Action("ListMedication", "Admin")';
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("Error occurred:", error);
+                            }
+                        });
                     });
                 });
-
             </script>
         </main>
     </div>

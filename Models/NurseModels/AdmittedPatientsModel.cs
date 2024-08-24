@@ -21,10 +21,12 @@ namespace DEMO.Models.NurseModels
         public List<PatientAllergy> PatientAllergyID { get; set; }
 
         [Required]
-        public int PatientConditionsID { get; set; }
+        public List<PatientConditions> PatientConditionsID { get; set; }
 
         [Required]
-        public int PatientMedicationID { get; set; }
+        public List<PatientMedication> PatientMedication { get; set; }
+
+        public int PatientVitalsID { get; set; }
 
         [Required]
         public DateTime Date = DateTime.Now;
@@ -34,11 +36,11 @@ namespace DEMO.Models.NurseModels
         public int CityID { get; set; }
         [Key]
         public int SuburbID { get; set; }
-        
+        [Required]
         public string StreetName {  get; set; }
 
         [Required]
-        public string AdmissionStatus { get; set; }
+        public string AdmissionStatus { get; set; } = "Admitted";
         public List<BookSurgery> bookings { get; set; }
     }
 }

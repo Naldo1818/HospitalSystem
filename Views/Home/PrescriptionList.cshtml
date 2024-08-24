@@ -138,13 +138,15 @@
             <div class="row" style="width:auto;display:none" id="acceptedRow">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <h2>Prescription Accepted</h2>
+                        <h2>Prescription Dispensed</h2>
                         <table id="acceptedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist Name</th>
+                                    <th scope="col">Pharmacist Surname</th>
                                     <th scope="col">Urgency</th>
                                     <th scope="col">Take</th>
                                     <th scope="col">Status</th>
@@ -156,9 +158,11 @@
                                 {
                                     <tr>
 
-                                        <td>@Data.Name</td>
-                                        <td>@Data.Surname</td>
+                                        <td>@Data.PatientName</td>
+                                        <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
+                                        <td>@Data.AccountName</td>
+                                        <td>@Data.AccountSurname</td>
                                         <td>@Data.Urgency</td>
                                         <td>@Data.Take</td>
                                         <td>@Data.Status</td>

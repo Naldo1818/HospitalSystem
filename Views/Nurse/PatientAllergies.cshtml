@@ -12,9 +12,10 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <style>
-        .container{
-            padding-top:50px;
+        .container {
+            padding-top: 50px;
         }
+
         .form-card {
             max-width: 900px;
             margin: 20px auto;
@@ -80,6 +81,7 @@
             .modal-footer button {
                 min-width: 100px;
             }
+
         }
     </style>
 </head>
@@ -91,8 +93,9 @@
                     <div class="p-3 mt-2 border">
 
                         <form>
-                            <h2>Patient Information</h2>
-                            
+                            <h2>Allergies</h2>
+                            <a asp-controller="Nurse" asp-action="PatientRecords"><input type="button" name="Back" class="next action-button btn-danger" value="Back" /></a>
+
                         </form>
                     </div>
                 </div>
@@ -103,44 +106,16 @@
                         <table id="example" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Ward</th>
-                                    <th scope="col">Bed</th>
-                                    <th scope="col">Medication</th>
+                                    <th scope="col">AllergyID</th>
                                     <th scope="col">Allergy</th>
-                                    <th scope="col">Condition</th>
-                                    <th scope="col">Vitals</th>
-                                    <th scope="col">Surgeon</th>
-                                    <th scope="col">Action</th>
+                                  
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>Jin</td>
                                     <td>Woo</td>
-                                    <td>Male</td>
-                                    <td>Elephant</td>
-                                    <td>1</td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientMedication">Medication</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientAllergies">Allergy</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientConditions">Condition</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientVitals">Vitals</a>
-                                    </td>
-
-                                    <td>Ariana Grande</td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="EmailVitals">Email Surgeon</a>
-                                    </td>
+                                    
                                 </tr>
                             </tbody>
                         </table>
