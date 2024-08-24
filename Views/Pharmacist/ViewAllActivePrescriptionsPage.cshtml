@@ -3,24 +3,37 @@
     Layout = "_LayoutPharmacist";
 }
 
-@model DEMO.ViewModels.PrescriptionListViewModal
+@model DEMO.ViewModels.ViewActivePrescriptionsModel
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription</title>
+
+
+    <style>
+        .highlight-urgent {
+            background-color:red; /* Light red background for urgent items */
+        }
+
+        .highlight-low-stock {
+            background-color: blue; /* Light yellow background for low stock items */
+        }
+    </style>
+
 </head>
 <body>
     
     <!--Table-->
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:auto ;display:none" id="prescribedRow">
+            <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border">
                         <h2><center>Active Prescrptions</center></h2>
-                        <table id="prescribedTable" class="display" style="width:100%">
+                        <table id="example" class="table display" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Patient Name</th>
@@ -34,20 +47,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var Data in Model.AllPrescribed)
-                                {
-                                    <tr>
-                                        
-                                        <td>@Data.Name</td>
-                                        <td>@Data.Surname</td>
-                                        <td>@Data.DateGiven</td>
-                                        <td>@Data.Urgency</td>
-                                        <td>@Data.Take</td>
-                                        <td>@Data.Status</td>
+
+                                @foreach (var item in Model.combinedData)
+                              {
+                                  
+                                    <tr >
+                                        <td>@item.Name</td>
+                                        <td>@item.Surname</td>
+                                        <td>@item.IDNumber</td>
+                                        <td>@item.DateGiven</td>
+                                        <td>@item.Status</td>
+                                        <td>@item.Urgency</td>
+                                        <td>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription">View in full</a>
+                                        </td>
+
                                         
 
-                                    </tr>
-                                }
+
+
+                                  </tr>
+
+                              }
+                               
                             </tbody>
                         </table>
                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
