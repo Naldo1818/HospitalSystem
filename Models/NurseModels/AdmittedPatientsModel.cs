@@ -18,7 +18,7 @@ namespace DEMO.Models.NurseModels
         public int WardID { get; set; }
 
         [Required]
-        public int PatientAllergyID { get; set; }
+        public List<PatientAllergy> PatientAllergyID { get; set; }
 
         [Required]
         public int PatientConditionsID { get; set; }
@@ -39,8 +39,6 @@ namespace DEMO.Models.NurseModels
 
         [Required]
         public string AdmissionStatus { get; set; }
-
-        public BookSurgery bookSurgery { get; set; }
         public List<BookSurgery> bookings { get; set; }
     }
 }

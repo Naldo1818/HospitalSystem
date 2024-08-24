@@ -36,6 +36,23 @@ namespace DEMO.Controllers
         }
         public IActionResult DischargeList()
         {
+            //var combinedData = (from bs in _dbContext.BookSurgery
+            //                    join a in _dbContext.Accounts
+            //                    on bs.AccountID equals a.AccountID
+            //                    join p in _dbContext.PatientInfo
+            //                    on bs.PatientID equals p.PatientID
+            //                    select new ViewBookings
+            //                    {
+            //                        BookingID = bs.BookingID,
+            //                        AccountName = a.Name,
+            //                        AccountSurname = a.Surname,
+            //                        PatientName = p.Name,
+            //                        PatinetSurname = p.Surname,
+            //                        PatientID = bs.PatientID,
+            //                        SurgeryTime = bs.SurgeryTime,
+            //                        SurgeryDate = bs.SurgeryDate,
+            //                        Theater = bs.Theater
+            //                    }).OrderBy(a => a.AccountName).ToList();
             return View();
         }
         public IActionResult ViewSurgeryBooking()
