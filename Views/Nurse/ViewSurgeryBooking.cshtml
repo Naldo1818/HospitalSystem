@@ -2,7 +2,7 @@
     ViewData["Title"] = "Page1";
     Layout = "_LayoutNurse";
 }
-
+@model DEMO.Models.NurseModels.ViewBookings
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,12 +93,7 @@
 
                         <form>
                             <h2>Bookings List</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <label for="searchInput" class="form-label">Name or Surname</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
-                                </div>
-                            </div>
+                            
                         </form>
                     </div>
                 </div>
@@ -109,28 +104,41 @@
                         <table id="example" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID Number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Surgeon Name</th>
+                                    <th scope="col">Surgery Date</th>
+                                    <th scope="col">Surgery Time</th>
+                                    <th scope="col">Theatre</th>
+                                    <th scope="col">Actions</th>
                                     
                                     <th scope="col">Admit</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>Male</td>
-                                    <td>25/05/2025</td>
+                                @foreach( var Data in Model.AllcombinedData){
+                                    
+                                    <tr>
+                                    <td>@Data.PatientName</td>
+                                    <td>@Data.PatinetSurname</td>
+                                    <td>@Data.AccountName @Data.AccountSurname</td>
+                                    <td>@Data.SurgeryDate</td>
+                                    <td>@Data.SurgeryTime</td>
+                                    <td>@Data.Theater</td>
                                     
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionPage">Admit Patient</a>
                                     </td>
-                                </tr>
+                                    </tr>
+
+                                }
+                            
                             </tbody>
+
+
+                                
+
+                                
                         </table>
                     </div>
                 </div>

@@ -8,16 +8,13 @@ namespace DEMO.Models.NurseModels
     {
         [Key]
         public int AdmittedPatientID { get; set; }
-
-        [Required]
-        public int AdmissionId { get; set; }
         
         [Required]
-        [ForeignKey("PatientID")]
+        [Key]
         public int PatientID { get; set; }
 
         [Required]
-        [ForeignKey("WardID")]
+        [Key]
         public int WardID { get; set; }
 
         [Required]
@@ -38,7 +35,7 @@ namespace DEMO.Models.NurseModels
         [Key]
         public int SuburbID { get; set; }
         
-
+        public string StreetName {  get; set; }
 
         [Required]
         public string AdmissionStatus { get; set; }
