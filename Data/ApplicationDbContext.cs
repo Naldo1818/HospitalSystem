@@ -1,4 +1,5 @@
 ﻿using DEMO.Models;
+using DEMO.Models.NurseModels;
 using DEMO.Models.PharmacistModels;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace DEMO.Data
         public DbSet<MedicationInstructions> MedicationInstructions { get; set; }
         public DbSet<SurgeryTreatmentCode> SurgeryTreatmentCode { get; set; }
         public DbSet<MedicationActiveIngredient> MedicationActiveIngredient { get; set; }
-        
-         public DbSet<RejectScriptModel> RejectScriptModel { get; set; }
+        public DbSet<PatientAllergy> PatientAllergy { get; set; }
+        public DbSet<RejectScriptModel> RejectScriptModel { get; set; }
     }
 }

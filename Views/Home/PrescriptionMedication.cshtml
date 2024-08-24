@@ -113,7 +113,7 @@
                                 </div>
                                 <div class="col-4">
                                     <br>
-                                    <label for="medicationSelect" class="form-label">Medication Name</label>
+                                    <label for="medicationSelect" class="form-label">Medication Allowed</label>
                                     <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required>
                                         <option value="">Select a Description</option>
                                         @foreach (var medication in Model.AllMedication)
@@ -168,6 +168,7 @@
                                     <th scope="col">Prescription Date</th>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Quantity</th>
+                                    <th scope="col">Schedule</th>
                                     <th scope="col">Form</th>
                                     <th scope="col">Instructions</th>
                                     <th scope="col">Status</th>
@@ -183,14 +184,18 @@
                                         <td>@item.DateGiven</td>
                                         <td>@item.MedicationName</td>
                                         <td>@item.Quantity</td>
+                                        <td>@item.Schedule</td>
                                         <td>@item.MedicationForm</td>
                                         <td>@item.Instructions</td>
                                         <td>@item.Status</td>
                                         <td>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-warning">Remove</a>
-                                            </div>
+                                            <form asp-action="DeleteMedication" method="post">
+                                                <input type="hidden" name="Medid" value="@item.Medid" />
+                                                <input type="hidden" name="prescriptionId" value="@ViewBag.PrescriptionID" />
+                                                <button type="submit" class="btn btn-danger">Remove</button>
+                                            </form>
                                         </td>
+
                                     </tr>
                                 }
                             </tbody>

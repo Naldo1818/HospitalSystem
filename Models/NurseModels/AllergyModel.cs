@@ -10,7 +10,7 @@ namespace DEMO.Models.NurseModels
         [Key]
         public int AllergyID { get; set; }
         
-        [Key]
+        [Required]
         public int ActiveingredientID { get; set; }
             
     }

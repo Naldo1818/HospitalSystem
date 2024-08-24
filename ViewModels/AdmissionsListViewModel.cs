@@ -2,7 +2,7 @@
 
 namespace DEMO.ViewModels
 {
-    public class SurgeryListViewModel
+    public class AdmissionsListViewModel
     {
         public int PatientID { get; set; }
         public int BookingID { get; set; }
@@ -19,7 +19,6 @@ namespace DEMO.ViewModels
         public string SurgeryTime { get; set; }
         public DateOnly SurgeryDate { get; set; }
         public string Theater { get; set; }
-        public List<SurgeryListViewModel> AllcombinedData { get; set; }
-     
+        public List<AdmissionsListViewModel> AllcombinedData { get; set; }
     }
 }

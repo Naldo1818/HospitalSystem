@@ -11,7 +11,7 @@ namespace DEMO.Models.NurseModels
         public int PatientID { get; set; }
 
         [Required]
-        public string AllergyID { get; set;}
+        public string ActiveingredientID { get; set;}
 
     }
 }
