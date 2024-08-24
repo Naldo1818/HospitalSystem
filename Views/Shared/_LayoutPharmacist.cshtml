@@ -1,4 +1,11 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@{
+    var userName = Context.Session.GetString("UserName");
+    var userSurname = Context.Session.GetString("UserSurname");
+    var userEmail = Context.Session.GetString("UserEmail");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -34,8 +41,11 @@
                 <div class="card mt-5 custom-card" style="width:200px">
 
                     <div class="card-body">
-                        <h5 class="card-title text-center">Logged in as Pharmacist</h5>
-                        <h5 class="card-title text-center">John Doe</h5>
+                        <h5 class="card-title text-center">Logged in as Pharmacist:</h5>
+                        <h5 class="card-title text-center">@ViewBag.Username @ViewBag.UserSurname</h5>
+
+                        <h5 class="card-title text-center">Email:</h5>
+                        <h5 class="card-title text-center">@ViewBag.UserEmail</h5>
                         
                         <hr>
                         <br>

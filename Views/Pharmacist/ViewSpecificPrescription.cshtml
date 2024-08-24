@@ -41,6 +41,7 @@
 
 <body>
     <h1><center>Prescription View</center></h1>
+
     <!--Medical History-->
     <div class="container">
         <main role="main" class="pb-5">
@@ -139,12 +140,12 @@ Aspirin
 
         </main>
     </div>
-    <!--end of medical history-->
+   
 
 
 
-    <!--Vitals History>
-
+    
+    <!--Vitals History-->
     <div class="container">
         <main role="main" class="pb-5">
             <div class="row" style="width:1000px">
@@ -182,49 +183,56 @@ Aspirin
 
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">BP: 120/80 mmHg</label>
+                                    <label for="exampleFormControlInput1" class="form-label">Systolic BP (mmHg)</label>
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:00</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
+
+                                    
                                 </div>
+
 
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Heart rate: 70 bpm</label>
+                                    <label for="exampleFormControlInput1" class="form-label">
+                                        Diastolic BP (mmHg)
+                                    </label>
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:15</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
 
 
                                 </div>
 
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Blood oxygen level: 100%</label>
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:25</label>
 
-                                </div>
 
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Respiratory rate: 18 breaths per minute</label>
+                                    <label for="exampleFormControlInput1" class="form-label">Blood Oxygen (%)</label>
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:30</label>
-
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Height: 160 cm</label>
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:45</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
 
                                 </div>
 
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Weight: 60 kg</label>
+                                    <label for="exampleFormControlInput1" class="form-label">Respiration Rate (Breaths/min)e</label>
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Time taken: 08:50</label>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Blood Glucose Level (mg/dL)</label>
+                                    <br>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
+
+                                </div>
+
+                                <div class="col-4">
+                                    <br>
+                                    <label for="exampleFormControlInput1" class="form-label">Temperature (°C)</label>
+                                    <br>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
 
                                 </div>
 
@@ -393,6 +401,7 @@ Administer 1 Diazepam 2 times a day after eating.
                                 
 
                 </div>
+                
 
 
 
@@ -400,7 +409,6 @@ Administer 1 Diazepam 2 times a day after eating.
                     <div class="col-4">
                         <br>
                          <a class="btn btn-danger btn-lg" data-toggle="modal" data-target="#MedicationDispensedModal">Dispense</a>
-                                    <input type="button" name="reject" class="next action-button" value="Reject" id="rejectButton" />
 
                          <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
                          <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
