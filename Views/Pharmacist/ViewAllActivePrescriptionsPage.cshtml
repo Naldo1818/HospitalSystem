@@ -3,8 +3,7 @@
     Layout = "_LayoutPharmacist";
 }
 
-
-
+@model DEMO.ViewModels.PrescriptionListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,14 +12,15 @@
     <title>Prescription</title>
 </head>
 <body>
-
+    
     <!--Table-->
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+            <div class="row" style="width:auto ;display:none" id="prescribedRow">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <table class="table">
+                        <h2><center>Active Prescrptions</center></h2>
+                        <table id="prescribedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Patient Name</th>
@@ -34,7 +34,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                
+                                @foreach (var Data in Model.AllPrescribed)
+                                {
+                                    <tr>
+                                        
+                                        <td>@Data.Name</td>
+                                        <td>@Data.Surname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td>@Data.Urgency</td>
+                                        <td>@Data.Take</td>
+                                        <td>@Data.Status</td>
+                                        
+
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
