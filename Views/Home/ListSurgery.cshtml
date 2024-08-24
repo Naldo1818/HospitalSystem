@@ -121,9 +121,12 @@
    data-patient-id="@Data.PatientID">Edit Booking</a>
                                             </div>
                                             <a class="btn btn-primary"
-                                               href="@Url.Action("CheckTreatmentCode", "Home", new { bookingId = Data.BookingID })">
+                                               asp-controller="Home"
+                                               asp-action="CheckTreatmentCode"
+                                               asp-route-bookingId="@Data.BookingID">
                                                 Show Treatment Codes
                                             </a>
+                                              
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
                                                    data-bs-toggle="modal"

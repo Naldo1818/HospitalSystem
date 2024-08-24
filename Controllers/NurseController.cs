@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using MimeKit;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DEMO.Controllers
 {
@@ -113,13 +114,41 @@ namespace DEMO.Controllers
                 AllcombinedData = combinedData,
 
             };
-            return View(viewModel);
-        }
-        
-        public IActionResult AdmissionPage(int accountID)
-        {
+            return RedirectToAction("AdmissionPage", new { id = viewModel.BookingID});
             
-            return View();
+        }
+
+        public IActionResult AdmissionPage(int bookingID)
+        {
+            var booking = _dbContext.BookSurgery
+                .Where(b => b.BookingID == bookingID)
+                .Join(
+                    _dbContext.PatientInfo,
+                    surgery => surgery.PatientID,
+                    patient => patient.PatientID,
+                    (surgery, patient) => new BookedPatientInfo
+                    {
+                        Name = patient.Name,
+                        Surname = patient.Surname,
+                        Date = surgery.SurgeryDate
+                    })
+                .FirstOrDefault();
+
+            if (booking == null)
+            {
+                return NotFound();
+            }
+
+            // Set the ViewBag properties for the view
+            ViewBag.PatientName = $"{booking.Name} {booking.Surname}";
+            ViewBag.SurgeryDate = booking.Date.ToString("yyyy-MM-dd"); // Format the date as needed
+
+
+            ViewBag.UserName = booking.Name;
+            ViewBag.UserSurname = booking.Surname;
+            ViewBag.UserEmail = booking.Date;
+
+            return View(booking);
         }
         public IActionResult AdmittedPatients()
         {
