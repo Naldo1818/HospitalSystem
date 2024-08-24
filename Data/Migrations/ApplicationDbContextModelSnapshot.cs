@@ -275,36 +275,7 @@ namespace DEMO.Data.Migrations
                     b.ToTable("PatientAllergy");
                 });
 
-            modelBuilder.Entity("DEMO.Models.PharmacistModels.AddPharmacyMedicationModel", b =>
-                {
-                    b.Property<int>("PharmacyMedicationlID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PharmacyMedicationlID"));
-
-                    b.Property<string>("ActiveIngredientsAndStrength")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DosageForm")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ReorderLevel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Schedule")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("StockonHand")
-                        .HasColumnType("int");
-
-                    b.HasKey("PharmacyMedicationlID");
-
-                    b.ToTable("PharmacyMedication");
-                });
+            
 
             modelBuilder.Entity("DEMO.Models.NurseModels.PatientVitals", b =>
                 {
