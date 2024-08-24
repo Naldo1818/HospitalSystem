@@ -224,7 +224,8 @@ namespace DEMO.Controllers
 
                                 {
                                     // Prescription fields
-                                    IDNumber= account.Name,
+                                    SurgeonName= account.Name,
+                                    SurgeonSurname=account.Surname,
                                     DateGiven = prescription.DateGiven,
                                     Urgency = prescription.Urgency,
                                     Take = prescription.Take,

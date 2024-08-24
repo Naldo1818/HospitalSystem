@@ -25,6 +25,8 @@ namespace DEMO.Data
         public DbSet<PatientAllergy> PatientAllergy { get; set; }
         public DbSet<RejectedScriptsModel> RejectScriptModel { get; set; }
         public DbSet<DispensedScriptsModel> DispensedScriptsModel { get; set; }
+
+        public DbSet<AddPharmacyMedicationModel> PharmacyMedication { get; set; }
         
     }
 }
