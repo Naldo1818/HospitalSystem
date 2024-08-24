@@ -730,16 +730,23 @@ namespace DEMO.Controllers
                                        on p.PatientID equals bs.PatientID
                                        join pr in _dbContext.Prescription
                                        on bs.BookingID equals pr.BookingID
+                                       join rs in _dbContext.DispensedScriptsModel
+                                       on pr.PrescriptionID equals rs.PrescriptionID
+                                       join a in _dbContext.Accounts
+                                       on rs.AccountID equals a.AccountID
                                        where pr.Status == "Dispensed"
+                                       orderby p.Name
                                        select new PrescriptionListViewModal
                                        {
-                                           Name = p.Name,
-                                           Surname = p.Surname,
+                                           PatientName = p.Name,
+                                           PatientSurname = p.Surname,
                                            DateGiven = pr.DateGiven,
                                            Urgency = pr.Urgency,
                                            Take = pr.Take,
-                                           Status = pr.Status
-                                       }).OrderBy(a => a.Name).ToList();
+                                           Status = pr.Status,
+                                           AccountName = a.Name,
+                                           AccountSurname = a.Surname
+                                       }).ToList();
 
             var PrescribedRejected = (from p in _dbContext.PatientInfo
                                       join bs in _dbContext.BookSurgery

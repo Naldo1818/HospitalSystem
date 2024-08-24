@@ -10,7 +10,6 @@ namespace DEMO.Models
         [Key]
         public int DispensedScriptsID { get; set; }
        
-      
         [Required]
         public int PrescriptionID {  get; set; }
 
