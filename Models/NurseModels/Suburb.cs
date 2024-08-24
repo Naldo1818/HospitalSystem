@@ -8,6 +8,7 @@ namespace DEMO.Models.NurseModels
         public int SuburbID { get; set; }
         
         public string Name { get; set; }
-        public string PostalCode { get; set; }
+        public int PostalCode { get; set; }
+        public int CityID {  get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace DEMO.Models.NurseModels
         public int CityID { get; set; }
         public string CityName { get; set; }
         [Key]
-        public int Suburb { get; set; }
+        public int ProvinceID { get; set; }
     }
 }

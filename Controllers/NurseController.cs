@@ -103,6 +103,22 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        public IActionResult PatientVitals()
+        {
+            return View();
+        }
+        public IActionResult PatientConditions()
+        {
+            return View();
+        }
+        public IActionResult PatientMedication()
+        {
+            return View();
+        }
+        public IActionResult PatientAllergies()
+        {
+            return View();
+        }
         public IActionResult InfoNurse()
         {
             return View();
@@ -111,6 +127,7 @@ namespace DEMO.Controllers
         {
             return View();
         }
+        
 //        public IActionResult EmailVitals(int id)
 //        {
 //            // Fetch the user based on AccountID
@@ -122,13 +139,12 @@ namespace DEMO.Controllers
 //            }
 
 //            // Prepare the view model
-//            var viewModel = new EmailViewModel
+//            var viewModel = new EmailVital
 //            {
 //                AccountID = user.AccountID,
 //                FullName = $"{user.Name} {user.Surname}",
 //                Email = user.Email,
-//                Username = user.Username,
-//                Password = user.Password, // Only for example; usually, passwords are not shared like this
+//                Vitals
 //                Notes = string.Empty // Initial empty notes
 //            };
 
@@ -143,9 +159,9 @@ namespace DEMO.Controllers
 //                                  .FirstOrDefault(p => p.AccountID == id);
 
 //            var emailMessage = new MimeMessage();
-//            emailMessage.From.Add(new MailboxAddress("Day Hospital-  Apollo+", "noreply@dayhospital.com"));
+//            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+", "noreply@dayhospital.com"));
 //            emailMessage.To.Add(new MailboxAddress(user.Role, user.Email));
-//            emailMessage.Subject = "User Added";
+//            emailMessage.Subject = "Vitals Concern";
 
 //            var bodyBuilder = new BodyBuilder
 //            {
