@@ -2,6 +2,8 @@ using DEMO.Data;
 using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,7 +70,7 @@ namespace DEMO.Controllers
             }
             return View(login);
         }
-
+       
         public IActionResult Privacy()
         {
             return View();
@@ -125,13 +127,20 @@ namespace DEMO.Controllers
 
             return View();
         }
-        public IActionResult PatientList()
+        public IActionResult PatientList(string idNumber)
         {
+            // Fetch all patients
             var allPatients = _dbContext.PatientInfo.OrderBy(a => a.Name).ToList();
+
+            // Filter patients by ID number if provided
+            if (!string.IsNullOrEmpty(idNumber))
+            {
+                allPatients = allPatients.Where(p => p.IDNumber.Contains(idNumber)).ToList();
+            }
+
             var viewModel = new PatientListViewModal
             {
-                AllPatients = allPatients,
-
+                AllPatients = allPatients
             };
 
             var accountID = HttpContext.Session.GetString("UserAccountId");
@@ -145,6 +154,7 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
+
         [HttpPost]
         public IActionResult RegisterPatient(PatientInfo model)
         {
@@ -170,19 +180,7 @@ namespace DEMO.Controllers
             return View("PatientList", model);
         }
     
-        public IActionResult patientAddmision()
-        {
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-
-            ViewBag.UserAccountID = accountID;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
-            return View();
-        }
+       
         public IActionResult PatientAdd()
         {
             var accountID = HttpContext.Session.GetString("UserAccountId");
@@ -353,6 +351,46 @@ namespace DEMO.Controllers
             // If validation fails, redisplay the form with errors
             return View("CheckTreatmentCode", model);
         }
+        public IActionResult patientAddmision()
+        {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+            var combinedData = (from b in _dbContext.BookSurgery
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                where b.AccountID == accountID
+                                select new AdmissionsListViewModel
+                                {
+                                    BookingID = b.BookingID,
+                                    PatientID = b.PatientID,
+                                    AccountID = b.AccountID,
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater
+                                }).OrderBy(a => a.Name).ToList();
+
+            var viewModel = new AdmissionsListViewModel
+            {
+                AllcombinedData = combinedData,
+
+            };
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            return View(viewModel);
+        }
         public IActionResult ListSurgery()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
@@ -400,6 +438,7 @@ namespace DEMO.Controllers
                 // Assuming you have a DbContext and SurgeryBooking model
                 Prescription newPrescription = new Prescription
                 {
+                   
                     BookingID = model.BookingID,
                     AccountID = model.AccountID,
                     DateGiven = model.DateGiven,
@@ -479,8 +518,9 @@ namespace DEMO.Controllers
                                 join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
                                 where pr.PrescriptionID == id
+                                orderby p.Name
                                 select new PrescriptionMedicationViewModel
-                                {
+                                {   Medid = mi.InstructionsID,
                                     Name = p.Name,
                                     Surname = p.Surname,
                                     DateGiven = pr.DateGiven,
@@ -488,14 +528,19 @@ namespace DEMO.Controllers
                                     MedicationName = m.MedicationName,
                                     Quantity = mi.Quantity,
                                     MedicationForm = m.MedicationForm,
+                                    Schedule = m.Schedule, 
                                     Instructions = mi.Instructions
-                                }).OrderBy(a => a.Name).ToList();
+                                }).ToList();
+
 
             var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
+
             if (allMedication == null)
             {
                 allMedication = new List<Medication>();
             }
+
+
             var viewModel = new PrescriptionMedicationViewModel
             {
                 CombinedData = combinedData,
@@ -539,7 +584,27 @@ namespace DEMO.Controllers
             return View("ListSurgery", model);
 
         }
-       
+        [HttpPost]
+        public IActionResult DeleteMedication(int Medid, int prescriptionId)
+        {
+            // Find the medication instruction to delete
+            var medicationInstruction = _dbContext.MedicationInstructions
+                .FirstOrDefault(mi => mi.InstructionsID == Medid);
+
+            if (medicationInstruction == null)
+            {
+                // Handle the case where the medication instruction is not found
+                return NotFound();
+            }
+
+            // Remove the medication instruction from the database
+            _dbContext.MedicationInstructions.Remove(medicationInstruction);
+            _dbContext.SaveChanges();
+
+            // Redirect back to the list or details page
+            return RedirectToAction("PrescriptionMedication", new { id = prescriptionId });
+        }
+
         public IActionResult SendPatientEmail(int id)
         {
             var prescriptionDetails = (from p in _dbContext.Prescription
@@ -648,7 +713,7 @@ namespace DEMO.Controllers
                               where pr.Status == "Prescribed" && pr.AccountID == accountID
                               select new PrescriptionListViewModal
                               {
-                                  IDNumber = p.IDNumber,
+                                
                                   Name = p.Name,
                                   Surname=p.Surname,
                                   DateGiven = pr.DateGiven,
@@ -657,10 +722,51 @@ namespace DEMO.Controllers
                                   Status = pr.Status
                               }).OrderBy(a => a.Name).ToList();
 
+            var PrescribedDispensed = (from p in _dbContext.PatientInfo
+                                       join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
+                                       join pr in _dbContext.Prescription
+                                       on bs.BookingID equals pr.BookingID
+                                       where pr.Status == "Dispensed"
+                                       select new PrescriptionListViewModal
+                                       {
+                                           Name = p.Name,
+                                           Surname = p.Surname,
+                                           DateGiven = pr.DateGiven,
+                                           Urgency = pr.Urgency,
+                                           Take = pr.Take,
+                                           Status = pr.Status
+                                       }).OrderBy(a => a.Name).ToList();
+
+            var PrescribedRejected = (from p in _dbContext.PatientInfo
+                                      join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
+                                      join pr in _dbContext.Prescription
+                                      on bs.BookingID equals pr.BookingID
+                                      join rs in _dbContext.RejectScriptModel
+                                      on pr.PrescriptionID equals rs.PrescriptionID
+                                      join a in _dbContext.Accounts
+                                      on rs.AccountID equals a.AccountID
+                                      where pr.Status == "Rejected"
+                                      orderby p.Name
+                                      select new PrescriptionListViewModal
+                                      {
+                                          PatientName = p.Name,
+                                          PatientSurname = p.Surname,
+                                          DateGiven = pr.DateGiven,
+                                          Urgency = pr.Urgency,
+                                          Take = pr.Take,
+                                          Status = pr.Status,
+                                          RejectionReason = rs.RejectionReason,
+                                          AccountName = a.Name,
+                                          AccountSurname = a.Surname
+                                      }).ToList();
+
             var viewModel = new PrescriptionListViewModal
             {
                 AllPrescribed = Prescribed,
-
+                AllPrescribedDispensed = PrescribedDispensed,
+                AllPrescribedRejected = PrescribedRejected
             };
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");

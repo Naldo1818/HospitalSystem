@@ -67,7 +67,7 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form>
-                            <h2>Prescription List</h2>
+                            <h2>Prescription Page</h2>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
@@ -94,29 +94,42 @@
                         <table id="rejectedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID number</th>
+                                   
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
-                                    <th scope="col">Pharmacist</th>
+                                    <th scope="col">Pharmacist Name</th>
+                                    <th scope="col">Pharmacist Surname</th>
+                                    <th scope="col">Urgency</th>
+                                    <th scope="col">Take</th>
                                     <th scope="col">Status</th>
+                                    <th scope="col">Rejected Reason</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
-                                    <td>Can</td>
-                                    <td>02/05/2024</td>
-                                    <td>Sam Smith</td>
-                                    <td>Rejected</td>
-                                    <td>
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
-                                            Check Prescription
-                                        </button>
-                                    </td>
-                                </tr>
+                                @foreach (var Data in Model.AllPrescribedRejected)
+                                {
+                                    <tr>
+
+                                        <td>@Data.PatientName</td>
+                                        <td>@Data.PatientSurname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td>@Data.AccountName</td>
+                                        <td>@Data.AccountSurname</td>
+                                        <td>@Data.Urgency</td>
+                                        <td>@Data.Take</td>
+                                        <td>@Data.Status</td>
+                                        <td>@Data.RejectionReason</td>
+                                        
+                                        <td>
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
+                                                Check Prescription
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -129,31 +142,34 @@
                         <table id="acceptedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID number</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
-                                    <th scope="col">Pharmacist</th>
+                                    <th scope="col">Urgency</th>
+                                    <th scope="col">Take</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Rejection Reason</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>0120526958</td>
-                                    <td>Carlos</td>
-                                    <td>Sag</td>
-                                    <td>02/05/2024</td>
-                                    <td>Sam Smith</td>
-                                    <td>Accepted</td>
-                                    <td>N/a</td>
-                                    <td>
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
-                                            Check Prescription
-                                        </button>
-                                    </td>
-                                </tr>
+                                @foreach (var Data in Model.AllPrescribedDispensed)
+                                {
+                                    <tr>
+
+                                        <td>@Data.Name</td>
+                                        <td>@Data.Surname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td>@Data.Urgency</td>
+                                        <td>@Data.Take</td>
+                                        <td>@Data.Status</td>
+                                        <td>
+                                            <button class="btn btn-primary" data-toggle="modal" data-target="#medicationModal">
+                                                Check Prescription
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -166,7 +182,7 @@
                         <table id="prescribedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID number</th>
+                                   
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
@@ -180,7 +196,7 @@
                                  @foreach (var Data in Model.AllPrescribed)
                                 {
                                     <tr>
-                                        <td>@Data.IDNumber</td>
+                                     
                                         <td>@Data.Name</td>
                                         <td>@Data.Surname</td>
                                         <td>@Data.DateGiven</td>
@@ -205,6 +221,7 @@
             </div>
         </main>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">

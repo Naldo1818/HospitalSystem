@@ -2,6 +2,7 @@
     ViewData["Title"] = "Admissions List";
     Layout = "_Layout2";
 }
+@model DEMO.ViewModels.AdmissionsListViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,7 +32,7 @@
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
                                 <div class="col-4">
-                                    <!-- Fix Date filter -->
+                                    
                                     <label for="dateInput" class="form-label">Date</label>
                                     <input type="date" class="form-control" id="dateInput" style="width:300px">
                                 </div>
@@ -46,62 +47,266 @@
                         <table id="example" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    
+
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Surgeon Name</th>
+                                    <th scope="col">Surgery Date</th>
                                     <th scope="col">Surgery Time</th>
-                                    <th scope="col">Admitted Time</th>
-                                    <th scope="col">Ward</th>
-                                    <th scope="col">Bed</th>
-                                    <th scope="col">Nurse FullName</th>
+                                    <th scope="col">Theatre</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
-                                    <td>Can</td>
-                                    <td>07/13/2024</td>
-                                    <td>AM</td>
-                                    <td>07:30 AM</td>
-                                    <td>Cardiology</td>
-                                    <td>101</td>
-                                    <td>Ariana Grande</td>
-                                    <td> @*   <div class="w-100 btn-group" role="group">
-                                        <a class="btn btn-primary"
-                                           data-bs-toggle="modal"
-                                           data-bs-target="#editBookingModal"
-                                           data-name="@Data.Name"
-                                           data-surname="@Data.Surname"
-                                           data-surgery-date="@Data.SurgeryDate"
-                                           data-surgery-time="@Data.SurgeryTime"
-                                           data-theater="@Data.Theater"
-                                           data-booking-id="@Data.BookingID"
-                                           data-account-id="@Data.AccountID"
-                                           data-patient-id="@Data.PatientID">Edit Booking</a>
-                                    </div>
-                                    <a class="btn btn-primary"
-                                       href="@Url.Action("CheckTreatmentCode", "Home", new { bookingId = Data.BookingID })">
-                                        Show Treatment Codes
-                                    </a>
-                                    <div class="w-100 btn-group" role="group">
-                                        <a class="btn btn-primary"
-                                           data-bs-toggle="modal"
-                                           data-bs-target="#addPrescriptionModal"
-                                           data-name="@Data.Name"
-                                           data-surname="@Data.Surname"
-                                           data-booking-id="@Data.BookingID"
-                                           data-account-id="@Data.AccountID"
-                                           data-patient-id="@Data.PatientID">Give Prescription</a>
-                                    </div> *@
+                                @foreach (var Data in Model.AllcombinedData)
+                                {
+                                    <tr>
+                                        <td>@Data.Name</td>
+                                        <td>@Data.Surname</td>
+                                        <td>@ViewBag.UserName @ViewBag.UserSurname</td>
+                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.SurgeryTime</td>
+                                        <td>@Data.Theater</td>
+                                        <td>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-primary"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#editBookingModal"
+                                                   data-name="@Data.Name"
+                                                   data-surname="@Data.Surname"
+                                                   data-surgery-date="@Data.SurgeryDate"
+                                                   data-surgery-time="@Data.SurgeryTime"
+                                                   data-theater="@Data.Theater"
+                                                   data-booking-id="@Data.BookingID"
+                                                   data-account-id="@Data.AccountID"
+                                                   data-patient-id="@Data.PatientID">Edit Booking</a>
+                                            </div>
+                                            <a class="btn btn-primary"
+                                               href="@Url.Action("CheckTreatmentCode", "Home", new { bookingId = Data.BookingID })">
+                                                Show Treatment Codes
+                                            </a>
+                                            <div class="w-100 btn-group" role="group">
+                                                <a class="btn btn-primary"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#addPrescriptionModal"
+                                                   data-name="@Data.Name"
+                                                   data-surname="@Data.Surname"
+                                                   data-booking-id="@Data.BookingID"
+                                                   data-account-id="@Data.AccountID"
+                                                   data-patient-id="@Data.PatientID">Give Prescription</a>
+                                            </div>
 
-                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
-                                    </td>
-                                </tr>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                        </td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Edit Booking Modal -->
+            <div class="modal fade" id="editBookingModal" role="dialog" tabindex="-1" aria-labelledby="editBookingModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editBookingModal">Edit Booking</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editUserForm" method="post" action="@Url.Action("EditSurgery", "Home")">
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <input type="hidden" id="PatientID" name="PatientID" />
+                                        <input type="hidden" id="BookingID" name="BookingID" />
+                                        <input type="hidden" id="AccountID" name="AccountID" />
+
+                                        <br>
+                                        <label for="nameInput" class="form-label">Name</label>
+                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" style="width:250px">
+
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="surnameInput" class="form-label">Surname</label>
+                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="surgeryDateInput" class="form-label">Surgery Date</label>
+                                        <input type="date" class="form-control" name="SurgeryDate" id="surgeryDateInput" placeholder="Select Date" style="width:250px">
+                                    </div>
+                                    <br />
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="SurgeryTime" class="form-label">Surgery Time</label>
+                                        <div id="SurgeryTime" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
+                                            <div class="form-check" style="margin: 0;">
+                                                <input class="form-check-input" type="radio" name="SurgeryTime" id="surgeryTimeInput" value="AM">
+                                                <label class="form-check-label" for="AM">AM</label>
+                                            </div>
+                                            <div class="form-check" style="margin: 0;">
+                                                <input class="form-check-input" type="radio" name="SurgeryTime" id="surgeryTimeInput" value="PM">
+                                                <label class="form-check-label" for="PM">PM</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="Theater" class="form-label">Theater</label>
+                                        <div id="Theater" class="form-control" style="width:250px; padding: 10px; display: inline-table; justify-content: space-around; align-items: center;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Dove Theatre">
+                                                <label class="form-check-label" for="Dove Theatre">Dove Theatre</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Eagle Theatre">
+                                                <label class="form-check-label" for="Eagle Theatre">Eagle Theatre</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Hadida Theatre">
+                                                <label class="form-check-label" for="Hadida Theatre">Hadida Theatre</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirmation Modal for Book Surgery -->
+            <div class="modal fade" id="confirmEditBookingModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditBookingModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmEditBookingModal">Confirm Booking</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save this updated surgery?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmEditBookingButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Add Prescription Modal -->
+            <div class="modal fade" id="addPrescriptionModal" role="dialog" tabindex="-1" aria-labelledby="addPrescriptionModal" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPrescriptionModal">Add Prescription</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addPrescriptionForm" method="post" action="@Url.Action("AddPrescription", "Home")">
+                                <div class="form-group row">
+                                    <div class="col-4">
+
+                                        <input type="hidden" id="BookingID" name="BookingID" />
+                                        <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
+
+                                        <br>
+                                        <label for="nameInput" class="form-label">Name</label>
+                                        <input type="text" class="form-control" id="nameInput" name="Name" disabled style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="surnameInput" class="form-label">Surname</label>
+                                        <input type="text" class="form-control" id="surnameInput" name="Surname" disabled style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="surgeonName" class="form-label">Surgeon Name</label>
+                                        <input type="text" class="form-control" id="surgeonName" name="SurgeonName" style="width:250px" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="dateGiven" class="form-label">Date Given</label>
+                                        <input type="date" class="form-control" id="dateGiven" name="DateGiven" style="width:250px">
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="Urgency" class="form-label">Urgency</label>
+                                        <div id="Urgency" class="form-control" style="width:250px; padding: 10px;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Urgency" id="Yes" value="Yes">
+                                                <label class="form-check-label" for="Yes">Yes</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Urgency" id="No" value="No">
+                                                <label class="form-check-label" for="No">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="Take" class="form-label">Take</label>
+                                        <div id="Take" class="form-control" style="width:250px; padding: 10px;">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Take" id="After Surgery" value="After Surgery">
+                                                <label class="form-check-label" for="After Surgery">After Surgery</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Take" id="During Surgery" value="During Surgery">
+                                                <label class="form-check-label" for="During Surgery">During Surgery</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="Take" id="Before Surgery" value="Before Surgery">
+                                                <label class="form-check-label" for="Before Surgery">Before Surgery</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+
+                                    <div class="col-4">
+                                        <br>
+                                        <label for="exampleFormControlInput2" class="form-label">Status</label>
+                                        <select input class="form-control" name="Status" placeholder="Status" style=" width:250px">
+                                            <option value="Prescribed">Prescribed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="openConfirmPrescriptionModalButton" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Confirmation Modal for Book Surgery -->
+            <div class="modal fade" id="confirmAddPrescriptionModal" tabindex="-1" role="dialog" aria-labelledby="confirmAddPrescriptionModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmAddPrescriptionModal">Confirm Booking</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to save this Prescription?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="confirmAddPrescriptionButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,6 +346,72 @@
             // Initial filter to apply on page load if there are pre-existing values
             filterTable();
         });
+    </script>
+    <script>
+        $('#editBookingModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var patientID = button.data('patient-id');
+            var name = button.data('name');
+            var surname = button.data('surname');
+            var surgeryDate = button.data('surgery-date');
+            var surgeryTime = button.data('surgery-time');
+            var theater = button.data('theater');
+            var bookingID = button.data('booking-id');
+
+            // Update the modal's content
+            var modal = $(this);
+            modal.find('#nameInput').val(name);
+            modal.find('#surnameInput').val(surname);
+            modal.find('#surgeryDateInput').val(surgeryDate);
+            modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
+            modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
+            modal.find('#PatientID').val(patientID);
+            modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+            modal.find('#AccountID').val(button.data('account-id'));
+        });
+
+
+
+        // Show confirmation modal before submitting the booking form
+        $('#openConfirmModalButton').on('click', function () {
+            $('#confirmEditBookingModal').modal('show'); // Show confirmation modal
+        });
+
+        // Handle the "Yes" button click in the confirmation modal
+        $('#confirmEditBookingButton').on('click', function () {
+            $('#editUserForm').submit(); // Submit the form
+        });
+
+    </script>
+    <script>
+        $('#addPrescriptionModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var patientID = button.data('patient-id');
+            var name = button.data('name');
+            var surname = button.data('surname');
+            var bookingID = button.data('booking-id');
+
+            // Update the modal's content
+            var modal = $(this);
+            modal.find('#nameInput').val(name);
+            modal.find('#surnameInput').val(surname);
+            modal.find('#PatientID').val(patientID);
+            modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+
+        });
+
+
+
+        // Show confirmation modal before submitting the booking form
+        $('#openConfirmPrescriptionModalButton').on('click', function () {
+            $('#confirmAddPrescriptionModal').modal('show'); // Show confirmation modal
+        });
+
+        // Handle the "Yes" button click in the confirmation modal
+        $('#confirmAddPrescriptionButton').on('click', function () {
+            $('#addPrescriptionForm').submit(); // Submit the form
+        });
+
     </script>
 </body>
 </html>

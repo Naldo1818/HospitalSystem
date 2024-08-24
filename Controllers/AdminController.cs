@@ -40,7 +40,7 @@ namespace DEMO.Controllers
                 // Retrieve from database if not in session
                 var admin = _dbContext.Accounts
                     .Where(a => a.AccountID == accountId)
-                    .Select(a => new SurgeonViewModel
+                    .Select(a => new AdminViewModel
                     {
                         AccountID = a.AccountID,
                         Name = a.Name,
@@ -101,7 +101,7 @@ namespace DEMO.Controllers
                     Surname = model.Surname,
                     Username = model.Username,
                     Password = model.Password,
-                    RegistrationNumber=model.RegistrationNumber,
+                    RegistrationNumber = model.RegistrationNumber,
                     ContactNumber = model.ContactNumber,
                     Email = model.Email,
                     Role = model.Role,
@@ -113,14 +113,14 @@ namespace DEMO.Controllers
                 _dbContext.SaveChanges();
 
                 return RedirectToAction("SendEmail", new { id = newAccount.AccountID });
-            
-        }
+
+            }
 
             // If validation fails, redisplay the form with errors
             return View("ListUser", model);
         }
 
-       
+
         public IActionResult SendEmail(int id)
         {
             // Fetch the user based on AccountID
@@ -145,7 +145,7 @@ namespace DEMO.Controllers
             return View(viewModel); // Return the view with the model
         }
 
-       
+
         [HttpPost]
         public async Task<IActionResult> SendEmail(int id, string notes)
         {
@@ -190,8 +190,8 @@ namespace DEMO.Controllers
             TempData["SuccessMessage"] = "Email sent successfully.";
             return RedirectToAction("AdminHome", "Admin");
         }
-    
-       [HttpPost]
+
+        [HttpPost]
         public IActionResult EditUser(Accounts model)
         {
             if (ModelState.IsValid)
@@ -220,12 +220,13 @@ namespace DEMO.Controllers
             return View(model);
         }
 
-        public IActionResult ListMedication()
+        public IActionResult ListMedication(int medicationId)
         {
             // Fetch the combined data
             var medicationActiveIngredients = (from ma in _dbContext.MedicationActiveIngredient
                                                join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
                                                join a in _dbContext.Activeingredient on ma.ActiveingredientID equals a.ActiveingredientID
+                                               where ma.MedicationID == medicationId // Filter by the specified MedicationID
                                                select new MedicationListViewModel
                                                {
                                                    MedicationName = m.MedicationName,
@@ -278,7 +279,8 @@ namespace DEMO.Controllers
             // If validation fails, redisplay the form with errors
             return View("ListMedication", model);
         }
-        [HttpPost]
+
+    [HttpPost]
         public IActionResult AddActiveingredient(MedicationActiveIngredient model)
         {
             if (ModelState.IsValid)

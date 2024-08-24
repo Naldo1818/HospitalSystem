@@ -6,7 +6,9 @@ namespace DEMO.Models
     {
         [Key]
         public int StatusID { get; set; }
-        [Required]  
+        [Required]
+        [StringLength(100, ErrorMessage = "Description cannot be longer than 100 characters.")]
+        [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Description can only contain letters and spaces.")]
         public string Description { get; set; }
     }
 }
