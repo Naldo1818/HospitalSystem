@@ -21,6 +21,10 @@ namespace DEMO.ViewModels
         [StringLength(100, ErrorMessage = "Surname cannot be longer than 100 characters.")]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Surname can only contain letters and spaces.")]
         public string Surname { get; set; }
+
+        public string SurgeonName {  get; set; }
+
+        public string SurgeonSurname { get; set; }
         public string Urgency { get; set; }
         public string Status { get; set; }
         public string Take { get; set; }
