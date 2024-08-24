@@ -47,7 +47,7 @@ namespace DEMO.Controllers
                               where pr.Status == "Prescribed" && pr.AccountID == accountID
                               select new PrescriptionListViewModal
                               {
-                                  IDNumber = p.IDNumber,
+                                 
                                   Name = p.Name,
                                   Surname = p.Surname,
                                   DateGiven = pr.DateGiven,

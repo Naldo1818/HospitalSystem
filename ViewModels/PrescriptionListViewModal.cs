@@ -28,10 +28,6 @@ namespace DEMO.ViewModels
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Account Surname can only contain letters and spaces.")]
         public string AccountSurname { get; set; }
 
-        [Required]
-        [StringLength(20, ErrorMessage = "ID Number cannot be longer than 20 characters.")]
-        [RegularExpression(@"^\d+$", ErrorMessage = "ID Number must contain only digits.")]
-        public string IDNumber { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
