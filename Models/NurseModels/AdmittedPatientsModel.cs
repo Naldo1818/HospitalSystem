@@ -10,37 +10,37 @@ namespace DEMO.Models.NurseModels
         public int AdmittedPatientID { get; set; }
         
         [Required]
-        [Key]
+
         public int PatientID { get; set; }
 
         [Required]
-        [Key]
+        
         public int WardID { get; set; }
 
         [Required]
-        public List<PatientAllergy> PatientAllergyID { get; set; }
+        public int PatientAllergyID { get; set; }
 
         [Required]
-        public List<PatientConditions> PatientConditionsID { get; set; }
+        public int PatientConditionsID { get; set; }
 
         [Required]
-        public List<PatientMedication> PatientMedication { get; set; }
+        public int PatientMedicationID { get; set; }
 
         public int PatientVitalsID { get; set; }
 
         [Required]
         public DateTime Date = DateTime.Now;
-        [Key]
+        
         public int ProvinceID { get; set; }
-        [Key]
+      
         public int CityID { get; set; }
-        [Key]
+     
         public int SuburbID { get; set; }
         [Required]
         public string StreetName {  get; set; }
 
         [Required]
         public string AdmissionStatus { get; set; } = "Admitted";
-        public List<BookSurgery> bookings { get; set; }
+        public int SurgeryBookinID { get; set; }
     }
 }
