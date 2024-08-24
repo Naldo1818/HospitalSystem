@@ -25,7 +25,7 @@ namespace DEMO.ViewModels
         public string Status { get; set; }
         public string Take { get; set; }
         public DateOnly DateGiven { get; set; }
-        public List<ViewActivePrescriptionsModel> AllActivePrescribed { get; set; }
+        public List<ViewActivePrescriptionsModel> combinedData { get; set; }
 
     }
 }

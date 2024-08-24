@@ -2,12 +2,25 @@
 using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
+using DEMO.Models.PharmacistModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MimeKit;
+using Newtonsoft.Json;
+using MailKit.Net.Smtp;
+using System.Reflection.Metadata.Ecma335;
+using System.Diagnostics.Contracts;
+using Microsoft.CodeAnalysis.Scripting;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace DEMO.Controllers
 {
@@ -22,58 +35,7 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //public IActionResult ViewAllActivePrescriptionsPage()
-            
-        //{
-        //    return View();
-        //}
-
-
-        public IActionResult ViewAllActivePrescriptionsPage()
-
-        {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            if (!int.TryParse(accountIDString, out int accountID))
-            {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
-            }
-
-            var Prescribed = (from p in _dbContext.PatientInfo
-                              join bs in _dbContext.BookSurgery
-            on p.PatientID equals bs.PatientID
-                              join pr in _dbContext.Prescription
-                              on bs.BookingID equals pr.BookingID
-                              where pr.Status == "Prescribed" && pr.AccountID == accountID
-                              select new PrescriptionListViewModal
-                              {
-                                  IDNumber = p.IDNumber,
-                                  Name = p.Name,
-                                  Surname = p.Surname,
-                                  DateGiven = pr.DateGiven,
-                                  Urgency = pr.Urgency,
-                                  Take = pr.Take,
-                                  Status = pr.Status
-                              }).OrderBy(a => a.Name).ToList();
-
-            var viewModel = new PrescriptionListViewModal
-            {
-                AllPrescribed = Prescribed,
-
-            };
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-
-            ViewBag.UserAccountID = accountID;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
-            return View(viewModel);
-        }
-
-        
-
+      
 
 
         public IActionResult Index()
@@ -86,45 +48,10 @@ namespace DEMO.Controllers
             return View();
         }
 
-        public IActionResult ManageMedicationStockPage() 
+        public IActionResult ManageMedicationStockPage()
         {
             return View();
         }
-
-
-       
-
-
-       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         public IActionResult ViewDailyUsageReport()
@@ -139,11 +66,11 @@ namespace DEMO.Controllers
 
 
 
-		public ActionResult DispenseMedication()
-		{
-			
-			return View();
-		}
+        public ActionResult DispenseMedication()
+        {
+
+            return View();
+        }
 
 
         public ActionResult RejectScript()
@@ -211,7 +138,7 @@ namespace DEMO.Controllers
         }
 
         public ActionResult ViewAllOrders()
-            {
+        {
             return View();
         }
 
@@ -269,10 +196,86 @@ namespace DEMO.Controllers
         }
 
         public ActionResult ViewCurrentLevels()
-        {  
+        {
             return View();
         }
 
 
+
+
+
+
+        public IActionResult ViewAllActivePrescriptionsPage()
+
+        {
+
+            var combinedData = (from prescription in _dbContext.Prescription
+                                join medicationInstruction in _dbContext.MedicationInstructions
+                                on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
+                                join medication in _dbContext.Medication
+                                on medicationInstruction.MedicationID equals medication.MedicationID
+                                join patient in _dbContext.PatientInfo
+                                on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
+                                join account in _dbContext.Accounts
+                                on prescription.AccountID equals account.AccountID
+                                where prescription.Status=="Prescribed" 
+                                select new ViewActivePrescriptionsModel
+
+
+                                {
+                                    // Prescription fields
+                                    IDNumber= account.Name,
+                                    DateGiven = prescription.DateGiven,
+                                    Urgency = prescription.Urgency,
+                                    Take = prescription.Take,
+                                    Status = prescription.Status,
+
+                                    // Medication fields
+
+
+                                    // MedicationInstructions fields
+
+
+                                    // PatientInfo fields
+                                    Name = patient.Name,
+                                    Surname = patient.Surname,
+
+
+
+                                }).ToList();
+
+            var viewModel = new ViewActivePrescriptionsModel
+            {
+                combinedData = combinedData,
+            };
+
+            return View(viewModel);
+
+
+           
+        }
+
+
+
+
+
+
+
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
