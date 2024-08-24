@@ -2,6 +2,7 @@
     ViewData["Title"] = "Admission";
     Layout = "_LayoutNurse";
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -145,9 +146,9 @@
                     <hr></hr>
                     <div class="header-labels">
                         
-                        <label>Name: </label>
-                        <label>Surname:</label>
-                        <label>Date:</label>
+                        <label>Name: @ViewBag.Name</label>
+                        <label>Surname: @ViewBag.Surname</label>
+                        <label>Date: @ViewBag.Date</label>
                         
                     </div>
                     <hr></hr>
