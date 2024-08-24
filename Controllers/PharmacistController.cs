@@ -1,27 +1,12 @@
 ﻿using DEMO.Data;
-using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
-using DEMO.Models.PharmacistModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Identity.Client;
 using MimeKit;
-using Newtonsoft.Json;
-using MailKit.Net.Smtp;
-using System.Reflection.Metadata.Ecma335;
-using System.Diagnostics.Contracts;
-using Microsoft.CodeAnalysis.Scripting;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
-using Microsoft.EntityFrameworkCore.Internal;
-using Org.BouncyCastle.Crypto.Generators;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DEMO.Controllers
 {
@@ -317,7 +302,7 @@ namespace DEMO.Controllers
         [HttpGet]
         public ActionResult AddMedication()
         {
-            AddPharmacyMedicationModel pharmacymedication=new AddPharmacyMedicationModel();
+            PharmacyMedicationModel pharmacymedication = new PharmacyMedicationModel();
             return View(pharmacymedication);
         }
 
@@ -327,7 +312,7 @@ namespace DEMO.Controllers
         public async Task<IActionResult> AddMedication([Bind
 
             ("PharmacyMedicationlID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel,ActiveIngredientsAndStrength")]
-        AddPharmacyMedicationModel pharmacymedication)
+        PharmacyMedicationModel pharmacymedication)
         {
             if (ModelState.IsValid)
             {
@@ -337,6 +322,7 @@ namespace DEMO.Controllers
             }
             return View(pharmacymedication);
         }
+
 
 
 
