@@ -22,22 +22,22 @@ namespace DEMO.Controllers
         }
         public IActionResult AdminHome(int accountId)
         {// Try to get data from session first
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var name = HttpContext.Session.GetString("UserName");
-            var surname = HttpContext.Session.GetString("UserSurname");
-            var email = HttpContext.Session.GetString("UserEmail");
+            //var accountID = HttpContext.Session.GetString("UserAccountId");
+            //var name = HttpContext.Session.GetString("UserName");
+            //var surname = HttpContext.Session.GetString("UserSurname");
+            //var email = HttpContext.Session.GetString("UserEmail");
 
-            if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
-            {
-                // Use existing session data
-                ViewBag.UserName = accountID;
-                ViewBag.UserName = name;
-                ViewBag.UserSurname = surname;
-                ViewBag.UserEmail = email;
-            }
-            else
-            {
-                // Retrieve from database if not in session
+            //if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
+            //{
+            //    // Use existing session data
+            //    ViewBag.UserName = accountID;
+            //    ViewBag.UserName = name;
+            //    ViewBag.UserSurname = surname;
+            //    ViewBag.UserEmail = email;
+            //}
+            //else
+            //{
+            //    // Retrieve from database if not in session
                 var admin = _dbContext.Accounts
                     .Where(a => a.AccountID == accountId)
                     .Select(a => new AdminViewModel
@@ -64,7 +64,7 @@ namespace DEMO.Controllers
                 ViewBag.UserName = admin.Name;
                 ViewBag.UserSurname = admin.Surname;
                 ViewBag.UserEmail = admin.Email;
-            }
+            //}
             return View();
         }
 

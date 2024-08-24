@@ -82,48 +82,51 @@ namespace DEMO.Controllers
         public IActionResult SurgeonHome(int accountId)
         {
             // Try to get data from session first
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var name = HttpContext.Session.GetString("UserName");
-            var surname = HttpContext.Session.GetString("UserSurname");
-            var email = HttpContext.Session.GetString("UserEmail");
+            //var accountID = HttpContext.Session.GetString("UserAccountId");
+            //var name = HttpContext.Session.GetString("UserName");
+            //var surname = HttpContext.Session.GetString("UserSurname");
+            //var email = HttpContext.Session.GetString("UserEmail");
 
-            if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
-            {
-                // Use existing session data
-                ViewBag.UserName = accountID;
-                ViewBag.UserName = name;
-                ViewBag.UserSurname = surname;
-                ViewBag.UserEmail = email;
-            }
-            else
-            {
-                // Retrieve from database if not in session
-                var surgeon = _dbContext.Accounts
-                    .Where(a => a.AccountID == accountId)
-                    .Select(a => new SurgeonViewModel
-                    {   AccountID = a.AccountID,
-                        Name = a.Name,
-                        Surname = a.Surname,
-                        Email = a.Email
-                    })
-                    .SingleOrDefault();
-
-                if (surgeon == null)
+            // Retrieve from database if not in session
+            var surgeon = _dbContext.Accounts
+                .Where(a => a.AccountID == accountId)
+                .Select(a => new SurgeonViewModel
                 {
-                    return NotFound();
-                }
+                    AccountID = a.AccountID,
+                    Name = a.Name,
+                    Surname = a.Surname,
+                    Email = a.Email
+                })
+                .SingleOrDefault();
 
-                // Store user data in session
-                HttpContext.Session.SetString("UserAccountId", surgeon.AccountID.ToString());
-                HttpContext.Session.SetString("UserName", surgeon.Name);
-                HttpContext.Session.SetString("UserSurname", surgeon.Surname);
-                HttpContext.Session.SetString("UserEmail", surgeon.Email);
+            if (surgeon == null)
+            {
+                return NotFound();
+            }
+
+            // Store user data in session
+            HttpContext.Session.SetString("UserAccountId", surgeon.AccountID.ToString());
+            HttpContext.Session.SetString("UserName", surgeon.Name);
+            HttpContext.Session.SetString("UserSurname", surgeon.Surname);
+            HttpContext.Session.SetString("UserEmail", surgeon.Email);
+
+            //if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
+            //{
+            //    // Use existing session data
+            //    ViewBag.UserName = accountID;
+            //    ViewBag.UserName = name;
+            //    ViewBag.UserSurname = surname;
+            //    ViewBag.UserEmail = email;
+            //}
+            //else
+            //{
+               
 
                 ViewBag.UserName = surgeon.AccountID.ToString();
                 ViewBag.UserName = surgeon.Name;
                 ViewBag.UserSurname = surgeon.Surname;
                 ViewBag.UserEmail = surgeon.Email;
-            }
+            //}
 
             return View();
         }
