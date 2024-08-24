@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model DEMO.ViewModels.NurseView
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -72,11 +73,11 @@
             <div class="card mt-3 custom-card" style="width: 18rem;">
                 <img src="https://via.placeholder.com/150" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Surgeon</h5>
-                    <h5 class="card-title">John Doe</h5>
+                    <h5 class="card-title">Nurse</h5>
+                    <h5 class="card-title">$"@Model.Name @Model.Surname"</h5>
                     <hr>
-                    <p class="card-text">Prescriptions Check: 5</p>
-                    <p class="card-text">Patient Surgery: 2</p>
+                    <p class="card-text"></p>
+                    <p class="card-text"></p>
                     <hr>
                 </div>
             </div>

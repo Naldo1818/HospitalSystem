@@ -5,6 +5,7 @@ using DEMO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Identity.Client;
 using MimeKit;
 
 namespace DEMO.Controllers
@@ -20,8 +21,40 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public IActionResult MainPage()
+        public IActionResult MainPage(int accountId)
         {
+            var nurse = _dbContext.Accounts
+                .Where(a => a.AccountID == accountId)
+                .Select(a => new NurseView
+                {
+                    AccountID = a.AccountID,
+                    Name = a.Name,
+                    Surname = a.Surname,
+                    Email = a.Email
+                })
+                .SingleOrDefault();
+
+            if (nurse == null)
+            {
+                return NotFound();
+            }
+
+            // Store user data in session
+            HttpContext.Session.SetString("UserAccountId", nurse.AccountID.ToString());
+            HttpContext.Session.SetString("UserName", nurse.Name);
+            HttpContext.Session.SetString("UserSurname", nurse.Surname);
+            HttpContext.Session.SetString("UserEmail", nurse.Email);
+
+            
+            
+
+
+            ViewBag.UserName = nurse.AccountID.ToString();
+            ViewBag.UserName = nurse.Name;
+            ViewBag.UserSurname = nurse.Surname;
+            ViewBag.UserEmail = nurse.Email;
+            //}
+
             return View();
         }
         public IActionResult Vitals()
@@ -83,8 +116,9 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         
-        public IActionResult AdmissionPage()
+        public IActionResult AdmissionPage(int accountID)
         {
+            
             return View();
         }
         public IActionResult AdmittedPatients()
