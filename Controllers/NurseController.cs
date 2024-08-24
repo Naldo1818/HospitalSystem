@@ -1,4 +1,6 @@
 ﻿using DEMO.Data;
+using DEMO.Models;
+using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +40,30 @@ namespace DEMO.Controllers
         }
         public IActionResult ViewSurgeryBooking()
         {
-            return View();
+            var combinedData = (from bs in _dbContext.BookSurgery
+                                join a in _dbContext.Accounts
+                                on bs.AccountID equals a.AccountID
+                                join p in _dbContext.PatientInfo
+                                on bs.PatientID equals p.PatientID
+                                select new ViewBookings
+                                {
+                                    BookingID = bs.BookingID,
+                                    AccountName = a.Name,
+                                    AccountSurname = a.Surname,
+                                    PatientName = p.Name,
+                                    PatinetSurname = p.Surname,
+                                    PatientID = bs.PatientID,
+                                    SurgeryTime = bs.SurgeryTime,
+                                    SurgeryDate = bs.SurgeryDate,
+                                    Theater = bs.Theater
+                                }).OrderBy(a => a.AccountName).ToList();
+
+            var viewModel = new ViewBookings
+            {
+                AllcombinedData = combinedData,
+
+            };
+            return View(viewModel);
         }
         
         public IActionResult AdmissionPage()
