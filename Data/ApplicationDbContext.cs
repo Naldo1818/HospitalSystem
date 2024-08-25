@@ -26,13 +26,17 @@ namespace DEMO.Data
         public DbSet<RejectedScriptsModel> RejectScriptModel { get; set; }
         public DbSet<DispensedScriptsModel> DispensedScriptsModel { get; set; }
 
-        public DbSet<AddPharmacyMedicationModel> PharmacyMedication { get; set; }
+        
         
         public DbSet<AdmittedPatientsModel> AdmittedPatientsModel { get; set; }
        
         public DbSet<Condition> Condition { get; set; }
         public DbSet<PatientConditions> PatientConditions { get; set; }
 
+
+       public DbSet<PharmMedModel> PharmMeds { get; set; }
+
+       
 
     }
 }

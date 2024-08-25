@@ -25,7 +25,7 @@ namespace DEMO.Controllers
         public IActionResult MainPage(int accountId)
         {
             var nurse = _dbContext.Accounts
-                .Where(a => a.AccountID == accountId)
+                .Where(a => a.AccountID == accountId && a.Role == "Nurse")
                 .Select(a => new NurseView
                 {
                     AccountID = a.AccountID,
@@ -40,24 +40,22 @@ namespace DEMO.Controllers
                 return NotFound();
             }
 
-            // Store user data in session
+            // Store critical user data in session
             HttpContext.Session.SetString("UserAccountId", nurse.AccountID.ToString());
             HttpContext.Session.SetString("UserName", nurse.Name);
             HttpContext.Session.SetString("UserSurname", nurse.Surname);
             HttpContext.Session.SetString("UserEmail", nurse.Email);
 
-            
-            
-
-
-            ViewBag.UserName = nurse.AccountID.ToString();
+            // Optionally, you can use ViewBag for non-critical or UI-specific data
+            ViewBag.AccountID = nurse.AccountID;
             ViewBag.UserName = nurse.Name;
             ViewBag.UserSurname = nurse.Surname;
-            ViewBag.UserEmail = nurse.Email;
-            //}
+            ViewBag.Email = nurse.Email;
 
             return View();
         }
+
+
         public IActionResult Vitals()
         {
             return View();
@@ -102,7 +100,7 @@ namespace DEMO.Controllers
                                     AccountName = a.Name,
                                     AccountSurname = a.Surname,
                                     PatientName = p.Name,
-                                    PatinetSurname = p.Surname,
+                                    PatientSurname = p.Surname,
                                     PatientID = bs.PatientID,
                                     SurgeryTime = bs.SurgeryTime,
                                     SurgeryDate = bs.SurgeryDate,
@@ -114,10 +112,30 @@ namespace DEMO.Controllers
                 AllcombinedData = combinedData,
 
             };
-            return RedirectToAction("AdmissionPage", new { id = viewModel.BookingID});
+            return View(viewModel);
+            //return RedirectToAction("AdmissionPage", new { id = viewModel.BookingID});
             
         }
+        [HttpPost]
+        public IActionResult AdmissionPage(AdmittedPatientsModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                _dbContext.AdmittedPatientsModel.Add(model);
+                _dbContext.SaveChanges();
+                return RedirectToAction("AdmittedPatients");
+            }
 
+            // Return the view with the model if validation fails
+            return View("AdmittedPatients", model);
+        }
+
+        public IActionResult AdmittedPatients()
+        {
+            // Return the list of admitted patients or a relevant view
+            var patients = _dbContext.AdmittedPatientsModel.ToList();
+            return View(patients);
+        }
         public IActionResult AdmissionPage(int bookingID)
         {
             var booking = _dbContext.BookSurgery
@@ -149,10 +167,6 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = booking.Date;
 
             return View(booking);
-        }
-        public IActionResult AdmittedPatients()
-        {
-            return View();
         }
         public IActionResult MedicationCollection()
         {
