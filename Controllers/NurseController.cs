@@ -121,7 +121,7 @@ namespace DEMO.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.AdmittedPatientsModel.Add(model);
+                _dbContext.AdmittedPatients.Add(model);
                 _dbContext.SaveChanges();
                 return RedirectToAction("AdmittedPatients");
             }
@@ -133,8 +133,8 @@ namespace DEMO.Controllers
         public IActionResult AdmittedPatients()
         {
             // Return the list of admitted patients or a relevant view
-            var patients = _dbContext.AdmittedPatientsModel.ToList();
-            return View(patients);
+            var patients = _dbContext.AdmittedPatients.ToList();
+            return View();
         }
         public IActionResult AdmissionPage(int bookingID)
         {

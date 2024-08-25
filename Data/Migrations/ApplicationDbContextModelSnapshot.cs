@@ -228,23 +228,22 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("BookingID")
                         .HasColumnType("int");
 
-                    b.Property<int>("CityID")
+                    b.Property<int>("PatientAllergyID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientConditionsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientDetailsID")
                         .HasColumnType("int");
 
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
 
+                    b.Property<int>("PatientMedicationID")
+                        .HasColumnType("int");
+
                     b.Property<int>("PatientVitalsID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProvinceID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StreetName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("SuburbID")
                         .HasColumnType("int");
 
                     b.Property<int>("WardID")
@@ -252,7 +251,7 @@ namespace DEMO.Data.Migrations
 
                     b.HasKey("AdmittedPatientID");
 
-                    b.ToTable("AdmittedPatientsModel");
+                    b.ToTable("AdmittedPatients");
                 });
 
             modelBuilder.Entity("DEMO.Models.NurseModels.Condition", b =>
@@ -272,6 +271,23 @@ namespace DEMO.Data.Migrations
                     b.ToTable("Condition");
                 });
 
+            modelBuilder.Entity("DEMO.Models.NurseModels.CurrentMedication", b =>
+                {
+                    b.Property<int>("CurrentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CurrentId"));
+
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CurrentId");
+
+                    b.ToTable("CurrentMedication");
+                });
+
             modelBuilder.Entity("DEMO.Models.NurseModels.PatientAllergy", b =>
                 {
                     b.Property<int>("patientAllergyID")
@@ -280,9 +296,8 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("patientAllergyID"));
 
-                    b.Property<string>("ActiveingredientID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ActiveingredientID")
+                        .HasColumnType("int");
 
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
@@ -300,20 +315,68 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientConditionsID"));
 
-                    b.Property<string>("ConditionsID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ConditionsID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("PatientID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PatientID")
+                        .HasColumnType("int");
 
                     b.HasKey("PatientConditionsID");
 
                     b.ToTable("PatientConditions");
                 });
 
-            modelBuilder.Entity("DEMO.Models.PharmacistModels.AddPharmacyMedicationModel", b =>
+            modelBuilder.Entity("DEMO.Models.NurseModels.PatientDetails", b =>
+                {
+                    b.Property<int>("PatientDetailsID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientDetailsID"));
+
+                    b.Property<int>("AddressID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CityID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProvinceID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SuburbID")
+                        .HasColumnType("int");
+
+                    b.HasKey("PatientDetailsID");
+
+                    b.ToTable("PatientDetails");
+                });
+
+            modelBuilder.Entity("DEMO.Models.NurseModels.PatientMedication", b =>
+                {
+                    b.Property<int>("PatientMedicationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientMedicationID"));
+
+                    b.Property<int>("CurrentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientID")
+                        .HasColumnType("int");
+
+                    b.HasKey("PatientMedicationID");
+
+                    b.ToTable("patientMedication");
+                });
+
             modelBuilder.Entity("DEMO.Models.NurseModels.PatientVitals", b =>
                 {
                     b.Property<int>("PatientVitalsID")
@@ -395,10 +458,7 @@ namespace DEMO.Data.Migrations
 
                     b.HasKey("PharmacyMedicationlID");
 
-                    b.ToTable("PharmacyMedication");
-                });
-
-                    b.ToTable("PharmMeds");
+                    b.ToTable("PharmMedModel");
                 });
 
             modelBuilder.Entity("DEMO.Models.PharmacistModels.RejectedScriptsModel", b =>

@@ -7,8 +7,8 @@ namespace DEMO.Models.NurseModels
         [Key]
         public int PatientConditionsID { get; set; }
         [Required]
-        public string AdmittedPatientID { get; set; }
+        public int PatientID { get; set; }
         [Required]
-        public string ConditionsID { get; set; }
+        public int ConditionsID { get; set; }
     }
 }

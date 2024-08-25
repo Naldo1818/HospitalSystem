@@ -501,10 +501,10 @@ namespace DEMO.Controllers
         public IActionResult VitalsAndHistory(int patientID)
         {
             var allergy = (from pa in _dbContext.PatientAllergy
-                           join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                           join p in _dbContext.PatientInfo on pa.patientAllergyID equals p.PatientID
                            join ai in _dbContext.Activeingredient
-                               on int.Parse(pa.ActiveingredientID) equals ai.ActiveingredientID
-                           where pa.PatientID == patientID
+                               on pa.ActiveingredientID equals ai.ActiveingredientID
+                           where pa.patientAllergyID == patientID
                            select new PatientAllergyViewModel
                            {
                                Name = p.Name,
@@ -514,7 +514,7 @@ namespace DEMO.Controllers
 
             var conditions = (from pc in _dbContext.PatientConditions
                               join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
-                              join c in _dbContext.Condition on pc.ConditionID equals c.ConditionID
+                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
                               where pc.PatientID == patientID
                               select new PatientAllergyViewModel
                               {

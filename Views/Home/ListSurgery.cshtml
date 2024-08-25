@@ -141,7 +141,12 @@
                                                    data-patient-id="@Data.PatientID">Give Prescription</a>
                                             </div>
                                        
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                            <a class="btn btn-primary"
+                                               aria-hidden="true"
+                                               asp-controller="Home"
+                                               asp-action="vitalsAndHistory"
+                                               asp-route-patientID="@Data.PatientID">Check Vitals and Medical History</a>
+
                                     </td>
                                 </tr>
                                }
