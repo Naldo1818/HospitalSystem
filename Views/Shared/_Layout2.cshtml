@@ -71,7 +71,9 @@
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
 
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome" style="font-size: 1.3rem;">Home</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome" asp-route-AccountId="@ViewBag.AccountID" style="font-size: 1.3rem;">Home</a>
+
+
 
                     <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="PatientList" style="font-size: 1.3rem;">Patient </a>
 
@@ -95,8 +97,7 @@
                 </div>
                 <div id="sideBar" class="col-md-3 d-flex justify-content-end" align="right">
                     <div class="card custom-card" style="width: 250px;">
-                        <img src="https://via.placeholder.com/150" class="card-img-top rounded-circle" alt="Placeholder Image">
-                        <div class="card-body">
+                        <img src="~/css/user.png" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">                        <div class="card-body">
                             <h5 class="card-title">Surgeon</h5>
                             <h4 class="card-title">@ViewBag.UserName @ViewBag.UserSurname</h4>
                             <p class="card-text">Email: @ViewBag.UserEmail</p>

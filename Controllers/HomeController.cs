@@ -82,7 +82,7 @@ namespace DEMO.Controllers
         public IActionResult SurgeonHome(int accountId)
         {
             // Try to get data from session first
-            //var accountID = HttpContext.Session.GetString("UserAccountId");
+           // var accountID = HttpContext.Session.GetString("UserAccountId");
             //var name = HttpContext.Session.GetString("UserName");
             //var surname = HttpContext.Session.GetString("UserSurname");
             //var email = HttpContext.Session.GetString("UserEmail");
@@ -113,7 +113,7 @@ namespace DEMO.Controllers
             //if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
             //{
             //    // Use existing session data
-            //    ViewBag.UserName = accountID;
+           ViewBag.AccountId = surgeon.AccountID;
             //    ViewBag.UserName = name;
             //    ViewBag.UserSurname = surname;
             //    ViewBag.UserEmail = email;
@@ -150,7 +150,7 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
-
+           
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -190,7 +190,7 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
-
+          
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -523,11 +523,22 @@ namespace DEMO.Controllers
                                   ConditionName = c.ConditionName // Ensure this property exists in your view model
                               }).OrderBy(c => c.ConditionName).ToList();
 
+            var currentMed = (from pm in _dbContext.patientMedication
+                              join cm in _dbContext.CurrentMedication on pm.CurrentID equals cm.CurrentId
+                              join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
+                              where pm.PatientID == patientID
+                              select new PatientAllergyViewModel
+                              {
+                                  Name = pi.Name,
+                                  Surname = pi.Surname,
+                                  MedicationName = cm.MedicationName // Ensure this property exists in your view model
+                              }).OrderBy(cm => cm.MedicationName).ToList();
             // Create a view model that holds both lists
             var viewModel = new PatientAllergyViewModel
             {
                 Allallergy = allergy,
-                AllConditions = conditions
+                AllConditions = conditions,
+                AllCurrentMed = currentMed
             };
 
             var accountID = HttpContext.Session.GetString("UserAccountId");

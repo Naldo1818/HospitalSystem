@@ -96,10 +96,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>None</td>
-                                 
-                                </tr>
+                                @foreach (var item in Model.AllCurrentMed)
+                                {
+                                    <tr>
+                                        <td>@item.MedicationName</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                        
@@ -130,7 +132,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                               
+                                @foreach (var item in Model.AllConditions)
+                                {
+                                    <tr>
+                                        <td>@item.ConditionName</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                         

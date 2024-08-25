@@ -8,6 +8,8 @@ namespace DEMO.ViewModels
         public string Surname { get; set; }
         public string ActiveIngredientName { get; set; }
         public string ConditionName { get; set; }
+        public string MedicationName { get; set; }
+        
         public List<PatientAllergyViewModel> Allallergy { get; set; }
         public List<PatientAllergyViewModel> AllCurrentMed { get; set; }
         public List<PatientAllergyViewModel> AllConditions { get; set; }
