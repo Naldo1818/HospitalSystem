@@ -110,7 +110,7 @@
                                     <th scope="col">Surgery Date</th>
                                     <th scope="col">Surgery Time</th>
                                     <th scope="col">Theatre</th>
-                                    <th scope="col">Actions</th>
+                                   
                                     
                                     <th scope="col">Admit</th>
                                 </tr>
@@ -120,14 +120,14 @@
                                     
                                     <tr>
                                     <td>@Data.PatientName</td>
-                                    <td>@Data.PatinetSurname</td>
+                                    <td>@Data.PatientSurname</td>
                                     <td>@Data.AccountName @Data.AccountSurname</td>
                                     <td>@Data.SurgeryDate</td>
                                     <td>@Data.SurgeryTime</td>
                                     <td>@Data.Theater</td>
                                     
                                     <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionPage" >Admit Patient</a>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionPage" asp-route-BookingID="@Data.BookingID">Admit Patient</a>
                                     </td>
                                     </tr>
 

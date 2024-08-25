@@ -175,9 +175,9 @@
                                                     <label for="Ward">Ward</label>
                                                     <select class="select2" name="Ward" required>
                                                         <option value="" disabled selected>Select Ward</option>
-                                                        <option value="Ward1">Ward 1</option>
-                                                        <option value="Ward2">Ward 2</option>
-                                                        <option value="Ward3">Ward 3</option>
+                                                        <option value="WardN">Ward N</option>
+                                                        <option value="WardA">Ward A</option>
+                                                        <option value="WardZ">Ward Z</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
@@ -454,8 +454,36 @@
                 placeholder: 'Select an option',
                 allowClear: true
             });
+            // Sort options in ascending order
+            sortSelectOptions('#WardSelect');
+            sortSelectOptions('#AllergySelect');
+            sortSelectOptions('#ConditionSelect');
+            sortSelectOptions('#Province');
+            sortSelectOptions('#CIty');
+    
+            sortSelectOptions('#Suburb');
+            sortSelectOptions('#PostalCode');
+            sortSelectOptions('#Bed');
+            sortSelectOptions('#MedicationSelect');
         });
+        function sortSelectOptions(selector) {
+            const selectElement = $(selector);
+            const options = selectElement.find('option').toArray();
+            options.sort((a, b) => {
+                const textA = $(a).text().trim().toUpperCase();
+                const textB = $(b).text().trim().toUpperCase();
+                return textA.localeCompare(textB);
+            });
 
+            // Remove all existing options
+            selectElement.empty();
+
+            // Append the sorted options
+            selectElement.append(options);
+
+            // Restore the placeholder option
+            selectElement.prepend('<option value="" disabled selected>Select an option</option>');
+        }
         // JavaScript functions to handle dynamic list addition
         function addAllergy() {
             const allergySelect = document.getElementById('AllergySelect');
