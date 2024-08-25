@@ -2,7 +2,7 @@
     ViewData["Title"] = "Admission";
     Layout = "_LayoutNurse";
 }
-
+@model DEMO.ViewModels.BookedPatientInfo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,15 +146,15 @@
                     <hr></hr>
                     <div class="header-labels">
                         
-                        <label>Name: @ViewBag.Name</label>
-                        <label>Surname: @ViewBag.Surname</label>
-                        <label>Date: @ViewBag.Date</label>
+                        <label>Name: @Model.Name</label>
+                        <label>Surname: @Model.Surname</label>
+                        <label>Date: @Model.Date</label>
                         
                     </div>
                     <hr></hr>
                     <div class="row">
                         <div class="col-md-12 mx-0">
-                            <form id="msform">
+                            <form id="msform" method="post" action="/Nurse/AdmitPatient">
                                 <!-- progressbar -->
                                 <ul id="progressbar">
                                     <input type="button" name="Contact Details" class="next action-button" onclick="showContactDetails()" value="Contact Details" />
@@ -178,15 +178,6 @@
                                                         <option value="Ward1">Ward 1</option>
                                                         <option value="Ward2">Ward 2</option>
                                                         <option value="Ward3">Ward 3</option>
-                                                        <!-- Add more options as needed -->
-                                                    </select>
-                                                </div>
-                                                <div class="vital-group">
-                                                    <label for="Status">Status</label>
-                                                    <select class="select2" name="Status" required>
-                                                        <option value="" disabled selected>Select Status</option>
-                                                        <option value="Active">Active</option>
-                                                        <option value="Inactive">Inactive</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
@@ -404,7 +395,9 @@
                                             </div>
                                         </div>
                                         <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
-                                        <a asp-controller="Nurse" asp-action="AdmittedPatients"><input type="button" name="submit" class="next action-button" value="Submit" /></a>
+                                        <a asp-controller="Nurse" asp-action="AdmittedPatients">
+                                            <button type="button" name="submit" class="next action-button" onclick="submitForm()">Submit</button>
+                                        </a>
                                     </div>
                                 </fieldset>
                             </form>
@@ -415,7 +408,19 @@
         </div>
     </div>
     <script>
-        
+       
+        function submitForm() {
+            // Assuming you have fields with IDs that match your model's properties
+            document.querySelector('input[name="PatientID"]').value = document.getElementById('PatientID').value;
+            document.querySelector('input[name="BookingID"]').value = document.getElementById('BookingID').value;
+            document.querySelector('input[name="WardID"]').value = document.getElementById('Ward').value;
+            document.querySelector('input[name="PatientVitalsID"]').value = document.getElementById('PatientVitalsID').value;
+            document.querySelector('input[name="Date"]').value = document.getElementById('Date').value;
+            document.querySelector('input[name="ProvinceID"]').value = document.getElementById('Province').value;
+            document.querySelector('input[name="CityID"]').value = document.getElementById('City').value;
+            document.querySelector('input[name="SuburbID"]').value = document.getElementById('Suburb').value;
+            document.querySelector('input[name="StreetName"]').value = document.getElementById('Street').value;
+        }
             // JavaScript functions to handle form navigation
         function showContactDetails() {
             $('#f-1').show('slow', 'swing');
