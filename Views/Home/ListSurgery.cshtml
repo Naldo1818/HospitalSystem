@@ -123,9 +123,12 @@
                                             <a class="btn btn-primary"
                                                asp-controller="Home"
                                                asp-action="CheckTreatmentCode"
-                                               asp-route-bookingId="@Data.BookingID">
+                                               asp-route-bookingId="@Data.BookingID"
+                                               asp-route-name="@Data.Name"
+                                               asp-route-surname="@Data.Surname">
                                                 Show Treatment Codes
                                             </a>
+
                                               
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
@@ -300,19 +303,16 @@
                                    <div class="col-4">
                                         <br>
                                         <label for="Take" class="form-label">Time Instructions(When will Prescription be given) </label>
-                                        <div id="Take" class="form-control" style="width:250px; padding: 10px;">
-                                            <input type="text" class="form-control" name="Take" id="Take" placeholder="Enter Instruction" style="width:300px">
-                                        </div>
+                                       <input type="text" class="form-control" name="Take" id="Take" placeholder="Enter Instruction" style="width:250px">
+                                       
                                     </div>
                                 </div>
                                  <div class="form-group row">
 
                                 <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Status</label>
-                                        <select input class="form-control" name="Status" placeholder="Status" style=" width:250px">
-                                        <option value="Prescribed">Prescribed</option>
-                                    </select>
+                                        <select input class="form-control" name="Status" placeholder="Status" style=" width:250px" hidden>
+                                            <option value="Prescribed">Prescribed</option>
+                                        </select>
                                 </div>
                                 </div>
                             </form>

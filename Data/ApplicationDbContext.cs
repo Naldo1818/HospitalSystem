@@ -29,7 +29,10 @@ namespace DEMO.Data
         public DbSet<AddPharmacyMedicationModel> PharmacyMedication { get; set; }
         
         public DbSet<AdmittedPatientsModel> AdmittedPatientsModel { get; set; }
-        public DbSet<PatientVitals> PatientVitals { get; set; }
+       
+        public DbSet<Condition> Condition { get; set; }
+        public DbSet<PatientConditions> PatientConditions { get; set; }
+
 
     }
 }

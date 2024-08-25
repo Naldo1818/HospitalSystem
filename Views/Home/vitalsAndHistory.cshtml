@@ -2,6 +2,7 @@
     ViewData["Title"] = "Vitals And History";
     Layout = "_Layout2";
 }
+@model DEMO.ViewModels.PatientAllergyViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,15 +108,16 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col"> Descriptions</th>
-                                    <th scope="col"> Active Ingrediant</th>
+                                    <th scope="col">Allergy</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>None</td>
-                                    <td>None</td>
-                                </tr>
+                                @foreach (var item in Model.Allallergy)
+                                {
+                                    <tr>
+                                        <td>@item.ActiveIngredientName</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
 

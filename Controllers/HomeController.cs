@@ -290,28 +290,30 @@ namespace DEMO.Controllers
             // If validation fails, redisplay the form with errors
             return View("SurgeryTreatmentCodes", model);
         }
-        
 
-        public IActionResult CheckTreatmentCode(int bookingId)
+        public IActionResult CheckTreatmentCode(int bookingId, string name, string surname)
         {
             var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
             if (allTreatmentCodes == null)
             {
                 allTreatmentCodes = new List<TreatmentCodes>();
             }
+
             var combinedData = (from st in _dbContext.SurgeryTreatmentCode
                                 join t in _dbContext.TreatmentCodes on st.TreatmentCodeID equals t.TreatmentCodeID
                                 join b in _dbContext.BookSurgery on st.BookingID equals b.BookingID
                                 join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
                                 where st.BookingID == bookingId
                                 select new EditTreatmentListViewModel
-                                 {
+                                {
+                                    BookingID = b.BookingID,
+                                    btcID = st.BookingTreatmentCodeID,
                                     TreatmentName = t.TreatmentName,
                                     TreatmentCode = t.TreatmentCode,
                                     SurgeryDate = b.SurgeryDate,
                                     SurgeryTime = b.SurgeryTime,
                                     Name = p.Name,
-                                    Surname= p.Surname
+                                    Surname = p.Surname
                                 }).OrderBy(a => a.Name).ToList();
 
             var accountID = HttpContext.Session.GetString("UserAccountId");
@@ -331,8 +333,12 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+            ViewBag.PatientName = name;
+            ViewBag.PatientSurname = surname;
+
             return View(viewModel);
         }
+
         [HttpPost]
         public IActionResult EditTreatment(SurgeryTreatmentCode model)
         {
@@ -354,6 +360,36 @@ namespace DEMO.Controllers
             // If validation fails, redisplay the form with errors
             return View("CheckTreatmentCode", model);
         }
+        [HttpPost]
+        public IActionResult DeleteTreatmentCode(int btcID, int bookingID)
+        {
+            // Find the surgery treatment code to delete
+            var surgeryTreatmentCode = _dbContext.SurgeryTreatmentCode
+                .FirstOrDefault(st => st.BookingTreatmentCodeID == btcID);
+
+            if (surgeryTreatmentCode == null)
+            {
+                // Handle the case where the treatment code is not found
+                return NotFound();
+            }
+
+            // Retrieve the associated booking and patient information
+            var booking = _dbContext.BookSurgery.FirstOrDefault(b => b.BookingID == bookingID);
+            var patient = _dbContext.PatientInfo.FirstOrDefault(p => p.PatientID == booking.PatientID);
+
+            if (patient == null)
+            {
+                return NotFound("Patient information not found.");
+            }
+
+            // Remove the treatment code from the database
+            _dbContext.SurgeryTreatmentCode.Remove(surgeryTreatmentCode);
+            _dbContext.SaveChanges();
+
+            // Redirect back to the CheckTreatmentCode view with the patient name and surname
+            return RedirectToAction("CheckTreatmentCode", new { bookingId = bookingID, name = patient.Name, surname = patient.Surname });
+        }
+
         public IActionResult patientAddmision()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
@@ -462,8 +498,38 @@ namespace DEMO.Controllers
             return View("ListSurgery", model);
 
         }
-        public IActionResult vitalsAndHistory()
+        public IActionResult VitalsAndHistory(int patientID)
         {
+            var allergy = (from pa in _dbContext.PatientAllergy
+                           join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                           join ai in _dbContext.Activeingredient
+                               on int.Parse(pa.ActiveingredientID) equals ai.ActiveingredientID
+                           where pa.PatientID == patientID
+                           select new PatientAllergyViewModel
+                           {
+                               Name = p.Name,
+                               Surname = p.Surname,
+                               ActiveIngredientName = ai.ActiveIngredientName
+                           }).OrderBy(ai => ai.ActiveIngredientName).ToList();
+
+            var conditions = (from pc in _dbContext.PatientConditions
+                              join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
+                              join c in _dbContext.Condition on pc.ConditionID equals c.ConditionID
+                              where pc.PatientID == patientID
+                              select new PatientAllergyViewModel
+                              {
+                                  Name = pt.Name,
+                                  Surname = pt.Surname,
+                                  ConditionName = c.ConditionName // Ensure this property exists in your view model
+                              }).OrderBy(c => c.ConditionName).ToList();
+
+            // Create a view model that holds both lists
+            var viewModel = new PatientAllergyViewModel
+            {
+                Allallergy = allergy,
+                AllConditions = conditions
+            };
+
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
@@ -473,8 +539,10 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
+
+            return View(viewModel);
         }
+
         [HttpPost]
         public IActionResult EditSurgery(BookSurgery model)
         {
@@ -523,7 +591,9 @@ namespace DEMO.Controllers
                                 where pr.PrescriptionID == id
                                 orderby p.Name
                                 select new PrescriptionMedicationViewModel
-                                {   Medid = mi.InstructionsID,
+                                {
+                                    
+                                    Medid = mi.InstructionsID,
                                     Name = p.Name,
                                     Surname = p.Surname,
                                     DateGiven = pr.DateGiven,

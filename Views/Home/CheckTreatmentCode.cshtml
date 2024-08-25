@@ -31,7 +31,8 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form id="addTreatmentForm" method="post" action="@Url.Action("EditTreatment", "Home")">
-                            <h2>Edit Treatment Codes</h2>
+                            <h2>Edit Treatment Codes for @ViewBag.PatientName @ViewBag.PatientSurname</h2>
+
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
@@ -45,7 +46,7 @@
                                         <option value="">Select a Description</option>
                                         @foreach (var treatment in Model.AllTreatmentCodes)
                                         {
-                                            <option value="@treatment.TreatmentCodeID">@treatment.TreatmentName</option>
+                                            <option value="@treatment.TreatmentCodeID" data-search="@treatment.TreatmentName.ToLower()">@treatment.TreatmentName</option>
                                         }
                                     </select>
                                 </div>
@@ -87,6 +88,16 @@
                                         <td>@item.SurgeryTime</td>
                                         <td>@item.TreatmentName</td>
                                         <td>@item.TreatmentCode</td>
+                                        <td>
+                                            <form asp-action="DeleteTreatmentCode" asp-controller="Home" method="post">
+                                                <input type="hidden" name="btcID" value="@item.btcID" />
+                                                <input type="hidden" name="bookingID" value="@item.BookingID" />
+                                                <input type="hidden" name="name" value="@item.Name" />
+                                                <input type="hidden" name="surname" value="@item.Surname" />
+                                                <button type="submit" class="btn btn-danger">Remove</button>
+                                            </form>
+                                        </td>
+
                                     </tr>
                                 }
                             </tbody>
@@ -119,7 +130,6 @@
                 </div>
             </div>
             <script>
-               
                 // Handle 'Add Medication Code' button click
                 $('#openTreatmentButton').on('click', function () {
                     $('#confirmTreatmentModal').modal('show');
@@ -144,6 +154,23 @@
                     });
                 });
 
+                // Function to filter treatment names
+                function filterTreatmentNames() {
+                    var input = document.getElementById('searchTreatmentInput').value.toLowerCase();
+                    var select = document.getElementById('treatmentSelect');
+                    var options = select.getElementsByTagName('option');
+
+                    for (var i = 0; i < options.length; i++) {
+                        var option = options[i];
+                        var searchValue = option.getAttribute('data-search');
+
+                        if (searchValue.includes(input)) {
+                            option.style.display = '';
+                        } else {
+                            option.style.display = 'none';
+                        }
+                    }
+                }
             </script>
         </main>
     </div>

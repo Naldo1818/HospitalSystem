@@ -5,6 +5,8 @@ namespace DEMO.ViewModels
 {
     public class EditTreatmentListViewModel
     {
+        public int btcID { get; set; }
+        public int BookingID { get; set; }
         [Required]
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
         [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Name can only contain letters and spaces.")]
