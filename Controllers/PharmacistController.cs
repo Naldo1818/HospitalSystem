@@ -1,26 +1,12 @@
 ﻿using DEMO.Data;
-using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
-using DEMO.Models.PharmacistModels;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Identity.Client;
 using MimeKit;
-using Newtonsoft.Json;
-using MailKit.Net.Smtp;
-using System.Reflection.Metadata.Ecma335;
-using System.Diagnostics.Contracts;
-using Microsoft.CodeAnalysis.Scripting;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
-using Microsoft.EntityFrameworkCore.Internal;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DEMO.Controllers
 {
@@ -43,8 +29,40 @@ namespace DEMO.Controllers
             return View();
         }
 
-        public IActionResult PharmacistHomePage()
+        public IActionResult PharmacistHomePage(int accountId)
         {
+            var pharmacist = _dbContext.Accounts
+                .Where(a => a.AccountID == accountId)
+                .Select(a => new PharmacistView
+                {
+                    AccountID = a.AccountID,
+                    Name = a.Name,
+                    Surname = a.Surname,
+                    Email = a.Email
+                })
+                .SingleOrDefault();
+
+            if (pharmacist == null)
+            {
+                return NotFound();
+            }
+
+            // Store user data in session
+            HttpContext.Session.SetString("UserAccountId", pharmacist.AccountID.ToString());
+            HttpContext.Session.SetString("UserName", pharmacist.Name);
+            HttpContext.Session.SetString("UserSurname", pharmacist.Surname);
+            HttpContext.Session.SetString("UserEmail", pharmacist.Email);
+
+
+
+
+
+            ViewBag.UserName = pharmacist.AccountID.ToString();
+            ViewBag.UserName = pharmacist.Name;
+            ViewBag.UserSurname = pharmacist.Surname;
+            ViewBag.UserEmail = pharmacist.Email;
+            //}
+
             return View();
         }
 
@@ -91,12 +109,7 @@ namespace DEMO.Controllers
 
             return View();
         }
-
-        public ActionResult AddMedication()
-        {
-
-            return View();
-        }
+        
 
 
         public ActionResult MedicationAdded()
@@ -256,6 +269,59 @@ namespace DEMO.Controllers
            
         }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //Adding my Pharmacy Medication
+        //[HttpGet]
+        //public ActionResult AddMedication()
+        //{
+        //    PharmacyMedicationModel pharmacymedication = new PharmacyMedicationModel();
+        //    return View(pharmacymedication);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+
+        //public async Task<IActionResult> AddMedication([Bind
+
+        //    ("PharmacyMedicationlID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel,ActiveIngredientsAndStrength")]
+        //PharmacyMedicationModel pharmacymedication)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _dbContext.Add(pharmacymedication);
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("MedicationAdded", "Pharmacist");
+        //    }
+        //    return View(pharmacymedication);
+        //}
 
 
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240824142341_PharmacyMedicationTable")]
-    partial class PharmacyMedicationTable
+    [Migration("20240824202759_Pharmacymedicationtable")]
+    partial class Pharmacymedicationtable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -216,6 +216,48 @@ namespace DEMO.Data.Migrations
                     b.ToTable("MedicationInstructions");
                 });
 
+            modelBuilder.Entity("DEMO.Models.NurseModels.AdmittedPatientsModel", b =>
+                {
+                    b.Property<int>("AdmittedPatientID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdmittedPatientID"));
+
+                    b.Property<string>("AdmissionStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("BookingID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CityID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientVitalsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProvinceID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SuburbID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WardID")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdmittedPatientID");
+
+                    b.ToTable("AdmittedPatientsModel");
+                });
+
             modelBuilder.Entity("DEMO.Models.NurseModels.PatientAllergy", b =>
                 {
                     b.Property<int>("patientAllergyID")
@@ -236,7 +278,56 @@ namespace DEMO.Data.Migrations
                     b.ToTable("PatientAllergy");
                 });
 
-            modelBuilder.Entity("DEMO.Models.PharmacistModels.AddPharmacyMedicationModel", b =>
+            modelBuilder.Entity("DEMO.Models.NurseModels.PatientVitals", b =>
+                {
+                    b.Property<int>("PatientVitalsID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientVitalsID"));
+
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BloodGlucoseLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BloodOxygen")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiastolicBloodPressure")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HeartRate")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Respiration")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SystolicBloodPressure")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Temperature")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VitalsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Weight")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("time")
+                        .HasColumnType("time");
+
+                    b.HasKey("PatientVitalsID");
+
+                    b.ToTable("PatientVitals");
+                });
+
+            modelBuilder.Entity("DEMO.Models.PharmacistModels.PharmMedModel", b =>
                 {
                     b.Property<int>("PharmacyMedicationlID")
                         .ValueGeneratedOnAdd()
@@ -252,6 +343,10 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ReorderLevel")
                         .HasColumnType("int");
 
@@ -264,7 +359,7 @@ namespace DEMO.Data.Migrations
 
                     b.HasKey("PharmacyMedicationlID");
 
-                    b.ToTable("PharmacyMedication");
+                    b.ToTable("PharmMeds");
                 });
 
             modelBuilder.Entity("DEMO.Models.PharmacistModels.RejectedScriptsModel", b =>

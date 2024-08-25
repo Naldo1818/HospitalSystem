@@ -2,19 +2,20 @@
 
 namespace DEMO.Models.PharmacistModels
 {
-    public class AddPharmacyMedicationModel
+    public class PharmMedModel
     {
         [Key]
         public int PharmacyMedicationlID { get; set; }
 
-
+        [Required]
+        public string MedicationName { get; set; }
 
         [Required]
-        public string DosageForm {  get; set; }
+        public string DosageForm { get; set; }
 
         [Required]
 
-        public string Schedule {  get; set; }
+        public string Schedule { get; set; }
 
         [Required]
 
@@ -27,12 +28,5 @@ namespace DEMO.Models.PharmacistModels
         [Required]
 
         public string ActiveIngredientsAndStrength { get; set; }
-
-
-
-
-        
-
-
     }
 }
