@@ -29,431 +29,167 @@
     <!-- DataTables JS -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
-
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    
+
+    <style>
+        .form-container {
+            padding: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: .375rem;
+            margin-bottom: 20px;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container-fluid {
+            margin: 0 auto;
+        }
+    </style>
 </head>
-
-
-
-
 <body>
     <h1><center>Prescription View</center></h1>
 
-    <!--Medical History-->
+
+
+
+    <!--Medical History and Vitals History side by side-->
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-
-
-                        <!--Medical History-->
+            <div class="row">
+                <!-- Medical History Form -->
+                <div class="col-md-6">
+                    <div class="form-container">
+                        <h2 class="form-title">Medical History</h2>
                         <form>
-                            <h2><center>Medical History</center></h2>
-                            <div class="form-group row">
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Allergies</label>
-
-
-                                  
-
-
-
-                                    <textarea name="large-text-area" rows="2" cols="30">
-Disprin
-Penicillin
-
-                                </textarea>
-
-
-
-
-
-                                </div>
+                            <div class="form-group">
+                                <label for="patientName">Patient Name</label>
+                                <input type="text" class="form-control" id="patientName" placeholder="Jin" style="width:100%" readonly>
                             </div>
-
-
-                            <div class="form-group row">
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Conditions</label>
-
-                                    <textarea name="large-text-area" rows="2" cols="30">
-Acne
-Diabetes
-
-                                </textarea>
-
-                                    @* <select input class="form-control" placeholder="Pharmacist" style=" width:300px">
-                                    <option value="Acne">Acne</option>
-                                    <option value="Diabetes">Diabetes</option>
-                                    </select> *@
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput2" class="form-label">Current Medications</label>
-                                    <textarea name="large-text-area" rows="2" cols="30">
-Diazepem
-Aspirin
-
-                                </textarea>
-
-                                    <!--Find a suitable list box item-->
-                                    @* <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
-                                    <option>Diazepem</option>
-                                    <option>Aspirin</option>
-
-                                    </select> *@
-                                </div>
-
+                            <div class="form-group">
+                                <label for="patientSurname">Patient Surname</label>
+                                <input type="text" class="form-control" id="patientSurname" placeholder="Woo" style="width:100%" readonly>
                             </div>
+                            <div class="form-group">
+                                <label for="allergies">Allergies</label>
+                                <textarea class="form-control" id="allergies" rows="2" readonly>Disprin
+Penicillin</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="conditions">Conditions</label>
+                                <textarea class="form-control" id="conditions" rows="2" readonly>Acne
+Diabetes</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="currentMedications">Current Medications</label>
+                                <textarea class="form-control" id="currentMedications" rows="2" readonly>Diazepem
+Aspirin</textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 
-
-
-                            
-
-
-                            <!-- More form inputs can be added here -->
+                <!-- Vitals History Form -->
+                <div class="col-md-6">
+                    <div class="form-container">
+                        <h2 class="form-title">Vitals History</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="systolicBP">Systolic BP (mmHg)</label>
+                                <input type="text" class="form-control" id="systolicBP" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="diastolicBP">Diastolic BP (mmHg)</label>
+                                <input type="text" class="form-control" id="diastolicBP" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="bloodOxygen">Blood Oxygen (%)</label>
+                                <input type="text" class="form-control" id="bloodOxygen" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="respirationRate">Respiration Rate (Breaths/min)</label>
+                                <input type="text" class="form-control" id="respirationRate" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="bloodGlucose">Blood Glucose Level (mg/dL)</label>
+                                <input type="text" class="form-control" id="bloodGlucose" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="temperature">Temperature (°C)</label>
+                                <input type="text" class="form-control" id="temperature" style="width:100%" readonly>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
-   
 
-
-
-    
-    <!--Vitals History-->
+    <!-- Prescription Form -->
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
+            <div class="row">
                 <div class="col">
-                    <div class="p-3 mt-5 border">
-
+                    <div class="form-container">
+                        <h2 class="form-title">Prescription</h2>
                         <form>
-                            <h2><center>Vitals History</center></h2>
-
-
-                            <div class="form-group row">
-
-
-
-
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
-
-                                </div>
-
-
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
-
-
-                                </div>
-
-
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Systolic BP (mmHg)</label>
-                                    <br>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
-
-                                    
-                                </div>
-
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">
-                                        Diastolic BP (mmHg)
-                                    </label>
-                                    <br>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
-
-
-                                </div>
-
-
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Blood Oxygen (%)</label>
-                                    <br>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
-
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Respiration Rate (Breaths/min)e</label>
-                                    <br>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
-
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Blood Glucose Level (mg/dL)</label>
-                                    <br>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
-
-                                </div>
-
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Temperature (°C)</label>
-                                    <br>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
-
-                                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                            <div class="form-group">
+                                <label for="prescriptionPatientName">Patient Name</label>
+                                <input type="text" class="form-control" id="prescriptionPatientName" placeholder="Jin" style="width:100%" readonly>
                             </div>
+                            <div class="form-group">
+                                <label for="prescriptionPatientSurname">Patient Surname</label>
+                                <input type="text" class="form-control" id="prescriptionPatientSurname" placeholder="Woo" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="prescriptionDate">Prescription Date</label>
+                                <input type="text" class="form-control" id="prescriptionDate" placeholder="14/05/2024" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="surgeon">Surgeon</label>
+                                <input type="text" class="form-control" id="surgeon" placeholder="Jack Black" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="urgent">Urgent</label>
+                                <input type="text" class="form-control" id="urgent" placeholder="Yes" style="width:100%" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="medicationsPrescribed">Medications Prescribed</label>
+                                <textarea class="form-control" id="medicationsPrescribed" rows="2" readonly>Cephalexin
+Diazepam</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="administrationInstructions">Administration Instructions</label>
+                                <textarea class="form-control" id="administrationInstructions" rows="10" readonly>Administer 2 Cephalexin 2 times a day before eating.
 
-
-
-
-
-                           
-                            <!-- More form inputs can be added here -->
+Administer 1 Diazepam 2 times a day after eating.</textarea>
+                            </div>
+                            <div class="form-group">
+                                <a class="btn btn-danger btn-lg" data-toggle="modal" data-target="#MedicationDispensedModal">Dispense</a>
+                                <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
+                                <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
+                            </div>
                         </form>
-
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
-
         </main>
     </div>
-<!--end of vitals-->
 
-
-
-
-
-
-
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-
-                        <form>
-                            <h2><center>Prescription</center></h2>
-
-
-
-
-            
-                
-
-                <div class="form-group row">
-
-                    <div class="col-4">
-                        <br>
-                        <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                        <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
-                        
-                    </div>
-                                    
-                        
-                    <div class="col-4">
-                                    <br>
-                        <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
-                        
-                    </div>
-
-                                    
-                        
-                    <div class="col-4">
-                                    <br>
-                        <label for="exampleFormControlInput1" class="form-label">Prescription Date</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="14/05/2024" style=" width:300px" readonly>
-                                    
-                    </div>
-
-                                
-                    <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Surgeon</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jack Black" style=" width:300px" readonly>
-                                
-                                
-                                
-                    </div>
-
-                                    
-                    <div class="col-4">
-                                    <br>
-                        <label for="exampleFormControlInput1" class="form-label">Urgent</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Yes" style=" width:300px" readonly>
-                                   
-                    </div>
-
-                                    
-                    <div class="col-4">
-                                    <br>
-                        <label for="exampleFormControlInput1" class="form-label">Medications Prescribed</label>
-                        
-                                    <!--Find a suitable list box item-->
-                                    @* <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
-                                        <option>Cephalexin</option>
-                                        <option>Diazepem</option>
-
-                                    </select>
-
-
-
- *@
-
-
-
-
-                                    
-
-                                    <textarea name="large-text-area" rows="2" cols="30">
-Cephalexin
-Diazepem
-</textarea>
-                                    
-                                
-                    </div>
-
-
-
-
-
-                                <div class="col-4">
-                                    <br />
-                                    <label for="exampleFormControlInput1" class="form-label">Administration Instructions</label>
-
-                                    <textarea name="large-text-area" rows="10" cols="50">
-Administer 2 Cephalexin 2 times a day before eating.
-
-Administer 1 Diazepam 2 times a day after eating.
-</textarea>
-
-                                    </div>
-
-                        
-
-
-                        
-
-                        
-
-
-                        
-                    
-
-
-                               
-
-
-                                
-
+    <!-- Modal for dispensing medication-->
+    <div class="modal fade" id="MedicationDispensedModal" tabindex="-1" role="dialog" aria-labelledby="MedicationDispensedModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="MedicationDispensedModal"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                
-
-
-
-                <div class="form-group row">
-                    <div class="col-4">
-                        <br>
-                         <a class="btn btn-danger btn-lg" data-toggle="modal" data-target="#MedicationDispensedModal">Dispense</a>
-
-                         <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
-                         <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
-                     </div>
-                </div>
-                <!-- More form inputs can be added here -->
-            </form>
-
-
-            <!--Modal for dispensing medication-->
-                        <div class="modal fade" id="MedicationDispensedModal" tabindex="-1" role="dialog" aria-labelledby="MedicationDispensedModal" aria-hidden="true">
-                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="MedicationDispensedModal"></h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body" id="f-1">
-
-
-
-                                        <!-- Modal for Medication Dispensed -->
-                                        <form>
-                                            <h2><center>Prescription Dispensed</center></h2>
-
-                                            <div style="display: flex; justify-content: center; align-items: center;">
-
-                                                <br>
-                                                The prescription for Jin Woo has been dispensed.
-                                            </div>
-
-                                        </form>
-                                    </div>
-                                
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                        </div>
-
-                        <!--end of Modal-->
 
 
 
@@ -461,7 +197,9 @@ Administer 1 Diazepam 2 times a day after eating.
 
 
 
-                        <!-- Reject Script Modal -->
+
+
+                <!-- Reject Script Modal -->
                         <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
