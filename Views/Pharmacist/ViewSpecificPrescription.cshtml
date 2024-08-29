@@ -1,10 +1,10 @@
-﻿@{
+﻿ @{
     ViewData["Title"] = "Individual Prescription";
     Layout = "_LayoutPharmacist";
-}
+} 
 
 
-
+@model DEMO.ViewModels.ViewActivePrescriptionsModel
 
 
 <!DOCTYPE html>
@@ -58,13 +58,13 @@
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="@Model.Name" style=" width:300px" readonly>
                                 </div>
 
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
                                 </div>
 
                                 <div class="col-4">
@@ -72,19 +72,11 @@
                                     <label for="exampleFormControlInput2" class="form-label">Allergies</label>
 
 
-                                  
+									<textarea name="large-text-area" rows="2" cols="30">
 
+								</textarea>
 
-
-                                    <textarea name="large-text-area" rows="2" cols="30">
-Disprin
-Penicillin
-
-                                </textarea>
-
-
-
-
+                                 
 
                                 </div>
                             </div>
@@ -97,8 +89,7 @@ Penicillin
                                     <label for="exampleFormControlInput2" class="form-label">Conditions</label>
 
                                     <textarea name="large-text-area" rows="2" cols="30">
-Acne
-Diabetes
+
 
                                 </textarea>
 
@@ -112,17 +103,10 @@ Diabetes
                                     <br>
                                     <label for="exampleFormControlInput2" class="form-label">Current Medications</label>
                                     <textarea name="large-text-area" rows="2" cols="30">
-Diazepem
-Aspirin
 
                                 </textarea>
 
-                                    <!--Find a suitable list box item-->
-                                    @* <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
-                                    <option>Diazepem</option>
-                                    <option>Aspirin</option>
-
-                                    </select> *@
+                                  
                                 </div>
 
                             </div>
@@ -140,6 +124,7 @@ Aspirin
 
         </main>
     </div>
+    
    
 
 
@@ -158,14 +143,10 @@ Aspirin
 
                             <div class="form-group row">
 
-
-
-
-
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Patient Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px" readonly>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
 
                                 </div>
 
@@ -174,7 +155,7 @@ Aspirin
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">Patient Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px" readonly>
+                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
 
 
                                 </div>
@@ -214,7 +195,7 @@ Aspirin
 
                                 <div class="col-4">
                                     <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Respiration Rate (Breaths/min)e</label>
+                                    <label for="exampleFormControlInput1" class="form-label">Respiration Rate (Breaths/min)</label>
                                     <br>
                                     <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="" style=" width:300px" readonly>
 
@@ -236,25 +217,7 @@ Aspirin
 
                                 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                             </div>
-
-
-
-
-
                            
                             <!-- More form inputs can be added here -->
                         </form>
@@ -262,11 +225,6 @@ Aspirin
                     </div>
                 </div>
             </div>
-
-
-
-
-
 
 
         </main>
@@ -287,12 +245,6 @@ Aspirin
 
                         <form>
                             <h2><center>Prescription</center></h2>
-
-
-
-
-            
-                
 
                 <div class="form-group row">
 
@@ -343,26 +295,10 @@ Aspirin
                                     <br>
                         <label for="exampleFormControlInput1" class="form-label">Medications Prescribed</label>
                         
-                                    <!--Find a suitable list box item-->
-                                    @* <select class="form-control" id="exampleFormControlSelect1" style="width:250px">
-                                        <option>Cephalexin</option>
-                                        <option>Diazepem</option>
-
-                                    </select>
-
-
-
- *@
-
-
-
-
-                                    
-
+ 
                                     <textarea name="large-text-area" rows="2" cols="30">
-Cephalexin
-Diazepem
-</textarea>
+
+                                            </textarea>
                                     
                                 
                     </div>
@@ -376,9 +312,7 @@ Diazepem
                                     <label for="exampleFormControlInput1" class="form-label">Administration Instructions</label>
 
                                     <textarea name="large-text-area" rows="10" cols="50">
-Administer 2 Cephalexin 2 times a day before eating.
 
-Administer 1 Diazepam 2 times a day after eating.
 </textarea>
 
                                     </div>
@@ -490,6 +424,9 @@ Administer 1 Diazepam 2 times a day after eating.
 
         </main>
     </div>
+
+    
+
 
    
 
