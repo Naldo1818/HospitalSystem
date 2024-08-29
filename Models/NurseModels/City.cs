@@ -7,7 +7,6 @@ namespace DEMO.Models.NurseModels
         [Key]
         public int CityID { get; set; }
         public string CityName { get; set; }
-        [Key]
         public int ProvinceID { get; set; }
     }
 }

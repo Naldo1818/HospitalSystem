@@ -9,11 +9,183 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admission (Wards)</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> 
+    
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "/lookup/GetAllProvinces",
+                type: "Get",
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].provinceName, data[i].provinceID);
+                        $('#Province').append(opt).val(data.provinceID).html(data.provinceName);
+                    }
+
+                }
+
+            });
+
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/lookup/GetAllWards",
+                type: "Get",
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].wardName, data[i].wardId);
+                        $('#Ward').append(opt).val(data.wardId).html(data.wardName);
+                    }
+
+                }
+
+            });
+
+        });
+        $(document).ready(function () {
+            $.ajax({
+                url: "/lookup/GetAllAllergies",
+                type: "Get",
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].activeIngredientName, data[i].activeingredientID);
+                        $('#Allergies').append(opt).val(data.activeingredientID).html(data.activeIngredientName);
+                    }
+
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/lookup/GetAllMedications",
+                type: "Get",
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].medicationName, data[i].medicationID);
+                        $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
+                    }
+
+                }
+
+            });
+        });
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/lookup/GetAllConditions",
+                type: "Get",
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].conditionName, data[i].conditionID);
+                        $('#Conditions').append(opt).val(data.conditionID).html(data.conditionName);
+                    }
+
+                }
+
+            });
+
+        });
+
+        function GetBedsByWardId() {
+            $("#Bed").empty(); //Default value
+            
+            var wardId = document.getElementById('Ward').value;
+            
+            $.ajax({
+                url: "/lookup/GetBedsByWardId",
+                type: "Get",
+                data: { WardID: wardId },
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].number, data[i].bedId);
+                        $('#Bed').append(opt).val(data.bedId).html(data.number);
+
+                    }
+
+                }
+            });
+
+            };
+
+        function GetCitiesByProvinceId() {
+            $("#City").empty(); //Default value
+
+            var provinceId = document.getElementById('Province').value;
+
+            $.ajax({
+                url: "/lookup/GetCitiesByProvinceId",
+                type: "Get",
+                data: { ProvinceID: provinceId },
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].cityName, data[i].cityID);
+                        $('#City').append(opt).val(data.cityID).html(data.cityName);
+
+                    }
+
+                }
+            });
+
+        };
+
+        function GetSuburbsByCityId() {
+            $("#Suburb").empty(); //Default value
+
+            var cityId = document.getElementById('City').value;
+            $.ajax({
+                url: "/lookup/GetSuburbsByCityId",
+                type: "Get",
+                data: { CityID : cityId},
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].name, data[i].suburbID);
+                        $('#Suburb').append(opt).val(data.suburbID).html(data.name);
+                    }
+
+                }
+
+            });
+
+        };
+
+        function SetPostalCodeBySuburbId() {
+            $("#txtPostalCode").empty(); //Default value
+
+            var suburbId = document.getElementById('Suburb').value;
+            $.ajax({
+                url: "/lookup/GetPostalCodeBySuburbId",
+                type: "Get",
+                data: { SuburbId: suburbId },
+                success: function (data) {
+                    $('#txtPostalCode').text(data);
+                }
+
+            });
+
+        };
+        
+
+    </script>
+
+
+
     <style>
         .active-tab {
             background-color: teal;
@@ -136,6 +308,8 @@
             }
 
     </style>
+
+   
 </head>
 <body>
     <div class="container-fluid" id="grad1">
@@ -154,7 +328,7 @@
                     <hr></hr>
                     <div class="row">
                         <div class="col-md-12 mx-0">
-                            <form id="msform" method="post" action="/Nurse/AdmitPatient">
+                            <form id="msform" asp-controller="Nurse" method="post">
                                 <!-- progressbar -->
                                 <ul id="progressbar">
                                     <input type="button" name="Contact Details" class="next action-button" onclick="showContactDetails()" value="Contact Details" />
@@ -164,7 +338,7 @@
                                 </ul>
                                 <!-- fieldsets -->
                                 <fieldset id="f-1">
-                                    <div class="form-card">
+                                  <div class="form-card">
                                         <h2 class="fs-title">Contact Details And Ward</h2>
                                         <div class="form-group">
                                             <hr></hr>
@@ -173,21 +347,15 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Ward">Ward</label>
-                                                    <select class="select2" name="Ward" required>
+                                                    <select class="select2" id="Ward" asp-for="Ward" name="Ward" onchange="GetBedsByWardId()" required>
                                                         <option value="" disabled selected>Select Ward</option>
-                                                        <option value="WardN">Ward N</option>
-                                                        <option value="WardA">Ward A</option>
-                                                        <option value="WardZ">Ward Z</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="Bed">Bed</label>
-                                                    <select class="select2" name="Bed" required>
+                                                    <select class="select2" id="Bed" asp-for="Bed" name="Bed" required>
                                                         <option value="" disabled selected>Select Bed</option>
-                                                        <option value="Bed1">Bed 1</option>
-                                                        <option value="Bed2">Bed 2</option>
-                                                        <option value="Bed3">Bed 3</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
@@ -200,60 +368,34 @@
                                             <hr></hr>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
-                                                    <label for="DOB">Date of Birth</label>
-                                                    <input type="date" id="DOB" name="DOB" required>
-                                                </div>
-                                                <div class="vital-group">
-                                                    <label for="Phone">Phone Number</label>
-                                                    <input type="tel" id="Phone" name="Phone" placeholder="e.g. 011 123 4567" pattern="^(0[1-9]\d{1,2}) \d{4} \d{4}$" required>
-                                                    <small>Enter a phone number in the format: 011 123 4567</small>
-                                                </div>
-                                                <div class="vital-group">
-                                                    <label for="Email">Email</label>
-                                                    <input type="email" name="Email" placeholder="example@example.com" required>
-                                                </div>
-                                                
-                                            </div>
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
                                                     <p></p>
                                                     <label>Address</label>
                                                     <div class="address-group">
                                                         <label for="Province">Province</label>
-                                                        <select class="select2" id="Province" name="Province" required>
-                                                            <option value="" disabled selected>Select Province</option>
-                                                            <!-- Add city options here -->
-                                                            <option value="Province1">Province1</option>
-                                                            <option value="Province2">Province2</option>
+                                                        <select class="select2" id="Province" name="Province" onchange="GetCitiesByProvinceId()" required>
+                                                            <option value="0" disabled selected>Select Province</option>
                                                         </select>
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="City">City</label>
-                                                        <select class="select2" id="City" name="City" required>
-                                                            <option value="" disabled selected>Select City</option>
+                                                        <select class="select2" id="City" name="City" onchange="GetSuburbsByCityId()" required>
+                                                            <option value="0" disabled selected>Select City</option>
                                                             <!-- Add city options here -->
-                                                            <option value="City1">City1</option>
-                                                            <option value="City2">City2</option>
                                                         </select>
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="Suburb">Suburb</label>
-                                                        <select class="select2" id="Suburb" name="Suburb" required>
+                                                        <select class="select2" id="Suburb" name="Suburb" onchange="SetPostalCodeBySuburbId()" required>
                                                             <option value="" disabled selected>Select Suburb</option>
                                                             <!-- Add suburb options here -->
-                                                            <option value="Suburb1">Suburb1</option>
-                                                            <option value="Suburb2">Suburb2</option>
                                                         </select>
                                                     </div>
                                                     
                                                     <div class="address-group">
                                                         <label for="PostalCode">Postal Code</label>
-                                                        <select class="select2" id="PostalCode" name="PostalCode" required>
-                                                            <option value="" disabled selected>Select Postal Code</option>
-                                                            <!-- Add postal code options here -->
-                                                            <option value="12345">12345</option>
-                                                            <option value="67890">67890</option>
-                                                        </select>
+                                                        <span id="txtPostalCode"></span>
+                                                        @* <input type="text" value="" name="txtPostalCode" id="txtPostalCode" min="1" step="1"></input> *@
+                                                        
                                                     </div><div class="address-group">
                                                         <label for="Street">Street</label>
                                                         <input type="text" value="" id="Street" min="1" step="1"></input>
@@ -276,11 +418,8 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Allergies">Select Allergy</label>
-                                                    <select class="select2" id="AllergySelect">
+                                                    <select class="select2" id="Allergies" name="Allergies">
                                                         <option value="" disabled selected>Select Allergy</option>
-                                                        <option value="Peanuts">Peanuts</option>
-                                                        <option value="Shellfish">Shellfish</option>
-                                                        <option value="Pollen">Pollen</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
@@ -297,11 +436,8 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Condition">Select Condition</label>
-                                                    <select class="select2" id="ConditionSelect">
+                                                    <select class="select2" id="Conditions" name="Conditions">
                                                         <option value="" disabled selected>Select Condition</option>
-                                                        <option value="Diabetes">Diabetes</option>
-                                                        <option value="Hypertension">Hypertension</option>
-                                                        <option value="Asthma">Asthma</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
@@ -322,7 +458,7 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Medication">Current Medication</label>
-                                                    <select class="select2" id="MedicationSelect" name="Medication">
+                                                    <select class="select2" id="Medication" name="Medication">
                                                         <option value="" disabled selected>Select Medication</option>
                                                         <option value="Aspirin">Aspirin</option>
                                                         <option value="Ibuprofen">Ibuprofen</option>
@@ -395,9 +531,10 @@
                                             </div>
                                         </div>
                                         <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
-                                        <a asp-controller="Nurse" asp-action="AdmittedPatients">
-                                            <button type="button" name="submit" class="next action-button" onclick="submitForm()">Submit</button>
-                                        </a>
+                                        @* <a asp-controller="Nurse" asp-action="AdmittedPatients</a> *@
+                                            <button name="submit" class="next action-button" type="submit">Submit</button>
+                                            @* <button type="button" name="submit" class="next action-button" onclick="submitForm()">Submit</button> *@
+                                        
                                     </div>
                                 </fieldset>
                             </form>
@@ -486,7 +623,7 @@
         }
         // JavaScript functions to handle dynamic list addition
         function addAllergy() {
-            const allergySelect = document.getElementById('AllergySelect');
+            const allergySelect = document.getElementById('Allergies');
             const allergy = allergySelect.options[allergySelect.selectedIndex].text;
             const allergyList = document.getElementById('AllergyList');
             const p = document.createElement('p');
@@ -495,7 +632,7 @@
         }
 
         function addCondition() {
-            const conditionSelect = document.getElementById('ConditionSelect');
+            const conditionSelect = document.getElementById('Conditions');
             const condition = conditionSelect.options[conditionSelect.selectedIndex].text;
             const conditionList = document.getElementById('ConditionList');
             const p = document.createElement('p');
@@ -504,7 +641,7 @@
         }
 
         function addMedication() {
-            const medicationSelect = document.getElementById('MedicationSelect');
+            const medicationSelect = document.getElementById('Medication');
             const medication = medicationSelect.options[medicationSelect.selectedIndex].text;
             const medicationList = document.getElementById('MedicationList');
             const p = document.createElement('p');

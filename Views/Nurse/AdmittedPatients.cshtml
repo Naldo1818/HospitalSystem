@@ -60,9 +60,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach(var patient in Model.VAP)
+                                @* @foreach(var patient in Model.VAP)
                                 {
-                                    @* <tr>
+                                    <tr>
                                         <td>@patient.n.</td>
                                         <td>@patient.Surname</td>
                                         <td>@patient.Gender</td>
@@ -78,8 +78,8 @@
                                             <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-id="@patient.Id">Collect Medication</a>
                                             <a class="btn btn-primary" asp-controller="Nurse" asp-action="DischargeList" asp-route-id="@patient.Id">Discharge</a>
                                         </td>
-                                    </tr> *@
-                                }
+                                    </tr> 
+                                } *@
                                 <tr>
                                     <td>0120526958</td>
                                     <td>Jin</td>

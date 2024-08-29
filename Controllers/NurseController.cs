@@ -117,13 +117,13 @@ namespace DEMO.Controllers
             
         }
         [HttpPost]
-        public IActionResult AdmissionPage(AdmittedPatientsModel model)
+        public IActionResult AdmissionPage(BookedPatientInfo model)
         {
             if (ModelState.IsValid)
             {
-                _dbContext.AdmittedPatients.Add(model);
-                _dbContext.SaveChanges();
-                return RedirectToAction("AdmittedPatients");
+                //_dbContext.AdmittedPatients.Add(model);
+                //_dbContext.SaveChanges();
+                //return RedirectToAction("AdmittedPatients");
             }
 
             // Return the view with the model if validation fails
@@ -132,8 +132,8 @@ namespace DEMO.Controllers
 
         public IActionResult AdmittedPatients()
         {
-            // Return the list of admitted patients or a relevant view
-            var patients = _dbContext.AdmittedPatients.ToList();
+            //// Return the list of admitted patients or a relevant view
+            //var patients = _dbContext.AdmittedPatients.ToList();
             return View();
         }
         public IActionResult AdmissionPage(int bookingID)
@@ -204,71 +204,87 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        
-//        public IActionResult EmailVitals(int id)
-//        {
-//            // Fetch the user based on AccountID
-//            var user = _dbContext.Accounts
-//                                   .FirstOrDefault(p => p.AccountID == id);
-//            if (user == null)
-//            {
-//                return NotFound(); // Return 404 if user is not found
-//            }
 
-//            // Prepare the view model
-//            var viewModel = new EmailVital
-//            {
-//                AccountID = user.AccountID,
-//                FullName = $"{user.Name} {user.Surname}",
-//                Email = user.Email,
-//                Vitals
-//                Notes = string.Empty // Initial empty notes
-//            };
+        //[HttpPost]
+        //public IActionResult SubmitForm(BookedPatientInfo model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Handle form submission
+        //        // 'model.Province' will be bound from the selected ProvinceId in the form
+        //        // 'model.City' will be bound from the selected CityId in the form
 
-//            return View(viewModel); // Return the view with the model
-//        }
+        //        // Example: Save model to the database or perform other actions
+        //    }
 
-//        //FIX EMAIL!!!!
-//        [HttpPost]
-//        public async Task<IActionResult> EmailVitals(int id, string notes)
-//        {
-//            var user = _dbContext.Accounts
-//                                  .FirstOrDefault(p => p.AccountID == id);
+        //    // If the model state is invalid or you want to re-render the form
+        //    return View(model);
+        //}
 
-//            var emailMessage = new MimeMessage();
-//            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+", "noreply@dayhospital.com"));
-//            emailMessage.To.Add(new MailboxAddress(user.Role, user.Email));
-//            emailMessage.Subject = "Vitals Concern";
+        //        public IActionResult EmailVitals(int id)
+        //        {
+        //            // Fetch the user based on AccountID
+        //            var user = _dbContext.Accounts
+        //                                   .FirstOrDefault(p => p.AccountID == id);
+        //            if (user == null)
+        //            {
+        //                return NotFound(); // Return 404 if user is not found
+        //            }
 
-//            var bodyBuilder = new BodyBuilder
-//            {
-//                HtmlBody = $@"
-//         <h3>User Information</h3>
-//         <p><strong>Name:</strong> {user.Name} {user.Surname}</p>
-//         <h3>Account Has Been Added</h3>
-//</n>
-//         <p><strong>Username:</strong> {user.Username}</p>
-//         <p><strong>Password:</strong> {user.Password}</p>        
-//</n>
-//         <h3>Notes</h3>
-//         <p>{notes}</p>"
-//            };
+        //            // Prepare the view model
+        //            var viewModel = new EmailVital
+        //            {
+        //                AccountID = user.AccountID,
+        //                FullName = $"{user.Name} {user.Surname}",
+        //                Email = user.Email,
+        //                Vitals
+        //                Notes = string.Empty // Initial empty notes
+        //            };
 
-//            emailMessage.Body = bodyBuilder.ToMessageBody();
+        //            return View(viewModel); // Return the view with the model
+        //        }
 
-//            using (var client = new MailKit.Net.Smtp.SmtpClient())
-//            {
-//                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+        //        //FIX EMAIL!!!!
+        //        [HttpPost]
+        //        public async Task<IActionResult> EmailVitals(int id, string notes)
+        //        {
+        //            var user = _dbContext.Accounts
+        //                                  .FirstOrDefault(p => p.AccountID == id);
 
-//                client.Authenticate("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
-//                await client.SendAsync(emailMessage);
-//                client.Disconnect(true);
+        //            var emailMessage = new MimeMessage();
+        //            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+", "noreply@dayhospital.com"));
+        //            emailMessage.To.Add(new MailboxAddress(user.Role, user.Email));
+        //            emailMessage.Subject = "Vitals Concern";
 
-//            }
+        //            var bodyBuilder = new BodyBuilder
+        //            {
+        //                HtmlBody = $@"
+        //         <h3>User Information</h3>
+        //         <p><strong>Name:</strong> {user.Name} {user.Surname}</p>
+        //         <h3>Account Has Been Added</h3>
+        //</n>
+        //         <p><strong>Username:</strong> {user.Username}</p>
+        //         <p><strong>Password:</strong> {user.Password}</p>        
+        //</n>
+        //         <h3>Notes</h3>
+        //         <p>{notes}</p>"
+        //            };
 
-//            TempData["SuccessMessage"] = "Email sent successfully.";
-//            return RedirectToAction("MainPage", "Nurse");
-//        }
+        //            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+        //            using (var client = new MailKit.Net.Smtp.SmtpClient())
+        //            {
+        //                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+
+        //                client.Authenticate("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
+        //                await client.SendAsync(emailMessage);
+        //                client.Disconnect(true);
+
+        //            }
+
+        //            TempData["SuccessMessage"] = "Email sent successfully.";
+        //            return RedirectToAction("MainPage", "Nurse");
+        //        }
 
     }
 }

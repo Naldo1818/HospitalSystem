@@ -13,6 +13,11 @@ namespace DEMO.Data
         {
         }
         public DbSet<Medication> Medication { get; set; }
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<City> City { get; set; }
+        public DbSet<Suburb> Suburb { get; set; }
+        public DbSet<Ward> Ward { get; set; }
+        public DbSet<Bed> Bed { get; set; }
         public DbSet<Activeingredient> Activeingredient { get; set; }
         public DbSet<PatientInfo> PatientInfo { get; set; }
         public DbSet<Accounts> Accounts { get; set; }
@@ -37,6 +42,7 @@ namespace DEMO.Data
         public DbSet<PatientMedication> patientMedication{ get; set; }
         public DbSet<CurrentMedication> CurrentMedication { get; set; }
 
+        public DbSet<AdmissionStatus> AdmissionStatus { get; set; } 
 
     }
 }

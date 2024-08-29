@@ -41,9 +41,10 @@ namespace DEMO.Models.NurseModels
         public DateTime Date = DateTime.Now;
 
         [Required]
-        public string AdmissionStatus { get; set; } = "Admitted";
+        public AdmissionStatus AdmissionStatus { get; set; }
         [Required]
         public TimeOnly Time = TimeOnly.FromDateTime(DateTime.Now);
        
     }
 }
+ 
