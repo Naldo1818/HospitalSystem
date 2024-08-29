@@ -7,14 +7,13 @@ namespace DEMO.Models.PharmacistModels
     {
 
         [Key]
-        public int OrederID { get; set; }
+        public int StockOrderID { get; set; }
 
+  
+        
 
-        [Required]
-        public int StockID { get; set; }
+        public int PharmacyMedicationlID { get; set; }
 
-        [Required]
-        public int Amount { get; set;}
 
         [Required]
         public string Status { get; set; }
