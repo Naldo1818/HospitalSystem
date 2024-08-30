@@ -195,7 +195,7 @@ namespace DEMO.Controllers
                     {
                         PatientID = booking.PatientID,
                         Date = DateTime.Now,
-                        AdmissionStatus = new AdmissionStatus() { Description = "Admitted" }
+                        AdmissionStatusID = _dbContext.AdmissionStatus.Where(x => x.Description == "Admitted").FirstOrDefault().AdmissionStatusId,
                     };
 
                     _dbContext.AdmittedPatients.Add(patientInfo);
@@ -304,13 +304,6 @@ namespace DEMO.Controllers
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
                                 updateAdmission.PatientDetailsID = pationetAddressId;
-
-                                if (patientConditionID > 0)
-                                    updateAdmission.PatientConditionsID = patientConditionID;
-                                if (patientAllergyID > 0)
-                                    updateAdmission.PatientAllergyID = patientAllergyID;
-                                if (patientMedicationId > 0)
-                                    updateAdmission.PatientMedicationID = patientMedicationId;
 
                                 _dbContext.AdmittedPatients.Update(updateAdmission);
                                 _dbContext.SaveChanges();
