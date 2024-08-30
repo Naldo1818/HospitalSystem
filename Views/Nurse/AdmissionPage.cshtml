@@ -347,14 +347,14 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Ward">Ward</label>
-                                                    <select class="select2" id="Ward" asp-for="Ward" name="Ward" onchange="GetBedsByWardId()" required>
+                                                    <select class="select2" id="Ward" asp-for="Ward" name="Ward.WardId" onchange="GetBedsByWardId()" required>
                                                         <option value="" disabled selected>Select Ward</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="Bed">Bed</label>
-                                                    <select class="select2" id="Bed" asp-for="Bed" name="Bed" required>
+                                                    <select class="select2" id="Bed" asp-for="Bed" name="Bed.BedId" required>
                                                         <option value="" disabled selected>Select Bed</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
@@ -372,20 +372,20 @@
                                                     <label>Address</label>
                                                     <div class="address-group">
                                                         <label for="Province">Province</label>
-                                                        <select class="select2" id="Province" name="Province" onchange="GetCitiesByProvinceId()" required>
+                                                        <select class="select2" id="Province" name="Province.ProvinceId" onchange="GetCitiesByProvinceId()" required>
                                                             <option value="0" disabled selected>Select Province</option>
                                                         </select>
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="City">City</label>
-                                                        <select class="select2" id="City" name="City" onchange="GetSuburbsByCityId()" required>
+                                                        <select class="select2" id="City" name="City.CityId" onchange="GetSuburbsByCityId()" required>
                                                             <option value="0" disabled selected>Select City</option>
                                                             <!-- Add city options here -->
                                                         </select>
                                                     </div>
                                                     <div class="address-group">
                                                         <label for="Suburb">Suburb</label>
-                                                        <select class="select2" id="Suburb" name="Suburb" onchange="SetPostalCodeBySuburbId()" required>
+                                                        <select class="select2" id="Suburb" name="Suburb.SuburbId" onchange="SetPostalCodeBySuburbId()" required>
                                                             <option value="" disabled selected>Select Suburb</option>
                                                             <!-- Add suburb options here -->
                                                         </select>
@@ -418,10 +418,11 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Allergies">Select Allergy</label>
-                                                    <select class="select2" id="Allergies" name="Allergies">
+                                                    <select class="select2" id="Allergies" name="Allergies.ActiveingredientID">
                                                         <option value="" disabled selected>Select Allergy</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
+                                                    <input type="hidden" id="HiddenAllergiesInput" name="AllergiesJson"></input>
                                                 </div>
                                             </div>
                                             <br></br>
@@ -436,10 +437,11 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Condition">Select Condition</label>
-                                                    <select class="select2" id="Conditions" name="Conditions">
+                                                    <select class="select2" id="Conditions" name="Conditions.ConditionID">
                                                         <option value="" disabled selected>Select Condition</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
+                                                    <input type="hidden" id="HiddenConditionsInput" name="ConditionsJson" ></input>
                                                 </div>
                                             </div>
                                             <br></br>
@@ -458,14 +460,13 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Medication">Current Medication</label>
-                                                    <select class="select2" id="Medication" name="Medication">
+                                                    <select class="select2" id="Medication" name="Medications.MedicationID">
                                                         <option value="" disabled selected>Select Medication</option>
-                                                        <option value="Aspirin">Aspirin</option>
-                                                        <option value="Ibuprofen">Ibuprofen</option>
-                                                        <option value="Acetaminophen">Acetaminophen</option>
                                                         <!-- Add more options as needed -->
                                                     </select>
+                                                    <input type="hidden" id="HiddenMedicationInput" name="MedicationJson"></input>
                                                 </div>
+
                                             </div>
                                             <br></br>
                                             <button type="button" onclick="addMedication()">Add Medication</button>
@@ -485,48 +486,48 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Height">Height (cm)</label>
-                                                    <input type="number" name="Height" min="100" max="250" value="">
+                                                    <input type="number" name="Vitals.Height" min="100" max="250" value="">
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="Weight">Weight (kg)</label>
-                                                    <input type="number" name="Weight" min="20" max="250" value="">
+                                                    <input type="number" name="Vitals.Weight" min="20" max="250" value="">
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="SystolicBP">Systolic BP (mmHg)</label>
-                                                    <input type="number" name="SystolicBP" min="80" max="150" value="">
+                                                    <input type="number" name="Vitals.SystolicBloodPressure" min="80" max="150" value="">
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="DiastolicBP">Diastolic BP (mmHg)</label>
-                                                    <input type="number" name="DiastolicBP" min="40" max="100" value="">
+                                                    <input type="number" name="Vitals.DiastolicBloodPressure" min="40" max="100" value="">
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Pulse">Pulse (bpm)</label>
-                                                    <input type="number" name="Pulse" min="50" max="100" value="">
+                                                    <input type="number" name="Vitals.HeartRate" min="50" max="100" value="">
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BloodOxygen">Blood Oxygen (%)</label>
-                                                    <input type="number" name="BloodOxygen" min="90" max="100" value="">
+                                                    <input type="number" name="Vitals.BloodOxygen" min="90" max="100" value="">
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Respiration">Respiration Rate (Breaths/min)</label>
-                                                    <input type="number" name="Respiration" min="10" max="30" value="">
+                                                    <input type="number" name="Vitals.Respiration" min="10" max="30" value="">
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BGL">Blood Glucose Level (mg/dL)</label>
-                                                    <input type="number" name="BGL" min="50" max="170" value="">
+                                                    <input type="number" name="Vitals.BloodGlucoseLevel" min="50" max="170" value="">
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 
                                                 <div class="vital-group">
                                                     <label for="Temperature">Temperature (°C)</label>
-                                                    <input type="number" name="Temperature" min="30.0" max="40.0" value="">
+                                                    <input type="number" name="Vitals.Temperature" min="30.0" max="40.0" value="">
                                                 </div>
                                             </div>
                                         </div>
@@ -545,7 +546,7 @@
         </div>
     </div>
     <script>
-       
+        
         function submitForm() {
             // Assuming you have fields with IDs that match your model's properties
             document.querySelector('input[name="PatientID"]').value = document.getElementById('PatientID').value;
@@ -622,37 +623,100 @@
             selectElement.prepend('<option value="" disabled selected>Select an option</option>');
         }
         // JavaScript functions to handle dynamic list addition
+        let allergyArray = [];
+
         function addAllergy() {
             const allergySelect = document.getElementById('Allergies');
             const allergy = allergySelect.options[allergySelect.selectedIndex].text;
+
+            allergyArray.push(allergy);
+
             const allergyList = document.getElementById('AllergyList');
             const p = document.createElement('p');
-            p.innerHTML = `<span>${allergy}</span><button type="button" onclick="removeItem(this)">Remove</button>`;
+            p.innerHTML = `<span>${allergy}</span><button type="button" onclick="removeAllergyItem(this)">Remove</button>`;
             allergyList.appendChild(p);
-        }
 
-        function addCondition() {
-            const conditionSelect = document.getElementById('Conditions');
-            const condition = conditionSelect.options[conditionSelect.selectedIndex].text;
-            const conditionList = document.getElementById('ConditionList');
-            const p = document.createElement('p');
-            p.innerHTML = `<span>${condition}</span><button type="button" onclick="removeItem(this)">Remove</button>`;
-            conditionList.appendChild(p);
+            document.getElementById('HiddenAllergiesInput').value = JSON.stringify(allergyArray);
         }
+        function removeAllergyItem(button) {
 
-        function addMedication() {
-            const medicationSelect = document.getElementById('Medication');
-            const medication = medicationSelect.options[medicationSelect.selectedIndex].text;
-            const medicationList = document.getElementById('MedicationList');
-            const p = document.createElement('p');
-            p.innerHTML = `<span>${medication}</span><button type="button" onclick="removeItem(this)">Remove</button>`;
-            medicationList.appendChild(p);
-        }
+            const allergyText = button.previousSibling.textContent;
+            const index = allergyArray.indexOf(allergyText);
+            if (index > -1) {
+                allergyArray.splice(index, 1)
+            }
 
-        function removeItem(button) {
             const p = button.parentElement;
             p.remove();
+
+            document.getElementById('HiddenAllergiesInput').value = JSON.stringify(allergyArray);
+
         }
+
+        let conditionsArray = [];
+        
+        function addCondition() {
+            
+            const conditionSelect = document.getElementById('Conditions');
+            const condition = conditionSelect.options[conditionSelect.selectedIndex].text;
+
+            conditionsArray.push(condition);
+
+            const conditionList = document.getElementById('ConditionList');
+            const p = document.createElement('p');
+            p.innerHTML = `<span>${condition}</span><button type="button" onclick="removeConditionItem(this)">Remove</button>`;
+            conditionList.appendChild(p);
+
+            document.getElementById('HiddenConditionsInput').value = JSON.stringify(conditionsArray);
+        }
+        function removeConditionItem(button) {
+
+            const conditionText = button.previousSibling.textContent;
+            const index = conditionsArray.indexOf(conditionText);
+            if (index > -1) {
+                conditionsArray.splice(index,1)
+            }
+
+            const p = button.parentElement;
+            p.remove();
+
+            document.getElementById('HiddenConditionsInput').value = JSON.stringify(conditionsArray);
+
+        }
+        let medicationArray = [];
+        function addMedication() {
+
+            const medicationSelect = document.getElementById('Medication');
+            const medication = medicationSelect.options[medicationSelect.selectedIndex].text;
+
+            medicationArray.push(medication);
+
+            const medicationList = document.getElementById('MedicationList');
+            const p = document.createElement('p');
+            p.innerHTML = `<span>${medication}</span><button type="button" onclick="removeMedicationItem(this)">Remove</button>`;
+            medicationList.appendChild(p);
+
+            document.getElementById('HiddenMedicationInput').value = JSON.stringify(medicationArray);
+        }
+        function removeMedicationItem(button) {
+
+            const medicationText = button.previousSibling.textContent;
+            const index = medicationArray.indexOf(medicationText);
+            if (index > -1) {
+                medicationArray.splice(index, 1)
+            }
+
+            const p = button.parentElement;
+            p.remove();
+
+            document.getElementById('HiddenMedicationInput').value = JSON.stringify(medicationArray);
+
+        }
+
+        // function removeItem(button) {
+        //     const p = button.parentElement;
+        //     p.remove();
+        // }
     </script>
 </body>
 </html>

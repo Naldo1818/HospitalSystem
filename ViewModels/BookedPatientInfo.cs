@@ -18,9 +18,10 @@ namespace DEMO.ViewModels
         public PatientVitals Vitals { get; set; }
         public Ward Ward { get; set; }
         public Bed Bed { get; set; }
-        public List<Medication> medications { get; set; }
-        public List<PatientAllergy> patientAllergies { get; set; }
-        public List<Condition> conditions { get; set; }
+        public List<Medication> Medications { get; set; }
+        public List<Activeingredient> Allergies { get; set; }
+        public List<Condition> Conditions { get; set; }
+        public int BookingID { get; set; }
 
 
     }

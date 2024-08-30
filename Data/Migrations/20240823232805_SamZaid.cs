@@ -10,19 +10,19 @@ namespace DEMO.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "PatientAllergy",
-                columns: table => new
-                {
-                    patientAllergyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PatientID = table.Column<int>(type: "int", nullable: false),
-                    ActiveingredientID = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PatientAllergy", x => x.patientAllergyID);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "PatientAllergy",
+            //    columns: table => new
+            //    {
+            //        patientAllergyID = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        PatientID = table.Column<int>(type: "int", nullable: false),
+            //        ActiveingredientID = table.Column<string>(type: "nvarchar(max)", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_PatientAllergy", x => x.patientAllergyID);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "RejectScriptModel",
