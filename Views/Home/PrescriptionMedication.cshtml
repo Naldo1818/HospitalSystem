@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Add Medication";
     Layout = "_Layout2";
 }
@@ -32,24 +33,71 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
-                    <p style="font-size: 1.2rem;">Name: Jin Woo</p>
+                    <p style="font-size: 1.2rem;">Name: @Model.PatientInfo.Name</p>
                 </li>
                 <li class="nav-item">
-                    <p style="font-size: 1.2rem;">ID Number: 0120526958</p>
+                    <p style="font-size: 1.2rem;">Surname: @Model.PatientInfo.Surname</p>
                 </li>
                 <li class="nav-item">
-                    <p style="font-size: 1.2rem;">Gender: Male</p>
+                    <p style="font-size: 1.2rem;">Gender: @Model.PatientInfo.Gender</p>
                 </li>
-
                 <li class="nav-item">
                     <p style="font-size: 2rem;">_______________________</p>
                 </li>
 
                 <li class="nav-item">
                     <p>Medical History</p>
-                    <p>Medical Conditions - None</p>
-                    <p>Allergies - None</p>
-                    <p>Current Medication - None</p>
+                    <p>
+                        Medical Conditions:
+                        @if (Model.Conditions != null && Model.Conditions.Any())
+                        {
+                            <ul>
+                                @foreach (var condition in Model.Conditions)
+                                {
+                                    <li>@condition.ConditionName</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>None</span>
+                        }
+                    </p>
+
+                    <p>
+                        Allergies:
+                        @if (Model.Allergies != null && Model.Allergies.Any())
+                        {
+                            <ul>
+                                @foreach (var allergy in Model.Allergies)
+                                {
+                                    <li>@allergy.ActiveIngredientName</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <span>None</span>
+                        }
+                    </p>
+
+                    <p>
+                        Current Medication:
+                        @if (Model.CurrentMedications != null && Model.CurrentMedications.Any())
+                        {
+                            <ul>
+                                @foreach (var med in Model.CurrentMedications)
+                                {
+                                    <li>@med.MedicationName</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <li>None</li>
+                        }
+                    </p>
+
                 </li>
                 <li class="nav-item">
                     <p style="font-size: 2rem;">_______________________</p>

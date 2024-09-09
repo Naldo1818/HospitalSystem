@@ -27,23 +27,21 @@
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
+            <div class="row">
                 <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
+                    <div class="p-3 mt-5 border bg-white">
                         <form id="addTreatmentForm" method="post" action="@Url.Action("AddTreatmentCode", "Home")">
                             <h2>Add Treatment Codes</h2>
+
                             <div class="form-group row">
                                 <div class="col-4">
                                     <input type="hidden" id="bookingID" name="BookingID" value="@ViewBag.BookSurgeryID" />
-                                    <br>
-                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Name</label>
-                                    <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style="width:300px" onkeyup="filterTreatmentNames()">
+                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Description</label>
+                                    <input id="searchTreatmentInput" class="form-control" type="search" placeholder="Search Treatment Name" onkeyup="filterTreatmentNames()" style="width:300px">
                                 </div>
-
                                 <div class="col-4">
-                                    <br>
                                     <label for="treatmentSelect" class="form-label">Treatment Description</label>
-                                    <select id="treatmentSelect" name="treatmentCodeID" class="form-control" style="width:400px" onchange="updateTreatmentCode()">
+                                    <select id="treatmentSelect" name="treatmentCodeID" class="form-control" style="width:300px">
                                         <option value="">Select a Treatment Description</option>
                                         @foreach (var treatment in Model.AllTreatmentCodes)
                                         {
@@ -51,11 +49,8 @@
                                         }
                                     </select>
                                 </div>
-
-                            </div>
-                            <div class="form-group row">
                                 <div class="col-4">
-                                    <br>
+                                    <input type="hidden" name="BookingID" value="@ViewBag.BookSurgeryID" />
                                     <button type="button" id="openTreatmentButton" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
@@ -64,9 +59,9 @@
                 </div>
             </div>
 
-            <div class="row" style="width:auto">
+            <div class="row">
                 <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
+                    <div class="p-3 mt-5 border bg-white">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -92,86 +87,80 @@
                                         <td>@Data.TreatmentName</td>
                                         <td>@Data.TreatmentCode</td>
                                         <td>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-warning">Remove</a>
-                                            </div>
+                                        <form asp-action="RemoveTreatmentCode" asp-controller="Home" method="post">
+                                                    <input type="hidden" name="btcID" value="@Data.btcID" />
+                                                <input type="hidden" name="bookingID" value="@Data.BookingID" />
+                                                <input type="hidden" name="name" value="@Data.Name" />
+                                                    <input type="hidden" name="surname" value="@Data.Surname" />
+                                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                        </form>
                                         </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                        <div class="form-group row">
-                            <div class="col-4">
-                                <br>
-                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome">Close</a>
+                       
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <a class="btn btn-primary" aria-hidden="true"
+                                       asp-controller="Home"
+                                       asp-action="SendPatientEmail"
+                                       asp-route-bookingID="@Model.BookingID">
+                                        Save
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <!-- Confirmation ADD Treatment Modal -->
+            <!-- Confirmation Modal -->
             <div class="modal fade" id="confirmTreatmentModal" tabindex="-1" role="dialog" aria-labelledby="confirmTreatmentModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="confirmTreatmentModalLabel">Confirm Save</h5>
+                            <h5 class="modal-title" id="confirmTreatmentModalLabel">Confirm Add</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to add this Treatment?
+                            Are you sure you want to add this treatment?
                         </div>
                         <div class="modal-footer">
                             <button type="button" id="saveTreatmentButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelSaveButton">No</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
     <script>
-        // Ensure the document is fully loaded before running the scripts
         $(document).ready(function () {
             function filterTreatmentNames() {
-                const input = document.getElementById('searchTreatmentInput');
-                const filter = input.value.toLowerCase();
-                const select = document.getElementById('treatmentSelect');
-                const options = select.options;
-
-                for (let i = 0; i < options.length; i++) {
-                    const option = options[i];
-                    const treatmentName = option.textContent.toLowerCase();
-
-                    if (treatmentName.includes(filter)) {
-                        option.style.display = ''; // Show option
-                    } else {
-                        option.style.display = 'none'; // Hide option
-                    }
-                }
-            }
-
-            function updateTreatmentCode() {
-                const select = document.getElementById('treatmentSelect');
-                const selectedValue = select.value;
-                document.getElementById('treatmentCodeID').value = selectedValue;  // Ensure this matches the name attribute in the form
+                var input = $('#searchTreatmentInput').val().toLowerCase();
+                $('#treatmentSelect option').each(function () {
+                    var treatmentName = $(this).text().toLowerCase();
+                    $(this).toggle(treatmentName.includes(input));
+                });
             }
 
             $('#openTreatmentButton').on('click', function () {
                 $('#confirmTreatmentModal').modal('show');
             });
 
-            $('#cancelSaveButton').on('click', function () {
-                $('#confirmTreatmentModal').modal('hide');
-            });
-
             $('#saveTreatmentButton').on('click', function () {
                 $.ajax({
-                    url: '@Url.Action("AddTreatmentCode", "Home")',
+                    url: '@Url.Action("EditTreatment", "Home")',
                     type: 'POST',
                     data: $('#addTreatmentForm').serialize(),
                     success: function (response) {
-                        window.location.href = '@Url.Action("SurgeryTreatmentCodes", "Home")';
+                        var bookingID = $('#bookingID').val();
+
+                        // Redirect to the SurgeryTreatmentCodes with bookingID
+                        window.location.href = '@Url.Action("SurgeryTreatmentCodes", "Home")' + '?bookingID=' + bookingID;
                     },
                     error: function (xhr, status, error) {
                         console.log("Error occurred:", error);
@@ -179,7 +168,7 @@
                 });
             });
 
-            // Bind the filter function to the keyup event
+
             $('#searchTreatmentInput').on('keyup', filterTreatmentNames);
         });
     </script>

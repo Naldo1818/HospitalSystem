@@ -31,17 +31,17 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form id="addTreatmentForm" method="post" action="@Url.Action("EditTreatment", "Home")">
-                            <h2>Edit Treatment Codes for @ViewBag.PatientName @ViewBag.PatientSurname</h2>
+                            <h2>Edit Treatment Codes  @ViewBag.PatientName @ViewBag.PatientSurname</h2>
 
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Name</label>
-                                    <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Name" aria-label="Search" style="width:300px" onkeyup="filterTreatmentNames()">
+                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Description</label>
+                                    <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Description" aria-label="Search" style="width:300px" onkeyup="filterTreatmentNames()">
                                 </div>
                                 <div class="col-4">
                                     <br>
-                                    <label for="treatmentSelect" class="form-label">Treatment Name</label>
+                                    <label for="treatmentSelect" class="form-label">Treatment Description</label>
                                     <select class="form-control" id="treatmentSelect" name="TreatmentCodeID" style="width:250px" required>
                                         <option value="">Select a Description</option>
                                         @foreach (var treatment in Model.AllTreatmentCodes)
@@ -140,36 +140,27 @@
                 });
                 // Handle confirmation of saving Medication code
                 $('#saveTreatmentButton').on('click', function () {
-                    $.ajax({
-                        url: '@Url.Action("EditTreatment", "Home")',
-                        type: 'POST',
-                        data: $('#addTreatmentForm').serialize(),
-                        success: function (response) {
-                            // Redirect to the treatment codes list after successful addition
-                            window.location.href = '@Url.Action("CheckTreatmentCode", "Home", new { bookingId = ViewBag.BookSurgeryID })';
-                        },
-                        error: function (xhr, status, error) {
-                            console.log("Error occurred:", error);
-                        }
-                    });
-                });
+    $.ajax({
+        url: '@Url.Action("EditTreatment", "Home")',
+        type: 'POST',
+        data: $('#addTreatmentForm').serialize(),
+        success: function (response) {
+            // Redirect to the treatment codes list after successful addition
+            window.location.href = '@Url.Action("CheckTreatmentCode", "Home", new { bookingId = @ViewBag.BookSurgeryID, name = "@ViewBag.PatientName", surname = "@ViewBag.PatientSurname" })';
+        },
+        error: function (xhr, status, error) {
+            console.log("Error occurred:", error);
+        }
+    });
+});
 
                 // Function to filter treatment names
-                function filterTreatmentNames() {
-                    var input = document.getElementById('searchTreatmentInput').value.toLowerCase();
-                    var select = document.getElementById('treatmentSelect');
-                    var options = select.getElementsByTagName('option');
-
-                    for (var i = 0; i < options.length; i++) {
-                        var option = options[i];
-                        var searchValue = option.getAttribute('data-search');
-
-                        if (searchValue.includes(input)) {
-                            option.style.display = '';
-                        } else {
-                            option.style.display = 'none';
-                        }
-                    }
+               function filterTreatmentNames() {
+                var input = $('#searchTreatmentInput').val().toLowerCase();
+                $('#treatmentSelect option').each(function () {
+                    var treatmentName = $(this).text().toLowerCase();
+                    $(this).toggle(treatmentName.includes(input));
+                });
                 }
             </script>
         </main>

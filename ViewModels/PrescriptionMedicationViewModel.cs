@@ -42,5 +42,9 @@ namespace DEMO.ViewModels
         public int PrescriptionID { get; set; }
         public List<Medication> AllMedication { get; set; }
         public List<PrescriptionMedicationViewModel> CombinedData { get; set; }
+        public PatientListViewModal PatientInfo { get; set; }
+        public List<PatientAllergyViewModel> Allergies { get; set; }
+        public List<PatientAllergyViewModel> CurrentMedications { get; set; }
+        public List<PatientAllergyViewModel> Conditions { get; set; }
     }
 }

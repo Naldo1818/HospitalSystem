@@ -1,13 +1,14 @@
 ﻿@{
-    ViewData["Title"] = "User List";
-    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Send Patient Email";
+    Layout = "_Layout2";
 }
-@model DEMO.ViewModels.EmailViewModel
+@model DEMO.ViewModels.PatientEmailViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
@@ -23,118 +24,103 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
-    <title>User List</title>
+    <title>@ViewData["Title"]</title>
+
     <style>
-        #example_wrapper {
-            display: none;
+        .container {
+            padding-top: 50px;
         }
 
-        .modal-lg-custom {
-            max-width: 90% !important; /* Adjust as necessary */
-            width: 1000px; /* Fixed width, or adjust as needed */
+        .form-card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-
-        .modal-dialog-centered {
-            display: flex;
-            align-items: center;
-            min-height: calc(100% - 60px); /* Adjust based on header/footer height */
-            height: 80vh;
+        .form-group {
+            margin-bottom: 30px;
         }
 
-        .modal-content {
-            flex: 1;
+        .email-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
         }
 
-        .modal-content-custom {
-            position: relative;
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            width: 105%;
-            pointer-events: auto;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid rgba(0, 0, 0, .2);
-            border-radius: .3rem;
-            outline: 0;
-            height: 61vh;
+        .email-group input,
+        .email-group textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+            width: 100%;
+            box-sizing: border-box;
         }
 
-
-
-        .modal-body {
-            overflow-y: auto; /* Enables scrolling if content overflows */
-            flex: 1 1 auto;
-        }
-
-        .row {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-wrap: wrap;
-            flex-wrap: wrap;
-            margin-right: -2px;
-            margin-left: 0px;
+        .email-group textarea {
+            resize: vertical;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form asp-action="SendPatientEmail" method="post">
-                            <div>
-                                <label for="UserName">Name:</label>
-                                <input type="text" id="UserName" value="@Model.FullName" readonly />
-                            </div>
-                            <div>
-                                <label for="Email">Email:</label>
-                                <input type="text" id="Email" value="@Model.Email" readonly />
-                            </div>
-                            <div>
-                                <label for="Username">Username:</label>
-                                <input type="text" id="Username" value="@Model.Username" readonly />
-                            </div>
-                            <div>
-                                <label for="Password">Password:</label>
-                                <input type="text" id="Password" value="@Model.Password" readonly />
-                            </div>
-                            <div>
-                                <label for="Notes">Notes:</label>
-                                <textarea id="Notes" name="notes">@Model.Notes</textarea>
-                            </div>
-                            <div>
-                                <input type="hidden" name="AccountID" value="@Model.AccountID" />
-                                <button type="submit">Send Email</button>
-                            </div>
-                        </form>
-                    </div>
+        <div class="form-card">
+            <form asp-action="sendPatientEmail" method="post">
+
+                <!-- Hidden field to pass the bookingId -->
+                <input type="hidden" name="bookingID" value="@Model.BookingID" />
+
+                <div class="form-group email-group">
+                    <label for="AccountName">Account Name:</label>
+                    <input type="text" id="AccountName" value="@Model.AccountName" readonly />
                 </div>
-            </div>
-            <!-- Confirmation Edit Modal -->
-            <div class="modal fade" id="confirmEditModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmEditModalLabel">Confirm Save</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save this edit?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="saveEditButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
-                        </div>
-                    </div>
+                <div class="form-group email-group">
+                    <label for="AccountSurname">Account Surname:</label>
+                    <input type="text" id="AccountSurname" value="@Model.AccountSurname" readonly />
                 </div>
-            </div>
-        </main>
+                <div class="form-group email-group">
+                    <label for="FullName">Full Name:</label>
+                    <input type="text" id="FullName" value="@Model.FullName" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="Email">Email:</label>
+                    <input type="text" id="Email" value="@Model.Email" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="ContactNumber">Contact Number:</label>
+                    <input type="text" id="ContactNumber" value="@Model.ContactNumber" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="SurgeryDate">Surgery Date:</label>
+                    <input type="text" id="SurgeryDate" value="@Model.SurgeryDate.ToShortDateString()" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="SurgeryTime">Surgery Time:</label>
+                    <input type="text" id="SurgeryTime" value="@Model.SurgeryTime" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="Theater">Theater:</label>
+                    <input type="text" id="Theater" value="@Model.Theater" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="TreatmentName">Treatments:</label>
+                    <input type="text" id="TreatmentName" value="@Model.TreatmentName" readonly />
+                </div>
+                <div class="form-group email-group">
+                    <label for="Notes">Notes:</label>
+                    <textarea id="Notes" name="notes">@Model.Notes</textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Send Email</button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
-
-

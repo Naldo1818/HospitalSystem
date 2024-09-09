@@ -49,7 +49,40 @@ namespace DEMO.Controllers
                     else if (user.Role == "Surgeon")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
-                        return RedirectToAction("SurgeonHome", new { AccountID });
+
+
+                        var surgeon = _dbContext.Accounts
+               .Where(a => a.AccountID == AccountID)
+               .Select(a => new SurgeonViewModel
+               {
+                   AccountID = a.AccountID,
+                   Name = a.Name,
+                   Surname = a.Surname,
+                   Email = a.Email
+               })
+               .SingleOrDefault();
+
+                        if (surgeon == null)
+                        {
+                            return NotFound();
+                        }
+
+                        // Store user data in session
+                        HttpContext.Session.SetString("UserAccountId", surgeon.AccountID.ToString());
+                        HttpContext.Session.SetString("UserName", surgeon.Name);
+                        HttpContext.Session.SetString("UserSurname", surgeon.Surname);
+                        HttpContext.Session.SetString("UserEmail", surgeon.Email);
+
+                        ViewBag.AccountId = surgeon.AccountID;
+
+
+                        ViewBag.UserName = surgeon.AccountID.ToString();
+                        ViewBag.UserName = surgeon.Name;
+                        ViewBag.UserSurname = surgeon.Surname;
+                        ViewBag.UserEmail = surgeon.Email;
+
+
+                        return RedirectToAction("SurgeonHome");
                     }
                     else if (user.Role == "Pharmacist")
                     {
@@ -79,56 +112,20 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        public IActionResult SurgeonHome(int accountId)
+        public IActionResult SurgeonHome()
         {
-            // Try to get data from session first
-           // var accountID = HttpContext.Session.GetString("UserAccountId");
-            //var name = HttpContext.Session.GetString("UserName");
-            //var surname = HttpContext.Session.GetString("UserSurname");
-            //var email = HttpContext.Session.GetString("UserEmail");
+           
+            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
-            // Retrieve from database if not in session
-            var surgeon = _dbContext.Accounts
-                .Where(a => a.AccountID == accountId)
-                .Select(a => new SurgeonViewModel
-                {
-                    AccountID = a.AccountID,
-                    Name = a.Name,
-                    Surname = a.Surname,
-                    Email = a.Email
-                })
-                .SingleOrDefault();
-
-            if (surgeon == null)
-            {
-                return NotFound();
-            }
-
-            // Store user data in session
-            HttpContext.Session.SetString("UserAccountId", surgeon.AccountID.ToString());
-            HttpContext.Session.SetString("UserName", surgeon.Name);
-            HttpContext.Session.SetString("UserSurname", surgeon.Surname);
-            HttpContext.Session.SetString("UserEmail", surgeon.Email);
-
-            //if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
-            //{
-            //    // Use existing session data
-           ViewBag.AccountId = surgeon.AccountID;
-            //    ViewBag.UserName = name;
-            //    ViewBag.UserSurname = surname;
-            //    ViewBag.UserEmail = email;
-            //}
-            //else
-            //{
-               
-
-                ViewBag.UserName = surgeon.AccountID.ToString();
-                ViewBag.UserName = surgeon.Name;
-                ViewBag.UserSurname = surgeon.Surname;
-                ViewBag.UserEmail = surgeon.Email;
-            //}
-
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             return View();
+      
         }
         public IActionResult PatientList(string idNumber)
         {
@@ -157,7 +154,6 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
-
         [HttpPost]
         public IActionResult RegisterPatient(PatientInfo model)
         {
@@ -182,8 +178,6 @@ namespace DEMO.Controllers
             // If validation fails, redisplay the form with errors
             return View("PatientList", model);
         }
-    
-       
         public IActionResult PatientAdd()
         {
             var accountID = HttpContext.Session.GetString("UserAccountId");
@@ -215,80 +209,117 @@ namespace DEMO.Controllers
 
                 _dbContext.BookSurgery.Add(booking);
                 _dbContext.SaveChanges();
+                var patient = _dbContext.PatientInfo.FirstOrDefault(p => p.PatientID == booking.PatientID);
 
-                return RedirectToAction("SurgeryTreatmentCodes", new { id = booking.BookingID });
+                if (patient != null)
+                {
+                    // Redirect with BookingID, PatientID, Name, and Surname
+                    return RedirectToAction("SurgeryTreatmentCodes", new
+                    {
+                        bookingId = booking.BookingID,
+                        patientID = patient.PatientID,
+                        name = patient.Name,
+                        surname = patient.Surname
+                    });
+                }
             }
 
             // If validation fails, redisplay the form with errors
             return View("PatientList", model);
             
         }
-        public IActionResult SurgeryTreatmentCodes(int id)
+        public IActionResult SurgeryTreatmentCodes(int bookingId)
         {
-            var combinedData = (from b in _dbContext.BookSurgery
+            // Get all treatment codes, ordered by name
+            var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
+
+            // Query to fetch the combined data
+            var combinedData = (from st in _dbContext.SurgeryTreatmentCode
+                                join t in _dbContext.TreatmentCodes on st.TreatmentCodeID equals t.TreatmentCodeID
+                                join b in _dbContext.BookSurgery on st.BookingID equals b.BookingID
                                 join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
-                                join stc in _dbContext.SurgeryTreatmentCode on b.BookingID equals stc.BookingID
-                                join tc in _dbContext.TreatmentCodes on stc.TreatmentCodeID equals tc.TreatmentCodeID
-                                where b.BookingID == id
+                                where st.BookingID == bookingId
                                 select new BookingTreatmentCodesViewModel
                                 {
-                                    Name = p.Name,
-                                    Surname = p.Surname,
-
+                                    BookingID = b.BookingID,
+                                    btcID = st.BookingTreatmentCodeID,
+                                    TreatmentName = t.TreatmentName,
+                                    TreatmentCode = t.TreatmentCode,
                                     SurgeryDate = b.SurgeryDate,
                                     SurgeryTime = b.SurgeryTime,
-                                    Theater = b.Theater,
+                                    Name = p.Name,
+                                    Surname = p.Surname
+                                }).OrderBy(a => a.Name).ToList();
 
-                                    TreatmentName = tc.TreatmentName,
-                                    TreatmentCode = tc.TreatmentCode
-                                }).ToList();
-
-            var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
-            if (allTreatmentCodes == null)
-            {
-                allTreatmentCodes = new List<TreatmentCodes>();
-            }
-
-            // Create the view model
-            var viewModel = new BookingTreatmentCodesViewModel
-            {
-                AllcombinedData = combinedData,
-                AllTreatmentCodes = allTreatmentCodes,
-            };
-            var booking = _dbContext.BookSurgery.Find(id);
+            // Retrieve user information from session
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
 
-            ViewBag.BookSurgeryID = id;
+            // Prepare the view model
+            var viewModel = new BookingTreatmentCodesViewModel
+            {
+                AllcombinedData = combinedData,
+                AllTreatmentCodes = allTreatmentCodes,
+                BookingID = bookingId
+            };
+
+            // Set ViewBag properties
+            ViewBag.BookSurgeryID = bookingId;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
             return View(viewModel);
         }
-
         [HttpPost]
-        public IActionResult AddTreatmentCode(SurgeryTreatmentCode model)
+        public IActionResult AddTreatmentCode(int bookingID, int treatmentCodeID)
         {
-            if (ModelState.IsValid)
+            // Create a new SurgeryTreatmentCode entity
+            var newSurgeryTreatmentCode = new SurgeryTreatmentCode
             {
-                SurgeryTreatmentCode newSurgeryTreatmentCode = new SurgeryTreatmentCode
-                {
-                    BookingID = model.BookingID,
-                    TreatmentCodeID = model.TreatmentCodeID
-                };
+                BookingID = bookingID,
+                TreatmentCodeID = treatmentCodeID
+            };
 
-                _dbContext.SurgeryTreatmentCode.Add(newSurgeryTreatmentCode);
-                _dbContext.SaveChanges();
+            // Add the new treatment code to the database
+            _dbContext.SurgeryTreatmentCode.Add(newSurgeryTreatmentCode);
+            _dbContext.SaveChanges();
 
-                // Redirect to SurgeryTreatmentCodes with the BookingID
-                return RedirectToAction("SurgeryTreatmentCodes", new { id = model.BookingID });
+            // Redirect back to the SurgeryTreatmentCodes view with the booking ID
+            return RedirectToAction("SurgeryTreatmentCodes", new { bookingId = bookingID });
+        }
+        [HttpPost]
+        public IActionResult RemoveTreatmentCode(int btcID, int bookingID)
+        {
+
+            // Find the surgery treatment code to delete
+            var surgeryTreatmentCode = _dbContext.SurgeryTreatmentCode
+                .FirstOrDefault(st => st.BookingTreatmentCodeID == btcID);
+
+            if (surgeryTreatmentCode == null)
+            {
+                // Handle the case where the treatment code is not found
+                return NotFound();
             }
 
-            // If validation fails, redisplay the form with errors
-            return View("SurgeryTreatmentCodes", model);
+            // Retrieve the associated booking and patient information
+            var booking = _dbContext.BookSurgery.FirstOrDefault(b => b.BookingID == bookingID);
+            var patient = _dbContext.PatientInfo.FirstOrDefault(p => p.PatientID == booking.PatientID);
+
+            if (patient == null)
+            {
+                return NotFound("Patient information not found.");
+            }
+
+            // Remove the treatment code from the database
+            _dbContext.SurgeryTreatmentCode.Remove(surgeryTreatmentCode);
+            _dbContext.SaveChanges();
+
+            // Redirect back to the CheckTreatmentCode view with the patient name and surname
+            return RedirectToAction("SurgeryTreatmentCodes", new { bookingId = bookingID, name = patient.Name, surname = patient.Surname });
         }
 
         public IActionResult CheckTreatmentCode(int bookingId, string name, string surname)
@@ -338,28 +369,28 @@ namespace DEMO.Controllers
 
             return View(viewModel);
         }
-
         [HttpPost]
-        public IActionResult EditTreatment(SurgeryTreatmentCode model)
+        public IActionResult EditTreatment(int bookingID, int treatmentCodeID)
         {
-            if (ModelState.IsValid)
+            // Create a new SurgeryTreatmentCode entity
+            var newSurgeryTreatmentCode = new SurgeryTreatmentCode
             {
-                SurgeryTreatmentCode newEditTreatment = new SurgeryTreatmentCode
-                {
-                    BookingID = model.BookingID,
-                    TreatmentCodeID = model.TreatmentCodeID
-                };
+                BookingID = bookingID,
+                TreatmentCodeID = treatmentCodeID
+            };
 
-                _dbContext.SurgeryTreatmentCode.Add(newEditTreatment);
-                _dbContext.SaveChanges();
+            // Add the new treatment code to the database
+            _dbContext.SurgeryTreatmentCode.Add(newSurgeryTreatmentCode);
+            _dbContext.SaveChanges();
 
-                // Redirect to SurgeryTreatmentCodes with the BookingID
-                return RedirectToAction("CheckTreatmentCode", new { id = model.BookingID });
-            }
+            // Retrieve the associated booking and patient information
+            var booking = _dbContext.BookSurgery.FirstOrDefault(b => b.BookingID == bookingID);
+          
 
-            // If validation fails, redisplay the form with errors
-            return View("CheckTreatmentCode", model);
+            // Redirect back to the CheckTreatmentCode view with the patient name and surname
+            return RedirectToAction("CheckTreatmentCode", new { bookingId = bookingID });
         }
+
         [HttpPost]
         public IActionResult DeleteTreatmentCode(int btcID, int bookingID)
         {
@@ -603,46 +634,84 @@ namespace DEMO.Controllers
                                 orderby p.Name
                                 select new PrescriptionMedicationViewModel
                                 {
-                                    
                                     Medid = mi.InstructionsID,
-                                    Name = p.Name,
-                                    Surname = p.Surname,
                                     DateGiven = pr.DateGiven,
                                     Status = pr.Status,
                                     MedicationName = m.MedicationName,
                                     Quantity = mi.Quantity,
                                     MedicationForm = m.MedicationForm,
-                                    Schedule = m.Schedule, 
+                                    Schedule = m.Schedule,
                                     Instructions = mi.Instructions
                                 }).ToList();
 
-
             var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
-
             if (allMedication == null)
             {
                 allMedication = new List<Medication>();
             }
 
+            var patientInfo = _dbContext.PatientInfo
+                                        .Where(p => _dbContext.BookSurgery
+                                                    .Any(bs => bs.PatientID == p.PatientID && _dbContext.Prescription
+                                                    .Any(pr => pr.BookingID == bs.BookingID && pr.PrescriptionID == id)))
+                                        .Select(p => new PatientListViewModal
+                                        {
+                                            Name = p.Name,
+                                            Surname = p.Surname,
+                                            Gender = p.Gender, // Adjust as necessary
+                                        }).FirstOrDefault();
+
+            var patientID = _dbContext.Prescription
+                             .Where(pr => pr.PrescriptionID == id)
+                             .Join(_dbContext.BookSurgery, pr => pr.BookingID, bs => bs.BookingID, (pr, bs) => bs.PatientID)
+                             .FirstOrDefault();
+
+            var allergies = (from pa in _dbContext.PatientAllergy
+                             join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                             join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                             where pa.PatientID == patientID
+                             select new PatientAllergyViewModel
+                             {
+                                 Name = p.Name,
+                                 Surname = p.Surname,
+                                 ActiveIngredientName = ai.ActiveIngredientName
+                             }).OrderBy(ai => ai.ActiveIngredientName).ToList();
+
+
+            var currentMed = (from pm in _dbContext.patientMedication
+                              join cm in _dbContext.CurrentMedication on pm.CurrentID equals cm.CurrentId
+                              join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
+                              where pm.PatientID == patientID
+                              select new PatientAllergyViewModel
+                              {
+                                  Name = pi.Name,
+                                  Surname = pi.Surname,
+                                  MedicationName = cm.MedicationName // Ensure this property exists in your view model
+                              }).OrderBy(cm => cm.MedicationName).ToList();
+            var conditions = (from pc in _dbContext.PatientConditions
+                              join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
+                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
+                              where pc.PatientID == patientID
+                              select new PatientAllergyViewModel
+                              {
+                                  Name = pt.Name,
+                                  Surname = pt.Surname,
+                                  ConditionName = c.ConditionName // Ensure this property exists in your view model
+                              }).OrderBy(c => c.ConditionName).ToList();
 
             var viewModel = new PrescriptionMedicationViewModel
             {
                 CombinedData = combinedData,
                 AllMedication = allMedication,
+                PatientInfo = patientInfo ?? new PatientListViewModal(),
+                Allergies = allergies,
+                CurrentMedications = currentMed,
+                Conditions = conditions// Add this property to your view model
             };
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-            var Prescription = _dbContext.Prescription.Find(id);
 
-            ViewBag.PrescriptionID = id;
-            ViewBag.UserAccountID = accountID;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
+
         [HttpPost]
         public IActionResult AddMedication(MedicationInstructions model)
         {
@@ -689,97 +758,150 @@ namespace DEMO.Controllers
             return RedirectToAction("PrescriptionMedication", new { id = prescriptionId });
         }
 
-        public IActionResult SendPatientEmail(int id)
+        public async Task<IActionResult> SendPatientEmail(int bookingID)
         {
-            var prescriptionDetails = (from p in _dbContext.Prescription
-                                       join b in _dbContext.BookSurgery on p.BookingID equals b.BookingID
-                                       join pa in _dbContext.PatientInfo on b.PatientID equals pa.PatientID
-                                       where p.PrescriptionID == id
-                                       select new
-                                       {
-                                           b.SurgeryTime,
-                                           b.SurgeryDate,
-                                           b.Theater,
-                                           pa.Name,
-                                           pa.Surname,
-                                           pa.ContactNumber,
-                                           pa.Email
-                                       }).FirstOrDefault();
+            // Query to get the combined data
+            var combinedData = await (from st in _dbContext.SurgeryTreatmentCode
+                                      join t in _dbContext.TreatmentCodes on st.TreatmentCodeID equals t.TreatmentCodeID
+                                      join b in _dbContext.BookSurgery on st.BookingID equals b.BookingID
+                                      join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                      join a in _dbContext.Accounts on b.AccountID equals a.AccountID
+                                      where st.BookingID == bookingID
+                                      select new PatientEmailViewModel
+                                      {
+                                          SurgeryDate = b.SurgeryDate,
+                                          SurgeryTime = b.SurgeryTime,
+                                          Name = p.Name,
+                                          Surname = p.Surname,
+                                          Theater = b.Theater,
+                                          ContactNumber = p.ContactNumber,
+                                          Email = p.Email,
+                                          FullName = p.Name + " " + p.Surname,
+                                          TreatmentName = t.TreatmentName,
+                                          AccountName = a.Name, // Account's Name
+                                          AccountSurname = a.Surname // Account's Surname
+                                      }).ToListAsync();
 
-            // Prepare the view model
+            if (combinedData == null || !combinedData.Any())
+            {
+                // Handle the case where no data is found
+                return NotFound();
+            }
+
+            // Query to get all treatment names linked to the bookingId
+            var treatmentNames = await (from st in _dbContext.SurgeryTreatmentCode
+                                        join t in _dbContext.TreatmentCodes on st.TreatmentCodeID equals t.TreatmentCodeID
+                                        where st.BookingID == bookingID
+                                        select t.TreatmentName)
+                                   .ToListAsync();
+
+            // Combine treatment names into a single string
+            var treatmentNamesString = string.Join(", ", treatmentNames);
+
+            var firstData = combinedData.First(); // Get the first entry for common fields
+
             var viewModel = new PatientEmailViewModel
             {
-                SurgeryDate = prescriptionDetails.SurgeryDate,
-                SurgeryTime = prescriptionDetails.SurgeryTime,
-                FullName = $"{prescriptionDetails.Name} {prescriptionDetails.Surname}",
-
-                Theater = prescriptionDetails.Theater,
-                ContactNumber = prescriptionDetails.ContactNumber,
-                Email = prescriptionDetails.Email, // Only for example; usually, passwords are not shared like this
-                Notes = string.Empty // Initial empty notes
+                TreatmentName = treatmentNamesString,
+                SurgeryDate = firstData.SurgeryDate,
+                SurgeryTime = firstData.SurgeryTime,
+                FullName = $"{firstData.Name} {firstData.Surname}",
+                Theater = firstData.Theater,
+                ContactNumber = firstData.ContactNumber,
+                Email = firstData.Email,
+                AccountName = firstData.AccountName, // Account's Name
+                AccountSurname = firstData.AccountSurname, // Account's Surname
+                Notes = string.Empty, // Initial empty notes
+                BookingID = bookingID
             };
 
-            return View(viewModel); // Return the view with the model
-
+            // Return the view with the model
+            return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendPatientEmail(int id, string notes)
+        public async Task<IActionResult> SendPatientEmail(int bookingID, string notes)
         {
+            var combinedData = await (from st in _dbContext.SurgeryTreatmentCode
+                                      join t in _dbContext.TreatmentCodes on st.TreatmentCodeID equals t.TreatmentCodeID
+                                      join b in _dbContext.BookSurgery on st.BookingID equals b.BookingID
+                                      join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                      join a in _dbContext.Accounts on b.AccountID equals a.AccountID
+                                      where st.BookingID == bookingID
+                                      select new PatientEmailViewModel
+                                      {
+                                          SurgeryDate = b.SurgeryDate,
+                                          SurgeryTime = b.SurgeryTime,
+                                          Name = p.Name,
+                                          Surname = p.Surname,
+                                          Theater = b.Theater,
+                                          ContactNumber = p.ContactNumber,
+                                          Email = p.Email,
+                                          FullName = p.Name + " " + p.Surname,
+                                          TreatmentName = t.TreatmentName,
+                                          AccountName = a.Name, // Account's Name
+                                          AccountSurname = a.Surname // Account's Surname
+                                      }).ToListAsync();
 
-            var prescriptionDetails = (from p in _dbContext.Prescription
-                                       join b in _dbContext.BookSurgery on p.BookingID equals b.BookingID
-                                       join pa in _dbContext.PatientInfo on b.PatientID equals pa.PatientID
-                                       where p.PrescriptionID == id
-                                       select new
-                                       {
-                                           b.SurgeryTime,
-                                           b.SurgeryDate,
-                                           b.Theater,
-                                           pa.Name,
-                                           pa.Surname,
-                                           pa.ContactNumber,
-                                           pa.Email
-                                       }).FirstOrDefault();
+            if (combinedData == null || !combinedData.Any())
+            {
+                TempData["ErrorMessage"] = "Booking not found or no treatments available.";
+                return RedirectToAction("SurgeonHome", "Home");
+            }
+
+            var firstData = combinedData.First(); // Get the first entry for common fields
 
             var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Day Hospital -  Apollo+(Group 9 - 4Year)", "noreply@dayhospital.com"));
-            emailMessage.To.Add(new MailboxAddress("Patient", prescriptionDetails.Email));
-            emailMessage.Subject = "User Added";
+            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", "noreply@dayhospital.com"));
+            emailMessage.To.Add(new MailboxAddress("Patient", firstData.Email));
+            emailMessage.Subject = "Surgery Booking Confirmation";
+
+            var treatmentList = new System.Text.StringBuilder();
+            foreach (var item in combinedData)
+            {
+                treatmentList.AppendLine($"<li>{item.TreatmentName}</li>");
+            }
 
             var bodyBuilder = new BodyBuilder
             {
                 HtmlBody = $@"
-         <h3>User Information</h3>
-         <p><strong>Name:</strong> {prescriptionDetails.Name} {prescriptionDetails.Surname}</p>
-         <p><strong>Contact Details:</strong> {prescriptionDetails.ContactNumber} {prescriptionDetails.Email}</p>
-         <h3>You have been Booked for the following surgery</h3>
-</n>
-         <p><strong>Theater:</strong> {prescriptionDetails.Theater}</p>
-         <p><strong>SurgeryTime:</strong> {prescriptionDetails.SurgeryTime}</p>        
-</n>
-         <h3>Notes</h3>
-         <p>{notes}</p>
-</n> 
-          Kind Regards 
-          Apollo+"""
+<h3>User Information</h3>
+<p><strong>Full Name:</strong> {firstData.Name} {firstData.Surname}</p>
+<p><strong>Contact Details:</strong> {firstData.ContactNumber} {firstData.Email}</p>
+<h3>You have been booked for the following surgery by Dr.{firstData.AccountName} {firstData.AccountSurname}</h3>
+<p><strong>Theater:</strong> {firstData.Theater}</p>
+<p><strong>Surgery Time:</strong> {firstData.SurgeryTime}</p>
+<h3>Treatments</h3>
+<ul>
+    {treatmentList}
+</ul>
+<h3>Notes</h3>
+<p>{notes}</p>
+<p>Kind Regards,<br/>Apollo+</p>"
             };
 
             emailMessage.Body = bodyBuilder.ToMessageBody();
 
-            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            try
             {
-                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
+                    await client.SendAsync(emailMessage);
+                    await client.DisconnectAsync(true);
+                }
 
-                client.Authenticate("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
-                await client.SendAsync(emailMessage);
-                client.Disconnect(true);
-
+                TempData["SuccessMessage"] = "Email sent successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
             }
 
-            TempData["SuccessMessage"] = "Email sent successfully.";
-            return RedirectToAction("AdminHome", "Admin");
+            return RedirectToAction("SurgeonHome", "Home");
         }
+
         public IActionResult PrescriptionList()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
