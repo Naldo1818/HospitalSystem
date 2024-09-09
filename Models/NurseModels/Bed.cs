@@ -2,13 +2,13 @@
 
 namespace DEMO.Models.NurseModels
 {
-    public class Ward
+    public class Bed
     {
         [Key]
-        public int WardId { get; set; }
-        [Required]
-        public string WardName { get; set; }
+        public int BedId { get; set; }
+        public int Number { get; set; }
         public bool Active { get; set; }
+        public int WardID { get; set; }
 
     }
 }

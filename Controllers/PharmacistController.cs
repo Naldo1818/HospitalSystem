@@ -79,8 +79,14 @@ namespace DEMO.Controllers
 
         public IActionResult ViewSpecificPrescription()
         {
+            
+
+           
+
+           
             return View();
         }
+
 
 
 
@@ -232,6 +238,7 @@ namespace DEMO.Controllers
                                 join account in _dbContext.Accounts
                                 on prescription.AccountID equals account.AccountID
                                 where prescription.Status=="Prescribed" 
+
                                 select new ViewActivePrescriptionsModel
 
 
