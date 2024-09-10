@@ -39,23 +39,23 @@ namespace DEMO.Data.Migrations
                     table.PrimaryKey("PK_PatientConditions", x => x.PatientConditionsID);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "PatientDetails",
-                columns: table => new
-                {
-                    PatientDetailsID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AdmittedPatientID = table.Column<int>(type: "int", nullable: false),
-                    AddressID = table.Column<int>(type: "int", nullable: false),
-                    CityID = table.Column<int>(type: "int", nullable: false),
-                    ProvinceID = table.Column<int>(type: "int", nullable: false),
-                    SuburbID = table.Column<int>(type: "int", nullable: false),
-                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PatientDetails", x => x.PatientDetailsID);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "PatientDetails",
+            //    columns: table => new
+            //    {
+            //        PatientDetailsID = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        AdmittedPatientID = table.Column<int>(type: "int", nullable: false),
+            //        AddressID = table.Column<int>(type: "int", nullable: false),
+            //        CityID = table.Column<int>(type: "int", nullable: false),
+            //        ProvinceID = table.Column<int>(type: "int", nullable: false),
+            //        SuburbID = table.Column<int>(type: "int", nullable: false),
+            //        StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_PatientDetails", x => x.PatientDetailsID);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "patientMedication",
