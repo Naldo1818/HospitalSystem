@@ -9,5 +9,6 @@ namespace DEMO.Models.NurseModels
         public int ProvinceID { get; set; }
         public int CityID { get; set; }
         public int SuburbID { get; set; }
+        public string StreetName { get; set; }
     }
 }

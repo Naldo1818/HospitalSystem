@@ -222,6 +222,7 @@ namespace DEMO.Controllers
                                 ProvinceID = model.Province.ProvinceID,
                                 CityID = model.City.CityID,
                                 SuburbID = model.Suburb.SuburbID,
+                                
                             };
 
                             _dbContext.Address.Add(patientAddress);
@@ -303,7 +304,7 @@ namespace DEMO.Controllers
                                 updateAdmission.PatientVitalsID = vitalsId;
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
-                                //updateAdmission.PatientDetailsID = pationetAddressId;
+                                updateAdmission.AddressID = pationetAddressId;
 
                                 _dbContext.AdmittedPatients.Update(updateAdmission);
                                 _dbContext.SaveChanges();
