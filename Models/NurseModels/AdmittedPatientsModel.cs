@@ -15,8 +15,10 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int WardID { get; set; }
         [Required]
+        public int BedId { get; set; }
+        [Required]
         public int PatientVitalsID { get; set; }
-        public int PatientDetailsID {  get; set; }
+        
         [Required]
         public DateTime Date = DateTime.Now;
         [Required]

@@ -303,7 +303,7 @@ namespace DEMO.Controllers
                                 updateAdmission.PatientVitalsID = vitalsId;
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
-                                updateAdmission.PatientDetailsID = pationetAddressId;
+                                //updateAdmission.PatientDetailsID = pationetAddressId;
 
                                 _dbContext.AdmittedPatients.Update(updateAdmission);
                                 _dbContext.SaveChanges();

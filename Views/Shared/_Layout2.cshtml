@@ -3,6 +3,7 @@
     var userName = Context.Session.GetString("UserName");
     var userSurname = Context.Session.GetString("UserSurname");
     var userEmail = Context.Session.GetString("UserEmail");
+
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -95,21 +96,23 @@
                 </div>
                 <div id="sideBar" class="col-md-3 d-flex justify-content-end" align="right">
                     <div class="card custom-card" style="width: 250px;">
-                        <img src="~/css/user.png" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">                        <div class="card-body">
+                        <img src="~/css/user.png" class="card-img-top mx-auto mt-3 rounded-circle" alt="Placeholder Image" style="width: 100px; height: 100px;">                        
+                        <div class="card-body">
                             <h5 class="card-title">Surgeon</h5>
                             <h4 class="card-title">@ViewBag.UserName @ViewBag.UserSurname</h4>
                             <p class="card-text">Email: @ViewBag.UserEmail</p>
                             <hr>
+                            <p style="font-size: 1rem;">____________________</p>
                             <p class="card-text">Prescriptions Prescribed</p>
-                            <p class="card-text">1</p>
-                            <p class="card-text">Prescriptions Accepted</p>
-                            <p class="card-text">2</p>
+                            <p class="card-text">@ViewBag.prescribedCount</p>
+                            <p class="card-text">Prescriptions Dispensed</p>
+                            <p class="card-text">@ViewBag.dispensedCount</p>
                             <p class="card-text">Prescriptions Rejected</p>
-                            <p class="card-text">1</p>
+                            <p class="card-text">@ViewBag.rejectedCount</p>
                             <hr>
-                            <hr>
+                            <p style="font-size: 1rem;">____________________</p>
                             <p class="card-text">Surgeries For Today</p>
-                            <p class="card-text">2</p>
+                            <p class="card-text">@ViewBag.surgeryCount</p>
                             <hr>
                             <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Index">Log Out</a>
                         </div>

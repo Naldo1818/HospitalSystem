@@ -119,7 +119,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+            
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -147,7 +182,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
-           
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -184,7 +254,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
-          
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -264,7 +369,42 @@ namespace DEMO.Controllers
                 AllTreatmentCodes = allTreatmentCodes,
                 BookingID = bookingId
             };
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             // Set ViewBag properties
             ViewBag.BookSurgeryID = bookingId;
             ViewBag.UserAccountID = accountID;
@@ -358,7 +498,42 @@ namespace DEMO.Controllers
                 AllcombinedData = combinedData,
                 AllTreatmentCodes = allTreatmentCodes
             };
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.BookSurgeryID = bookingId;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
@@ -426,24 +601,36 @@ namespace DEMO.Controllers
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
             if (!int.TryParse(accountIDString, out int accountID))
             {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
+                accountID = 0; 
             }
 
             var combinedData = (from b in _dbContext.BookSurgery
                                 join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
+                                join bed in _dbContext.Bed on ap.BedId equals bed.BedId
+                                join w in _dbContext.Ward on bed.WardID equals w.WardId
+                                join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
                                 where b.AccountID == accountID
+                                && ap.AdmissionStatusID == 3
+                                && bed.Active
+                                && w.Active
                                 select new AdmissionsListViewModel
                                 {
                                     BookingID = b.BookingID,
-                                    PatientID = b.PatientID,
-                                    AccountID = b.AccountID,
                                     Name = p.Name,
                                     Surname = p.Surname,
                                     SurgeryDate = b.SurgeryDate,
                                     SurgeryTime = b.SurgeryTime,
-                                    Theater = b.Theater
-                                }).OrderBy(a => a.Name).ToList();
+                                    Theater = b.Theater,
+                                    WardName = w.WardName,
+                                    BedNumber = bed.Number,
+                                    AdmissionStatusDescription = status.Description
+                                })
+                     .OrderBy(a => a.Name)
+                     .ToList();
+
+
+
 
             var viewModel = new AdmissionsListViewModel
             {
@@ -454,7 +641,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+              var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                 select pr).Count();
+            
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -493,7 +715,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -576,7 +833,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -616,7 +908,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -708,7 +1035,42 @@ namespace DEMO.Controllers
                 CurrentMedications = currentMed,
                 Conditions = conditions// Add this property to your view model
             };
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
 
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             return View(viewModel);
         }
 
@@ -984,7 +1346,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -998,7 +1395,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -1011,7 +1443,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -1025,7 +1492,42 @@ namespace DEMO.Controllers
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                   on p.PatientID equals bs.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on bs.BookingID equals pr.BookingID
+                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
+                                  join pr in _dbContext.Prescription
+                                  on bs.BookingID equals pr.BookingID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                 on p.PatientID equals bs.PatientID
+                                 join pr in _dbContext.Prescription
+                                 on bs.BookingID equals pr.BookingID
+                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
