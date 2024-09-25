@@ -19,6 +19,9 @@ namespace DEMO.ViewModels
         public string SurgeryTime { get; set; }
         public DateOnly SurgeryDate { get; set; }
         public string Theater { get; set; }
+        public string WardName { get; set; }
+        public string AdmissionStatusDescription { get; set; }
+        public int BedNumber { get; set; }
         public List<AdmissionsListViewModel> AllcombinedData { get; set; }
     }
 }
