@@ -268,7 +268,7 @@ namespace DEMO.Controllers
                             var medication = new PatientMedication()
                             {
                                 PatientID = booking.PatientID,
-                                CurrentID = item.MedicationID,
+                                MedicationID = item.MedicationID,
                                 AdmittedPatientID = admissionId,
                             };
 
@@ -301,7 +301,6 @@ namespace DEMO.Controllers
 
                             if(vitalsId > 0)
                             {
-                                updateAdmission.PatientVitalsID = vitalsId;
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
                                 updateAdmission.AddressID = pationetAddressId;

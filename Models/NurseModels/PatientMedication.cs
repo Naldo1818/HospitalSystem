@@ -11,7 +11,7 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int AdmittedPatientID { get; set; }
         [Required]
-        public int CurrentID { get; set; }
+        public int MedicationID { get; set; }
         
     }
 }
