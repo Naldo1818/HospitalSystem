@@ -812,7 +812,7 @@ namespace DEMO.Controllers
                               }).OrderBy(c => c.ConditionName).ToList();
 
             var currentMed = (from pm in _dbContext.patientMedication
-                              join cm in _dbContext.CurrentMedication on pm.CurrentID equals cm.CurrentId
+                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
                               join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
                               where pm.PatientID == patientID
                               select new PatientAllergyViewModel
@@ -1006,7 +1006,7 @@ namespace DEMO.Controllers
 
 
             var currentMed = (from pm in _dbContext.patientMedication
-                              join cm in _dbContext.CurrentMedication on pm.CurrentID equals cm.CurrentId
+                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
                               join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
                               where pm.PatientID == patientID
                               select new PatientAllergyViewModel
@@ -1015,6 +1015,7 @@ namespace DEMO.Controllers
                                   Surname = pi.Surname,
                                   MedicationName = cm.MedicationName // Ensure this property exists in your view model
                               }).OrderBy(cm => cm.MedicationName).ToList();
+
             var conditions = (from pc in _dbContext.PatientConditions
                               join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
                               join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID

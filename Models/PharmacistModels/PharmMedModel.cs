@@ -7,17 +7,10 @@ namespace DEMO.Models.PharmacistModels
         [Key]
         public int PharmacyMedicationlID { get; set; }
 
-        [Required]
-        public string MedicationName { get; set; }
+        
+        public int MedicationID { get; set; }
 
-        [Required]
-        public string DosageForm { get; set; }
-
-        [Required]
-
-        public string Schedule { get; set; }
-
-        [Required]
+        public int MedicationActiveingredientID { get; set; }
 
         public int StockonHand { get; set; }
 
@@ -25,8 +18,5 @@ namespace DEMO.Models.PharmacistModels
         public int ReorderLevel { get; set; }
 
 
-        [Required]
-
-        public string ActiveIngredientsAndStrength { get; set; }
-    }
+        }
 }

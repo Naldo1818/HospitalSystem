@@ -238,7 +238,7 @@ namespace DEMO.Controllers
                             {
                                 PatientID = booking.PatientID,
                                 ActiveingredientID = item.ActiveingredientID,
-                                AdmittedPatientID = admissionId,
+                                
                             };
 
                             _dbContext.PatientAllergy.Add(allergies);
@@ -254,7 +254,7 @@ namespace DEMO.Controllers
                             {
                                 PatientID = booking.PatientID,
                                 ConditionsID = item.ConditionID,
-                                AdmittedPatientID = admissionId,
+                                
                             };
 
                             _dbContext.PatientConditions.Add(condition);
@@ -269,7 +269,7 @@ namespace DEMO.Controllers
                             {
                                 PatientID = booking.PatientID,
                                 MedicationID = item.MedicationID,
-                                AdmittedPatientID = admissionId,
+                                
                             };
 
                             _dbContext.patientMedication.Add(medication);
