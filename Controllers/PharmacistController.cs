@@ -1,11 +1,14 @@
 ﻿using DEMO.Data;
 using DEMO.Models;
+using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using MimeKit;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DEMO.Controllers
@@ -77,14 +80,84 @@ namespace DEMO.Controllers
             return View();
         }
 
-        public IActionResult ViewSpecificPrescription()
+        public IActionResult ViewSpecificPrescription(int id)
         {
-            
+            var prescription = _dbContext.Prescription.Find(id);
+
+            var combinedData = (from p in _dbContext.Prescription
+                     
+
+                                join a in _dbContext.PatientAllergy
+                                on p.BookingID equals a.PatientID
+                                join ai in _dbContext.Activeingredient
+                                on a.ActiveingredientID equals ai.ActiveingredientID
+
+
+                                join c in _dbContext.PatientConditions
+                                on p.BookingID equals c.PatientID
+                                join co in _dbContext.Condition
+                                on c.ConditionsID equals co.ConditionID
+
+                                join cm in _dbContext.patientMedication
+                                on p.BookingID equals cm.PatientID
+                                join m in _dbContext.Medication
+                                on cm.MedicationID equals m.MedicationID
+
+                                join pv in _dbContext.PatientVitals
+                                on p.BookingID equals pv.PatientID
+
+                              
+
+                                select new PharmacistViewScriptModel
+                                { 
+                                    //medical history
+                                    Condition = co.ConditionName,
+                                    allergy=ai.ActiveIngredientName,
+                                    patientMedication= m.MedicationName,
+
+                                    //vitals
+                                    Height=pv.Height,
+                                    Weight=pv.Weight,
+                                    SystolicBloodPressure=pv.SystolicBloodPressure,
+                                    DiastolicBloodPressure=pv.DiastolicBloodPressure,
+                                    HeartRate=pv.HeartRate,
+                                    BloodOxygen=pv.BloodOxygen,
+                                    Respiration=pv.Respiration,
+                                    BloodGlucoseLevel=pv.BloodGlucoseLevel,
+                                    Temperature=pv.Temperature,
+
+                                    //prescription
+                                    Urgency=p.Urgency,
+                                    Take=p.Take,
+                                    Status=p.Status,
+                                    DateGiven=p.DateGiven,
+
+
+
+                                   
+        //public DateOnly DateGiven { get; set; }
+
+        
+        //public string Urgency { get; set; }
+       
+        //public string Take { get; set; }
+
+       
+        //public string Status { get; set; }
+
+
+
+
+
+
+    }              
+                                );
 
            
 
-           
             return View();
+
+          
         }
 
 

@@ -60,7 +60,7 @@
                                         <td>@item.DateGiven</td>
                                         <td>@item.Status</td>
                                        @*  <td>@item.Urgency</td> *@
-                                        <td style="@(item.Urgency == "Yes" ? "background-color: yellow;" : "")">
+                                        <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
                                             @item.Urgency
                                         </td>
 
@@ -71,7 +71,7 @@
                                                asp-route-id="@item.IDNumber">View</a>
                                         </td>
 
-
+                                        
 
                                         
 
