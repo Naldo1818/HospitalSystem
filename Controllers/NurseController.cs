@@ -238,7 +238,7 @@ namespace DEMO.Controllers
                             {
                                 PatientID = booking.PatientID,
                                 ActiveingredientID = item.ActiveingredientID,
-                                AdmittedPatientID = admissionId,
+                                
                             };
 
                             _dbContext.PatientAllergy.Add(allergies);
@@ -254,7 +254,7 @@ namespace DEMO.Controllers
                             {
                                 PatientID = booking.PatientID,
                                 ConditionsID = item.ConditionID,
-                                AdmittedPatientID = admissionId,
+                                
                             };
 
                             _dbContext.PatientConditions.Add(condition);
@@ -268,8 +268,8 @@ namespace DEMO.Controllers
                             var medication = new PatientMedication()
                             {
                                 PatientID = booking.PatientID,
-                                CurrentID = item.MedicationID,
-                                AdmittedPatientID = admissionId,
+                                MedicationID = item.MedicationID,
+                                
                             };
 
                             _dbContext.patientMedication.Add(medication);
@@ -301,7 +301,6 @@ namespace DEMO.Controllers
 
                             if(vitalsId > 0)
                             {
-                                updateAdmission.PatientVitalsID = vitalsId;
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
                                 updateAdmission.AddressID = pationetAddressId;

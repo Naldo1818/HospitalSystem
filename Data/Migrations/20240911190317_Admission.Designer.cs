@@ -4,6 +4,7 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240911190317_Admission")]
+    partial class Admission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -279,6 +282,9 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
 
+                    b.Property<int>("PatientVitalsID")
+                        .HasColumnType("int");
+
                     b.Property<int>("WardID")
                         .HasColumnType("int");
 
@@ -374,6 +380,9 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("ActiveingredientID")
                         .HasColumnType("int");
 
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
+
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
 
@@ -389,6 +398,9 @@ namespace DEMO.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientConditionsID"));
+
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
 
                     b.Property<int>("ConditionsID")
                         .HasColumnType("int");
@@ -409,7 +421,10 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientMedicationID"));
 
-                    b.Property<int>("MedicationID")
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CurrentID")
                         .HasColumnType("int");
 
                     b.Property<int>("PatientID")
@@ -428,6 +443,9 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientVitalsID"));
 
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
+
                     b.Property<int>("BloodGlucoseLevel")
                         .HasColumnType("int");
 
@@ -441,9 +459,6 @@ namespace DEMO.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Height")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PatientID")
                         .HasColumnType("int");
 
                     b.Property<int>("Respiration")
@@ -534,21 +549,31 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PharmacyMedicationlID"));
 
-                    b.Property<int>("MedicationActiveingredientID")
-                        .HasColumnType("int");
+                    b.Property<string>("ActiveIngredientsAndStrength")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MedicationID")
-                        .HasColumnType("int");
+                    b.Property<string>("DosageForm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ReorderLevel")
                         .HasColumnType("int");
+
+                    b.Property<string>("Schedule")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StockonHand")
                         .HasColumnType("int");
 
                     b.HasKey("PharmacyMedicationlID");
 
-                    b.ToTable("PharmacyMedication");
+                    b.ToTable("PharmMedModel");
                 });
 
             modelBuilder.Entity("DEMO.Models.PharmacistModels.RejectedScriptsModel", b =>
@@ -585,7 +610,7 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("AccountID")
                         .HasColumnType("int");
 
-                    b.Property<int>("AdmittedPatientID")
+                    b.Property<int>("BookingID")
                         .HasColumnType("int");
 
                     b.Property<DateOnly>("DateGiven")

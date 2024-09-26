@@ -7,7 +7,9 @@ namespace DEMO.Models.NurseModels
         [Key]
         public int PatientVitalsID { get; set; }
 
-        public int AdmittedPatientID { get; set; }
+        [Required]
+        public int PatientID { get; set; }
+   
         [Required]
         public int Height { get; set; }
         [Required]

@@ -10,8 +10,7 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int PatientID { get; set; }
 
-        [Required]
-        public int AdmittedPatientID { get; set; }
+       
 
         [Required]
         public int ActiveingredientID { get; set;}

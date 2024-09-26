@@ -14,13 +14,10 @@ namespace DEMO.Models.NurseModels
         public int BookingID { get; set; }
         [Required]
         public int WardID { get; set; }
-        [Required]
-        public int BedId { get; set; }
-        [Required]
-        public int PatientVitalsID { get; set; }
 
         public int AddressID { get; set; }
        
+        public int BedId { get; set; }
         [Required]
         public DateTime Date = DateTime.Now;
         [Required]
