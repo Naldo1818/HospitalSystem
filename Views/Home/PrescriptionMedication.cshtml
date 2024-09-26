@@ -161,12 +161,17 @@
                                 </div>
                                 <div class="col-4">
                                     <br>
-                                    <label for="medicationSelect" class="form-label">Medication Allowed</label>
-                                    <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required>
-                                        <option value="">Select a Description</option>
+                                    <label for="medicationSelect" class="form-label">Medication</label>
+                                    <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required onchange="checkForAllergy()">
+                                        <option value="" disabled selected>Select a Description</option>
+                                        @foreach (var medication in Model.AllGoodMedications)
+                                        {
+                                            <option value="@medication.MedicationID" data-allergic="false">@medication.MedicationName</option>
+                                        }
+
                                         @foreach (var medication in Model.AllMedication)
                                         {
-                                            <option value="@medication.MedicationID">@medication.MedicationName</option>
+                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - @medication.ActiveIngredientName</option>
                                         }
                                     </select>
                                 </div>
@@ -260,6 +265,24 @@
 
                 </div>
             </div>
+            <!--Error Modal -->
+            <div class="modal fade" id="allergyWarningModal" tabindex="-1" aria-labelledby="allergyWarningModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="allergyWarningModalLabel">Warning</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            This medication contains an active ingredient that may affect the patient negatively due to allergies or medical conditions.
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Proceed</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Confirmation Modal -->
             <div class="modal fade" id="confirmMedicationModal" tabindex="-1" role="dialog" aria-labelledby="confirmMedicationModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -323,6 +346,16 @@
                 } else {
                     option.style.display = 'none';
                 }
+            }
+        }
+        function checkForAllergy() {
+            const select = document.getElementById('medicationSelect');
+            const selectedOption = select.options[select.selectedIndex];
+
+            // Check if the selected medication has an allergy issue
+            if (selectedOption.getAttribute('data-allergic') === 'true') {
+                // Show the allergy warning modal
+                $('#allergyWarningModal').modal('show');
             }
         }
     </script>

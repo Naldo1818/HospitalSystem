@@ -7,7 +7,7 @@ namespace DEMO.Models
         [Key]
         public int PrescriptionID { get; set; }
         [Required]
-        public int BookingID { get; set; }
+        public int AdmittedPatientID { get; set; }
         
         [Required]
         public int AccountID { get; set; }

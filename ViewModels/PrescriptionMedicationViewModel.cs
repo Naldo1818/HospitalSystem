@@ -39,8 +39,14 @@ namespace DEMO.ViewModels
         [Required]
         [StringLength(50, ErrorMessage = "Medication Form cannot be longer than 50 characters.")]
         public string MedicationForm { get; set; }
+        public int MedicationID { get; set; }
+        public int ActiveingredientID { get; set; }
+        public int ActiveIngredientStrength { get; set; }
+        public string ActiveIngredientName { get; set; }
+
         public int PrescriptionID { get; set; }
-        public List<Medication> AllMedication { get; set; }
+        public List<PrescriptionMedicationViewModel> AllGoodMedications { get; set; }
+        public List<PrescriptionMedicationViewModel> AllMedication { get; set; }
         public List<PrescriptionMedicationViewModel> CombinedData { get; set; }
         public PatientListViewModal PatientInfo { get; set; }
         public List<PatientAllergyViewModel> Allergies { get; set; }

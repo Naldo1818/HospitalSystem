@@ -127,26 +127,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
-                                 where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
             
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -190,26 +190,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -262,26 +262,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -377,26 +377,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -506,29 +506,28 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
-
             // Pass the prescribed count to the view
             ViewBag.SurgeryCount = surgeryCount;
             ViewBag.PrescribedCount = prescribedCount;
@@ -649,26 +648,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
-                                 join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
-                                 where pr.Status == "Dispensed" && pr.AccountID == accountID
-                                 select pr).Count();
-            
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
+                                  join pr in _dbContext.Prescription
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                  select pr).Count();
+
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID == accountID
                                  select pr).Count();
 
@@ -723,26 +722,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID == accountID
                                  select pr).Count();
 
@@ -765,8 +764,8 @@ namespace DEMO.Controllers
                 // Assuming you have a DbContext and SurgeryBooking model
                 Prescription newPrescription = new Prescription
                 {
-                   
-                    BookingID = model.BookingID,
+
+                    AdmittedPatientID = model.AdmittedPatientID,
                     AccountID = model.AccountID,
                     DateGiven = model.DateGiven,
                     Urgency = model.Urgency,
@@ -841,26 +840,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -916,26 +915,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -953,8 +952,8 @@ namespace DEMO.Controllers
         public IActionResult PrescriptionMedication(int id)
         {
             var combinedData = (from pr in _dbContext.Prescription
-                                join bs in _dbContext.BookSurgery on pr.BookingID equals bs.BookingID
-                                join p in _dbContext.PatientInfo on bs.PatientID equals p.PatientID
+                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.BookingID
+                                join p in _dbContext.PatientInfo on ap.PatientID equals p.PatientID
                                 join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
                                 where pr.PrescriptionID == id
@@ -971,16 +970,12 @@ namespace DEMO.Controllers
                                     Instructions = mi.Instructions
                                 }).ToList();
 
-            var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
-            if (allMedication == null)
-            {
-                allMedication = new List<Medication>();
-            }
+            
 
             var patientInfo = _dbContext.PatientInfo
-                                        .Where(p => _dbContext.BookSurgery
-                                                    .Any(bs => bs.PatientID == p.PatientID && _dbContext.Prescription
-                                                    .Any(pr => pr.BookingID == bs.BookingID && pr.PrescriptionID == id)))
+                                        .Where(p => _dbContext.AdmittedPatients
+                                                    .Any(ap => ap.PatientID == p.PatientID && _dbContext.Prescription
+                                                    .Any(pr => pr.AdmittedPatientID == ap.BookingID && pr.PrescriptionID == id)))
                                         .Select(p => new PatientListViewModal
                                         {
                                             Name = p.Name,
@@ -990,8 +985,33 @@ namespace DEMO.Controllers
 
             var patientID = _dbContext.Prescription
                              .Where(pr => pr.PrescriptionID == id)
-                             .Join(_dbContext.BookSurgery, pr => pr.BookingID, bs => bs.BookingID, (pr, bs) => bs.PatientID)
+                             .Join(_dbContext.AdmittedPatients, ap => ap.AdmittedPatientID, bs => bs.AdmittedPatientID, (pr, bs) => bs.PatientID)
                              .FirstOrDefault();
+
+            var allGoodMedications = _dbContext.Medication
+                                    .Where(m => !_dbContext.MedicationActiveIngredient
+                                    .Any(ma => ma.MedicationID == m.MedicationID && _dbContext.PatientAllergy
+                                    .Any(pa => pa.PatientID == patientID && pa.ActiveingredientID == ma.ActiveingredientID)))
+                                    .OrderBy(m => m.MedicationName)
+                                    .Select(m => new PrescriptionMedicationViewModel
+                                    {
+                                        MedicationName = m.MedicationName
+                                    })
+                                    .Distinct()
+                                    .ToList();
+
+            var allMedication = (from pa in _dbContext.PatientAllergy
+                                 join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                                 join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                                 join ma in _dbContext.MedicationActiveIngredient on ai.ActiveingredientID equals ma.ActiveingredientID
+                                 join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
+                                 where pa.PatientID == patientID
+                                 orderby m.MedicationName
+                                 select new PrescriptionMedicationViewModel
+                                 {
+                                     ActiveIngredientName = ai.ActiveIngredientName,
+                                     MedicationName = m.MedicationName
+                                 }).ToList();
 
             var allergies = (from pa in _dbContext.PatientAllergy
                              join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
@@ -1015,6 +1035,7 @@ namespace DEMO.Controllers
                                   Surname = pi.Surname,
                                   MedicationName = cm.MedicationName // Ensure this property exists in your view model
                               }).OrderBy(cm => cm.MedicationName).ToList();
+
             var conditions = (from pc in _dbContext.PatientConditions
                               join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
                               join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
@@ -1029,6 +1050,7 @@ namespace DEMO.Controllers
             var viewModel = new PrescriptionMedicationViewModel
             {
                 CombinedData = combinedData,
+                AllGoodMedications = allGoodMedications,
                 AllMedication = allMedication,
                 PatientInfo = patientInfo ?? new PatientListViewModal(),
                 Allergies = allergies,
@@ -1043,26 +1065,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -1274,10 +1296,10 @@ namespace DEMO.Controllers
             }
 
             var Prescribed = (from p in _dbContext.PatientInfo
-                              join bs in _dbContext.BookSurgery
-            on p.PatientID equals bs.PatientID
+                              join ap in _dbContext.AdmittedPatients
+            on p.PatientID equals ap.PatientID
                               join pr in _dbContext.Prescription
-                              on bs.BookingID equals pr.BookingID
+                              on ap.AdmittedPatientID equals pr.AdmittedPatientID
                               where pr.Status == "Prescribed" && pr.AccountID == accountID
                               select new PrescriptionListViewModal
                               {
@@ -1291,10 +1313,10 @@ namespace DEMO.Controllers
                               }).OrderBy(a => a.Name).ToList();
 
             var PrescribedDispensed = (from p in _dbContext.PatientInfo
-                                       join bs in _dbContext.BookSurgery
-                                       on p.PatientID equals bs.PatientID
+                                       join ap in _dbContext.AdmittedPatients
+                                       on p.PatientID equals ap.PatientID
                                        join pr in _dbContext.Prescription
-                                       on bs.BookingID equals pr.BookingID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                        join rs in _dbContext.DispensedScriptsModel
                                        on pr.PrescriptionID equals rs.PrescriptionID
                                        join a in _dbContext.Accounts
@@ -1314,10 +1336,10 @@ namespace DEMO.Controllers
                                        }).ToList();
 
             var PrescribedRejected = (from p in _dbContext.PatientInfo
-                                      join bs in _dbContext.BookSurgery
-                                      on p.PatientID equals bs.PatientID
+                                      join ap in _dbContext.AdmittedPatients
+                                      on p.PatientID equals ap.PatientID
                                       join pr in _dbContext.Prescription
-                                      on bs.BookingID equals pr.BookingID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                       join rs in _dbContext.RejectScriptModel
                                       on pr.PrescriptionID equals rs.PrescriptionID
                                       join a in _dbContext.Accounts
@@ -1354,26 +1376,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID == accountID
                                  select pr).Count();
 
@@ -1403,26 +1425,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -1451,26 +1473,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
@@ -1500,26 +1522,26 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                   on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
-                                   on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                    where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
                                   join pr in _dbContext.Prescription
-                                  on bs.BookingID equals pr.BookingID
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                 on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                 on bs.BookingID equals pr.BookingID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                  where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
