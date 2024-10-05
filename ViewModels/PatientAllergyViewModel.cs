@@ -9,7 +9,21 @@ namespace DEMO.ViewModels
         public string ActiveIngredientName { get; set; }
         public string ConditionName { get; set; }
         public string MedicationName { get; set; }
-        
+
+        public int Height { get; set; }
+        public int Weight { get; set; }
+        public int SystolicBloodPressure { get; set; }
+        public int DiastolicBloodPressure { get; set; }
+        public int HeartRate { get; set; }
+        public int BloodOxygen { get; set; }
+        public int Respiration { get; set; }
+        public int BloodGlucoseLevel { get; set; }
+        public int Temperature { get; set; }
+        public TimeOnly Time { get; set; }
+        public DateOnly Date { get; set; }
+
+
+        public List<PatientAllergyViewModel> Allvitals { get; set; }
         public List<PatientAllergyViewModel> Allallergy { get; set; }
         public List<PatientAllergyViewModel> AllCurrentMed { get; set; }
         public List<PatientAllergyViewModel> AllConditions { get; set; }

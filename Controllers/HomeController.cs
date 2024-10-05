@@ -611,8 +611,8 @@ namespace DEMO.Controllers
                                 join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
                                 where b.AccountID == accountID
                                 && ap.AdmissionStatusID == 3
-                                && bed.Active
-                                && w.Active
+                                && bed.Active == true
+                                && w.Active == true
                                 select new AdmissionsListViewModel
                                 {
                                     BookingID = b.BookingID,
@@ -787,17 +787,37 @@ namespace DEMO.Controllers
         }
         public IActionResult VitalsAndHistory(int patientID)
         {
+            var patientVitals = (from pv in _dbContext.PatientVitals
+                                 where pv.PatientID == patientID
+                                 select new PatientAllergyViewModel
+                                 {
+                                     Height=pv.Height,
+                                     Weight= pv.Weight,
+                                     SystolicBloodPressure= pv.SystolicBloodPressure,
+                                     DiastolicBloodPressure= pv.DiastolicBloodPressure,
+                                     HeartRate=  pv.HeartRate,
+                                     BloodOxygen=  pv.BloodOxygen,
+                                     Respiration= pv.Respiration,
+                                     BloodGlucoseLevel= pv.BloodGlucoseLevel,
+                                     Temperature =  pv.Temperature,
+                                     Time = pv.time,
+                                     //Date = pv.Date
+                                 }).ToList();
+
+
             var allergy = (from pa in _dbContext.PatientAllergy
-                           join p in _dbContext.PatientInfo on pa.patientAllergyID equals p.PatientID
-                           join ai in _dbContext.Activeingredient
-                               on pa.ActiveingredientID equals ai.ActiveingredientID
-                           where pa.patientAllergyID == patientID
+                           join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                           join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                           where pa.PatientID == patientID
                            select new PatientAllergyViewModel
                            {
                                Name = p.Name,
                                Surname = p.Surname,
                                ActiveIngredientName = ai.ActiveIngredientName
-                           }).OrderBy(ai => ai.ActiveIngredientName).ToList();
+                           })
+            .OrderBy(ai => ai.ActiveIngredientName)
+            .ToList();
+
 
             var conditions = (from pc in _dbContext.PatientConditions
                               join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID

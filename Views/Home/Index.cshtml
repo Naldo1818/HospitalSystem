@@ -11,41 +11,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
-</head>
-<body>
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <style>
         .card {
             height: 500px; /* Adjust the height as needed */
             padding: 20px; /* Optional: add padding for better spacing */
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1); /* Optional: add some shadow for better appearance */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Optional: add some shadow for better appearance */
         }
+
+        .input-container {
+            position: relative;
+        }
+
+            .input-container input {
+                padding-right: 30px; /* Space for the icon */
+            }
+
+            .input-container .icon {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 16px;
+                color: #dc3545; /* Red color for invalid input */
+            }
+
+            .input-container input.is-valid + .icon {
+                color: #28a745; /* Green color for valid input */
+            }
     </style>
+</head>
+<body>
     <div class="card">
         <h1>Apollo+</h1>
-         <br />
+        <br />
         <br />
         <form asp-action="Index" method="post">
             <h4>Username</h4>
-            <div>
+            <div class="input-container">
                 <input asp-for="Username" class="form-control" placeholder="Username" />
-                <span asp-validation-for="Username" class="text-danger"></span>
+             
+                <i class="fas fa-exclamation-circle icon"></i> <!-- Validation icon -->
             </div>
             <br />
             <h4>Password</h4>
-            <div>
+            <div class="input-container">
                 <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+             
+                <i class="fas fa-exclamation-circle icon"></i> <!-- Validation icon -->
             </div>
             <br />
             <div>
                 <input class="btn custom-button" type="submit" value="Login" />
             </div>
         </form>
-
-        
-			
-
-        
     </div>
+
+    <script>
+        // JavaScript to toggle icon color based on input validation
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', function () {
+                const icon = this.nextElementSibling.nextElementSibling;
+                if (this.checkValidity()) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                    icon.classList.remove('fa-exclamation-circle');
+                    icon.classList.add('fa-check-circle');
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                    icon.classList.remove('fa-check-circle');
+                    icon.classList.add('fa-exclamation-circle');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

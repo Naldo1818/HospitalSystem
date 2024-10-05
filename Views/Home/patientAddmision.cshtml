@@ -304,6 +304,7 @@
     </div>
     <script>
         $(document).ready(function () {
+            // Initialize DataTable
             var table = $('#example').DataTable({
                 "language": {
                     "zeroRecords": "No matching records found"
@@ -315,11 +316,11 @@
                 var searchText = $('#searchInput').val().trim();
                 var dateText = $('#dateInput').val();
 
-                // If dateText is empty, no filtering is applied
+                // Apply date filter on column 3 and general search
                 table.column(3).search(dateText ? dateText : '', true, false);
                 table.search(searchText).draw();
 
-                // Show or hide table based on search results
+                // Hide or show the table based on the input
                 if (searchText === '' && dateText === '') {
                     $('#example').hide();
                 } else {
@@ -333,75 +334,68 @@
             // Event listeners for search and date input changes
             $('#searchInput, #dateInput').on('keyup change', filterTable);
 
-            // Initial filter to apply on page load if there are pre-existing values
-            filterTable();
+
+            // Edit Booking Modal: Populate modal fields with data from the clicked button
+            $('#editBookingModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var patientID = button.data('patient-id');
+                var name = button.data('name');
+                var surname = button.data('surname');
+                var surgeryDate = button.data('surgery-date');
+                var surgeryTime = button.data('surgery-time');
+                var theater = button.data('theater');
+                var bookingID = button.data('booking-id');
+
+                // Update the modal's content
+                var modal = $(this);
+                modal.find('#nameInput').val(name);
+                modal.find('#surnameInput').val(surname);
+                modal.find('#surgeryDateInput').val(surgeryDate);
+                modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
+                modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
+                modal.find('#PatientID').val(patientID);
+                modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+                modal.find('#AccountID').val(button.data('account-id'));
+            });
+
+            // Show confirmation modal before submitting the booking form
+            $('#openConfirmModalButton').on('click', function () {
+                $('#confirmEditBookingModal').modal('show'); // Show confirmation modal
+            });
+
+            // Handle the "Yes" button click in the confirmation modal
+            $('#confirmEditBookingButton').on('click', function () {
+                $('#editUserForm').submit(); // Submit the form
+            });
+
+
+            // Add Prescription Modal: Populate modal fields with data from the clicked button
+            $('#addPrescriptionModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var patientID = button.data('patient-id');
+                var name = button.data('name');
+                var surname = button.data('surname');
+                var bookingID = button.data('booking-id');
+
+                // Update the modal's content
+                var modal = $(this);
+                modal.find('#nameInput').val(name);
+                modal.find('#surnameInput').val(surname);
+                modal.find('#PatientID').val(patientID);
+                modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+            });
+
+            // Show confirmation modal before submitting the prescription form
+            $('#openConfirmPrescriptionModalButton').on('click', function () {
+                $('#confirmAddPrescriptionModal').modal('show'); // Show confirmation modal
+            });
+
+            // Handle the "Yes" button click in the confirmation modal for prescriptions
+            $('#confirmAddPrescriptionButton').on('click', function () {
+                $('#addPrescriptionForm').submit(); // Submit the form
+            });
         });
     </script>
-    <script>
-        $('#editBookingModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var patientID = button.data('patient-id');
-            var name = button.data('name');
-            var surname = button.data('surname');
-            var surgeryDate = button.data('surgery-date');
-            var surgeryTime = button.data('surgery-time');
-            var theater = button.data('theater');
-            var bookingID = button.data('booking-id');
 
-            // Update the modal's content
-            var modal = $(this);
-            modal.find('#nameInput').val(name);
-            modal.find('#surnameInput').val(surname);
-            modal.find('#surgeryDateInput').val(surgeryDate);
-            modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
-            modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
-            modal.find('#PatientID').val(patientID);
-            modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
-            modal.find('#AccountID').val(button.data('account-id'));
-        });
-
-
-
-        // Show confirmation modal before submitting the booking form
-        $('#openConfirmModalButton').on('click', function () {
-            $('#confirmEditBookingModal').modal('show'); // Show confirmation modal
-        });
-
-        // Handle the "Yes" button click in the confirmation modal
-        $('#confirmEditBookingButton').on('click', function () {
-            $('#editUserForm').submit(); // Submit the form
-        });
-
-    </script>
-    <script>
-        $('#addPrescriptionModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var patientID = button.data('patient-id');
-            var name = button.data('name');
-            var surname = button.data('surname');
-            var bookingID = button.data('booking-id');
-
-            // Update the modal's content
-            var modal = $(this);
-            modal.find('#nameInput').val(name);
-            modal.find('#surnameInput').val(surname);
-            modal.find('#PatientID').val(patientID);
-            modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
-
-        });
-
-
-
-        // Show confirmation modal before submitting the booking form
-        $('#openConfirmPrescriptionModalButton').on('click', function () {
-            $('#confirmAddPrescriptionModal').modal('show'); // Show confirmation modal
-        });
-
-        // Handle the "Yes" button click in the confirmation modal
-        $('#confirmAddPrescriptionButton').on('click', function () {
-            $('#addPrescriptionForm').submit(); // Submit the form
-        });
-
-    </script>
 </body>
 </html>
