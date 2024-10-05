@@ -8,23 +8,35 @@ namespace DEMO.Models.NurseModels
     {
         [Key]
         public int AdmittedPatientID { get; set; }
+
         [Required]
         public int PatientID { get; set; }
+
         [Required]
         public int BookingID { get; set; }
+
         [Required]
         public int WardID { get; set; }
 
         public int AddressID { get; set; }
-       
+
         public int BedId { get; set; }
+
         [Required]
-        public DateTime Date = DateTime.Now;
+        public DateOnly Date { get; set; }
+
         [Required]
         public int AdmissionStatusID { get; set; }
+
         [Required]
-        public TimeOnly Time = TimeOnly.FromDateTime(DateTime.Now);
-       
+        public TimeOnly Time { get; set; }
+
+        // Constructor to set default values
+        public AdmittedPatientsModel()
+        {
+            Date = DateOnly.FromDateTime(DateTime.Now);
+            Time = TimeOnly.FromDateTime(DateTime.Now);
+        }
     }
 }
  
