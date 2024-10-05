@@ -85,26 +85,27 @@ namespace DEMO.Controllers
             var prescription = _dbContext.Prescription.Find(id);
 
             var combinedData = (from p in _dbContext.Prescription
-                     
+                                join ad in _dbContext.AdmittedPatients
+                                        on p.AdmittedPatientID equals ad.AdmittedPatientID
 
                                 join a in _dbContext.PatientAllergy
-                                on p.BookingID equals a.PatientID
+                                on ad.PatientID equals a.PatientID
                                 join ai in _dbContext.Activeingredient
                                 on a.ActiveingredientID equals ai.ActiveingredientID
 
 
                                 join c in _dbContext.PatientConditions
-                                on p.BookingID equals c.PatientID
+                                on ad.PatientID equals c.PatientID
                                 join co in _dbContext.Condition
                                 on c.ConditionsID equals co.ConditionID
 
                                 join cm in _dbContext.patientMedication
-                                on p.BookingID equals cm.PatientID
+                                on ad.PatientID equals cm.PatientID
                                 join m in _dbContext.Medication
                                 on cm.MedicationID equals m.MedicationID
 
                                 join pv in _dbContext.PatientVitals
-                                on p.BookingID equals pv.PatientID
+                                on ad.PatientID equals pv.PatientID
 
                               
 
