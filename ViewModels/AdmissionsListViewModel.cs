@@ -6,6 +6,7 @@ namespace DEMO.ViewModels
     {
         public int PatientID { get; set; }
         public int BookingID { get; set; }
+        public int AdmittedPatientID { get; set; }
         public int AccountID { get; set; }
         [Required(ErrorMessage = "Name is required.")]
         [StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]

@@ -3,6 +3,7 @@
     ViewData["Title"] = "Add Medication";
     Layout = "_Layout2";
 }
+
 @model DEMO.ViewModels.PrescriptionMedicationViewModel
 <!DOCTYPE html>
 <html lang="en">
@@ -23,6 +24,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
+    <style>
+        .table-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+
     <!-- Sidebar -->
     <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
         <div class="offcanvas-header">
@@ -111,33 +119,35 @@
                                 <tr>
                                     <th scope="col">Date</th>
                                     <th scope="col">Time</th>
-                                    <th scope="col">Height</th>
-                                    <th scope="col">Weight</th>
-                                    <th scope="col">Temperature</th>
-                                    <th scope="col">Blood Pressure</th>
-                                    <th scope="col">Pulse Rate</th>
-                                    <th scope="col">Respiratory Rate</th>
-                                    <th scope="col">Blood Oxygen</th>
-                                    <th scope="col">Blood Glucose Level</th>
-                                    <th scope="col">Vitals High Limit</th>
-                                    <th scope="col">Vitals Low Limit</th>
+                                    <th scope="col">Height cm</th>
+                                    <th scope="col">Weight kg</th>
+                                    <th scope="col">Systolic Blood Pressure mmHg</th>
+                                    <th scope="col">Distolic Blood Pressure mmHg</th>
+                                    <th scope="col">Heart Rate bpm</th>
+                                    <th scope="col">Blood Oxygen %</th>
+                                    <th scope="col">Respiration Rate bpm</th>
+                                    <th scope="col">Blood Glucose Level mg/dL</th>
+                                    <th scope="col">Temperature °C</th>
+
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>2024-05-14</td>
-                                    <td>08:00</td>
-                                    <td>175 cm</td>
-                                    <td>70 kg</td>
-                                    <td>36.5°C</td>
-                                    <td>120/80 mmHg</td>
-                                    <td>80 bpm</td>
-                                    <td>16 breaths/min</td>
-                                    <td>98%</td>
-                                    <td>90 mg/dL</td>
-                                    <td>140/90 mmHg</td>
-                                    <td>90/60 mmHg</td>
-                                </tr>
+                                @foreach (var item in Model.Allvitals)
+                                {
+                                    <tr>
+                                        <td>@item.Date</td>
+                                        <td>@item.Time</td>
+                                        <td>@item.Height</td>
+                                        <td>@item.Weight</td>
+                                        <td>@item.SystolicBloodPressure</td>
+                                        <td>@item.DiastolicBloodPressure</td>
+                                        <td>@item.HeartRate</td>
+                                        <td>@item.BloodOxygen</td>
+                                        <td>@item.Respiration</td>
+                                        <td>@item.BloodGlucoseLevel</td>
+                                        <td>@item.Temperature</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -151,8 +161,9 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
+
                         <form id="addMedicationForm" method="post" action="@Url.Action("AddMedication", "Home")">
-                            <h2>Add Medication</h2>
+                            <h2>Prescription Medication</h2>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
@@ -163,7 +174,7 @@
                                     <br>
                                     <label for="medicationSelect" class="form-label">Medication</label>
                                     <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required onchange="checkForAllergy()">
-                                        <option value="" disabled selected>Select a Description</option>
+                                        <option disabled selected>Select a Description</option>
                                         @foreach (var medication in Model.AllGoodMedications)
                                         {
                                             <option value="@medication.MedicationID" data-allergic="false">@medication.MedicationName</option>
@@ -175,7 +186,6 @@
                                         }
                                     </select>
                                 </div>
-
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <br>
@@ -228,10 +238,18 @@
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
+                            @{
+                                var allergicMedications = Model.AllMedication.Select(m => m.MedicationName).ToList(); // List of allergic medication names
+                            }
+
                             <tbody>
                                 @foreach (var item in Model.CombinedData)
                                 {
-                                    <tr>
+                                    // Check if the medication is in the list of allergic medications
+                                    var isAllergic = allergicMedications.Contains(item.MedicationName);
+
+                                    <tr class="@((isAllergic) ? "table-danger" : "")">
+                                        <!-- Apply red class if allergic -->
                                         <td>@item.Name</td>
                                         <td>@item.Surname</td>
                                         <td>@item.DateGiven</td>
@@ -248,7 +266,6 @@
                                                 <button type="submit" class="btn btn-danger">Remove</button>
                                             </form>
                                         </td>
-
                                     </tr>
                                 }
                             </tbody>
@@ -317,19 +334,21 @@
         });
         // Handle confirmation of saving Medication code
         $('#saveMedicationButton').on('click', function () {
-
             $.ajax({
                 url: '@Url.Action("AddMedication", "Home")',
                 type: 'POST',
                 data: $('#addMedicationForm').serialize(),
                 success: function (response) {
-                    window.location.href = '@Url.Action("PrescriptionMedication", "Home", new { PrescriptionId = ViewBag.PrescriptionID })';
+                    window.location.href = '@Url.Action("PrescriptionMedication", "Home")' + '?PrescriptionId=' + $('#PrescriptionID').val();
                 },
                 error: function (xhr, status, error) {
-                    console.log("Error occurred:", error);
+                    alert('Error: ' + error);
                 }
             });
+            $('#confirmMedicationModal').modal('hide'); // Close the confirmation modal after saving
         });
+
+
 
     </script>
     <script>

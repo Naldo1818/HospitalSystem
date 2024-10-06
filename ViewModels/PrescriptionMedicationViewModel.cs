@@ -44,7 +44,22 @@ namespace DEMO.ViewModels
         public int ActiveIngredientStrength { get; set; }
         public string ActiveIngredientName { get; set; }
 
+        public int Height { get; set; }
+        public int Weight { get; set; }
+        public int SystolicBloodPressure { get; set; }
+        public int DiastolicBloodPressure { get; set; }
+        public int HeartRate { get; set; }
+        public int BloodOxygen { get; set; }
+        public int Respiration { get; set; }
+        public int BloodGlucoseLevel { get; set; }
+        public int Temperature { get; set; }
+        public TimeOnly Time { get; set; }
+        public DateOnly Date { get; set; }
+
+
+
         public int PrescriptionID { get; set; }
+        public List<PrescriptionMedicationViewModel> Allvitals { get; set; }
         public List<PrescriptionMedicationViewModel> AllGoodMedications { get; set; }
         public List<PrescriptionMedicationViewModel> AllMedication { get; set; }
         public List<PrescriptionMedicationViewModel> CombinedData { get; set; }

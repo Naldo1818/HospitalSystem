@@ -48,6 +48,9 @@ namespace DEMO.ViewModels
         public string Status { get; set; }
 
         [Required]
+        public int PrescriptionID { get; set; }
+        
+        [Required]
         [StringLength(500, ErrorMessage = "Take cannot be longer than 500 characters.")]
         public string Take { get; set; }
         public DateOnly DateGiven { get; set; }

@@ -133,7 +133,10 @@
                                                aria-hidden="true"
                                                asp-controller="Home"
                                                asp-action="vitalsAndHistory"
-                                               asp-route-patientID="@Data.PatientID">Check Vitals and Medical History</a>
+                                               asp-route-name="@Data.Name"
+                                               asp-route-surname="@Data.Surname"
+                                               asp-route-patientID="@Data.PatientID">Check Vitals and Medical History
+                                           </a>
 
                                     </td>
                                 </tr>

@@ -194,7 +194,7 @@ namespace DEMO.Controllers
                     var patientInfo = new AdmittedPatientsModel()
                     {
                         PatientID = booking.PatientID,
-                        Date = DateTime.Now,
+                        //Date = DateOnly,
                         AdmissionStatusID = _dbContext.AdmissionStatus.Where(x => x.Description == "Admitted").FirstOrDefault().AdmissionStatusId,
                     };
 

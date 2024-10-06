@@ -23,20 +23,8 @@
                     <div class="p-3 mt-5 border" style="background-color: white;">
 
                         <form>
-                            <h2>Vitals And History</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Jin" style=" width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Surname</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="Woo" style=" width:300px">
-                                </div>
-                               
-                            </div>
+                            <h2>Vitals And History -  @ViewBag.PatientName @ViewBag.PatientSurname</h2>
+                        
                             <div class="form-group row">
                                 <div class="col-4">
                                 <br>
@@ -58,7 +46,8 @@
                         <table id="vitalsTable" class="display">
                             <thead>
                                 <tr>
-                                   
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Time</th>
                                     <th scope="col">Height cm</th>
                                     <th scope="col">Weight kg</th>
                                     <th scope="col">Systolic Blood Pressure mmHg</th>
@@ -68,27 +57,28 @@
                                     <th scope="col">Respiration Rate bpm</th>
                                     <th scope="col">Blood Glucose Level mg/dL</th>
                                     <th scope="col">Temperature °C</th>
-                                    <th scope="col">Time</th>
-                                   
-                                    
-                                    
+                          
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>2024-05-14 08:00</td>
-                                    <td>175 </td>
-                                    <td>70 </td>
-                                    <td>36.5</td>
-                                    <td>120 </td>
-                                    <td>80 </td>
-                                    <td>80 </td>
-                                    <td>16 </td>
-                                    <td>98</td>
-                                    <td>90 </td>
-                                    
-                                </tr>
+                                @foreach (var item in Model.Allvitals)
+                                {
+                                    <tr>
+                                        <td>@item.Date</td>
+                                        <td>@item.Time</td>
+                                        <td>@item.Height</td>
+                                        <td>@item.Weight</td>
+                                        <td>@item.SystolicBloodPressure</td>
+                                        <td>@item.DiastolicBloodPressure</td>
+                                        <td>@item.HeartRate</td>
+                                        <td>@item.BloodOxygen</td>
+                                        <td>@item.Respiration</td>
+                                        <td>@item.BloodGlucoseLevel</td>
+                                        <td>@item.Temperature</td>
+                                    </tr>
+                                }
                             </tbody>
+
                         </table>
                         <label for="exampleFormControlInput2" class="form-label">Medical Conditions</label>
                         <table class="table">
