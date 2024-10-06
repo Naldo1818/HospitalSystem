@@ -2,14 +2,19 @@
 using DEMO.Models;
 using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
+using DEMO.Data.Migrations;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using MimeKit;
 using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Diagnostics;
 
 namespace DEMO.Controllers
 {
@@ -24,7 +29,92 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-      
+        //adding pharmacy medication
+       
+        public ActionResult AddMedication(string MedicationJson, string DosgaeFormJson, string ScheduleJson, AddMedicationViewModel model)
+        {
+
+            //medication
+            if (!string.IsNullOrEmpty(MedicationJson))
+            {
+                //model.Conditions = JsonConvert.DeserializeObject<List<Condition>>(ConditionsJson);
+                var medicationlist = JsonConvert.DeserializeObject<List<string>>(MedicationJson);
+
+                if (medicationlist != null)
+                {
+                    foreach (var item in medicationlist)
+                    {
+                        Medication medication = new Medication();
+                        medication.MedicationID = _dbContext.Medication.Where(x => x.MedicationName == item.ToString()).FirstOrDefault().MedicationID;
+
+                        model.PharmacyMedications.Add(medication);
+                    }
+                }
+            }
+
+
+            //dosage form
+            if (!string.IsNullOrEmpty(DosgaeFormJson))
+            {
+                //model.Conditions = JsonConvert.DeserializeObject<List<Condition>>(ConditionsJson);
+                var medicationlist = JsonConvert.DeserializeObject<List<string>>(DosgaeFormJson);
+
+                if (medicationlist != null)
+                {
+                    foreach (var item in medicationlist)
+                    {
+                        Medication df = new Medication();
+                        df.MedicationID = _dbContext.Medication.Where(x => x.MedicationForm == item.ToString()).FirstOrDefault().MedicationID;
+
+                        model.PharmMedDF.Add(df);
+                    }
+                }
+            }
+
+
+            //schedule
+            
+
+
+
+
+
+
+
+
+
+            return View();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public IActionResult Index()
@@ -351,7 +441,7 @@ namespace DEMO.Controllers
 
 
 
-
+      
 
 
 

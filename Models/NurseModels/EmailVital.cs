@@ -15,6 +15,8 @@ namespace DEMO.Models.NurseModels
         [Required]
         public List<RetakeVitals> Vitals { get; set; }
         public string Notes { get; set; }
+        
+
 
     }
 }

@@ -2,6 +2,10 @@
 using DEMO.Models;
 using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
+using DEMO.Data.Migrations;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -10,6 +14,7 @@ using MimeKit;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Diagnostics;
 
 namespace DEMO.Controllers
 {
@@ -194,7 +199,7 @@ namespace DEMO.Controllers
                     var patientInfo = new AdmittedPatientsModel()
                     {
                         PatientID = booking.PatientID,
-                        //Date = DateOnly,
+                        Date = DateOnly.FromDateTime(DateTime.Now),
                         AdmissionStatusID = _dbContext.AdmissionStatus.Where(x => x.Description == "Admitted").FirstOrDefault().AdmissionStatusId,
                     };
 
@@ -407,9 +412,75 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        public IActionResult EmailVitals()
+        public async Task<IActionResult> EmailVitals()
         {
-            return View();
+            var combinedData = await (from pv in _dbContext.PatientVitals
+                                      join ad in _dbContext.AdmittedPatients
+                                      on pv.PatientID equals ad.PatientID
+                                      join p in _dbContext.PatientInfo
+                                      on ad.PatientID equals p.PatientID
+
+                                      select new EmailVital
+                                      {
+                                          
+                                      }).ToListAsync();
+
+            if (combinedData == null || !combinedData.Any())
+            {
+                TempData["ErrorMessage"] = "Vitals or patient not found.";
+                return RedirectToAction("AdmittedPatients", "Nurse");
+            }
+
+            var firstData = combinedData.First(); // Get the first entry for common fields
+
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", "noreply@dayhospital.com"));
+            emailMessage.To.Add(new MailboxAddress("Surgoen", firstData.Email));
+            emailMessage.Subject = "Vitals Concern and Prescription Request for";
+
+            var VitalsList = new System.Text.StringBuilder();
+            foreach (var item in combinedData)
+            {
+                //VitalsList.AppendLine($"<li>{item.Name}</li>");
+            }
+
+            var bodyBuilder = new BodyBuilder
+            {
+                //HtmlBody = $@"
+                //<h3>Patient Information</h3>
+                //<p><strong>Full Name:</strong> {firstData.Name} {firstData.Surname}</p>
+                //<p><strong>Contact Details:</strong> {firstData.ContactNumber} {firstData.Email}</p>
+                //<h3>You have been booked for the following surgery by Dr.{firstData.AccountName} {firstData.AccountSurname}</h3>
+                //<p><strong>Vitals</strong> {firstData.Theater}</p>
+                //<p><strong>Surgery Time:</strong> {firstData.SurgeryTime}</p>
+                //<h3>Vitals</h3>
+                //<ul>
+                //    {VitalsList}
+                //</ul>
+                
+                //<p>Kind Regards,<br/>Apollo+</p>"
+            };
+
+            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+            try
+            {
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
+                    await client.SendAsync(emailMessage);
+                    await client.DisconnectAsync(true);
+                }
+
+                TempData["SuccessMessage"] = "Email sent successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
+            }
+
+            return RedirectToAction("AdmittedPatients", "Nurse");
         }
 
 
