@@ -1589,7 +1589,7 @@ namespace DEMO.Controllers
         {
 
             var combinedData = (from pr in _dbContext.Prescription
-                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.BookingID
+                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
                                 join p in _dbContext.PatientInfo on ap.PatientID equals p.PatientID
                                 join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
@@ -1598,6 +1598,8 @@ namespace DEMO.Controllers
                                 select new PrescriptionMedicationViewModel
                                 {
                                     Medid = mi.InstructionsID,
+                                    Name = p.Name,
+                                    Surname = p.Surname,
                                     DateGiven = pr.DateGiven,
                                     Status = pr.Status,
                                     MedicationName = m.MedicationName,
@@ -1652,6 +1654,7 @@ namespace DEMO.Controllers
      .OrderBy(x => x.m.MedicationName)  // Order by MedicationName
      .Select(x => new PrescriptionMedicationViewModel
      {
+         MedicationID = x.m.MedicationID,
          MedicationName = x.m.MedicationName  // Use MedicationName from Medication table
      })
      .Distinct()
@@ -1670,6 +1673,7 @@ namespace DEMO.Controllers
                                  select new PrescriptionMedicationViewModel
                                  {
                                      ActiveIngredientName = ai.ActiveIngredientName,
+                                     MedicationID = m.MedicationID,
                                      MedicationName = m.MedicationName
                                  }).ToList();
 
@@ -1754,6 +1758,7 @@ namespace DEMO.Controllers
             ViewBag.PrescribedCount = prescribedCount;
             ViewBag.DispensedCount = dispensedCount;
             ViewBag.RejectedCount = rejectedCount;
+            ViewBag.PrescriptionID = id;
             return View(viewModel);
         }
 

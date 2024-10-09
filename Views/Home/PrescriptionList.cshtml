@@ -58,6 +58,7 @@
             align-items: center;
             justify-content: center;
         }
+
     </style>
 </head>
 <body>
@@ -168,7 +169,7 @@
                                         <td>@Data.Take</td>
                                         <td>@Data.Status</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#DmedicationModal">
                                                 Check Prescription
                                             </button>
                                         </td>
@@ -252,7 +253,43 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <a class="btn btn-primary mr-2" href="@Url.Action("ChangeMedication", "Home")">Change Medication</a>
+                    <button type="button" id="change-medication-btn" class="btn btn-primary" style="display:none;">Change Medication</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- dISPENSD  Modal -->
+    <div class="modal fade" id="DmedicationModal" tabindex="-1" role="dialog" aria-labelledby="DmedicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DmedicationModalLabel">Medication Check</h5>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="example">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Surname</th>
+                                <th scope="col">Prescription Date</th>
+                                <th scope="col">Medication Name</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Schedule</th>
+                                <th scope="col">Form</th>
+                                <th scope="col">Instructions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                            <!-- More table data can be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -360,8 +397,10 @@
     </script>
     <script>
         $(document).ready(function () {
+            let currentPrescriptionId = null; // Variable to store the current prescription ID
+
             $('.check-prescription-btn').click(function () {
-                var prescriptionId = $(this).data('id');
+                currentPrescriptionId = $(this).data('id'); // Store the prescription ID
 
                 // Clear the modal body before loading new data
                 $('#example tbody').empty();
@@ -375,7 +414,7 @@
                 $.ajax({
                     url: '@Url.Action("PrescriptionDetails", "Home")',
                     type: 'POST',
-                    data: { id: prescriptionId },
+                    data: { id: currentPrescriptionId },
                     success: function (data) {
                         // Loop through the returned data and add rows to the modal table
                         $.each(data, function (index, item) {
@@ -409,11 +448,24 @@
                             // Append the row to the table body
                             $('#example tbody').append(row);
                         });
+
+                        // Enable the Change Medication button after loading data
+                        $('#change-medication-btn').data('prescription-id', currentPrescriptionId).show(); // Show and set the prescription ID
                     }
                 });
             });
+
+            // Handle Change Medication button click event
+            $('#change-medication-btn').click(function () {
+                var prescriptionId = $(this).data('prescription-id');
+                if (prescriptionId) {
+                    window.location.href = '@Url.Action("PrescriptionMedication", "Home")' + '/' + prescriptionId;
+                }
+            });
         });
     </script>
+
+
 
 </body>
 </html>
