@@ -1343,7 +1343,7 @@ namespace DEMO.Controllers
                 // Handle the case where accountID is not available or is invalid
                 accountID = 0; // Or handle as required
             }
-            //var PrescriptionDetails = ().ToList();
+
             var Prescribed = (from p in _dbContext.PatientInfo
                               join ap in _dbContext.AdmittedPatients
             on p.PatientID equals ap.PatientID
@@ -1370,10 +1370,11 @@ namespace DEMO.Controllers
                                        on pr.PrescriptionID equals rs.PrescriptionID
                                        join a in _dbContext.Accounts
                                        on rs.AccountID equals a.AccountID
-                                       where pr.Status == "Dispensed"
+                                       where pr.Status == "Dispensed" && pr.AccountID == accountID
                                        orderby p.Name
                                        select new PrescriptionListViewModal
                                        {
+                                           PrescriptionID = pr.PrescriptionID,
                                            PatientName = p.Name,
                                            PatientSurname = p.Surname,
                                            DateGiven = pr.DateGiven,
@@ -1393,10 +1394,11 @@ namespace DEMO.Controllers
                                       on pr.PrescriptionID equals rs.PrescriptionID
                                       join a in _dbContext.Accounts
                                       on rs.AccountID equals a.AccountID
-                                      where pr.Status == "Rejected"
+                                      where pr.Status == "Rejected" && pr.AccountID == accountID
                                       orderby p.Name
                                       select new PrescriptionListViewModal
                                       {
+                                          PrescriptionID = pr.PrescriptionID,
                                           PatientName = p.Name,
                                           PatientSurname = p.Surname,
                                           DateGiven = pr.DateGiven,
@@ -1459,7 +1461,33 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
-        
+        [HttpPost]
+        public IActionResult PrescriptionDetails(int id)
+        {
+            var prescriptionDetails = (from pr in _dbContext.Prescription
+                                       join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
+                                       join p in _dbContext.PatientInfo on ap.PatientID equals p.PatientID
+                                       join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
+                                       join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                                       where pr.PrescriptionID == id
+                                       orderby p.Name
+                                       select new PrescriptionMedicationViewModel
+                                       {
+                                           Medid = mi.InstructionsID,
+                                           Name = p.Name,
+                                           Surname = p.Surname,
+                                           DateGiven = pr.DateGiven,
+                                           Status = pr.Status,
+                                           MedicationName = m.MedicationName,
+                                           Quantity = mi.Quantity,
+                                           MedicationForm = m.MedicationForm,
+                                           Schedule = m.Schedule,
+                                           Instructions = mi.Instructions
+                                       }).ToList();
+
+            return Json(prescriptionDetails);  // Return data as JSON
+        }
+
         public IActionResult MedicationInteraction()
         {
             var accountID = HttpContext.Session.GetString("UserAccountId");
