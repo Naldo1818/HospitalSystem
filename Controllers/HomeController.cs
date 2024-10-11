@@ -349,6 +349,7 @@ namespace DEMO.Controllers
                                     btcID = st.BookingTreatmentCodeID,
                                     TreatmentName = t.TreatmentName,
                                     TreatmentCode = t.TreatmentCode,
+                                    Theater = b.Theater,
                                     SurgeryDate = b.SurgeryDate,
                                     SurgeryTime = b.SurgeryTime,
                                     Name = p.Name,
@@ -1759,6 +1760,81 @@ namespace DEMO.Controllers
             ViewBag.DispensedCount = dispensedCount;
             ViewBag.RejectedCount = rejectedCount;
             ViewBag.PrescriptionID = id;
+            return View(viewModel);
+        }
+
+        public IActionResult Reports()
+        {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+            var combinedData = (from p in _dbContext.PatientInfo
+                                join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
+                                join stc in _dbContext.SurgeryTreatmentCode on bs.BookingID equals stc.BookingID
+                                join tc in _dbContext.TreatmentCodes on stc.TreatmentCodeID equals tc.TreatmentCodeID
+                                where bs.AccountID == accountID
+                                orderby bs.SurgeryDate
+                                select new ReportViewModel
+                                {
+                                    Patient = p.Name + " " + p.Surname,
+                                    SurgeryDate = bs.SurgeryDate,
+                                    TreatmentCode = tc.TreatmentCode,
+                                    TreatmentName = tc.TreatmentName
+                                }).ToList();
+
+            var viewModel = new ReportViewModel
+            {
+                AllcombinedData = combinedData,
+
+            };
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join ap in _dbContext.AdmittedPatients
+                                   on p.PatientID equals ap.PatientID
+                                   join pr in _dbContext.Prescription
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
+                                  join pr in _dbContext.Prescription
+                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join ap in _dbContext.AdmittedPatients
+                                 on p.PatientID equals ap.PatientID
+                                 join pr in _dbContext.Prescription
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                 select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
 
