@@ -371,6 +371,12 @@ namespace DEMO.Controllers
         public IActionResult ViewAllActivePrescriptionsPage()
 
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
 
             var combinedData = (from prescription in _dbContext.Prescription
                                 join medicationInstruction in _dbContext.MedicationInstructions
@@ -388,6 +394,7 @@ namespace DEMO.Controllers
 
                                 {
                                     // Prescription fields
+                                    PrescriptionID=prescription.PrescriptionID,
                                     SurgeonName= account.Name,
                                     SurgeonSurname=account.Surname,
                                     DateGiven = prescription.DateGiven,

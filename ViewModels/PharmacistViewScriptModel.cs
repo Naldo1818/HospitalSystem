@@ -1,5 +1,5 @@
 ﻿using DEMO.Data.Migrations;
-using DEMO.Models.NurseModels;
+using DEMO.Models;
 
 namespace DEMO.ViewModels
 {
