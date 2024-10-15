@@ -6,12 +6,78 @@
 
 
 
+@model DEMO.ViewModels.AddMedicationViewModel
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+
+           function showMedications() {
+            $('#f-3').show('slow', 'swing');
+            $('#f-1, #f-2, #f-4').hide('slow', 'swing');
+            setActiveTab('Medication');
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: "/lookup/GetAllPharmMedications",
+                type: "Get",
+                success: function (data) {
+
+                    for (var i = 0; i < data.length; i++) {
+                        var opt = new Option(data[i].medicationName, data[i].medicationID);
+                        $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
+                    }
+
+                }
+
+            });
+        });
+
+
+
+
+                //  $(document).ready(function () {
+                //     $.ajax({
+                //                 url: "/lookup/GetAllDosageForms",
+                //         type: "Get",
+                //         success: function (data) {
+
+                //             for (var i = 0; i < data.length; i++) {
+                //                 var opt = new Option(data[i].medicationName, data[i].medicationID);
+                //                 $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
+                //             }
+
+                //         }
+
+                //     });
+                // });
+
+
+
+                //          $(document).ready(function () {
+                //             $.ajax({
+                //                                 url: "/lookup/GetAllSchedules",
+                //                 type: "Get",
+                //                 success: function (data) {
+
+                //                     for (var i = 0; i < data.length; i++) {
+                //                         var opt = new Option(data[i].medicationName, data[i].medicationID);
+                //                         $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
+                //                     }
+
+                //                 }
+
+                //             });
+                //         });
+
+
+
+    </script>
 </head>
 
 
@@ -39,11 +105,25 @@
                             <div class="form-group row">
 
                                 <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
+                                    <br/>
+                                <label for="Medication" Medication Name</label>
+
+                                <select class="select2" id="Medication" name="PharmacyMedications.MedicationID">
+                                    <option value="" disabled selected>Select Medication</option>
+                                    <!-- Add more options as needed -->
+                                </select>
+
+                                <input type="hidden" id="HiddenMedicationInput" name="MedicationJson"></input>
 
                                 </div>
+
+
+
+                            <div class="col-4">
+                                <br />
+                                <label for="exampleFormControlInput1" class="form-label">Stock on hand</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px" placeholder="0">
+                            </div>
 
 
 

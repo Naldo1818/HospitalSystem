@@ -81,12 +81,16 @@
                                                    data-account-id="@Data.AccountID"
                                                    data-patient-id="@Data.PatientID">Edit Booking</a>
                                             </div>
+
                                             <a class="btn btn-primary"
                                                asp-controller="Home"
                                                asp-action="CheckTreatmentCode"
-                                               asp-route-bookingId="@Data.BookingID">
+                                               asp-route-bookingId="@Data.BookingID"
+                                               asp-route-name="@Data.Name"
+                                               asp-route-surname="@Data.Surname">
                                                 Show Treatment Codes
                                             </a>
+
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
                                                    data-bs-toggle="modal"
@@ -95,10 +99,18 @@
                                                    data-surname="@Data.Surname"
                                                    data-booking-id="@Data.BookingID"
                                                    data-account-id="@Data.AccountID"
+                                                   data-admitted-patient-id="@Data.AdmittedPatientID"
                                                    data-patient-id="@Data.PatientID">Give Prescription</a>
                                             </div>
 
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="vitalsAndHistory">Check Vitals and Medical History</a>
+                                          <a class="btn btn-primary"
+                                               aria-hidden="true"
+                                               asp-controller="Home"
+                                               asp-action="vitalsAndHistory"
+                                               asp-route-name="@Data.Name"
+                                               asp-route-surname="@Data.Surname"
+                                               asp-route-patientID="@Data.PatientID">Check Vitals and Medical History
+                                           </a>
                                         </td>
                                     </tr>
                                 }
@@ -215,7 +227,7 @@
                             <form id="addPrescriptionForm" method="post" action="@Url.Action("AddPrescription", "Home")">
                                 <div class="form-group row">
                                     <div class="col-4">
-
+                                        <input type="hidden" id="AdmittedPatientID" name="AdmittedPatientID" />
                                         <input type="hidden" id="BookingID" name="BookingID" />
                                         <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
 
@@ -376,13 +388,15 @@
                 var name = button.data('name');
                 var surname = button.data('surname');
                 var bookingID = button.data('booking-id');
+                var admittedPatientId = button.data('admitted-patient-id');
 
                 // Update the modal's content
                 var modal = $(this);
                 modal.find('#nameInput').val(name);
                 modal.find('#surnameInput').val(surname);
                 modal.find('#PatientID').val(patientID);
-                modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+                modal.find('#BookingID').val(bookingID);
+                modal.find('#AdmittedPatientID').val(admittedPatientId);// Ensure this is correctly set
             });
 
             // Show confirmation modal before submitting the prescription form

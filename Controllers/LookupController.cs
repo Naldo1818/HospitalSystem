@@ -116,6 +116,33 @@ namespace DEMO.Controllers
             return medication;
         }
 
+        public List<Medication> GetAllPharmMedications()
+        {
+            var PharmMedication = new List<Medication>();
+            PharmMedication = _dbContext.Medication.ToList();
+            return PharmMedication;
+        }
+
+
+        public List<Medication> GetAllDosageForms()
+        {
+            var DF = new List<Medication>();
+            DF = _dbContext.Medication.ToList();
+            return DF;
+        }
+
+
+        public List<Medication> GetAllSchedules()
+        {
+            var schedule = new List<Medication>();
+            schedule = _dbContext.Medication.ToList();
+            return schedule;
+        }
+
+
+
+
+
         #endregion
     }
 }

@@ -10,8 +10,6 @@ namespace DEMO.Models.PharmacistModels
         
         public int MedicationID { get; set; }
 
-        public int MedicationActiveingredientID { get; set; }
-
         public int StockonHand { get; set; }
 
         [Required]

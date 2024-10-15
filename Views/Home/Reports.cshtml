@@ -1,0 +1,222 @@
+﻿@{
+    ViewData["Title"] = "Surgery List";
+    Layout = "_Layout2";
+}
+@model DEMO.ViewModels.ReportViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings Page</title>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <style>
+        #example {
+            display: none;
+        }
+
+        .modal-lg-custom {
+            max-width: 90% !important;
+            width: 1000px;
+        }
+
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 60px);
+            height: 80vh;
+        }
+
+        .modal-content-custom {
+            position: relative;
+            display: -ms-flexbox;
+            display: flex;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            width: 105%;
+            pointer-events: auto;
+            background-color: #fff;
+            border: 1px solid rgba(0, 0, 0, .2);
+            border-radius: .3rem;
+            height: 61vh;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <form>
+                            <h2>Surgeon Reports</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="StartDateInput" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="StartDateInput" style="width:300px">
+                                </div>
+                                <div class="col-4">
+                                    <br>
+                                    <label for="EndDateInput" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="EndDateInput" style="width:300px">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-6 border" style="background-color: white;">
+                        <h2>Reports of @ViewBag.UserName @ViewBag.UserSurname:</h2>
+                        <table id="Surgeries" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Patient</th>
+                                    <th scope="col">Treatment Description</th>
+                                    <th scope="col">Treatment Codes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.AllcombinedData)
+                                {
+                                    <tr>
+                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.Patient</td>
+                                        <td>@Data.TreatmentName</td>
+                                        <td>@Data.TreatmentCode</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="totals">
+                            Total Patients: <span id="totalPatients">0</span>
+                          
+                        </div>
+                        </br>
+                        </br>
+                        <h3>Summary Treatment Code:</h3>
+                        <table id="Summary" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Treatment Description</th>
+                                    <th scope="col">Treatment Codes</th>
+                                    <th scope="col">Total Surgeries</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryBody">
+                                @* This will be populated by JavaScript after filtering *@
+                            </tbody>
+                        </table>
+                        </br>
+                    </div>
+                    <a class="btn btn-primary" style="width:100px" aria-hidden="true" onclick="generatePDF()">Print</a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            var table = $('#Surgeries').DataTable();
+
+            // Set End Date to today's date
+            var today = new Date().toISOString().split('T')[0];
+            $('#EndDateInput').val(today);
+
+            // Function to filter by date and count unique patients
+            function filterByDate() {
+                var startDate = $('#StartDateInput').val();
+                var endDate = $('#EndDateInput').val();
+                var uniquePatients = new Set(); // Use a Set to store unique patients
+
+                // Clear the summary table
+                $('#summaryBody').empty();
+
+                // Filter the rows
+                table.rows().every(function () {
+                    var rowData = this.data();
+                    var rowDate = rowData[0]; // Get the date from the first column (Date)
+                    var formattedRowDate = new Date(rowDate).toISOString().split('T')[0];
+                    var patientName = rowData[1]; // Get Patient Name
+
+                    // Check if the row is within the date range
+                    if ((startDate && formattedRowDate < startDate) || (endDate && formattedRowDate > endDate)) {
+                        $(this.node()).hide();
+                    } else {
+                        $(this.node()).show();
+                        uniquePatients.add(patientName); // Add patient name to the set
+
+                        // Update the summary
+                        var treatmentName = rowData[2]; // Get Treatment Description
+                        var treatmentCode = rowData[3]; // Get Treatment Code
+
+                        // Add to the summary counts
+                        var summaryRow = $('#summaryBody').find(`tr[data-treatment-code="${treatmentCode}"]`);
+                        if (summaryRow.length > 0) {
+                            // Increment existing row count
+                            var countCell = summaryRow.find('td:last-child');
+                            countCell.text(parseInt(countCell.text()) + 1);
+                        } else {
+                            // Create a new summary row
+                            $('#summaryBody').append(`
+                                <tr data-treatment-code="${treatmentCode}">
+                                    <td>${treatmentName}</td>
+                                    <td>${treatmentCode}</td>
+                                    <td>1</td>
+                                </tr>
+                            `);
+                        }
+                    }
+                });
+
+                // Update the total patients count with the size of the unique patients set
+                $('#totalPatients').text(uniquePatients.size);
+            }
+
+            // Trigger filtering when date inputs change
+            $('#StartDateInput, #EndDateInput').on('change', function () {
+                filterByDate();
+            });
+
+            // Initial count on page load
+            filterByDate();
+        });
+
+    </script>
+
+    <script>
+        function generatePDF() {
+            var element = document.querySelector('.p-3.mt-6.border'); // The div you want to convert
+            var opt = {
+                margin: 1,
+                filename: 'report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+            };
+            // New Promise-based usage:
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+
+</body>
+</html>
