@@ -93,6 +93,34 @@ namespace DEMO.Controllers
                     else if (user.Role == "Nurse")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
+                        var nurse = _dbContext.Accounts
+                .Where(a => a.AccountID == AccountID)
+                .Select(a => new NurseView
+                {
+                    AccountID = a.AccountID,
+                    Name = a.Name,
+                    Surname = a.Surname,
+                    Email = a.Email
+                })
+                .SingleOrDefault();
+
+                        if (nurse == null)
+                        {
+                            return NotFound();
+                        }
+
+                        // Store critical user data in session
+                        HttpContext.Session.SetString("UserAccountId", nurse.AccountID.ToString());
+                        HttpContext.Session.SetString("UserName", nurse.Name);
+                        HttpContext.Session.SetString("UserSurname", nurse.Surname);
+                        HttpContext.Session.SetString("UserEmail", nurse.Email);
+
+                        // Optionally, you can use ViewBag for non-critical or UI-specific data
+                        ViewBag.AccountID = nurse.AccountID;
+                        ViewBag.UserName = nurse.Name;
+                        ViewBag.UserSurname = nurse.Surname;
+                        ViewBag.Email = nurse.Email;
+
                         return RedirectToAction("MainPage","Nurse", new { AccountID });
                         
                     }

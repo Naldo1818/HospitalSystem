@@ -7,6 +7,9 @@ namespace DEMO.ViewModels
 {
     public class ViewActivePrescriptionsModel
     {
+        [Required]
+        public int PrescriptionID { get; set; }
+
         [Required(ErrorMessage = "ID Number is required.")]
         [StringLength(13, MinimumLength = 13, ErrorMessage = "ID Number must be exactly 13 characters.")]
         [RegularExpression(@"^\d{13}$", ErrorMessage = "ID Number must be exactly 13 digits.")]
