@@ -1,5 +1,7 @@
 ﻿using DEMO.Data.Migrations;
 using DEMO.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DEMO.ViewModels
 {
@@ -56,6 +58,65 @@ namespace DEMO.ViewModels
         public int BloodGlucoseLevel { get; set; }
         
         public int Temperature { get; set; }
+
+        public List<PharmacistViewScriptModel> combinedData { get; set; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+
 
 
 
