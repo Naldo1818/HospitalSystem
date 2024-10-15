@@ -81,7 +81,7 @@
                                                    data-account-id="@Data.AccountID"
                                                    data-patient-id="@Data.PatientID">Edit Booking</a>
                                             </div>
-
+                                            <div class="w-100 btn-group" role="group">
                                             <a class="btn btn-primary"
                                                asp-controller="Home"
                                                asp-action="CheckTreatmentCode"
@@ -90,7 +90,7 @@
                                                asp-route-surname="@Data.Surname">
                                                 Show Treatment Codes
                                             </a>
-
+                                            </div>
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
                                                    data-bs-toggle="modal"
@@ -102,15 +102,25 @@
                                                    data-admitted-patient-id="@Data.AdmittedPatientID"
                                                    data-patient-id="@Data.PatientID">Give Prescription</a>
                                             </div>
-
+                                            <div class="w-100 btn-group" role="group">
                                           <a class="btn btn-primary"
                                                aria-hidden="true"
                                                asp-controller="Home"
                                                asp-action="vitalsAndHistory"
                                                asp-route-name="@Data.Name"
                                                asp-route-surname="@Data.Surname"
-                                               asp-route-patientID="@Data.PatientID">Check Vitals and Medical History
+                                               asp-route-patient-id="@Data.PatientID">
+                                                Check Vitals and Medical History
                                            </a>
+                                            </div>
+                                            <div class="w-100 btn-group" role="group">
+                                                <form asp-action="Discharge" asp-controller="Home" method="post">
+                                                    <input type="hidden" name="AdmittedPatientID" value="@Data.AdmittedPatientID" />
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Discharge Patient
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 }

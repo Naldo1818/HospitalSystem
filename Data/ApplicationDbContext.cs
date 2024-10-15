@@ -46,6 +46,7 @@ namespace DEMO.Data
         public DbSet<AdmissionStatus> AdmissionStatus { get; set; }
         
         public DbSet<PatientVitals> PatientVitals { get; set; }
-
+        public DbSet<ConditionActiveIngredient> ConditionActiveIngredient { get; set; }
+        
     }
 }

@@ -9,23 +9,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bookings Page</title>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
-
-
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
     <style>
         #example {
             display: none;
@@ -86,7 +78,10 @@
                 <div class="col">
                     <div class="p-3 mt-6 border" style="background-color: white;">
                         <h2>Reports of @ViewBag.UserName @ViewBag.UserSurname:</h2>
-                        <table id="Surgeries" class="display" style="width:100%">
+                        <h2>Report Generated:<span id="todayDate"></span></h2>
+                        <h2>Date Range: <span id="selectedDateRange"></span></h2>
+
+                        <table id="Surgeries" class="table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Date</th>
@@ -109,12 +104,9 @@
                         </table>
                         <div class="totals">
                             Total Patients: <span id="totalPatients">0</span>
-                          
                         </div>
-                        </br>
-                        </br>
                         <h3>Summary Treatment Code:</h3>
-                        <table id="Summary" class="display" style="width:100%">
+                        <table id="Summary" class="table" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Treatment Description</th>
@@ -126,97 +118,127 @@
                                 @* This will be populated by JavaScript after filtering *@
                             </tbody>
                         </table>
-                        </br>
+                        <br>
                     </div>
                     <a class="btn btn-primary" style="width:100px" aria-hidden="true" onclick="generatePDF()">Print</a>
                 </div>
             </div>
         </main>
     </div>
+
     <script>
-        $(document).ready(function () {
-            // Initialize DataTables
-            var table = $('#Surgeries').DataTable();
-
-            // Set End Date to today's date
-            var today = new Date().toISOString().split('T')[0];
-            $('#EndDateInput').val(today);
-
-            // Function to filter by date and count unique patients
+        document.addEventListener("DOMContentLoaded", function () {
             function filterByDate() {
-                var startDate = $('#StartDateInput').val();
-                var endDate = $('#EndDateInput').val();
-                var uniquePatients = new Set(); // Use a Set to store unique patients
+                var startDate = document.getElementById('StartDateInput').value;
+                var endDate = document.getElementById('EndDateInput').value;
+                var uniquePatients = new Set();
 
-                // Clear the summary table
-                $('#summaryBody').empty();
+                document.getElementById('summaryBody').innerHTML = '';
+                var totalPatients = 0;
 
-                // Filter the rows
-                table.rows().every(function () {
-                    var rowData = this.data();
-                    var rowDate = rowData[0]; // Get the date from the first column (Date)
+                var rows = document.querySelectorAll('#Surgeries tbody tr');
+                rows.forEach(function (row) {
+                    var rowDate = row.cells[0].textContent;
                     var formattedRowDate = new Date(rowDate).toISOString().split('T')[0];
-                    var patientName = rowData[1]; // Get Patient Name
+                    var patientName = row.cells[1].textContent;
 
-                    // Check if the row is within the date range
                     if ((startDate && formattedRowDate < startDate) || (endDate && formattedRowDate > endDate)) {
-                        $(this.node()).hide();
+                        row.style.display = 'none';
                     } else {
-                        $(this.node()).show();
-                        uniquePatients.add(patientName); // Add patient name to the set
+                        row.style.display = ''; // Show row
+                        uniquePatients.add(patientName);
 
-                        // Update the summary
-                        var treatmentName = rowData[2]; // Get Treatment Description
-                        var treatmentCode = rowData[3]; // Get Treatment Code
+                        var treatmentName = row.cells[2].textContent;
+                        var treatmentCode = row.cells[3].textContent;
 
-                        // Add to the summary counts
-                        var summaryRow = $('#summaryBody').find(`tr[data-treatment-code="${treatmentCode}"]`);
-                        if (summaryRow.length > 0) {
-                            // Increment existing row count
-                            var countCell = summaryRow.find('td:last-child');
-                            countCell.text(parseInt(countCell.text()) + 1);
-                        } else {
-                            // Create a new summary row
-                            $('#summaryBody').append(`
-                                <tr data-treatment-code="${treatmentCode}">
-                                    <td>${treatmentName}</td>
-                                    <td>${treatmentCode}</td>
-                                    <td>1</td>
-                                </tr>
-                            `);
-                        }
+                        updateSummary(treatmentName, treatmentCode);
                     }
                 });
 
-                // Update the total patients count with the size of the unique patients set
-                $('#totalPatients').text(uniquePatients.size);
+                document.getElementById('totalPatients').textContent = uniquePatients.size;
             }
 
-            // Trigger filtering when date inputs change
-            $('#StartDateInput, #EndDateInput').on('change', function () {
+            function updateSummary(treatmentName, treatmentCode) {
+                var summaryBody = document.getElementById('summaryBody');
+                var existingRow = Array.from(summaryBody.querySelectorAll('tr')).find(function (row) {
+                    return row.dataset.treatmentCode === treatmentCode;
+                });
+
+                if (existingRow) {
+                    var countCell = existingRow.querySelector('td:last-child');
+                    countCell.textContent = parseInt(countCell.textContent) + 1;
+                } else {
+                    var newRow = document.createElement('tr');
+                    newRow.dataset.treatmentCode = treatmentCode;
+
+                    newRow.innerHTML = `
+                                <td>${treatmentName}</td>
+                                <td>${treatmentCode}</td>
+                                <td>1</td>
+                            `;
+                    summaryBody.appendChild(newRow);
+                }
+            }
+
+            function displaySelectedDates() {
+                var startDate = document.getElementById('StartDateInput').value;
+                var endDate = document.getElementById('EndDateInput').value;
+                var today = new Date().toLocaleDateString();
+
+                document.getElementById('todayDate').textContent = today;
+                document.getElementById('selectedDateRange').textContent = startDate + ' to ' + endDate;
+            }
+
+            document.getElementById('StartDateInput').addEventListener('change', function () {
                 filterByDate();
+                displaySelectedDates();
             });
 
-            // Initial count on page load
-            filterByDate();
-        });
+            document.getElementById('EndDateInput').addEventListener('change', function () {
+                filterByDate();
+                displaySelectedDates();
+            });
 
+            filterByDate();
+            displaySelectedDates();
+        });
     </script>
 
     <script>
         function generatePDF() {
-            var element = document.querySelector('.p-3.mt-6.border'); // The div you want to convert
+            var element = document.querySelector('.p-3.mt-6.border');
+
             var opt = {
                 margin: 1,
                 filename: 'report.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
                 html2canvas: { scale: 2 },
-                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+                jsPDF: {
+                    unit: 'in',
+                    format: 'letter',
+                    orientation: 'landscape',
+                },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
             };
-            // New Promise-based usage:
-            html2pdf().set(opt).from(element).save();
+
+            function addPageNumbers(pdf) {
+                const pageCount = pdf.internal.getNumberOfPages();
+
+                for (let i = 1; i <= pageCount; i++) {
+                    pdf.setPage(i);
+                    const text = "Page " + i + " of " + pageCount;
+                    const pageWidth = pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth();
+                    const pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
+                    const xOffset = (pageWidth - pdf.getStringUnitWidth(text) * pdf.internal.getFontSize() / pdf.internal.scaleFactor) / 2;
+                    const yOffset = pageHeight - 0.5;
+                    pdf.text(text, xOffset, yOffset);
+                }
+            }
+
+            html2pdf().from(element).set(opt).toPdf().get('pdf').then(function (pdf) {
+                addPageNumbers(pdf);
+            }).save();
         }
     </script>
-
 </body>
 </html>
