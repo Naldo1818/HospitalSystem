@@ -72,24 +72,16 @@
                                         <td>@patient.Bed</td>
                                         <td>@patient.Nurse</td>
                                         <td>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="PatientRecords" asp-route-id="@patient.Id">Patient Information</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationAdministration" asp-route-id="@patient.Id">Administer Medication</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="Vital" asp-route-id="@patient.Id">Retake Vitals</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-id="@patient.Id">Collect Medication</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="DischargeList" asp-route-id="@patient.Id">Discharge</a>
+                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="PatientRecords" asp-route-id="@patient.AdmittedPatientID">Patient Information</a>
+                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationAdministration" asp-route-id="@patient.AdmittedPatientID">Administer Medication</a>
+                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="Vital" asp-route-id="@patient.AdmittedPatientID">Retake Vitals</a>
+                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-id="@patient.AdmittedPatientID">Collect Medication</a>
+                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="DischargeList" asp-route-id="@patient.AdmittedPatientID">Discharge</a>
                                         </td>
                                     </tr> 
                                 } *@
                                 <tr>
-                                    <td>0120526958</td>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>25/05/2025</td>
-                                    <td>08:00 AM</td>
-                                    <td>Cardiology</td>
-                                    <td>101</td>
-                                    <td>12345</td>
-                                    <td>Ariana Grande</td>
+                                    
                                     <td>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords">Patient Information</a>
                                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration">Administer Medication</a>

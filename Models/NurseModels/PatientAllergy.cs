@@ -12,7 +12,7 @@ namespace DEMO.Models.NurseModels
 
        
 
-        [Required]
+        
         public int ActiveingredientID { get; set;}
 
     }

@@ -37,6 +37,10 @@ namespace DEMO.Models.NurseModels
             Date = DateOnly.FromDateTime(DateTime.Now);
             Time = TimeOnly.FromDateTime(DateTime.Now);
         }
+        public string GetFormattedTime()
+        {
+            return Time.ToString("HH:mm:ss");
+        }
     }
 }
  
