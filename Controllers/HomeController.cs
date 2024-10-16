@@ -653,7 +653,8 @@ namespace DEMO.Controllers
                                     Theater = b.Theater,
                                     WardName = w.WardName,
                                     BedNumber = bed.Number,
-                                    AdmissionStatusDescription = status.Description
+                                    AdmissionStatusDescription = status.Description,
+                                    Time=ap.Time
                                 })
                      .OrderBy(a => a.Name)
                      .ToList();

@@ -54,6 +54,9 @@
                                     <th scope="col">Surgery Date</th>
                                     <th scope="col">Surgery Time</th>
                                     <th scope="col">Theatre</th>
+                                    <th scope="col">Ward Name</th>
+                                    <th scope="col">Bed Number</th>
+                                    <th scope="col">Addmitted Time</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -67,6 +70,9 @@
                                         <td>@Data.SurgeryDate</td>
                                         <td>@Data.SurgeryTime</td>
                                         <td>@Data.Theater</td>
+                                        <td>@Data.WardName</td>
+                                        <td>@Data.BedNumber</td>
+                                        <td>@Data.Time</td>
                                         <td>
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
@@ -109,7 +115,7 @@
                                                asp-action="vitalsAndHistory"
                                                asp-route-name="@Data.Name"
                                                asp-route-surname="@Data.Surname"
-                                               asp-route-patient-id="@Data.PatientID">
+                                                   asp-route-patientID="@Data.PatientID">
                                                 Check Vitals and Medical History
                                            </a>
                                             </div>
