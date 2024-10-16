@@ -12,6 +12,8 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int PatientID { get; set; }
 
+        public int AccountID { get; set; }
+
         [Required]
         public int BookingID { get; set; }
 

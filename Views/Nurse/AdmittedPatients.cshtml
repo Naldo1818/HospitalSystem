@@ -1,4 +1,4 @@
-﻿@model DEMO.Models.NurseModels.ViewAdmittedPatients
+﻿@model DEMO.ViewModels.AdmissionsListViewModel
 @{
     ViewData["Title"] = "Patient Records";
     Layout = "_LayoutNurse";
@@ -47,51 +47,58 @@
                         <table id="example" class="display" style="width:100%">
                             <thead>
                                 <tr>
-                                    
+
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Time</th>
-                                    <th scope="col">Ward</th>
-                                    <th scope="col">Bed</th>
-                                    <th scope="col">Nurse</th>
+                                    <th scope="col">Surgeon Name</th>
+                                    <th scope="col">Surgery Date</th>
+                                    <th scope="col">Surgery Time</th>
+                                    <th scope="col">Theatre</th>
+                                    <th scope="col">Ward Name</th>
+                                    <th scope="col">Bed Number</th>
+                                    <th scope="col">Admitted Time</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @* @foreach(var patient in Model.VAP)
+                                @if (Model.AllcombinedData != null && Model.AllcombinedData.Count > 0)
                                 {
-                                    <tr>
-                                        <td>@patient.n.</td>
-                                        <td>@patient.Surname</td>
-                                        <td>@patient.Gender</td>
-                                        <td>@patient.Date.ToString("dd/MM/yyyy")</td>
-                                        <td>@patient.Time.ToString(@"hh\:mm\:ss")</td>
-                                        <td>@patient.Ward</td>
-                                        <td>@patient.Bed</td>
-                                        <td>@patient.Nurse</td>
-                                        <td>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="PatientRecords" asp-route-id="@patient.AdmittedPatientID">Patient Information</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationAdministration" asp-route-id="@patient.AdmittedPatientID">Administer Medication</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="Vital" asp-route-id="@patient.AdmittedPatientID">Retake Vitals</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-id="@patient.AdmittedPatientID">Collect Medication</a>
-                                            <a class="btn btn-primary" asp-controller="Nurse" asp-action="DischargeList" asp-route-id="@patient.AdmittedPatientID">Discharge</a>
-                                        </td>
-                                    </tr> 
-                                } *@
-                                <tr>
-                                    
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords">Patient Information</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration">Administer Medication</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals">Retake Vitals</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection">Collect Medication</a>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="DischargeList">Discharge</a>
-                                    </td>
-                                </tr>
+                                    @foreach (var Data in Model.AllcombinedData)
+                                    {
+                                        <tr>
+                                            <td>@Data.Name</td>
+                                            <td>@Data.Surname</td>
+                                            <td>@Data.SurgeonName @Data.SurgeonSurname</td>
+                                            <td>@Data.SurgeryDate</td>
+                                            <td>@Data.SurgeryTime</td>
+                                            <td>@Data.Theater</td>
+                                            <td>@Data.WardName</td>
+                                            <td>@Data.BedNumber</td>
+                                            <td>@Data.Time</td>
+                                            <td>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Patient Information</a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Administer Medication</a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Retake Vitals</a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Collect Medication</a>
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="DischargeList">Discharge</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                
                             </tbody>
                         </table>
+                                    
+                                    
+                               
                     </div>
                 </div>
             </div>
@@ -106,18 +113,26 @@
                 }
             });
 
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim();
-                if (searchText === '') {
+            
+            function filterTable() {
+                var searchText = $('#searchInput').val().trim();
+                var dateText = $('#dateInput').val();
+
+                // Apply date filter on column 3 and general search
+                table.column(3).search(dateText ? dateText : '', true, false);
+                table.search(searchText).draw();
+
+                // Hide or show the table based on the input
+                if (searchText === '' && dateText === '') {
                     $('#example').hide();
                 } else {
                     $('#example').show();
-                    table.search(searchText).draw();
                     if (table.page.info().recordsDisplay === 0) {
                         $('#example').hide();
                     }
                 }
-            });
+            }
+            $('#searchInput, #dateInput').on('keyup change', filterTable);
         });
     </script>
 </body>

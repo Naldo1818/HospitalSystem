@@ -364,21 +364,21 @@ namespace DEMO.Controllers
                 accountID = 0;
             }
 
-            var combinedData = (from b in _dbContext.BookSurgery
+            var combinedData = (from a in _dbContext.Accounts
+                                join b in _dbContext.BookSurgery on a.AccountID equals b.AccountID
                                 join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
                                 join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
                                 join bed in _dbContext.Bed on ap.BedId equals bed.BedId
                                 join w in _dbContext.Ward on bed.WardID equals w.WardId
                                 join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
-                                where b.AccountID == accountID
-                                && ap.AdmissionStatusID == 1
-                                && bed.Active == true
-                                && w.Active == true
+                               
                                 select new AdmissionsListViewModel
                                 {
                                     PatientID = p.PatientID,
                                     AdmittedPatientID = ap.AdmittedPatientID,
                                     BookingID = b.BookingID,
+                                    SurgeonName = a.Name,
+                                    SurgeonSurname = a.Surname,
                                     Name = p.Name,
                                     Surname = p.Surname,
                                     SurgeryDate = b.SurgeryDate,
@@ -386,7 +386,8 @@ namespace DEMO.Controllers
                                     Theater = b.Theater,
                                     WardName = w.WardName,
                                     BedNumber = bed.Number,
-                                    AdmissionStatusDescription = status.Description
+                                    AdmissionStatusDescription = status.Description,
+                                    Time = ap.Time
                                 })
                      .OrderBy(a => a.Name)
                      .ToList();
@@ -395,9 +396,19 @@ namespace DEMO.Controllers
                 AllcombinedData = combinedData,
 
             };
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
 
             //var patients = _dbContext.AdmittedPatients.ToList();
-            return View();
+            return View("AdmittedPatients",viewModel);
         }
 
         public IActionResult AdmissionPage(int bookingID)
