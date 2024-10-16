@@ -219,15 +219,82 @@ namespace DEMO.Controllers
                                     DateGiven = p.DateGiven
                                 }).ToList(); // Execute the query and convert to a list
 
+            var currentMed = (from pm in _dbContext.patientMedication
+                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
+                              join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
+                              where pm.PatientID == id
+                              select new PharmacistViewScriptModel
+                              {
+                                  patientname = pi.Name,
+                                  patientsurname = pi.Surname,
+                                  patientMedication = cm.MedicationName // Ensure this property exists in your view model
+                              }).OrderBy(cm => cm.patientMedication).ToList();
+
+
+
+
+
+            var viewModel = new PharmacistViewScriptModel
+            {
+                combinedData = combinedData,
+                AllCurrentMed=currentMed
+                
+                //Allallergy = allergy,
+                //AllConditions = conditions,
+                //AllCurrentMed = currentMed
+
+
+
+
+
+            };
             // Check if any data was retrieved
-          
 
-        var viewModel = new PharmacistViewScriptModel
-        {
-            combinedData = combinedData,
-        };
 
-        return View(viewModel); // Pass the combined data to the view
+
+            //var allergy = (from pa in _dbContext.PatientAllergy
+            //               join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+            //               join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+
+            //               select new PharmacistViewScriptModel
+            //               {
+            //                   patientname = p.Name,
+            //                   patientsurname = p.Surname,
+            //                   allergy = ai.ActiveIngredientName
+            //               })
+            //.OrderBy(ai => ai.ActiveIngredientName)
+            //.ToList();
+
+
+            //var conditions = (from pc in _dbContext.PatientConditions
+            //                  join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
+            //                  join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
+
+            //                  select new PharmacistViewScriptModel
+            //                  {
+            //                      patientname = pt.Name,
+            //                      patientsurname = pt.Surname,
+            //                      Condition = c.ConditionName // Ensure this property exists in your view model
+            //                  }).OrderBy(c => c.Condition).ToList();
+
+
+            //var currentMed = (from pm in _dbContext.patientMedication
+            //                  join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
+            //                  join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
+            //                  select new PharmacistViewScriptModel
+            //                  {
+            //                      patientname = pi.Name,
+            //                      patientsurname = pi.Surname,
+            //                      patientMedication = cm.MedicationName // Ensure this property exists in your view model
+            //                  }).OrderBy(cm => cm.patientMedication).ToList();
+
+
+
+
+
+
+
+            return View(viewModel); // Pass the combined data to the view
     }
 
 
