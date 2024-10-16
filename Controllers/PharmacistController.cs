@@ -170,60 +170,64 @@ namespace DEMO.Controllers
             return View();
         }
 
-       
 
-    public IActionResult ViewSpecificPrescription(int id)
-    {
-        // Retrieve the prescription based on the provided ID
-        var prescription = _dbContext.Prescription.Find(id);
 
-        if (prescription == null)
+        public IActionResult ViewSpecificPrescription(int id)
         {
-            return NotFound(); // Return 404 if the prescription is not found
-        }
+            // Retrieve the prescription based on the provided ID
+            var prescription = _dbContext.Prescription.Find(id);
 
-        // Combine data from various tables using LINQ
-        var combinedData = (from p in _dbContext.Prescription
-                            join a in _dbContext.PatientAllergy on p.AdmittedPatientID equals a.PatientID
-                            join ai in _dbContext.Activeingredient on a.ActiveingredientID equals ai.ActiveingredientID
-                            join c in _dbContext.PatientConditions on p.AdmittedPatientID equals c.PatientID
-                            join co in _dbContext.Condition on c.ConditionsID equals co.ConditionID
-                            join cm in _dbContext.patientMedication on p.AdmittedPatientID equals cm.PatientID
-                            join m in _dbContext.Medication on cm.MedicationID equals m.MedicationID
-                            join pv in _dbContext.PatientVitals on p.AdmittedPatientID equals pv.PatientID
-                            where p.PrescriptionID == id // Ensure we filter by the specific prescription ID
-                            select new PharmacistViewScriptModel
-                            {
-                                // Medical history
-                                Condition = co.ConditionName,
-                                allergy = ai.ActiveIngredientName,
-                                patientMedication = m.MedicationName,
+            if (prescription==null)
+            {
+                return NotFound();
+            }
 
-                                // Vitals
-                                Height = pv.Height,
-                                Weight = pv.Weight,
-                                SystolicBloodPressure = pv.SystolicBloodPressure,
-                                DiastolicBloodPressure = pv.DiastolicBloodPressure,
-                                HeartRate = pv.HeartRate,
-                                BloodOxygen = pv.BloodOxygen,
-                                Respiration = pv.Respiration,
-                                BloodGlucoseLevel = pv.BloodGlucoseLevel,
-                                Temperature = pv.Temperature,
+           
 
-                                // Prescription details
-                                Urgency = p.Urgency,
-                                Take = p.Take,
-                                Status = p.Status,
-                                DateGiven = p.DateGiven
-                            }).ToList(); // Execute the query and convert to a list
+            // Combine data from various tables using LINQ
+            var combinedData = (from p in _dbContext.Prescription
+                                join a in _dbContext.PatientAllergy on p.AdmittedPatientID equals a.PatientID
+                                join ai in _dbContext.Activeingredient on a.ActiveingredientID equals ai.ActiveingredientID
+                                join c in _dbContext.PatientConditions on p.AdmittedPatientID equals c.PatientID
+                                join co in _dbContext.Condition on c.ConditionsID equals co.ConditionID
+                                join cm in _dbContext.patientMedication on p.AdmittedPatientID equals cm.PatientID
+                                join m in _dbContext.Medication on cm.MedicationID equals m.MedicationID
+                                join pv in _dbContext.PatientVitals on p.AdmittedPatientID equals pv.PatientID
+                                where p.PrescriptionID == id // Ensure we filter by the specific prescription ID
+                                select new PharmacistViewScriptModel
+                                {
+                                    // Medical history
+                                    Condition = co.ConditionName,
+                                    allergy = ai.ActiveIngredientName,
+                                    patientMedication = m.MedicationName,
 
-        // Check if any data was retrieved
-        if (!combinedData.Any())
+                                    // Vitals
+                                    Height = pv.Height,
+                                    Weight = pv.Weight,
+                                    SystolicBloodPressure = pv.SystolicBloodPressure,
+                                    DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                    HeartRate = pv.HeartRate,
+                                    BloodOxygen = pv.BloodOxygen,
+                                    Respiration = pv.Respiration,
+                                    BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                    Temperature = pv.Temperature,
+
+                                    // Prescription details
+                                    Urgency = p.Urgency,
+                                    Take = p.Take,
+                                    Status = p.Status,
+                                    DateGiven = p.DateGiven
+                                }).ToList(); // Execute the query and convert to a list
+
+            // Check if any data was retrieved
+          
+
+        var viewModel = new PharmacistViewScriptModel
         {
-            return NotFound(); // Return 404 if no related data found
-        }
+            combinedData = combinedData,
+        };
 
-        return View(combinedData); // Pass the combined data to the view
+        return View(viewModel); // Pass the combined data to the view
     }
 
 
