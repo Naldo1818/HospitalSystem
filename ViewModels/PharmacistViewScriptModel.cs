@@ -15,6 +15,10 @@ namespace DEMO.ViewModels
 
         public string patientsurname { get; set; }
 
+        public string ActiveIngredientName { get; set; }
+
+        public TimeOnly Time { get; set; }
+
         public DateOnly DateGiven { get; set; }
 
 
@@ -62,6 +66,10 @@ namespace DEMO.ViewModels
         public List<PharmacistViewScriptModel> combinedData { get; set; }
 
 
+        public List<PharmacistViewScriptModel> Allvitals { get; set; }
+        public List<PharmacistViewScriptModel> Allallergy { get; set; }
+        public List<PharmacistViewScriptModel> AllCurrentMed { get; set; }
+        public List<PharmacistViewScriptModel> AllConditions { get; set; }
 
 
 
@@ -115,7 +123,10 @@ namespace DEMO.ViewModels
 
 
 
-      
+
+
+
+
 
 
 
