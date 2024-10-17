@@ -55,14 +55,53 @@ namespace DEMO.Controllers
             // Create a ViewModel to hold the data
             var viewModel = new AddMedicationViewModel
             {
+
+
+
                 PharmacyMedications = medNames,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules
             };
 
+            //var combinedmodel = new PharmacistAddMedicationCombinedModel
+            //{
+               
+            //};
+
             // Pass the ViewModel to the view
             return View(viewModel);
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddMedication(PharmacyMedicationModel Model) 
+        {
+            if (ModelState.IsValid)
+            {
+                PharmacyMedicationModel pharmMedModel = new PharmacyMedicationModel
+                {
+                    
+                    MedicationName = Model.MedicationName,  
+                    DosageForm = Model.DosageForm,
+                    Schedule = Model.Schedule,
+                    StockonHand = Model.StockonHand,
+                    ReorderLevel= Model.ReorderLevel,
+                       
+
+
+
+                };
+
+              _dbContext.DayHospitalPharmacyMedication.Add(pharmMedModel);
+               _dbContext.SaveChanges();
+                return RedirectToAction("AddMedication");
+            }
+
+            return View("AddMedication", Model);
+        }
+       
+        
 
         // POST: AddMedication
         //[HttpPost]
