@@ -22,6 +22,7 @@ namespace DEMO.ViewModels
         public TimeOnly Time { get; set; }
         public string SurgeonName {  get; set; }
         public string SurgeonSurname { get; set; }
+        public string Gender { get; set; }
         public string Theater { get; set; }
         public string WardName { get; set; }
         public string AdmissionStatusDescription { get; set; }

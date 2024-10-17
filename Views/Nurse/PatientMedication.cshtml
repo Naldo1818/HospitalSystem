@@ -2,6 +2,7 @@
     ViewData["Title"] = "Patient Records";
     Layout = "_LayoutNurse";
 }
+@model DEMO.ViewModels.PatientAllergyViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,17 +108,19 @@
                             <thead>
                                 <tr>
 
-                                    <th scope="col">MedicationID</th>
-                                    <th scope="col">Name</th>
+                                    
+                                    <th scope="col">MedicationName</th>
                                     
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>AdcoDol</td>
-                                    
-                                </tr>
+                                @foreach (var Data in Model.AllCurrentMed)
+                                {
+                                    <tr>
+                                        <td>@Data.Name</td>
+                                    </tr>
+                                        
+                                }
                             </tbody>
                         </table>
                     </div>

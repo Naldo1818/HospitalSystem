@@ -2,6 +2,7 @@
     ViewData["Title"] = "Send Vitals";
     Layout = "_LayoutNurse";
 }
+@model DEMO.Models.NurseModels.EmailVital
 
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +24,7 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
-    <title>User List</title>
+    <title>Send Vitals</title>
     <style>
         .active-tab {
             background-color: teal;
@@ -85,11 +86,10 @@
                 margin: 0;
             }
 
-            /* Override the height for the textarea to give it a more natural look */
             .email-group textarea {
-                height: auto; /* Adjust height to be more suitable for a textarea */
-                min-height: 40px; /* Ensure it matches the input height at minimum */
-                resize: vertical; /* Allow users to resize the textarea vertically */
+                height: auto;
+                min-height: 40px;
+                resize: vertical;
             }
 
         .header-labels {
@@ -108,9 +108,6 @@
         .form-card hr {
             margin: 20px 0;
         }
-
-        
-
     </style>
 </head>
 <body>
@@ -118,39 +115,78 @@
         <div class="row justify-content-center mt-0" style="width: contain;">
             <div class="text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
-                        <form>
-                            <h3>Email Details</h3>
-                            <hr></hr>
-                            <div class="email-group">
-                                <label for="UserName">Name:</label>
-                                <input type="text" id="UserName" value="" readonly />
-                            </div>
-                            <div class="email-group">
-                                <label for="Email">Email:</label>
-                                <input type="text" id="Email" value="" readonly />
-                            </div>
-                            <div class ="email-group">
-                                <label for="Username">Username:</label>
-                                <input type="text" id="Username" value="" readonly />
-                            </div>
-                            <div class="email-group">
-                                <label for="Password">Password:</label>
-                                <input type="text" id="Password" value="" readonly />
-                            </div>
-                            <div class="email-group">
-                                <label for="Notes">Notes:</label>
-                                <textarea id="Notes" name="notes"></textarea>
-                            </div>
-                            <div class="email-group">
-                                <input type="hidden" name="AccountID" value="" />
-                                <button type="button">Send Email</button>
-                            </div>
-                        </form>
-                    </div>
+                    <form method="post" action="@Url.Action("SendEmailVitals", "Nurse")">
+                        <h3>Email Vitals</h3>
+                        <hr />
+
+                        <div class="email-group">
+                            <label for="FullName">Patient Name:</label>
+                            <input type="text" id="FullName" name="FullName" value="@Model.FullName" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="WardName">Ward Name:</label>
+                            <input type="text" id="WardName" name="WardName" value="@Model.WardName" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="Bed">Bed Number:</label>
+                            <input type="text" id="Bed" name="Bed" value="@Model.Bed" readonly />
+                        </div>
+
+                        <h4>Latest Vitals</h4>
+                        <div class="email-group">
+                            <label for="Height">Height (cm):</label>
+                            <input type="text" id="Height" name="Height" value="@Model.Height" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="Weight">Weight (kg):</label>
+                            <input type="text" id="Weight" name="Weight" value="@Model.Weight" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="BloodPressure">Blood Pressure (mmHg):</label>
+                            <input type="text" id="BloodPressure" name="BloodPressure" value="@Model.SystolicBloodPressure/@Model.DiastolicBloodPressure" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="HeartRate">Heart Rate (bpm):</label>
+                            <input type="text" id="HeartRate" name="HeartRate" value="@Model.HeartRate" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="BloodOxygen">Blood Oxygen (%):</label>
+                            <input type="text" id="BloodOxygen" name="BloodOxygen" value="@Model.BloodOxygen" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="Respiration">Respiration (bpm):</label>
+                            <input type="text" id="Respiration" name="Respiration" value="@Model.Respiration" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="BloodGlucoseLevel">Blood Glucose Level (mg/dL):</label>
+                            <input type="text" id="BloodGlucoseLevel" name="BloodGlucoseLevel" value="@Model.BloodGlucoseLevel" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="Temperature">Temperature (°C):</label>
+                            <input type="text" id="Temperature" name="Temperature" value="@Model.Temperature" readonly />
+                        </div>
+
+                        <div class="email-group">
+                            <label for="Notes">Notes:</label>
+                            <textarea id="Notes" name="notes"></textarea>
+                        </div>
+
+                        <div class="email-group">
+                            <button type="submit" class="btn btn-primary">Send Email</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-            
-        </main>
+        </div>
     </div>
 </body>
 </html>

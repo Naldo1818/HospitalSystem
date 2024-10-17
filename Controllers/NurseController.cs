@@ -314,7 +314,36 @@ namespace DEMO.Controllers
                                 Temperature = model.Vitals.Temperature,
                                 time = model.Vitals.time,
                             };
+                            
+                            if (model.Vitals.SystolicBloodPressure > 36)
+                            {
 
+                            }
+                            if (model.Vitals.DiastolicBloodPressure > 36)
+                            {
+
+                            }
+                            if (model.Vitals.HeartRate > 36)
+                            {
+
+
+                            }
+                            if (model.Vitals.BloodOxygen > 36)
+                            {
+
+                            }
+                            if (model.Vitals.BloodGlucoseLevel > 36)
+                            {
+
+                            }
+                            if (model.Vitals.Respiration > 36)
+                            {
+
+                            }
+                            if (model.Vitals.Temperature > 36)
+                            {
+
+                            }
                             _dbContext.PatientVitals.Add(patientVitals);
                             _dbContext.SaveChanges();
 
@@ -453,26 +482,139 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        public IActionResult PatientRecords()
+        public IActionResult PatientRecords(int AdmittedPatientID)
         {
-            return View();
+            var combinedData = (from a in _dbContext.Accounts
+                                join b in _dbContext.BookSurgery on a.AccountID equals b.AccountID
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                join ap in _dbContext.AdmittedPatients on p.PatientID equals ap.PatientID
+                                join bed in _dbContext.Bed on ap.BedId equals bed.BedId
+                                join w in _dbContext.Ward on bed.WardID equals w.WardId
+                                join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
+                                where ap.AdmittedPatientID == AdmittedPatientID
+
+                                select new AdmissionsListViewModel
+                                {
+                                    PatientID = p.PatientID,
+                                    AdmittedPatientID = ap.AdmittedPatientID,
+                                    BookingID = b.BookingID,
+                                    SurgeonName = a.Name,
+                                    SurgeonSurname = a.Surname,
+                                    Name = p.Name,
+                                    Gender = p.Gender,
+                                    Surname = p.Surname,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater,
+                                    WardName = w.WardName,
+                                    BedNumber = bed.Number,
+                                    AdmissionStatusDescription = status.Description,
+                                    Time = ap.Time
+                                })
+                     .OrderBy(a => a.Name)
+                     .ToList();
+            var viewModel = new AdmissionsListViewModel
+            {
+                AllcombinedData = combinedData,
+
+            };
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+            
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            return View(viewModel);
         }
-        public IActionResult PatientVitals()
+        public IActionResult PatientVitals(int AdmittedPatientID, string name, string surname)
         {
-            return View();
+            var patientVitals = (from pv in _dbContext.PatientVitals
+                                 join ap in _dbContext.AdmittedPatients
+                                 on pv.PatientID equals ap.PatientID
+                                 where ap.AdmittedPatientID == AdmittedPatientID
+
+                                 select new PatientAllergyViewModel
+                                 {
+                                     Date = ap.Date,
+                                     Time = pv.time,
+                                     Height = pv.Height,
+                                     Weight = pv.Weight,
+                                     SystolicBloodPressure = pv.SystolicBloodPressure,
+                                     DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                     HeartRate = pv.HeartRate,
+                                     BloodOxygen = pv.BloodOxygen,
+                                     Respiration = pv.Respiration,
+                                     BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                     Temperature = pv.Temperature
+
+
+                                 }).OrderBy(ap => ap.Date).ToList();
+
+
+            var allergy = (from pa in _dbContext.PatientAllergy
+                           join ap in _dbContext.AdmittedPatients on pa.PatientID equals ap.PatientID
+                           join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                           join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                           where ap.AdmittedPatientID == AdmittedPatientID
+                           select new PatientAllergyViewModel
+                           {
+                               Name = p.Name,
+                               Surname = p.Surname,
+                               ActiveIngredientName = ai.ActiveIngredientName
+                           })
+            .OrderBy(ai => ai.ActiveIngredientName)
+            .ToList();
+
+
+            var conditions = (from pc in _dbContext.PatientConditions
+                              join ap in _dbContext.AdmittedPatients on pc.PatientID equals ap.PatientID
+                              join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
+                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
+                              where ap.AdmittedPatientID == AdmittedPatientID
+                              select new PatientAllergyViewModel
+                              {
+                                  Name = pt.Name,
+                                  Surname = pt.Surname,
+                                  ConditionName = c.ConditionName // Ensure this property exists in your view model
+                              }).OrderBy(c => c.ConditionName).ToList();
+
+            var currentMed = (from pm in _dbContext.patientMedication
+                              join ap in _dbContext.AdmittedPatients on pm.PatientID equals ap.PatientID
+                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
+                              join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
+                              where ap.AdmittedPatientID == AdmittedPatientID
+                              select new PatientAllergyViewModel
+                              {
+                                  Name = pi.Name,
+                                  Surname = pi.Surname,
+                                  MedicationName = cm.MedicationName // Ensure this property exists in your view model
+                              }).OrderBy(cm => cm.MedicationName).ToList();
+            // Create a view model that holds both lists
+            var viewModel = new PatientAllergyViewModel
+            {
+                Allvitals = patientVitals,
+                Allallergy = allergy,
+                AllConditions = conditions,
+                AllCurrentMed = currentMed
+            };
+
+            ViewBag.PatientName = name;
+            ViewBag.PatientSurname = surname;
+
+            return View(viewModel);
+           
+
+
+         
+         
+         
+            
         }
-        public IActionResult PatientConditions()
-        {
-            return View();
-        }
-        public IActionResult PatientMedication()
-        {
-            return View();
-        }
-        public IActionResult PatientAllergies()
-        {
-            return View();
-        }
+        
         public IActionResult InfoNurse()
         {
             return View();
@@ -481,123 +623,120 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        public async Task<IActionResult> SendEmailVitals(string notes)
+        public async Task<IActionResult> SendEmailVitals(string notes, int patientID)
         {
             // Get logged-in nurse's email
-            var nurseEmail = User?.Identity?.Name; // Assuming the logged-in nurse's email is their username, adjust this based on your identity setup.
+            
+            
+                // Get logged-in nurse's email
+                var nurseEmail = User?.Identity?.Name;
 
-            if (nurseEmail == null)
-            {
-                TempData["ErrorMessage"] = "Could not retrieve the nurse's email.";
-                return RedirectToAction("AdmittedPatients", "Nurse");
-            }
-
-            // Fetch the vitals and related data
-            var combinedData = await (from pv in _dbContext.PatientVitals
-                                      join ad in _dbContext.AdmittedPatients on pv.PatientID equals ad.PatientID
-                                      join b in _dbContext.BookSurgery on ad.BookingID equals b.BookingID
-                                      join ac in _dbContext.Accounts on b.AccountID equals ac.AccountID
-                                      join p in _dbContext.PatientInfo on ad.PatientID equals p.PatientID
-                                      join w in _dbContext.Ward on ad.WardID equals w.WardId
-                                      join bed in _dbContext.Bed on ad.BedId equals bed.BedId
-                                      where pv.time == _dbContext.PatientVitals
-                                                       .Where(x => x.PatientID == pv.PatientID)
-                                                       .OrderByDescending(x => x.time)
-                                                       .Select(x => x.time)
-                                                       .FirstOrDefault()
-                                      select new EmailVital
-                                      {
-                                          Height = pv.Height,
-                                          Weight = pv.Weight,
-                                          SystolicBloodPressure = pv.SystolicBloodPressure,
-                                          DiastolicBloodPressure = pv.DiastolicBloodPressure,
-                                          HeartRate = pv.HeartRate,
-                                          BloodOxygen = pv.BloodOxygen,
-                                          Respiration = pv.Respiration,
-                                          BloodGlucoseLevel = pv.BloodGlucoseLevel,
-                                          Temperature = pv.Temperature,
-                                          Time = pv.time,
-                                          FullName = p.Name + " " + p.Surname,
-                                          WardName = w.WardName,
-                                          Bed = bed.Number,
-                                          SurgeonEmail = ac.Email, // Assuming Account table has surgeon's email
-                                          SurgeonRole = ac.Role // Assuming Account table has role information
-                                      }).Where(ad => ad.SurgeonRole == "Surgeon") // Ensure only surgeons are selected
-                                       .ToListAsync();
-
-            if (combinedData == null || !combinedData.Any())
-            {
-                TempData["ErrorMessage"] = "Vitals or patient not found.";
-                return RedirectToAction("AdmittedPatients", "Nurse");
-            }
-
-            // Get the latest data for the email
-            var firstData = combinedData.Last();
-
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", nurseEmail)); // Set from the logged-in nurse's email
-            emailMessage.To.Add(new MailboxAddress("Surgeon", firstData.SurgeonEmail));
-            emailMessage.Subject = $"Vitals Concern and Prescription Request for {firstData.FullName}";
-
-            var VitalsList = new System.Text.StringBuilder();
-            foreach (var item in combinedData)
-            {
-                VitalsList.AppendLine($@"
-        <li>
-            Height: {item.Height} cm, Weight: {item.Weight} kg, 
-            Blood Pressure: {item.SystolicBloodPressure}/{item.DiastolicBloodPressure} mmHg, 
-            Heart Rate: {item.HeartRate} bpm, Blood Oxygen: {item.BloodOxygen}%, 
-            Respiration: {item.Respiration} bpm, Blood Glucose Level: {item.BloodGlucoseLevel} mg/dL, 
-            Temperature: {item.Temperature}°C, Time: {item.Time}
-        </li>");
-            }
-
-            var bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = $@"
-        <h3>Patient Information</h3>
-        <p><strong>Full Name:</strong> {firstData.FullName} </p>
-        <p><strong>Ward Name:</strong> {firstData.WardName} </p>
-        <p><strong>Bed:</strong> {firstData.Bed} </p>
-        
-        <h3>There is a concern with the vitals of this patient. These are the vitals:</h3>
-        
-        <h3>Vitals</h3>
-        <ul>
-            {VitalsList}
-        </ul>
-        <h3>Notes</h3>
-        <ul>
-            {notes}
-        </ul>
-        <p>Kind Regards,<br/>Apollo+</p>"
-            };
-
-            emailMessage.Body = bodyBuilder.ToMessageBody();
-
-            try
-            {
-                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                if (nurseEmail == null)
                 {
-                    await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr"); // Use environment variables for security
-                    await client.SendAsync(emailMessage);
-                    await client.DisconnectAsync(true);
+                    TempData["ErrorMessage"] = "Could not retrieve the nurse's email.";
+                    return RedirectToAction("AdmittedPatients", "Nurse");
                 }
 
-                TempData["SuccessMessage"] = "Email sent successfully.";
+                // Fetch the latest vitals and related data for the specific patient
+                var combinedData = await (from pv in _dbContext.PatientVitals
+                                          join ad in _dbContext.AdmittedPatients on pv.PatientID equals ad.PatientID
+                                          join b in _dbContext.BookSurgery on ad.BookingID equals b.BookingID
+                                          join ac in _dbContext.Accounts on b.AccountID equals ac.AccountID
+                                          join p in _dbContext.PatientInfo on ad.PatientID equals p.PatientID
+                                          join w in _dbContext.Ward on ad.WardID equals w.WardId
+                                          join bed in _dbContext.Bed on ad.BedId equals bed.BedId
+                                          where pv.PatientID == patientID
+                                          orderby pv.time descending // Get the latest vitals
+                                          select new EmailVital
+                                          {
+                                              Height = pv.Height,
+                                              Weight = pv.Weight,
+                                              SystolicBloodPressure = pv.SystolicBloodPressure,
+                                              DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                              HeartRate = pv.HeartRate,
+                                              BloodOxygen = pv.BloodOxygen,
+                                              Respiration = pv.Respiration,
+                                              BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                              Temperature = pv.Temperature,
+                                              Time = pv.time, // Format the time
+                                              FullName = p.Name + " " + p.Surname,
+                                              WardName = w.WardName,
+                                              Bed = bed.Number,
+                                              SurgeonEmail = ac.Email,
+                                              SurgeonRole = ac.Role
+                                          }).FirstOrDefaultAsync(); // Get only the latest record
+
+                if (combinedData == null )
+                {
+                    TempData["ErrorMessage"] = "Vitals or patient not found.";
+                    return RedirectToAction("AdmittedPatients", "Nurse");
+                }
+
+                if (string.IsNullOrEmpty(combinedData.SurgeonEmail))
+                {
+                    TempData["ErrorMessage"] = "Surgeon's email not found.";
+                    return RedirectToAction("AdmittedPatients", "Nurse");
+                }
+
+                // Prepare email content
+                var emailMessage = new MimeMessage();
+                emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", nurseEmail));
+                emailMessage.To.Add(new MailboxAddress("Surgeon", combinedData.SurgeonEmail));
+                emailMessage.Subject = $"Latest Vitals for Patient {combinedData.FullName}";
+
+                var bodyBuilder = new BodyBuilder
+                {
+                    HtmlBody = $@"
+                        <h3>Patient Information</h3>
+                        <p><strong>Full Name:</strong> {combinedData.FullName} </p>
+                        <p><strong>Ward Name:</strong> {combinedData.WardName} </p>
+                        <p><strong>Bed:</strong> {combinedData.Bed} </p>
+                        
+                        <h3>Latest Vitals:</h3>
+                        <ul>
+                            <li>Height: {combinedData.Height} cm</li>
+                            <li>Weight: {combinedData.Weight} kg</li>
+                            <li>Blood Pressure: {combinedData.SystolicBloodPressure}/{combinedData.DiastolicBloodPressure} mmHg</li>
+                            <li>Heart Rate: {combinedData.HeartRate} bpm</li>
+                            <li>Blood Oxygen: {combinedData.BloodOxygen}%</li>
+                            <li>Respiration: {combinedData.Respiration} bpm</li>
+                            <li>Blood Glucose Level: {combinedData.BloodGlucoseLevel} mg/dL</li>
+                            <li>Temperature: {combinedData.Temperature}°C</li>
+                            <li>Time: {combinedData.Time}</li>
+                        </ul>
+
+                        <h3>Notes</h3>
+                        <p>{notes}</p>
+
+                        <p>Kind Regards,<br/>Apollo+</p>"
+                };
+
+                emailMessage.Body = bodyBuilder.ToMessageBody();
+
+                try
+                {
+                    using (var client = new MailKit.Net.Smtp.SmtpClient())
+                    {
+                        await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                        await client.AuthenticateAsync(Environment.GetEnvironmentVariable("SMTP_EMAIL"), Environment.GetEnvironmentVariable("SMTP_PASSWORD"));
+                        await client.SendAsync(emailMessage);
+                        await client.DisconnectAsync(true);
+                    }
+
+                    TempData["SuccessMessage"] = "Email sent successfully.";
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
+                }
+
+                return RedirectToAction("AdmittedPatients", "Nurse");
             }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
-            }
-
-            return RedirectToAction("AdmittedPatients", "Nurse");
-        }
 
 
 
-        [HttpPost]
+
+            [HttpPost]
         public IActionResult SubmitForm(BookedPatientInfo model)
         {
             
