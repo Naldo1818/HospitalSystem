@@ -14,11 +14,11 @@ namespace DEMO.ViewModels
         public PharmacyMedicationModel testMeds { get; set; }
 
         public List<string> PharmacyMedications { get; set; } // Assuming these are strings
-        public List<string> PharmMedDF { get; set; }          // Assuming these are strings
-        public List<int> PharmMedSchedule { get; set; }    // Assuming these are strings
+       
 
+        public List<string> PharmMedDF { get; set; } = new List<string>(); // Initialize here
 
-        
+        public List<string> PharmMedSchedule { get; set; } = new List<string>(); // Initialize here
 
         public string PharmMedName { get; set; }
 
