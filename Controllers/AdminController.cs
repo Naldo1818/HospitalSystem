@@ -162,7 +162,7 @@ namespace DEMO.Controllers
                 HtmlBody = $@"
          <h3>User Information</h3>
          <p><strong>Name:</strong> {user.Name} {user.Surname}</p>
-         <h3>Account Has Been Added</h3>
+         <h3>Account Has Been Added to the Apollo+ system</h3>
 </n>
          <p><strong>Username:</strong> {user.Username}</p>
          <p><strong>Password:</strong> {user.Password}</p>        

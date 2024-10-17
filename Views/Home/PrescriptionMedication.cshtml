@@ -182,11 +182,19 @@
 
                                         @foreach (var medication in Model.AllMedication)
                                         {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - @medication.ActiveIngredientName</option>
+                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Allergy</option>
                                         }
                                         @foreach (var medication in Model.AllConditionMedication)
                                         {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - @medication.ActiveIngredientName</option>
+                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Medical Condition</option>
+                                        }
+                                        @foreach (var medication in Model.AllMedicationsWithInteractions)
+                                        {
+                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Medication Interaction</option>
+                                        }
+                                        @foreach (var medication in Model.AllMedicationsInteractionsPrescription)
+                                        {
+                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Medication Interaction in Prescription</option>
                                         }
                                     </select>
                                 </div>
