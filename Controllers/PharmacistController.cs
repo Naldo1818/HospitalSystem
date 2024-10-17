@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
+using DEMO.Models.PharmacistModels;
+using MailKit.Net.Smtp;
 
 namespace DEMO.Controllers
 {
@@ -30,62 +32,57 @@ namespace DEMO.Controllers
         }
 
         //adding pharmacy medication
-       
-        public ActionResult AddMedication(string MedicationJson, string DosgaeFormJson, string ScheduleJson, AddMedicationViewModel model)
+
+        // GET: AddMedication
+        [HttpGet]
+        public ActionResult AddMedication()
         {
+            // Fetch medication names
+            var medNames = _dbContext.Medication
+                                     .Select(m => m.MedicationName)
+                                     .ToList();
 
-            //medication
-            if (!string.IsNullOrEmpty(MedicationJson))
+            // Fetch medication forms
+            var medicationForms = _dbContext.Medication
+                                             .Select(m => m.MedicationForm)
+                                             .ToList();
+
+            // Fetch medication schedules
+            var medSchedules = _dbContext.Medication
+                                         .Select(m => m.Schedule)
+                                         .ToList();
+
+            // Create a ViewModel to hold the data
+            var viewModel = new AddMedicationViewModel
             {
-                //model.Conditions = JsonConvert.DeserializeObject<List<Condition>>(ConditionsJson);
-                var medicationlist = JsonConvert.DeserializeObject<List<string>>(MedicationJson);
+                PharmacyMedications = medNames,
+                PharmMedDF = medicationForms,
+                PharmMedSchedule = medSchedules
+            };
 
-                if (medicationlist != null)
-                {
-                    foreach (var item in medicationlist)
-                    {
-                        Medication medication = new Medication();
-                        medication.MedicationID = _dbContext.Medication.Where(x => x.MedicationName == item.ToString()).FirstOrDefault().MedicationID;
-
-                        model.PharmacyMedications.Add(medication);
-                    }
-                }
-            }
-
-
-            //dosage form
-            if (!string.IsNullOrEmpty(DosgaeFormJson))
-            {
-                //model.Conditions = JsonConvert.DeserializeObject<List<Condition>>(ConditionsJson);
-                var medicationlist = JsonConvert.DeserializeObject<List<string>>(DosgaeFormJson);
-
-                if (medicationlist != null)
-                {
-                    foreach (var item in medicationlist)
-                    {
-                        Medication df = new Medication();
-                        df.MedicationID = _dbContext.Medication.Where(x => x.MedicationForm == item.ToString()).FirstOrDefault().MedicationID;
-
-                        model.PharmMedDF.Add(df);
-                    }
-                }
-            }
-
-
-            //schedule
-            
-
-
-
-
-
-
-
-
-
-            return View();
+            // Pass the ViewModel to the view
+            return View(viewModel);
         }
 
+        // POST: AddMedication
+        //[HttpPost]
+        //public ActionResult AddMedication(AddMedicationViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Process the form submission here (e.g., save to database)
+
+        //        // Redirect or return a success message
+        //        return RedirectToAction("AddMedication"); // Change "Success" to your desired action
+        //    }
+
+        //    // If validation fails, fetch data again and return to view with model errors
+        //    model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+
+        //    return View(model);
+        //}
 
 
 
@@ -486,6 +483,8 @@ namespace DEMO.Controllers
 
 
                                 }).ToList();
+
+            var sortedData = combinedData.OrderByDescending(item => item.Urgency == "Yes").ToList();
 
             var viewModel = new ViewActivePrescriptionsModel
             {

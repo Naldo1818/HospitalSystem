@@ -10,13 +10,9 @@ namespace DEMO.ViewModels
 
         public int AddPharmMedID {  get; set; }
 
-        public List<Medication> PharmacyMedications { get; set; }   
-
-
-        public List<Medication> PharmMedDF {  get; set; }
-
-
-        public List<Medication> pharmMedSchedule { get; set; }
+        public List<string> PharmacyMedications { get; set; } // Assuming these are strings
+        public List<string> PharmMedDF { get; set; }          // Assuming these are strings
+        public List<int> PharmMedSchedule { get; set; }    // Assuming these are strings
 
         public int StockonHand { get; set; }
 
