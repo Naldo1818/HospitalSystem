@@ -15,6 +15,8 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using System.Runtime.Intrinsics.X86;
 
 namespace DEMO.Controllers
 {
@@ -221,7 +223,7 @@ namespace DEMO.Controllers
                         if (model.Suburb != null)
                             address.SuburbID = model.Suburb.SuburbID;
 
-                        if (model.Province != null || model.City != null || model.Suburb != null)
+                        if (model.Province != null || model.City != null || model.Suburb != null || model.Street != null)
                         {
                             var patientAddress = new Address()
                             {
@@ -237,10 +239,11 @@ namespace DEMO.Controllers
 
                             pationetAddressId = patientAddress.AddressId;
                         }
-                        
 
-                        foreach (var item in model.Allergies)
+                        if (model.Allergies != null && model.Allergies.Any())
                         {
+                            foreach (var item in model.Allergies)
+                            {
                             var allergies = new PatientAllergy()
                             {
                                 PatientID = booking.PatientID,
@@ -248,47 +251,58 @@ namespace DEMO.Controllers
                                 
                             };
 
-                            _dbContext.PatientAllergy.Add(allergies);
-                            _dbContext.SaveChanges();
+                                _dbContext.PatientAllergy.Add(allergies);
+                                _dbContext.SaveChanges();
 
-                            patientAllergyID = allergies.patientAllergyID;
+                                patientAllergyID = allergies.patientAllergyID;
+                            }
                         }
+                        
 
-
-                        foreach (var item in model.Conditions)
+                        if(model.Conditions != null && model.Conditions.Any())
                         {
-                            var condition = new PatientConditions()
+                            foreach (var item in model.Conditions)
                             {
-                                PatientID = booking.PatientID,
-                                ConditionsID = item.ConditionID,
-                                
-                            };
+                                var condition = new PatientConditions()
+                                {
+                                    PatientID = booking.PatientID,
+                                    ConditionsID = item.ConditionID,
+                                    
+                                };
 
-                            _dbContext.PatientConditions.Add(condition);
-                            _dbContext.SaveChanges();
+                                _dbContext.PatientConditions.Add(condition);
+                                _dbContext.SaveChanges();
 
-                            patientConditionID = condition.PatientConditionsID;
+                                patientConditionID = condition.PatientConditionsID;
+                            }
                         }
 
-                        foreach (var item in model.Medications)
+                        if(model.Medications != null && model.Medications.Any())
                         {
-                            var medication = new PatientMedication()
+                            foreach (var item in model.Medications)
                             {
-                                PatientID = booking.PatientID,
-                                MedicationID = item.MedicationID,
-                                
-                            };
+                                var medication = new PatientMedication()
+                                {
+                                    PatientID = booking.PatientID,
+                                    MedicationID = item.MedicationID,
+                                    
+                                };
 
-                            _dbContext.patientMedication.Add(medication);
-                            _dbContext.SaveChanges();
+                                _dbContext.patientMedication.Add(medication);
+                                _dbContext.SaveChanges();
 
-                            patientMedicationId = medication.PatientMedicationID;
+                                patientMedicationId = medication.PatientMedicationID;
+                            }
+
                         }
-
+                        
+                        double HeightinM = model.Vitals.Height / 100;
+                        double BMI = Math.Round(model.Vitals.Weight / (HeightinM * HeightinM));
                         if (model.Vitals != null)
                         {
                             var patientVitals = new PatientVitals
                             {
+                                PatientID = booking.PatientID,
                                 Height = model.Vitals.Height,
                                 Weight = model.Vitals.Weight,
                                 SystolicBloodPressure = model.Vitals.SystolicBloodPressure,
@@ -310,6 +324,7 @@ namespace DEMO.Controllers
                             {
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
+                                updateAdmission.BedId = model.Bed.BedId;
                                 updateAdmission.AddressID = pationetAddressId;
 
                                 _dbContext.AdmittedPatients.Update(updateAdmission);
@@ -338,14 +353,62 @@ namespace DEMO.Controllers
             }
 
             // Return the view with the model if validation fails
-            return View("AdmittedPatients", model);
+            return View("AdmittedPatients");
         }
 
         public IActionResult AdmittedPatients()
         {
-            //// Return the list of admitted patients or a relevant view
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                accountID = 0;
+            }
+
+            var combinedData = (from a in _dbContext.Accounts
+                                join b in _dbContext.BookSurgery on a.AccountID equals b.AccountID
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
+                                join bed in _dbContext.Bed on ap.BedId equals bed.BedId
+                                join w in _dbContext.Ward on bed.WardID equals w.WardId
+                                join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
+                               
+                                select new AdmissionsListViewModel
+                                {
+                                    PatientID = p.PatientID,
+                                    AdmittedPatientID = ap.AdmittedPatientID,
+                                    BookingID = b.BookingID,
+                                    SurgeonName = a.Name,
+                                    SurgeonSurname = a.Surname,
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater,
+                                    WardName = w.WardName,
+                                    BedNumber = bed.Number,
+                                    AdmissionStatusDescription = status.Description,
+                                    Time = ap.Time
+                                })
+                     .OrderBy(a => a.Name)
+                     .ToList();
+            var viewModel = new AdmissionsListViewModel
+            {
+                AllcombinedData = combinedData,
+
+            };
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
             //var patients = _dbContext.AdmittedPatients.ToList();
-            return View();
+            return View("AdmittedPatients",viewModel);
         }
 
         public IActionResult AdmissionPage(int bookingID)

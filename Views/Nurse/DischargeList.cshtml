@@ -72,7 +72,8 @@
                                         <td>Ariana Grande</td>
                                         <td>
 
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Discharge">Discharge Patient</a>
+                                            <input type="button" name="discharge" class="next action-button" value="Discharge" id="dischargeButton" / >
+
                                         </td>
                                     </tr>
                                    
@@ -86,28 +87,48 @@
 
         </main>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="dischargeModal" tabindex="-1" aria-labelledby="dischargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dischargeModalLabel">Confirm Discharge</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to discharge this patient?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDischargeButton">Yes, Discharge</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function () {
-            var table = $('#example').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
+            // Show the modal when the discharge button is clicked
+            $('#dischargeButton').click(function () {
+                $('#dischargeModal').modal('show');
             });
 
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim().toLowerCase();
-                table.rows().every(function () {
-                    var data = this.data();
-                    var name = data[1].toLowerCase();
-                    var surname = data[2].toLowerCase();
-                    if (name.includes(searchText) || surname.includes(searchText)) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
-                    }
-                });
+            // Close the modal when cancel or close button is clicked
+            $('.btn-secondary, .close').click(function () {
+                $('#dischargeModal').modal('hide');
+            });
+
+            // Perform the discharge operation when 'Yes, Discharge' is clicked
+            $('#confirmDischargeButton').click(function () {
+                // Hide the modal
+                $('#dischargeModal').modal('hide');
+
+                // Perform any additional actions here, like submitting a form or updating the UI
+                alert('Patient discharged successfully.');
             });
         });
+    </script>
     </script>
 </body>
 </html>

@@ -35,8 +35,8 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center">Prescription View</h1>
-
+        <h1 class="text-center">@Html.DisplayFor(m => m.patientname) @Html.DisplayFor(m=> m.patientsurname) </h1>
+        
 
 
        
@@ -51,10 +51,7 @@
         <!-- Medical History -->
         
     <section class="mt-5">
-
-
-          
-                <div class="form-container">
+         <div class="form-container">
                     <form>
                         <h2 class="text-center">Medical History</h2>
                         <div class="form-group row">
@@ -88,12 +85,12 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col"> Current Medication</th>
+                                        <th scope="col"> Current Medications</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.AllCurrentMed)
+                                    @foreach (var item in Model.combinedData)
                                     {
                                         <tr>
                                             <td>@item.patientMedication</td>
@@ -123,8 +120,15 @@
                             </div>
                         </div>
                     </form>
+                
                 </div>
+              
 
+                
+            </div>
+           
+
+                </section>
         
 
         
@@ -140,11 +144,12 @@
                 <form>
                     <h2 class="text-center">Vitals</h2>
                     <div class="form-group row">
+
                         <div class="col-4 mb-3">
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th scope="col"> Conditions</th>
+                                        <th scope="col"> Height</th>
 
                                     </tr>
                                 </thead>
@@ -152,7 +157,7 @@
                                     @foreach (var item in Model.combinedData)
                                     {
                                         <tr>
-                                            <td>@item.Condition</td>
+                                            <td>@item.Height</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -162,47 +167,197 @@
 
                         </div>
 
-                        <div class="col-4 mb-3">
-
-
-
-
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"> Current Medication</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.combinedData)
-                                    {
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                            <td>@item.patientMedication</td>
+                                            <th scope="col"> Weight</th>
+
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.Weight</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
 
-                        <div class="col-4 mb-3">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"> Allergies</th>
 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.combinedData)
-                                    {
+
+                            </div>
+
+
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                            <td>@item.allergy</td>
+                                            <th scope="col"> Systolic Blood Pressure</th>
+
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.SystolicBloodPressure</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"> Diastolic Blood Pressure</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.DiastolicBloodPressure</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"> Heart Rate</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.HeartRate</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+
+
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"> Blood Oxygen</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.BloodOxygen</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"> Respiration</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.Respiration</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"> BloodGlucoseLevel</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.BloodGlucoseLevel</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+                            
+                            <div class="col-4 mb-3">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"> Temperature</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.combinedData)
+                                        {
+                                            <tr>
+                                                <td>@item.Temperature</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+
+                            </div>
+
+
+                            
+
+                           
+                            
+                            
+                            
+
+                       
                     </div>
                 </form>
             </div>
@@ -211,49 +366,18 @@
 
 
         </section>
+
+
             <!-- Prescription Form -->
             <section class="mt-5">
 
                 <div class="form-container">
 
                     <form>
-                        <h2 class="form-title"><h2 class="text-center">Prescripption</h2></h2>
-
+                        <h2 class="form-title"><h2 class="text-center">Prescription</h2></h2>
                         <div class="form-group row">
 
                             <div class="col-4 mb-3">
-                                <label class="form-label"></label>
-                                <input type="text" class="form-control  readonly>
-                            </div>
-
-                        </div>
-
-                        <div class="form-group">
-                            <div>
-
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Medications Prescribed</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                            @foreach (var item in Model.combinedData)
-                                            {
-                                            <tr>
-                                                <td>@item.patientMedication</td>
-                                            </tr>
-                                            }
-                                    </tbody>
-                                </table>
-
-
-                            </div>
-
-                            <div class="form-group">
-
-
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -262,48 +386,60 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                            @foreach (var item in Model.combinedData)
-                                            {
+                                        @foreach (var item in Model.combinedData)
+                                        {
                                             <tr>
                                                 <td>@item.Take</td>
                                             </tr>
-                                            }
+                                        }
                                     </tbody>
                                 </table>
+
                             </div>
 
-                            <div class="form-group">
-                                <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Dispense</a>
-                                <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Reject</a>
-                                <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
-                            </div>
+
+
+
+                    <div class="col-4 mb-3">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col"> Urgent</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.combinedData)
+                                {
+                                    <tr>
+                                        <td>@item.Urgency</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                    
+
+
+
+
+
+
+
+                    
+                              
+                          
                     </form>
 
-
+            <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
+            <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary">Reject</a>
+            <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary ">Back</a>
                 </div>
             </section>
 
-            <!-- Vitals History -->
-     @*  <section class="mt-5">
-           
-            <div class="form-container">
-                
-                
-                    <form>
-                        <h2 class="text-center">Vitals</h2>
-                     
-                        ("Systolic BP (mmHg)", "systolicBP"),
-                        ("Diastolic BP (mmHg)", "diastolicBP"),
-                        ("Blood Oxygen (%)", "bloodOxygen"),
-                        ("Respiration Rate (Breaths/min)", "respirationRate"),
-                        ("Blood Glucose Level (mg/dL)", "glucoseLevel"),
-                        ("Temperature (°C)", "temperature")
-                        
-                    </form>
-                
-                
-            </div>
-        </section>  *@
+        
 
         
 @* 

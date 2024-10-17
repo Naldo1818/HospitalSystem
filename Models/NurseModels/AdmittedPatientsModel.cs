@@ -12,6 +12,8 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int PatientID { get; set; }
 
+        public int AccountID { get; set; }
+
         [Required]
         public int BookingID { get; set; }
 
@@ -36,6 +38,10 @@ namespace DEMO.Models.NurseModels
         {
             Date = DateOnly.FromDateTime(DateTime.Now);
             Time = TimeOnly.FromDateTime(DateTime.Now);
+        }
+        public string GetFormattedTime()
+        {
+            return Time.ToString("HH:mm:ss");
         }
     }
 }

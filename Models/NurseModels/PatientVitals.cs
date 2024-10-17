@@ -31,6 +31,10 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int Temperature { get; set; }
         [Required]
-        public TimeOnly time { get; set; } = TimeOnly.FromDateTime(DateTime.Now);
+        public TimeOnly time { get; set; }
+        //public string GetFormattedTime()
+        //{
+        //    return time.ToString("HH:mm:ss");
+        //}
     }
 }
