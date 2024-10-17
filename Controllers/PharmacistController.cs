@@ -159,7 +159,58 @@ namespace DEMO.Controllers
 
         public IActionResult ViewAllPrescriptions()
         {
-            return View();  
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+            var combinedData = (from prescription in _dbContext.Prescription
+                                join medicationInstruction in _dbContext.MedicationInstructions
+                                on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
+                                join medication in _dbContext.Medication
+                                on medicationInstruction.MedicationID equals medication.MedicationID
+                                join patient in _dbContext.PatientInfo
+                                on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
+                                join account in _dbContext.Accounts
+                                on prescription.AccountID equals account.AccountID
+
+                                select new ViewActivePrescriptionsModel
+
+
+                                {
+                                    // Prescription fields
+                                    PrescriptionID = prescription.PrescriptionID,
+                                    SurgeonName = account.Name,
+                                    SurgeonSurname = account.Surname,
+                                    DateGiven = prescription.DateGiven,
+                                    Urgency = prescription.Urgency,
+                                    Take = prescription.Take,
+                                    Status = prescription.Status,
+
+                                    // Medication fields
+
+
+                                    // MedicationInstructions fields
+
+
+                                    // PatientInfo fields
+                                    Name = patient.Name,
+                                    Surname = patient.Surname,
+
+
+
+                                }).ToList();
+
+           
+
+            var viewModel = new ViewActivePrescriptionsModel
+            {
+                combinedData = combinedData,
+            };
+
+            return View(viewModel);
         }
 
 

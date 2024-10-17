@@ -21,7 +21,7 @@ namespace DEMO.Models.PharmacistModels
 
 
 
-        [Required]
+        
         public int StockonHand { get; set; }
 
         [Required]
