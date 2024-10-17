@@ -7,9 +7,7 @@ namespace DEMO.ViewModels
 {
     public class AddMedicationViewModel
     {
-        [Key]
-
-        public int AddPharmMedID {  get; set; }
+       
 
         public PharmacyMedicationModel testMeds { get; set; }
 
@@ -18,22 +16,22 @@ namespace DEMO.ViewModels
 
         public List<string> PharmMedDF { get; set; } = new List<string>(); // Initialize here
 
-        public List<string> PharmMedSchedule { get; set; } = new List<string>(); // Initialize here
+        public List<int> PharmMedSchedule { get; set; } = new List<int>(); // Initialize here
 
-        public string PharmMedName { get; set; }
-
-
-        public string DosageForm {  get; set; }
-
-        public int Schedule{ get; set; }
+        //public string PharmMedName { get; set; }
 
 
-        [Required]
-        public int StockonHand { get; set; }
+        //public string DosageForm {  get; set; }
+
+        //public int Schedule{ get; set; }
 
 
-        [Required]
-        public int Reorderlevel { get; set; }
+        //[Required]
+        //public int StockonHand { get; set; }
+
+
+        //[Required]
+        //public int Reorderlevel { get; set; }
 
         public int MedicationID { get; set; }
 
