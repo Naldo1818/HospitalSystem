@@ -3,7 +3,7 @@
     Layout = "_LayoutPharmacist";
 }
 
-@model DEMO.ViewModels.CombinedMedViewModel
+@model DEMO.Models.PharmacistModels.PharmacyMedicationModel
 
 
 <!DOCTYPE html>
@@ -40,7 +40,7 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form asp-controller="Pharmacist"  asp-action="AddMedication"  method="post">
-                           @Html.AntiForgeryToken()
+                            @Html.AntiForgeryToken() 
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Medication Page</h1></center>
@@ -56,42 +56,42 @@
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="medicationName" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" name="testMeds.MedicationName" id="testMeds.MedicationName" placeholder="Enter name" style="width:300px">
-                                    <span asp-validation-for="testMeds.MedicationName" class="text-danger"></span>
+                                    <input type="text" class="form-control" name="MedicationName" id="MedicationName" asp-for="MedicationName"  style="width:300px">
+                                    <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
-                                ll
+                                
                                 <div class="col-md-4">
                                     <label for="medicationForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="testMeds.DosageForm" id="testMeds.DosageForm" style="width:300px">
-                                        @foreach (var item in Model..PharmMedDF.OrderBy(i => i))
+                                    <select class="form-control" name="DosageForm" id="DosageForm" asp-for="DosageForm" style="width:300px">
+                                        @foreach (var item in Model.PharmMedDF.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
                                         }
                                     </select>
-                                    <span asp-validation-for="testMeds.DosageForm" class="text-danger"></span>
+                                    <span asp-validation-for="DosageForm" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="testMeds.Schedule" id="testMeds.Schedule" style="width:300px">
+                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" style="width:300px">
                                         @foreach (var item in Model.PharmMedSchedule.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
                                         }
                                     </select>
-                                    <span asp-validation-for="testMeds.Schedule" class="text-danger"></span>
+                                    <span asp-validation-for="Schedule" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="stockOnHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="testMeds.StockonHand" name="testMeds.StockonHand" placeholder="Enter amount"  style="width:300px" >
-                                    <span asp-validation-for="testMeds.StockonHand" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand"  style="width:300px">
+                                    <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="reorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="testMeds.ReorderLevel" name="testMeds.ReorderLevel" placeholder="Enter amount" style="width:300px">
-                                    <span asp-validation-for="testMeds.ReorderLevel" class="text-danger"></span>
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  asp-for="ReorderLevel" style="width:300px">
+                                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
                             </div>
 
@@ -158,133 +158,26 @@
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <table id="medicationTable" class="table table-striped">
                             <thead>
+                               
                                 <tr>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Dosage Form</th>
                                     <th scope="col">Schedule</th>
                                     <th scope="col">Stock on Hand</th>
                                     <th scope="col">Reorder level</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col">IngredientsandPrescpription</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               
+                                @foreach (var item in Model.combinedData)
+                                { }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Confirmation ADD Medication Modal -->
-            <div class="modal fade" id="confirmMedicationModal" tabindex="-1" role="dialog" aria-labelledby="confirmMedicationModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmMedicationModalLabel">Confirm Save</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to add this Medication?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="saveMedicationButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelSaveButton">No</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Active Ingredient Structure -->
-            <div class="modal fade modal-lg" id="activeIngredientModal" tabindex="-1" aria-labelledby="activeIngredientModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="activeIngredientModalLabel">Enter Active Ingredient Details</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="activeIngredientForm" method="post" action="@Url.Action("AddActiveingredient", "Admin")">
-                                <div class="form-group row">
-                                    <input type="hidden" id="MedicationID" name="MedicationID" />
-                                    <div class="col-4">
-                                        <label for="activeingredientName" class="form-label">Active Ingredient Name</label>
-                                        <select class="form-control" id="activeingredientName" name="activeingredientID" style="width:250px" required>
-                                            <option value="">Select an active ingredient</option>
-                                          @*   @foreach (var ingredient in Model.ActiveIngredients)
-                                            {
-                                                <option value="@ingredient.ActiveingredientID">@ingredient.ActiveIngredientName</option>
-                                            } *@
-                                        </select>
-                                    </div>
-                                    <div class="col-4">
-                                        <label for="activeingredientStrength" class="form-label">Active Ingredient Strength(In mg)</label>
-                                        <input type="number" class="form-control" id="activeingredientStrength" name="activeingredientStrength" style="width:250px" required>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br />
-                                        <button type="button" id="mainSaveActiveIngredientButton" class="btn btn-primary">Save</button>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="p-3 mt-5 border" style="background-color: white;">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Medication Name</th>
-                                                        <th>Active Ingredient Name</th>
-                                                        <th>Active Ingredient Strength</th>
-                                                        <th>Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="ingredientTableBody">
-                                                  @*   @foreach (var MedicationActiveIngredient in Model.AllMedicationActiveIngredients)
-                                                    {
-                                                        <tr>
-                                                            <td>@MedicationActiveIngredient.MedicationName</td>
-                                                            <td>@MedicationActiveIngredient.ActiveIngredientName</td>
-                                                            <td>@MedicationActiveIngredient.ActiveIngredientStrength</td>
-                                                            <td>
-                                                                <div class="w-100 btn-group" role="group">
-                                                                    <a class="btn btn-warning">Remove</a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    } *@
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Confirmation ActiveIngredient Modal -->
-            <div class="modal fade" id="confirmActiveIngredientModal" tabindex="-1" role="dialog" aria-labelledby="confirmActiveIngredientModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmActiveIngredientModalLabel">Confirm Save</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to add this Active Ingredient?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="saveActiveIngredientButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancelSaveButton">No</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
             <script>
                 $(document).ready(function () {

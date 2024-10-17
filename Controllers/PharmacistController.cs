@@ -35,7 +35,7 @@ namespace DEMO.Controllers
 
         // GET: AddMedication
         [HttpGet]
-        public ActionResult AddMedication()
+        public IActionResult AddMedication()
         {
             // Fetch medication names
             var medNames = _dbContext.Medication
@@ -53,14 +53,16 @@ namespace DEMO.Controllers
                                          .ToList();
 
             // Create a ViewModel to hold the data
-            var viewModel = new AddMedicationViewModel
+            var viewModel = new PharmacyMedicationModel
             {
 
 
 
                 PharmacyMedications = medNames,
                 PharmMedDF = medicationForms,
-                PharmMedSchedule = medSchedules
+                PharmMedSchedule = medSchedules,
+                //testMeds=new PharmacyMedicationModel()
+                
             };
 
 
@@ -71,40 +73,108 @@ namespace DEMO.Controllers
 
 
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddMedication(/*[Bind("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]*/ PharmacyMedicationModel model)
+
+        public async Task<IActionResult> AddMedication([Bind("MedicationName","DosageForm","Schedule","StockonHand","ReorderLevel")]
+            
+            
+            PharmacyMedicationModel model)
         {
             if (ModelState.IsValid)
             {
                 // Create a new medication entity from the model
-                //var medication = new AddMedicationViewModel
-                //{
-                //    testMeds=model.testMeds,
-                   
-                //};
-
 
                 var medicationEntity = new PharmacyMedicationModel
                 {
-                    PharmacyMedicationID=model.PharmacyMedicationID,
+                  
                     MedicationName = model.MedicationName,
                     DosageForm = model.DosageForm,
                     Schedule = model.Schedule,
                     StockonHand = model.StockonHand,
-                    ReorderLevel = model.ReorderLevel
+                    ReorderLevel = model.ReorderLevel,
+                    //IngredientandStrength = model.IngredientandStrength,
+                    //IngredientsplusStrength = model.IngredientsplusStrength,
+                    
                 };
 
                 _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
 
-                //_dbContext.DayHospitalPharmacyMedication.Add(model.testMeds);
-                await _dbContext.SaveChangesAsync();
 
-            }
+                 await _dbContext.SaveChangesAsync();
+            return RedirectToAction("AddMedication"); // Adjust as needed
+        }
 
-            // If validation fails, return to the view with the current model
+        // If validation fails, repopulate dropdowns and return to view with current model
+        model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+            model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+            model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+
             return View(model);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //public async Task<IActionResult> AddMedication(/*[Bind("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]*/ AddMedicationViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Create a new medication entity from the model
+        //        //var medication = new AddMedicationViewModel
+        //        //{
+        //        //    testMeds=model.testMeds,
+
+        //        //};
+
+
+        //        var medicationEntity = new PharmacyMedicationModel
+        //        {
+        //            MedicationName = model.testMeds.MedicationName,
+        //            DosageForm = model.testMeds.DosageForm,
+        //            Schedule = model.testMeds.Schedule,
+        //            StockonHand = model.testMeds.StockonHand,
+        //            ReorderLevel = model.testMeds.ReorderLevel
+        //        };
+
+        //        _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
+
+        //        //_dbContext.DayHospitalPharmacyMedication.Add(model.testMeds);
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("AddMedication"); // Adjust as needed
+
+
+        //    }
+
+        //    // If validation fails, repopulate dropdowns and return to view with current model
+        //    model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+        //    return View(model);
+        //}
 
         //MedicationName=model.testMeds.MedicationName,
         //DosageForm=model.testMeds.DosageForm,

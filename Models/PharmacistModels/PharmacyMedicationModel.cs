@@ -21,22 +21,26 @@ namespace DEMO.Models.PharmacistModels
         [Range(0, 6, ErrorMessage = "Schedule must be between 0 and 6.")]
         public int Schedule { get; set; }
 
+        public List<string> PharmacyMedications { get; set; } // Assuming these are strings
 
 
-        
+        public List<string> PharmMedDF { get; set; } = new List<string>(); // Initialize here
+
+        public List<int> PharmMedSchedule { get; set; } = new List<int>(); // Initialize here
+
+        [Required]
         public int StockonHand { get; set; }
 
         [Required]
         public int ReorderLevel { get; set; }
 
 
-        public string IngredientandStrength { get; set; }
+        //public string IngredientandStrength { get; set; }
 
 
-        public List<string> IngredientsplusStrength { get; set; }
+        //public List<string> IngredientsplusStrength { get; set; }
 
 
-        public AddMedicationViewModel meds { get; set; }
 
     }
 }
