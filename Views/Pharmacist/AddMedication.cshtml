@@ -39,7 +39,7 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="addMedicationForm" method="post" action="/Pharmacist/AddMedication">
+                        <form asp-action="AddMedication" method="post" >
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Medication Page</h1></center>
@@ -53,15 +53,16 @@
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="medicationName" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" name="medicationName" placeholder="Enter name" style="width:300px">
-
+                                    <input type="text" class="form-control" name="medicationName" id="MedicationName" placeholder="Enter name" style="width:300px">
+                                    <span asp-validation-for="" class="text-danger"></span>
+                                
                                 </div>
 
 
                                 <!--Dosage form-->
                                 <div class="col-md-4">
                                     <label for="medicationForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="medicationForm" style="width:300px">
+                                    <select class="form-control" name="medicationForm" id="DosageForm" style="width:300px">
                                        
 
 
@@ -75,7 +76,7 @@
                                 <!--Schedule-->
                                 <div class="col-md-4">
                                     <label for="schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="medicationForm" style="width:300px">
+                                    <select class="form-control" name="medicationForm" id="Schedule" style="width:300px">
                                        
 
                                         @foreach (var item in Model.PharmMedSchedule.OrderBy(i => i))
@@ -88,12 +89,12 @@
 
                                 <div class="col-md-4">
                                     <label for="medicationName" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" name="medicationName" placeholder="Enter amount" style="width:300px">
+                                    <input type="text" class="form-control" id="StockonHand" name="medicationName" placeholder="Enter amount" style="width:300px">
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="medicationName" class="form-label">Re-order level</label>
-                                    <input type="text" class="form-control" name="medicationName" placeholder="Enter amount" style="width:300px">
+                                    <input type="text" class="form-control" id="ReorderLevel" name="medicationName" placeholder="Enter amount" style="width:300px">
                                 </div>
 
                             </div>

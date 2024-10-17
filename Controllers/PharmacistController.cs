@@ -72,34 +72,53 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddMedication(PharmacyMedicationModel Model) 
+
+        public async Task<IActionResult> AddMedication([Bind
+
+            ("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]
+        PharmacyMedicationModel pharmacymedication)
         {
             if (ModelState.IsValid)
             {
-                PharmacyMedicationModel pharmMedModel = new PharmacyMedicationModel
-                {
+                _dbContext.Add(pharmacymedication);
+                await _dbContext.SaveChangesAsync();
+                return RedirectToAction("MedicationAdded", "Pharmacist");
+            }
+            return View(pharmacymedication);
+        }
+
+
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult AddMedication(PharmacyMedicationModel Model) 
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        PharmacyMedicationModel pharmMedModel = new PharmacyMedicationModel
+        //        {
                     
-                    MedicationName = Model.MedicationName,  
-                    DosageForm = Model.DosageForm,
-                    Schedule = Model.Schedule,
-                    StockonHand = Model.StockonHand,
-                    ReorderLevel= Model.ReorderLevel,
+        //            MedicationName = Model.MedicationName,  
+        //            DosageForm = Model.DosageForm,
+        //            Schedule = Model.Schedule,
+        //            StockonHand = Model.StockonHand,
+        //            ReorderLevel= Model.ReorderLevel,
                        
 
 
 
-                };
+        //        };
 
-              _dbContext.DayHospitalPharmacyMedication.Add(pharmMedModel);
-               _dbContext.SaveChanges();
-                return RedirectToAction("AddMedication");
-            }
+        //      _dbContext.DayHospitalPharmacyMedication.Add(pharmMedModel);
+        //       _dbContext.SaveChanges();
+        //        return RedirectToAction("AddMedication");
+        //    }
 
-            return View("AddMedication", Model);
-        }
+        //    return View("AddMedication", Model);
+        //}
        
         
 
@@ -573,23 +592,7 @@ namespace DEMO.Controllers
         //    return View(pharmacymedication);
         //}
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-
-        //public async Task<IActionResult> AddMedication([Bind
-
-        //    ("PharmacyMedicationlID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel,ActiveIngredientsAndStrength")]
-        //PharmacyMedicationModel pharmacymedication)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _dbContext.Add(pharmacymedication);
-        //        await _dbContext.SaveChangesAsync();
-        //        return RedirectToAction("MedicationAdded", "Pharmacist");
-        //    }
-        //    return View(pharmacymedication);
-        //}
-
+       
 
 
 
