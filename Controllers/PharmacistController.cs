@@ -53,20 +53,20 @@ namespace DEMO.Controllers
                                          .ToList();
 
             // Create a ViewModel to hold the data
-            var viewModel = new AddMedicationViewModel
-            {
+            //var viewModel = new AddMedicationViewModel
+            //{
 
 
 
-                PharmacyMedications = medNames,
-                PharmMedDF = medicationForms,
-                PharmMedSchedule = medSchedules
-            };
+            //    PharmacyMedications = medNames,
+            //    PharmMedDF = medicationForms,
+            //    PharmMedSchedule = medSchedules
+            //};
 
             
 
             // Pass the ViewModel to the view
-            return View(viewModel);
+            return View(/*viewModel*/);
         }
 
         //[HttpPost]

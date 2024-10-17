@@ -93,13 +93,13 @@
                 <div class="col">
                     <div class="p-3 mt-2 border">
 
-                        <form>
-                            <h2>Medical Information</h2>
-                            <label>Name: @Model.Name</label>
-                            <label>Surname: @Model.Surname</label>
+                        <div class="header-labels">
+
+                            <label>Name: @ViewBag.Name</label>
+                            <label>Surname: @ViewBag.Surname</label>
                             
-                            <a asp-controller="Nurse" asp-action="PatientRecords"><input type="button" name="Back" class="next action-button btn-danger" value="Back" /></a>
-                        </form>
+
+                        </div>
                     </div>
                 </div>
             </div>

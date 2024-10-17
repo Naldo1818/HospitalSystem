@@ -67,12 +67,68 @@ namespace DEMO.Controllers
         }
 
 
-        public IActionResult Vitals()
+        public IActionResult Vitals(PatientVitals model, int AdmittedPatientID)
         {
-            return View();
+            // Fetch the existing vitals record for the patient if it exists
+            var existingVital = (from pv in _dbContext.PatientVitals
+                                 join ad in _dbContext.AdmittedPatients
+                                 on pv.PatientID equals ad.PatientID
+                                 where ad.AdmittedPatientID == AdmittedPatientID
+                                 select new PatientVitals
+                                 {
+                                     SystolicBloodPressure = model.SystolicBloodPressure,
+                                     DiastolicBloodPressure = model.DiastolicBloodPressure,
+                                     HeartRate = model.HeartRate,
+                                     BloodOxygen = model.BloodOxygen,
+                                     Respiration = model.Respiration,
+                                     BloodGlucoseLevel = model.BloodGlucoseLevel,
+                                     Temperature = model.Temperature,
+                                     time = model.time,
 
+                                 }).OrderBy(pv => pv.time);
+
+            var existingVitals = _dbContext.PatientVitals
+                                    .FirstOrDefault(v => v.PatientID == model.PatientID);
+
+            // If patient vitals exist, retain the existing height and weight
+            if (existingVitals != null)
+            {
+                existingVitals.SystolicBloodPressure = model.SystolicBloodPressure;
+                existingVitals.DiastolicBloodPressure = model.DiastolicBloodPressure;
+                existingVitals.HeartRate = model.HeartRate;
+                existingVitals.BloodOxygen = model.BloodOxygen;
+                existingVitals.Respiration = model.Respiration;
+                existingVitals.BloodGlucoseLevel = model.BloodGlucoseLevel;
+                existingVitals.Temperature = model.Temperature;
+                existingVitals.time = model.time;
+
+                _dbContext.PatientVitals.Update(existingVitals);
+            }
+            else
+            {
+                // If no existing vitals, add a new entry including height and weight
+                var patientVitals = new PatientVitals
+                {
+                    PatientID = model.PatientID,
+                    Height = model.Height,
+                    Weight = model.Weight,
+                    SystolicBloodPressure = model.SystolicBloodPressure,
+                    DiastolicBloodPressure = model.DiastolicBloodPressure,
+                    HeartRate = model.HeartRate,
+                    BloodOxygen = model.BloodOxygen,
+                    Respiration = model.Respiration,
+                    BloodGlucoseLevel = model.BloodGlucoseLevel,
+                    Temperature = model.Temperature,
+                    time = model.time,
+                };
+                _dbContext.PatientVitals.Add(patientVitals);
+            }
+
+            // Save changes to the database
+            _dbContext.SaveChanges();
+            return View("AdmittedPatients", model);
         }
-        
+
         public IActionResult Discharge()
         {
             return View();
@@ -125,12 +181,12 @@ namespace DEMO.Controllers
             };
             return View(viewModel);
             //return RedirectToAction("AdmissionPage", new { id = viewModel.BookingID});
-            
+
         }
 
-        
+
         [HttpPost]
-        public IActionResult AdmissionPage(string ConditionsJson,string AllergiesJson, string MedicationJson, BookedPatientInfo model)
+        public IActionResult AdmissionPage(string ConditionsJson, string AllergiesJson, string MedicationJson, BookedPatientInfo model)
         {
             int patientAllergyID = 0;
             int patientConditionID = 0;
@@ -231,7 +287,7 @@ namespace DEMO.Controllers
                                 CityID = model.City.CityID,
                                 SuburbID = model.Suburb.SuburbID,
                                 StreetName = model.Street,
-                                
+
                             };
 
                             _dbContext.Address.Add(patientAddress);
@@ -244,12 +300,12 @@ namespace DEMO.Controllers
                         {
                             foreach (var item in model.Allergies)
                             {
-                            var allergies = new PatientAllergy()
-                            {
-                                PatientID = booking.PatientID,
-                                ActiveingredientID = item.ActiveingredientID,
-                                
-                            };
+                                var allergies = new PatientAllergy()
+                                {
+                                    PatientID = booking.PatientID,
+                                    ActiveingredientID = item.ActiveingredientID,
+
+                                };
 
                                 _dbContext.PatientAllergy.Add(allergies);
                                 _dbContext.SaveChanges();
@@ -257,9 +313,9 @@ namespace DEMO.Controllers
                                 patientAllergyID = allergies.patientAllergyID;
                             }
                         }
-                        
 
-                        if(model.Conditions != null && model.Conditions.Any())
+
+                        if (model.Conditions != null && model.Conditions.Any())
                         {
                             foreach (var item in model.Conditions)
                             {
@@ -267,7 +323,7 @@ namespace DEMO.Controllers
                                 {
                                     PatientID = booking.PatientID,
                                     ConditionsID = item.ConditionID,
-                                    
+
                                 };
 
                                 _dbContext.PatientConditions.Add(condition);
@@ -277,7 +333,7 @@ namespace DEMO.Controllers
                             }
                         }
 
-                        if(model.Medications != null && model.Medications.Any())
+                        if (model.Medications != null && model.Medications.Any())
                         {
                             foreach (var item in model.Medications)
                             {
@@ -285,7 +341,7 @@ namespace DEMO.Controllers
                                 {
                                     PatientID = booking.PatientID,
                                     MedicationID = item.MedicationID,
-                                    
+
                                 };
 
                                 _dbContext.patientMedication.Add(medication);
@@ -295,7 +351,7 @@ namespace DEMO.Controllers
                             }
 
                         }
-                        
+
                         double HeightinM = model.Vitals.Height / 100;
                         double BMI = Math.Round(model.Vitals.Weight / (HeightinM * HeightinM));
                         if (model.Vitals != null)
@@ -314,7 +370,7 @@ namespace DEMO.Controllers
                                 Temperature = model.Vitals.Temperature,
                                 time = model.Vitals.time,
                             };
-                            
+
                             if (model.Vitals.SystolicBloodPressure > 36)
                             {
 
@@ -349,7 +405,7 @@ namespace DEMO.Controllers
 
                             int vitalsId = patientVitals.PatientVitalsID;
 
-                            if(vitalsId > 0)
+                            if (vitalsId > 0)
                             {
                                 updateAdmission.BookingID = bookingId;
                                 updateAdmission.WardID = model.Ward.WardId;
@@ -365,7 +421,7 @@ namespace DEMO.Controllers
                             Console.WriteLine("Vitals has not been created");
                         }
 
-                        
+
                     }
                     else
                     {
@@ -400,7 +456,7 @@ namespace DEMO.Controllers
                                 join bed in _dbContext.Bed on ap.BedId equals bed.BedId
                                 join w in _dbContext.Ward on bed.WardID equals w.WardId
                                 join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
-                               
+
                                 select new AdmissionsListViewModel
                                 {
                                     PatientID = p.PatientID,
@@ -430,14 +486,14 @@ namespace DEMO.Controllers
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-            
+
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
 
             //var patients = _dbContext.AdmittedPatients.ToList();
-            return View("AdmittedPatients",viewModel);
+            return View("AdmittedPatients", viewModel);
         }
 
         public IActionResult AdmissionPage(int bookingID)
@@ -482,7 +538,7 @@ namespace DEMO.Controllers
         {
             return View();
         }
-        public IActionResult PatientRecords(int AdmittedPatientID)
+        public IActionResult PatientRecords(int AdmittedPatientID, string name, string surname)
         {
             var combinedData = (from a in _dbContext.Accounts
                                 join b in _dbContext.BookSurgery on a.AccountID equals b.AccountID
@@ -524,10 +580,13 @@ namespace DEMO.Controllers
             var today = DateOnly.FromDateTime(DateTime.Today);
 
 
-            
+
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+            ViewBag.PatientSurname = surname;
+            ViewBag.PatientName = name;
+
             return View(viewModel);
         }
         public IActionResult PatientVitals(int AdmittedPatientID, string name, string surname)
@@ -606,24 +665,79 @@ namespace DEMO.Controllers
             ViewBag.PatientSurname = surname;
 
             return View(viewModel);
-           
 
 
-         
-         
-         
-            
+
+
+
+
+
         }
-        
+
         public IActionResult InfoNurse()
         {
             return View();
         }
-        public IActionResult EmailVitals()
+        
+        public async Task<IActionResult> EmailVitals(int AdmittedPatientID)
         {
-            return View();
+            var combinedData = await (from pv in _dbContext.PatientVitals
+                                      join ad in _dbContext.AdmittedPatients on pv.PatientID equals ad.PatientID
+                                      join b in _dbContext.BookSurgery on ad.BookingID equals b.BookingID
+                                      join ac in _dbContext.Accounts on b.AccountID equals ac.AccountID
+                                      join p in _dbContext.PatientInfo on ad.PatientID equals p.PatientID
+                                      join w in _dbContext.Ward on ad.WardID equals w.WardId
+                                      join bed in _dbContext.Bed on ad.BedId equals bed.BedId
+                                      where ad.AdmittedPatientID == AdmittedPatientID
+                                      orderby pv.time descending // Get the latest vitals
+                                      select new EmailVital
+                                      {
+                                          Height = pv.Height,
+                                          Weight = pv.Weight,
+                                          SystolicBloodPressure = pv.SystolicBloodPressure,
+                                          DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                          HeartRate = pv.HeartRate,
+                                          BloodOxygen = pv.BloodOxygen,
+                                          Respiration = pv.Respiration,
+                                          BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                          Temperature = pv.Temperature,
+                                          Time = pv.time, // Format the time
+                                          FullName = p.Name + " " + p.Surname,
+                                          WardName = w.WardName,
+                                          Bed = bed.Number,
+                                          SurgeonEmail = ac.Email,
+                                          SurgeonRole = ac.Role
+                                      }).FirstOrDefaultAsync(); // Get only the latest record
+
+            if (combinedData == null)
+            {
+                TempData["ErrorMessage"] = "Vitals or patient not found.";
+                return RedirectToAction("AdmittedPatients", "Nurse");
+            }
+
+
+            var viewModel = new EmailVital
+            {
+                Height = combinedData.Height,
+                Weight = combinedData.Weight,
+                SystolicBloodPressure = combinedData.SystolicBloodPressure,
+                DiastolicBloodPressure = combinedData.DiastolicBloodPressure,
+                HeartRate = combinedData.HeartRate,
+                BloodOxygen = combinedData.BloodOxygen,
+                Respiration = combinedData.Respiration,
+                BloodGlucoseLevel = combinedData.BloodGlucoseLevel,
+                Temperature = combinedData.Temperature,
+                Time = combinedData.Time,
+                FullName = combinedData.FullName,
+                WardName = combinedData.WardName,
+                Bed = combinedData.Bed,
+                SurgeonEmail = combinedData.SurgeonEmail,
+                SurgeonRole = combinedData.SurgeonRole
+            };
+            return View(viewModel);
         }
-        public async Task<IActionResult> SendEmailVitals(string notes, int patientID)
+        [HttpPost]
+        public async Task<IActionResult> EmailVitals(string notes, int AdmittedPatientID)
         {
             // Get logged-in nurse's email
             
@@ -645,7 +759,7 @@ namespace DEMO.Controllers
                                           join p in _dbContext.PatientInfo on ad.PatientID equals p.PatientID
                                           join w in _dbContext.Ward on ad.WardID equals w.WardId
                                           join bed in _dbContext.Bed on ad.BedId equals bed.BedId
-                                          where pv.PatientID == patientID
+                                          where ad.AdmittedPatientID == AdmittedPatientID
                                           orderby pv.time descending // Get the latest vitals
                                           select new EmailVital
                                           {
