@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DEMO.Models;
+using DEMO.ViewModels;
 
 namespace DEMO.Models.PharmacistModels
 {
@@ -32,6 +34,9 @@ namespace DEMO.Models.PharmacistModels
 
 
         public List<string> IngredientsplusStrength { get; set; }
+
+
+        public AddMedicationViewModel meds { get; set; }
 
     }
 }

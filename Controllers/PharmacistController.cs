@@ -63,60 +63,60 @@ namespace DEMO.Controllers
                 PharmMedSchedule = medSchedules
             };
 
-            
+
 
             // Pass the ViewModel to the view
             return View(viewModel);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
 
-        //public async Task<IActionResult> AddMedication([Bind
-
-        //    ("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]
-        //AddMedicationViewModel pharmacymedication)
-
-
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _dbContext.Add(pharmacymedication.testMeds);
-        //        await _dbContext.SaveChangesAsync();
-        //        return RedirectToAction("AddMedication", "Pharmacist");
-        //    }
-        //    return View(pharmacymedication);
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddMedication(AddMedicationViewModel pharmacymedication)
+        public async Task<IActionResult> AddMedication(/*[Bind("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]*/ PharmacyMedicationModel model)
         {
             if (ModelState.IsValid)
             {
-                // Create a new Medication entity from the ViewModel
-                var newMedication = new AddMedicationViewModel
+                // Create a new medication entity from the model
+                //var medication = new AddMedicationViewModel
+                //{
+                //    testMeds=model.testMeds,
+                   
+                //};
+
+
+                var medicationEntity = new PharmacyMedicationModel
                 {
-                    PharmMedName = pharmacymedication.testMeds.MedicationName,
-                   DosageForm=pharmacymedication.testMeds.DosageForm,
-                   Schedule=pharmacymedication.testMeds.Schedule,
-                   StockonHand=pharmacymedication.testMeds.StockonHand,
-                   Reorderlevel=pharmacymedication.testMeds.ReorderLevel,
+                    PharmacyMedicationID=model.PharmacyMedicationID,
+                    MedicationName = model.MedicationName,
+                    DosageForm = model.DosageForm,
+                    Schedule = model.Schedule,
+                    StockonHand = model.StockonHand,
+                    ReorderLevel = model.ReorderLevel
                 };
 
-                _dbContext.Add(newMedication);
+                _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
+
+                //_dbContext.DayHospitalPharmacyMedication.Add(model.testMeds);
                 await _dbContext.SaveChangesAsync();
 
-                return RedirectToAction("AddMedication", "Pharmacist");
             }
 
-            // If model state is invalid, repopulate dropdowns and return view with current data
-            //pharmacymedication.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
-            //pharmacymedication.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
-            //pharmacymedication.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
-
-            return View(pharmacymedication);
+            // If validation fails, return to the view with the current model
+            return View(model);
         }
+
+        //MedicationName=model.testMeds.MedicationName,
+        //DosageForm=model.testMeds.DosageForm,
+        //Schedule=model.testMeds.Schedule,
+        //StockonHand=model.testMeds.StockonHand,
+        //ReorderLevel=model.testMeds.ReorderLevel,
+        //IngredientandStrength=model.testMeds.IngredientandStrength,
+        //IngredientsplusStrength=model.testMeds.IngredientsplusStrength,
+        // Add additional properties as needed
+
+
+
 
         //public async Task<IActionResult> AddMedication([Bind
 
