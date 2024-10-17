@@ -2,10 +2,10 @@
 
 namespace DEMO.Models.PharmacistModels
 {
-    public class PharmMedModel
+    public class PharmacyMedicationModel
     {
         [Key]
-        public int PharmacyMedicationlID { get; set; }
+        public int PharmacyMedicationID { get; set; }
 
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Medication Name can only contain letters, numbers, and spaces.")]
@@ -21,15 +21,17 @@ namespace DEMO.Models.PharmacistModels
 
 
 
-
-        public int MedicationID { get; set; }
-
-        [Required]
+        
         public int StockonHand { get; set; }
 
         [Required]
         public int ReorderLevel { get; set; }
 
 
-        }
+        public string IngredientandStrength { get; set; }
+
+
+        public List<string> IngredientsplusStrength { get; set; }
+
+    }
 }

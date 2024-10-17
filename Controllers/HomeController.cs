@@ -1081,27 +1081,120 @@ namespace DEMO.Controllers
                                  }).OrderBy(ap => ap.Date).ToList();
 
             var allGoodMedications = _dbContext.PharmacyMedication
-     .Where(pm =>
-         !_dbContext.MedicationActiveIngredient
-             .Any(ma => ma.MedicationID == pm.MedicationID
-                 && (_dbContext.PatientAllergy
-                     .Any(pa => pa.PatientID == patientID && pa.ActiveingredientID == ma.ActiveingredientID)
-                 || _dbContext.PatientConditions
-                     .Any(pc => pc.PatientID == patientID && _dbContext.ConditionActiveIngredient
-                         .Any(ca => ca.ConditionID == pc.ConditionsID && ca.ActiveingredientID == ma.ActiveingredientID)
-                     )
-                 )
-             )
-     )
-     .Join(_dbContext.Medication, pm => pm.MedicationID, m => m.MedicationID, (pm, m) => new { pm, m })
-     .OrderBy(x => x.m.MedicationName)
-     .Select(x => new PrescriptionMedicationViewModel
-     {
-         MedicationID = x.m.MedicationID,
-         MedicationName = x.m.MedicationName
-     })
-     .Distinct()
-     .ToList();
+                            .Where(pm => !_dbContext.MedicationActiveIngredient
+                                .Any(ma => ma.MedicationID == pm.MedicationID && (
+                                    _dbContext.PatientAllergy
+                                        .Any(pa => pa.PatientID == patientID && pa.ActiveingredientID == ma.ActiveingredientID) ||
+                                    _dbContext.PatientConditions
+                                        .Any(pc => pc.PatientID == patientID && _dbContext.ConditionActiveIngredient
+                                            .Any(ca => ca.ConditionID == pc.ConditionsID && ca.ActiveingredientID == ma.ActiveingredientID)
+                                        )
+                                ))
+                            )
+                            .Where(pm => !_dbContext.MedicationActiveIngredient
+                                .Any(ma1 => ma1.MedicationID == pm.MedicationID &&
+                                    (_dbContext.patientMedication
+                                        .Where(pm2 => pm2.PatientID == patientID)
+                                        .Join(_dbContext.MedicationActiveIngredient, pm2 => pm2.MedicationID, ma2 => ma2.MedicationID, (pm2, ma2) => new { ma2.ActiveingredientID })
+                                        .Any(pm2_ma2 => (
+                                            // Check for Carbimazole-Doxazosin interaction
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
+                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
+                                            // Check for Doxazosin-Doxylamine Succinate interaction
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
+                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
+                                        ))
+                                    ||
+                                    _dbContext.MedicationInstructions
+                                        .Where(mi => mi.PrescriptionID == id) // Use your PrescriptionID condition
+                                        .Join(_dbContext.MedicationActiveIngredient, mi => mi.MedicationID, ma2 => ma2.MedicationID, (mi, ma2) => new { ma2.ActiveingredientID })
+                                        .Any(mi_ma2 => (
+                                            // Check for Carbimazole-Doxazosin interaction
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
+                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
+                                            // Check for Doxazosin-Doxylamine Succinate interaction
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
+                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
+                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
+                                        ))
+                                ))
+                            )
+                            .Join(_dbContext.Medication, pm => pm.MedicationID, m => m.MedicationID, (pm, m) => new { pm, m })
+                            .OrderBy(x => x.m.MedicationName)
+                            .Select(x => new PrescriptionMedicationViewModel
+                            {
+                                MedicationID = x.m.MedicationID,
+                                MedicationName = x.m.MedicationName
+                            })
+                            .Distinct()
+                            .ToList();
+
+            var allMedicationsWithInteractions =( from pm in _dbContext.PharmacyMedication
+                                                 join mai in _dbContext.MedicationActiveIngredient on pm.MedicationID equals mai.MedicationID
+                                                 join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+                                                 where _dbContext.patientMedication
+                                                     .Where(pm2 => pm2.PatientID == patientID)
+                                                     .Join(_dbContext.MedicationActiveIngredient,
+                                                           pm2 => pm2.MedicationID,
+                                                           mai2 => mai2.MedicationID,
+                                                           (pm2, mai2) => new { mai2.ActiveingredientID })
+                                                     .Any(pm2_ma2 =>
+                                                         // Check for Carbimazole-Doxazosin interaction
+                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
+                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
+                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
+                                                         // Check for Doxazosin-Doxylamine Succinate interaction
+                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
+                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
+                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
+                                                     )
+                                                 select new PrescriptionMedicationViewModel
+                                                 {
+                                                     MedicationID = pm.MedicationID,
+                                                     MedicationName = m.MedicationName
+                                                 })
+                                                .Distinct()
+                                                .OrderBy(x => x.MedicationName)
+                                                .ToList();
+
+            var allMedicationsInteractionsPrescription = (from pm in _dbContext.PharmacyMedication
+                                                join mai in _dbContext.MedicationActiveIngredient on pm.MedicationID equals mai.MedicationID
+                                                join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+                                                where _dbContext.MedicationInstructions
+                                                    .Where(mi => mi.PrescriptionID == id) // Use the correct prescriptionID variable
+                                                    .Join(_dbContext.MedicationActiveIngredient,
+                                                          mi => mi.MedicationID,
+                                                          mai2 => mai2.MedicationID,
+                                                          (mi, mai2) => new { mai2.ActiveingredientID })
+                                                    .Any(mi_ma2 =>
+                                                        // Check for Carbimazole-Doxazosin interaction
+                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
+                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
+                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
+                                                        // Check for Doxazosin-Doxylamine Succinate interaction
+                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
+                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
+                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
+                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
+                                                    )
+                                                select new PrescriptionMedicationViewModel
+                                                {
+                                                    MedicationID = pm.MedicationID,
+                                                    MedicationName = m.MedicationName
+                                                })
+                                                .Distinct()
+                                                .OrderBy(x => x.MedicationName)
+                                                .ToList();
 
 
 
@@ -1178,6 +1271,8 @@ namespace DEMO.Controllers
 
             var viewModel = new PrescriptionMedicationViewModel
             {
+                AllMedicationsInteractionsPrescription = allMedicationsInteractionsPrescription,
+                AllMedicationsWithInteractions = allMedicationsWithInteractions,
                 AllConditionMedication = allConditionMedication,
                 Allvitals = patientVitals,
                 CombinedData = combinedData,

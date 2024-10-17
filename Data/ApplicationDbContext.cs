@@ -47,6 +47,9 @@ namespace DEMO.Data
         
         public DbSet<PatientVitals> PatientVitals { get; set; }
         public DbSet<ConditionActiveIngredient> ConditionActiveIngredient { get; set; }
+
+
+        public DbSet<PharmacyMedicationModel> DayHospitalPharmacyMedication{ get; set; }
         
     }
 }

@@ -60,7 +60,8 @@ namespace DEMO.ViewModels
 
         public int PrescriptionID { get; set; }
         public List<PrescriptionMedicationViewModel> Allvitals { get; set; }
-        
+        public List<PrescriptionMedicationViewModel> AllMedicationsInteractionsPrescription { get; set; }
+        public List<PrescriptionMedicationViewModel> AllMedicationsWithInteractions { get; set; }
         public List<PrescriptionMedicationViewModel> AllConditionMedication { get; set; }
         public List<PrescriptionMedicationViewModel> AllGoodMedications { get; set; }
         public List<PrescriptionMedicationViewModel> AllMedication { get; set; }
