@@ -76,19 +76,19 @@
                                             <td>@Data.BedNumber</td>
                                             <td>@Data.Time</td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Patient Information</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Patient Information</a>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Administer Medication</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Administer Medication</a>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Retake Vitals</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Retake Vitals</a>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname" asp-route-patientID="@Data.PatientID">Collect Medication</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Collect Medication</a>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="DischargeList">Discharge</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="DischargeList" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Discharge</a>
                                             </td>
                                         </tr>
                                     }

@@ -2,6 +2,7 @@
     ViewData["Title"] = "Patient Records";
     Layout = "_LayoutNurse";
 }
+@model DEMO.ViewModels.PatientAllergyViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -93,7 +94,10 @@
                     <div class="p-3 mt-2 border">
 
                         <form>
-                            <h2>Vitals</h2>
+                            <h2>Medical Information</h2>
+                            <label>Name: @Model.Name</label>
+                            <label>Surname: @Model.Surname</label>
+                            
                             <a asp-controller="Nurse" asp-action="PatientRecords"><input type="button" name="Back" class="next action-button btn-danger" value="Back" /></a>
                         </form>
                     </div>
@@ -119,9 +123,94 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @foreach (var Data in Model.Allvitals)
+                                {
+                                    <tr>
+                                        <td>@Data.Height</td>
+                                        <td>@Data.Weight</td>
+                                        <td>@Data.SystolicBloodPressure</td>
+                                        <td>@Data.DiastolicBloodPressure</td>
+                                        <td>@Data.HeartRate</td>
+                                        <td>@Data.BloodOxygen</td>
+                                        <td>@Data.Respiration</td>
+                                        <td>@Data.BloodGlucoseLevel</td>
+                                        <td>@Data.Temperature</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1200px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <table id="Allergy" class="display" style="width:100%">
+                            <thead>
                                 <tr>
-                                    
+                                    <th scope="col">Allergy</th>
+
                                 </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.Allallergy)
+                                {
+                                    <tr>
+                                        <td>@Data.ActiveIngredientName</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1200px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <table id="Condition" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+
+                                    <th scope="col">Name</th>
+                                    
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.AllConditions)
+                                {
+                                    <tr>
+                                        <td>@Data.ConditionName</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="width:1200px">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <table id="Medication" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+
+
+                                    <th scope="col">MedicationName</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.AllCurrentMed)
+                                {
+                                    <tr>
+                                        <td>@Data.Name</td>
+                                    </tr>
+
+                                }
                             </tbody>
                         </table>
                     </div>

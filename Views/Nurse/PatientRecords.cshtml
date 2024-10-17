@@ -2,6 +2,7 @@
     ViewData["Title"] = "Patient Records";
     Layout = "_LayoutNurse";
 }
+@model DEMO.ViewModels.AdmissionsListViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -106,42 +107,41 @@
                                     
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Gender</th>
+                                    <th scope="col">Surgeon</th>
                                     <th scope="col">Ward</th>
+                                    <th scope="col">Gender</th>
                                     <th scope="col">Bed</th>
                                     <th scope="col">Medication</th>
                                     <th scope="col">Allergy</th>
                                     <th scope="col">Condition</th>
-                                    <th scope="col">Vitals</th>
-                                    <th scope="col">Surgeon</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col">Medical Information</th>
+                                    
+                                    <th scope="col">Send Email</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Jin</td>
-                                    <td>Woo</td>
-                                    <td>Male</td>
-                                    <td>Elephant</td>
-                                    <td>1</td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientMedication">Medication</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientAllergies">Allergy</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientConditions">Condition</a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientVitals">Vitals</a>
-                                    </td>
-
-                                    <td>Ariana Grande</td>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="EmailVitals">Email Surgeon</a>
-                                    </td>
-                                </tr>
+                                
+                                    @foreach (var Data in Model.AllcombinedData)
+                                    {
+                                        <tr>
+                                            <td>@Data.Name</td>
+                                            <td>@Data.Surname</td>
+                                            <td>@Data.SurgeonName @Data.SurgeonSurname</td>
+                                            <td>@Data.WardName</td>
+                                            <td>@Data.BedNumber</td>
+                                            <td>@Data.Gender</td>
+                                          
+                                            <td>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientVitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp>Medical Info</a>
+                                            </td>
+                                            <td>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="EmailVitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Email Surgeon</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                    
+                                    
+                                
                             </tbody>
                         </table>
                     </div>
