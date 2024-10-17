@@ -34,7 +34,7 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <h2><center>Current Open Prescrptions</center></h2>
+                        <h2><center>All Prescrptions</center></h2>
                         <table id="example" class="table display" style="width:100%">
                             <thead>
                                 <tr>
@@ -61,18 +61,12 @@
                                         <td>@item.SurgeonSurname</td>
                                         <td>@item.DateGiven</td>
                                         <td>@item.Status</td>
-                                       @*  <td>@item.Urgency</td> *@
-                                        <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
+                                  
+                                        <td >
                                             @item.Urgency
                                         </td>
 
-                                        <td>
-                                           
-
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription" asp-route-id="@item.PrescriptionID">View</a>
-
-                                        </td>
-
+                                        
                                         
                                       
                                         

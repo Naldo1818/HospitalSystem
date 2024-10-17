@@ -45,22 +45,22 @@
                 <div class="card mt-5 custom-card" style="width:200px">
 
                     <div class="card-body">
-                        <h5 class="card-title text-center">Logged in as Pharmacist:</h5>
-                       @*  <h5 class="card-title text-center">@ViewBag.Username @ViewBag.UserSurname</h5> *@
+                        <h5 class="card-title text-center">Logged in as Pharmacist: </h5>
+                        <p>@ViewBag.UserName @ViewBag.UserSurname</p>
 
-                        <h5 class="card-title text-center">Email:</h5>
-                        @* <h5 class="card-title text-center">@ViewBag.UserEmail</h5> *@
-                        
-                        <hr>
+                      <br />
+                        <h5 class="card-title text-center">Email: </h5>
+                        <p>@ViewBag.UserEmail</p>
+
                         <br>
                         <p class="card-text text-center">Active prescriptions</p>
-                        <p class="card-text text-center">2</p>
+                        
                        
-                        <br>
+                        
                         <br>
 
                         <p class="card-text text-center">Received stock</p>
-                        <p class="card-text text-center">2</p>
+                     
                        
 
 
@@ -90,7 +90,10 @@
                     <strong>
                         <header>DISPENSING</header>
                     </strong>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">View all active prescriptions</a>
+            
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllPrescriptions">View all prescriptions</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">View active prescriptions</a>
+
                     <br />
 
                     <strong>

@@ -157,7 +157,10 @@ namespace DEMO.Controllers
 
 
 
-
+        public IActionResult ViewAllPrescriptions()
+        {
+            return View();  
+        }
 
 
 
