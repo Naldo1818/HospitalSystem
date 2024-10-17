@@ -80,10 +80,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.AllCurrentMed)
+                                @if (Model.AllCurrentMed != null && Model.AllCurrentMed.Any())
+                                {
+                                    foreach (var item in Model.AllCurrentMed)
+                                    {
+                                        <tr>
+                                            <td>@item.AllCurrentMed</td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@item.AllCurrentMed</td>
+                                        <td>None</td>
                                     </tr>
                                 }
                             </tbody>
@@ -98,10 +107,19 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.Allallergy)
+                                @if (Model.Allallergy != null && Model.Allallergy.Any())
+                                {
+                                    @foreach (var item in Model.Allallergy)
+                                    {
+                                        <tr>
+                                            <td>@item.ActiveIngredientName</td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@item.ActiveIngredientName</td>
+                                        <td>None</td>
                                     </tr>
                                 }
                             </tbody>
@@ -116,10 +134,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.AllConditions)
+                               
+                                @if (Model.AllConditions != null && Model.AllConditions.Any())
+                                {
+                                    @foreach (var item in Model.AllConditions)
+                                    {
+                                        <tr>
+                                            <td>@item.ConditionName</td>
+                                        </tr>
+                                    }
+                                }
+                                else
                                 {
                                     <tr>
-                                        <td>@item.ConditionName</td>
+                                        <td>None</td>
                                     </tr>
                                 }
                             </tbody>
