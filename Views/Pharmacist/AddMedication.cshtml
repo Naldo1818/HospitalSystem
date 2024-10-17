@@ -59,11 +59,11 @@
                                     <input type="text" class="form-control" name="testMeds.MedicationName" id="testMeds.MedicationName" placeholder="Enter name" style="width:300px">
                                     <span asp-validation-for="testMeds.MedicationName" class="text-danger"></span>
                                 </div>
-
+                                ll
                                 <div class="col-md-4">
                                     <label for="medicationForm" class="form-label">Dosage Form</label>
                                     <select class="form-control" name="testMeds.DosageForm" id="testMeds.DosageForm" style="width:300px">
-                                        @foreach (var item in Model.PharmMedDF.OrderBy(i => i))
+                                        @foreach (var item in Model..PharmMedDF.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
                                         }
