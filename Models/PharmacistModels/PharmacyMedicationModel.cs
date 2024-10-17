@@ -2,6 +2,7 @@
 using DEMO.Models;
 using DEMO.ViewModels;
 
+
 namespace DEMO.Models.PharmacistModels
 {
     public class PharmacyMedicationModel
@@ -33,6 +34,8 @@ namespace DEMO.Models.PharmacistModels
 
         [Required]
         public int ReorderLevel { get; set; }
+
+        //public List<PharmacyMedicationModel> combinedData { get; set; }
 
 
         //public string IngredientandStrength { get; set; }

@@ -1,6 +1,8 @@
 ﻿
 
 @{
+    var userAccountId = Context.Session.GetString("UserAccountId");
+
     var userName = Context.Session.GetString("UserName");
     var userSurname = Context.Session.GetString("UserSurname");
     var userEmail = Context.Session.GetString("UserEmail");

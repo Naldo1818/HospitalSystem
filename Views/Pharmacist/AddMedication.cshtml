@@ -5,7 +5,6 @@
 
 @model DEMO.Models.PharmacistModels.PharmacyMedicationModel
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,13 +55,13 @@
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="medicationName" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" name="MedicationName" id="MedicationName" asp-for="MedicationName"  style="width:300px">
+                                    <input type="text" class="form-control" name="MedicationName" id="MedicationName" asp-for="MedicationName" value="@Model.MedicationName"  style="width:300px">
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
                                 
                                 <div class="col-md-4">
                                     <label for="medicationForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="DosageForm" id="DosageForm" asp-for="DosageForm" style="width:300px">
+                                    <select class="form-control" name="DosageForm" id="DosageForm" asp-for="DosageForm" value="@Model.DosageForm" style="width:300px">
                                         @foreach (var item in Model.PharmMedDF.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
@@ -73,7 +72,7 @@
 
                                 <div class="col-md-4">
                                     <label for="schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" style="width:300px">
+                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" value="@Model.Schedule" style="width:300px">
                                         @foreach (var item in Model.PharmMedSchedule.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
@@ -84,28 +83,26 @@
 
                                 <div class="col-md-4">
                                     <label for="stockOnHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand"  style="width:300px">
+                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" value="@Model.StockonHand" style="width:300px">
                                     <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="reorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  asp-for="ReorderLevel" style="width:300px">
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ReorderLevel" value="@Model.ReorderLevel" style="width:300px">
                                     <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <div class="col-12 text-center">
-                                    <button type="submit" class="btn btn-primary">Add</button>
-                                </div>
-                            </div>
+                           
+
+                           
                         </form>
 
 
 
                         <!--Active ingredient-->
-                        @* <div class="form-group row">
+                        <div class="form-group row">
                         <div class="col-12">
                         <h2>Active Ingredient Section</h2>
                         </div>
@@ -140,14 +137,14 @@
                         </tbody>
                         </table>
                         </div>
-                        </div> *@
+                        </div> 
 
 
-                        @*  <div class="form-group row">
-                        <div class="col-12 text-center">
-                        <button type="button" id="openMedicationButton" class="btn btn-primary">Add</button>
+                        <div class="form-group row">
+                            <div class="col-12 text-center">
+                                <button type="submit" asp-controller="Pharmacist" asp-action="AddMedication" class="btn btn-primary">Add</button>
+                            </div>
                         </div>
-                        </div> *@
 
                     </div>
                 </div>
@@ -165,12 +162,11 @@
                                     <th scope="col">Schedule</th>
                                     <th scope="col">Stock on Hand</th>
                                     <th scope="col">Reorder level</th>
-                                    <th scope="col">IngredientsandPrescpription</th>
+                                    <th scope="col">IngredientsandStrengths</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model.combinedData)
-                                { }
+                              
                             </tbody>
                         </table>
                     </div>

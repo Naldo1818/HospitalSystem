@@ -1,6 +1,5 @@
 ﻿using DEMO.Data;
 using DEMO.Models;
-using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
 using DEMO.Data.Migrations;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,6 +16,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using DEMO.Models.PharmacistModels;
 using MailKit.Net.Smtp;
+using System.Linq;
+using System.Net;
+
+
 
 namespace DEMO.Controllers
 {
@@ -78,47 +81,66 @@ namespace DEMO.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> AddMedication([Bind("MedicationName","DosageForm","Schedule","StockonHand","ReorderLevel")]
-            
-            
-            PharmacyMedicationModel model)
+        //public async Task<IActionResult> AddMedication([Bind("MedicationName","DosageForm","Schedule","StockonHand","ReorderLevel")]
+
+
+        //    PharmacyMedicationModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Create a new medication entity from the model
+
+        //        var medicationEntity = new PharmacyMedicationModel
+        //        {
+
+        //            MedicationName = model.MedicationName,
+        //            DosageForm = model.DosageForm,
+        //            Schedule = model.Schedule,
+        //            StockonHand = model.StockonHand,
+        //            ReorderLevel = model.ReorderLevel,
+        //            //IngredientandStrength = model.IngredientandStrength,
+        //            //IngredientsplusStrength = model.IngredientsplusStrength,
+
+        //        };
+
+        //        _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
+
+
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("AddMedication"); // Adjust as needed
+        //    }
+
+        //    // If validation fails, repopulate dropdowns and return to view with current model
+        //    model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+
+        //    return View(model);
+        //}
+
+
+     
+        public IActionResult AddMedication(PharmacyMedicationModel model)
         {
             if (ModelState.IsValid)
             {
-                // Create a new medication entity from the model
+                _dbContext.DayHospitalPharmacyMedication.Add(model);
+                _dbContext.SaveChanges();
+                //return RedirectToAction("AddMedication", "Pharmacist");
+                return RedirectToAction(nameof(AddMedication));  // Redirect to the product list
 
-                var medicationEntity = new PharmacyMedicationModel
-                {
-                  
-                    MedicationName = model.MedicationName,
-                    DosageForm = model.DosageForm,
-                    Schedule = model.Schedule,
-                    StockonHand = model.StockonHand,
-                    ReorderLevel = model.ReorderLevel,
-                    //IngredientandStrength = model.IngredientandStrength,
-                    //IngredientsplusStrength = model.IngredientsplusStrength,
-                    
-                };
+            }
 
-                _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
-
-
-                 await _dbContext.SaveChangesAsync();
-            return RedirectToAction("AddMedication"); // Adjust as needed
-        }
-
-        // If validation fails, repopulate dropdowns and return to view with current model
-        model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
-            model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
-            model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+            model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+        model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+        model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
 
             return View(model);
         }
 
 
 
-
-
+       
 
 
 
