@@ -1,6 +1,5 @@
 ﻿using DEMO.Data;
 using DEMO.Models;
-using DEMO.Models.NurseModels;
 using DEMO.ViewModels;
 using DEMO.Data.Migrations;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,6 +16,10 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using DEMO.Models.PharmacistModels;
 using MailKit.Net.Smtp;
+using System.Linq;
+using System.Net;
+
+
 
 namespace DEMO.Controllers
 {
@@ -31,11 +34,71 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+
+
+
+        public IActionResult ViewAllPrescriptions()
+        {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+            var combinedData = (from prescription in _dbContext.Prescription
+                                join medicationInstruction in _dbContext.MedicationInstructions
+                                on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
+                                join medication in _dbContext.Medication
+                                on medicationInstruction.MedicationID equals medication.MedicationID
+                                join patient in _dbContext.PatientInfo
+                                on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
+                                join account in _dbContext.Accounts
+                                on prescription.AccountID equals account.AccountID
+
+                                select new ViewActivePrescriptionsModel
+
+
+                                {
+                                    // Prescription fields
+                                    PrescriptionID = prescription.PrescriptionID,
+                                    SurgeonName = account.Name,
+                                    SurgeonSurname = account.Surname,
+                                    DateGiven = prescription.DateGiven,
+                                    Urgency = prescription.Urgency,
+                                    Take = prescription.Take,
+                                    Status = prescription.Status,
+
+                                    // Medication fields
+
+
+                                    // MedicationInstructions fields
+
+
+                                    // PatientInfo fields
+                                    Name = patient.Name,
+                                    Surname = patient.Surname,
+
+
+
+                                }).ToList();
+
+
+
+            var viewModel = new ViewActivePrescriptionsModel
+            {
+                combinedData = combinedData,
+            };
+
+            return View(viewModel);
+        }
+
+
         //adding pharmacy medication
 
         // GET: AddMedication
         [HttpGet]
-        public ActionResult AddMedication()
+        public IActionResult AddMedication()
         {
             // Fetch medication names
             var medNames = _dbContext.Medication
@@ -52,16 +115,26 @@ namespace DEMO.Controllers
                                          .Select(m => m.Schedule)
                                          .ToList();
 
+
+            //Fetch Active Ingredients
+            var actives= _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .ToList();      
+                
+
             // Create a ViewModel to hold the data
-            //var viewModel = new AddMedicationViewModel
-            //{
+            var viewModel = new PharmacyMedicationModel
+            {
 
 
 
-            //    PharmacyMedications = medNames,
-            //    PharmMedDF = medicationForms,
-            //    PharmMedSchedule = medSchedules
-            //};
+                PharmacyMedications = medNames,
+                PharmMedDF = medicationForms,
+                PharmMedSchedule = medSchedules,
+                ActiveIngredients=actives,
+                //testMeds=new PharmacyMedicationModel()
+                
+            };
 
 
 
@@ -71,40 +144,112 @@ namespace DEMO.Controllers
 
 
 
+
+        //post medication to database
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddMedication(/*[Bind("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]*/ PharmacyMedicationModel model)
+        public IActionResult AddMedication(PharmacyMedicationModel model)
         {
             if (ModelState.IsValid)
             {
-                // Create a new medication entity from the model
-                //var medication = new AddMedicationViewModel
-                //{
-                //    testMeds=model.testMeds,
-                   
-                //};
-
-
-                var medicationEntity = new PharmacyMedicationModel
-                {
-                    PharmacyMedicationID=model.PharmacyMedicationID,
-                    MedicationName = model.MedicationName,
-                    DosageForm = model.DosageForm,
-                    Schedule = model.Schedule,
-                    StockonHand = model.StockonHand,
-                    ReorderLevel = model.ReorderLevel
-                };
-
-                _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
-
-                //_dbContext.DayHospitalPharmacyMedication.Add(model.testMeds);
-                await _dbContext.SaveChangesAsync();
+                _dbContext.DayHospitalPharmacyMedication.Add(model);
+                _dbContext.SaveChanges();
+                //return RedirectToAction("AddMedication", "Pharmacist");
+                return RedirectToAction("AddMedication","Pharmacist");  // Redirect to the product list
 
             }
 
-            // If validation fails, return to the view with the current model
+            model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+            model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+            model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+
             return View(model);
         }
+
+
+        //public async Task<IActionResult> AddMedication([Bind("MedicationName","DosageForm","Schedule","StockonHand","ReorderLevel")]
+
+
+        //    PharmacyMedicationModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Create a new medication entity from the model
+
+        //        var medicationEntity = new PharmacyMedicationModel
+        //        {
+
+        //            MedicationName = model.MedicationName,
+        //            DosageForm = model.DosageForm,
+        //            Schedule = model.Schedule,
+        //            StockonHand = model.StockonHand,
+        //            ReorderLevel = model.ReorderLevel,
+        //            //IngredientandStrength = model.IngredientandStrength,
+        //            //IngredientsplusStrength = model.IngredientsplusStrength,
+
+        //        };
+
+        //        _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
+
+
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("AddMedication"); // Adjust as needed
+        //    }
+
+        //    // If validation fails, repopulate dropdowns and return to view with current model
+        //    model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+
+        //    return View(model);
+        //}
+
+
+
+
+
+
+
+
+
+
+
+        //public async Task<IActionResult> AddMedication(/*[Bind("PharmacyMedicationID,MedicationName,DosageForm,Schedule,StockonHand,ReorderLevel")]*/ AddMedicationViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Create a new medication entity from the model
+        //        //var medication = new AddMedicationViewModel
+        //        //{
+        //        //    testMeds=model.testMeds,
+
+        //        //};
+
+
+        //        var medicationEntity = new PharmacyMedicationModel
+        //        {
+        //            MedicationName = model.testMeds.MedicationName,
+        //            DosageForm = model.testMeds.DosageForm,
+        //            Schedule = model.testMeds.Schedule,
+        //            StockonHand = model.testMeds.StockonHand,
+        //            ReorderLevel = model.testMeds.ReorderLevel
+        //        };
+
+        //        _dbContext.DayHospitalPharmacyMedication.Add(medicationEntity);
+
+        //        //_dbContext.DayHospitalPharmacyMedication.Add(model.testMeds);
+        //        await _dbContext.SaveChangesAsync();
+        //        return RedirectToAction("AddMedication"); // Adjust as needed
+
+
+        //    }
+
+        //    // If validation fails, repopulate dropdowns and return to view with current model
+        //    model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
+        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
+        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+        //    return View(model);
+        //}
 
         //MedicationName=model.testMeds.MedicationName,
         //DosageForm=model.testMeds.DosageForm,
@@ -203,62 +348,7 @@ namespace DEMO.Controllers
 
 
 
-        public IActionResult ViewAllPrescriptions()
-        {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            if (!int.TryParse(accountIDString, out int accountID))
-            {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
-            }
-
-            var combinedData = (from prescription in _dbContext.Prescription
-                                join medicationInstruction in _dbContext.MedicationInstructions
-                                on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
-                                join medication in _dbContext.Medication
-                                on medicationInstruction.MedicationID equals medication.MedicationID
-                                join patient in _dbContext.PatientInfo
-                                on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
-                                join account in _dbContext.Accounts
-                                on prescription.AccountID equals account.AccountID
-
-                                select new ViewActivePrescriptionsModel
-
-
-                                {
-                                    // Prescription fields
-                                    PrescriptionID = prescription.PrescriptionID,
-                                    SurgeonName = account.Name,
-                                    SurgeonSurname = account.Surname,
-                                    DateGiven = prescription.DateGiven,
-                                    Urgency = prescription.Urgency,
-                                    Take = prescription.Take,
-                                    Status = prescription.Status,
-
-                                    // Medication fields
-
-
-                                    // MedicationInstructions fields
-
-
-                                    // PatientInfo fields
-                                    Name = patient.Name,
-                                    Surname = patient.Surname,
-
-
-
-                                }).ToList();
-
-           
-
-            var viewModel = new ViewActivePrescriptionsModel
-            {
-                combinedData = combinedData,
-            };
-
-            return View(viewModel);
-        }
-
+       
 
 
 
@@ -330,7 +420,9 @@ namespace DEMO.Controllers
         public IActionResult ViewSpecificPrescription(int id)
         {
             // Retrieve the prescription based on the provided ID
+          
             var prescription = _dbContext.Prescription.Find(id);
+
 
             if (prescription==null)
             {
@@ -348,7 +440,7 @@ namespace DEMO.Controllers
                                 join cm in _dbContext.patientMedication on p.AdmittedPatientID equals cm.PatientID
                                 join m in _dbContext.Medication on cm.MedicationID equals m.MedicationID
                                 join pv in _dbContext.PatientVitals on p.AdmittedPatientID equals pv.PatientID
-                                where p.PrescriptionID == id // Ensure we filter by the specific prescription ID
+                                where p.AdmittedPatientID == id // Ensure we filter by the specific prescription ID
                                 select new PharmacistViewScriptModel
                                 {
                                     // Medical history
@@ -385,14 +477,25 @@ namespace DEMO.Controllers
                                   patientMedication = cm.MedicationName // Ensure this property exists in your view model
                               }).OrderBy(cm => cm.patientMedication).ToList();
 
+            var conditions = (from pc in _dbContext.PatientConditions
+                              join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
+                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
 
+                              select new PharmacistViewScriptModel
+                              {
+                                  patientname = pt.Name,
+                                  patientsurname = pt.Surname,
+                                  Condition = c.ConditionName // Ensure this property exists in your view model
+                              }).OrderBy(c => c.Condition).ToList();
 
 
 
             var viewModel = new PharmacistViewScriptModel
             {
                 combinedData = combinedData,
-                AllCurrentMed=currentMed
+                AllCurrentMed=currentMed,
+               AllConditions=conditions,
+                
                 
                 //Allallergy = allergy,
                 //AllConditions = conditions,
@@ -421,16 +524,7 @@ namespace DEMO.Controllers
             //.ToList();
 
 
-            //var conditions = (from pc in _dbContext.PatientConditions
-            //                  join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
-            //                  join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
-
-            //                  select new PharmacistViewScriptModel
-            //                  {
-            //                      patientname = pt.Name,
-            //                      patientsurname = pt.Surname,
-            //                      Condition = c.ConditionName // Ensure this property exists in your view model
-            //                  }).OrderBy(c => c.Condition).ToList();
+          
 
 
             //var currentMed = (from pm in _dbContext.patientMedication

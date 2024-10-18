@@ -9,7 +9,9 @@ namespace DEMO.ViewModels
     {
        
 
-        public PharmacyMedicationModel testMeds { get; set; }
+       
+
+        public PharmacyMedicationModel testMeds { get; set; } = new PharmacyMedicationModel();
 
         public List<string> PharmacyMedications { get; set; } // Assuming these are strings
        
@@ -23,6 +25,7 @@ namespace DEMO.ViewModels
 
         //public string DosageForm {  get; set; }
 
+
         //public int Schedule{ get; set; }
 
 
@@ -33,7 +36,7 @@ namespace DEMO.ViewModels
         //[Required]
         //public int Reorderlevel { get; set; }
 
-        public int MedicationID { get; set; }
+        //public int MedicationID { get; set; }
 
 
     }
