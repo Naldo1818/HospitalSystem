@@ -39,12 +39,12 @@ namespace DEMO.Controllers
 
         public IActionResult ViewAllPrescriptions()
         {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            if (!int.TryParse(accountIDString, out int accountID))
-            {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
-            }
+            //var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            //if (!int.TryParse(accountIDString, out int accountID))
+            //{
+            //    // Handle the case where accountID is not available or is invalid
+            //    accountID = 0; // Or handle as required
+            //}
 
             var combinedData = (from prescription in _dbContext.Prescription
                                 join medicationInstruction in _dbContext.MedicationInstructions
@@ -97,13 +97,11 @@ namespace DEMO.Controllers
         //adding pharmacy medication
 
         // GET: AddMedication
-        [HttpGet]
+        
         public IActionResult AddMedication()
         {
             // Fetch medication names
-            var medNames = _dbContext.Medication
-                                     .Select(m => m.MedicationName)
-                                     .ToList();
+            
 
             // Fetch medication forms
             var medicationForms = _dbContext.Medication
@@ -119,24 +117,19 @@ namespace DEMO.Controllers
             //Fetch Active Ingredients
             var actives= _dbContext.Activeingredient
                 .Select(m => m.ActiveIngredientName)
-                .ToList();      
-                
-
+                .ToList();
             // Create a ViewModel to hold the data
             var viewModel = new PharmacyMedicationModel
             {
 
 
 
-                PharmacyMedications = medNames,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
-                ActiveIngredients=actives,
+                ActiveIngredients = actives,
                 //testMeds=new PharmacyMedicationModel()
-                
+
             };
-
-
 
             // Pass the ViewModel to the view
             return View(viewModel);
@@ -152,14 +145,25 @@ namespace DEMO.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.DayHospitalPharmacyMedication.Add(model);
+
+
+
+                var detailstoadd = new PharmacyMedicationModel
+                {
+                    MedicationName = model.MedicationName,
+                    DosageForm = model.DosageForm,
+                    Schedule = model.Schedule,
+                    StockonHand = model.StockonHand,
+                    ReorderLevel = model.ReorderLevel,
+                };
+
+                _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
                 _dbContext.SaveChanges();
                 //return RedirectToAction("AddMedication", "Pharmacist");
                 return RedirectToAction("AddMedication","Pharmacist");  // Redirect to the product list
 
             }
 
-            model.PharmacyMedications = _dbContext.Medication.Select(m => m.MedicationName).ToList();
             model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
             model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
 
