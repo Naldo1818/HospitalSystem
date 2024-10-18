@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using DEMO.Models;
 using DEMO.ViewModels;
 
@@ -14,6 +15,8 @@ namespace DEMO.Models.PharmacistModels
         [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Medication Name can only contain letters, numbers, and spaces.")]
         public string MedicationName { get; set; }
 
+
+
         [Required]
         [RegularExpression(@"^[a-zA-Z0-9\s]+$", ErrorMessage = "Dosage form can only contain letters, numbers, and spaces.")]
         public string DosageForm { get; set; }
@@ -28,7 +31,7 @@ namespace DEMO.Models.PharmacistModels
 
         public List<int> PharmMedSchedule { get; set; } = new List<int>(); // Initialize here
 
-        public List<string> ActiveIngredients { get; set; } = new List<string>();
+        //public List<string> ActiveIngredients { get; set; } = new List<string>();
 
         [Required]
         public int StockonHand { get; set; }
@@ -44,9 +47,12 @@ namespace DEMO.Models.PharmacistModels
 
         //public List<string> IngredientsplusStrength { get; set; }
 
-        public string Ingredient { get; set; }
+        //public string Ingredient { get; set; }
 
-        public string Strength { get; set; }
+        //public string Strength { get; set; }
+
+
+      
 
 
 

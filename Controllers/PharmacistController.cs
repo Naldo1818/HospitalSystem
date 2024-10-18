@@ -126,7 +126,7 @@ namespace DEMO.Controllers
 
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
-                ActiveIngredients = actives,
+                
                 //testMeds=new PharmacyMedicationModel()
 
             };
@@ -143,6 +143,8 @@ namespace DEMO.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult AddMedication(PharmacyMedicationModel model)
         {
+            
+                
             if (ModelState.IsValid)
             {
 
@@ -150,11 +152,14 @@ namespace DEMO.Controllers
 
                 var detailstoadd = new PharmacyMedicationModel
                 {
+                    
                     MedicationName = model.MedicationName,
                     DosageForm = model.DosageForm,
                     Schedule = model.Schedule,
                     StockonHand = model.StockonHand,
                     ReorderLevel = model.ReorderLevel,
+                    PharmMedDF=model.PharmMedDF,
+                    PharmMedSchedule=model.PharmMedSchedule,
                 };
 
                 _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);

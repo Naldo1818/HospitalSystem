@@ -45,7 +45,7 @@
 
 
 
-                        <form   asp-action="AddMedication"  >
+                        <form asp-action="AddMedication"  >
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Medication Page</h1></center>
@@ -80,6 +80,9 @@
                                     <span asp-validation-for="DosageForm" class="text-danger"></span>
                                 </div>
 
+
+
+
                                 <div class="col-md-4">
                                     <label for="schedule" class="form-label">Schedule</label>
                                     <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" style="width:300px">
@@ -99,13 +102,26 @@
 
                                 <div class="col-md-4">
                                     <label for="reorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  asp-asp-for="ReorderLevel" style="width:300px">
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  asp-for="ReorderLevel" style="width:300px">
                                     <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
                             </div>
+
+                            <div class="col-md-4" style="display:none;">
+                                <label for="reorderLevel" class="form-label">Re-order Level </label>
+                                <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedDF" value="@Model.PharmMedDF" style="width:300px">
+                                <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4" style="display:none;">
+                                <label for="reorderLevel" class="form-label">Re-order Level</label>
+                                <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedSchedule" value="@Model.PharmMedSchedule" style="width:300px">
+                                <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-12 text-center">
-                                    <button type="submit" value="AddMedication" class="btn btn-primary">Add</button>
+                                    <button type="submit"  class="btn btn-primary">Add</button>
                                 </div>
                             </div>
                            
