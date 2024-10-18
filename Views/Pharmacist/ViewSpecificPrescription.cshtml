@@ -44,8 +44,7 @@
                     <div class="col">
                         <div class="p-3 mt-5 border">
                             <h2><center>Vitals</center></h2>
-                            <center>
-                            </center>
+                          
                             <table id="myTable" class="table display" style="width:100%">
                                 <thead>
                                     <tr>
@@ -64,7 +63,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.Allvitals)
+                                    @foreach (var item in Model.PrescrptionDetails)
                                     {
                                         <tr>
 
@@ -97,7 +96,7 @@
 
 
         <!-- Medical History -->
-        <form >
+       @*  <form >
           
             <h2 class="text-center">Medical History</h2>
             <div class="form-group row">
@@ -150,7 +149,7 @@
 
 
         </form>
-        
+         *@
 
         
 
@@ -161,7 +160,7 @@
             <!-- Prescription Form -->
            
 
-            <div class="container">
+           @*  <div class="container">
                 <main role="main" class="pb-5">
                     <div class="row" style="width:auto">
                         <div class="col">
@@ -190,13 +189,13 @@
 
                                     </tbody>
                                 </table>
-                                @*                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
-                                *@
+                                                       <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
+                                
                             </div>
                         </div>
                     </div>
                 </main>
-            </div>
+            </div> *@
                  
 
             <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
