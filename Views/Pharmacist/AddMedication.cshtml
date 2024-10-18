@@ -60,11 +60,14 @@
 
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    <label for="medicationForm" class="form-label">Medication Name</label>
+                                    <label for="MedicationName" class="form-label">Medication Name</label>
 
                                     
-                                    <input type="text" class="form-control" asp-for="MedicationName"    style="width:300px">
+                                    <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="MedicationName"  style="width:300px">
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
+
+                                    
+
                                 </div>
                                     
                                 <div class="col-md-4">
@@ -94,9 +97,10 @@
                                     <span asp-validation-for="Schedule" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
+
+                                <div class="col-md-4 style="display:none;">
                                     <label for="stockOnHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand"  asp-for="StockonHand" style="width:300px">
+                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand"  asp-for="StockonHand" value="0" style="width:300px" readonly>
                                     <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
@@ -107,6 +111,8 @@
                                 </div>
                             </div>
 
+
+                            <!--hide-->
                             <div class="col-md-4" style="display:none;">
                                 <label for="reorderLevel" class="form-label">Re-order Level </label>
                                 <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedDF" value="@Model.PharmMedDF" style="width:300px">
@@ -118,6 +124,7 @@
                                 <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedSchedule" value="@Model.PharmMedSchedule" style="width:300px">
                                 <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                             </div>
+                            <!--end of hide-->
 
                             <div class="form-group row">
                                 <div class="col-12 text-center">

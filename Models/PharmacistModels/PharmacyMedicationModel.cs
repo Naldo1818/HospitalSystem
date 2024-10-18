@@ -45,7 +45,7 @@ namespace DEMO.Models.PharmacistModels
         public List<PharmacyMedicationModel> combinedData { get; set; }
 
 
-        //public List<PharmacyMedicationModel> combinedData { get; set; }
+      
 
 
         //public string IngredientandStrength { get; set; }

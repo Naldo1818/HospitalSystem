@@ -2,6 +2,7 @@
 using DEMO.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace DEMO.ViewModels
 {
@@ -11,15 +12,16 @@ namespace DEMO.ViewModels
 
         //prescription
 
+        public int PatientID {  get; set; }  
+
+        public int PrescriptionID {  get; set; }    
+
         public string patientname { get; set; }
 
         public string patientsurname { get; set; }
 
         public string ActiveIngredientName { get; set; }
 
-        public TimeOnly Time { get; set; }
-
-        public DateOnly DateGiven { get; set; }
 
 
         public string Surgeon { get; set; }
@@ -30,6 +32,11 @@ namespace DEMO.ViewModels
 
         public string Status { get; set; }
 
+
+
+        public TimeOnly Time { get; set; }
+
+        public DateOnly DateGiven { get; set; }
 
 
 
@@ -63,6 +70,8 @@ namespace DEMO.ViewModels
         
         public int Temperature { get; set; }
 
+        public DateOnly Date { get; set; } 
+
         public List<PharmacistViewScriptModel> combinedData { get; set; }
 
 
@@ -70,6 +79,9 @@ namespace DEMO.ViewModels
         public List<PharmacistViewScriptModel> Allallergy { get; set; }
         public List<PharmacistViewScriptModel> AllCurrentMed { get; set; }
         public List<PharmacistViewScriptModel> AllConditions { get; set; }
+
+
+        public List<PharmacistViewScriptModel> PrescrptionDetails {  get; set; }
 
 
 
