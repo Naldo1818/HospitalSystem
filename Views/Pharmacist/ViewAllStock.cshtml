@@ -32,8 +32,8 @@
                                 <tr>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Dosage Form</th>
-                                    
-                                    <th scope="col">Current level</th>
+                                    <th scope="col">Schedule</th>
+                                    <th scope="col">Stock on Hand</th>
 
                                     <th scope="col">Re-order level</th>
                                     
@@ -48,10 +48,11 @@
                                 <tr>
                                     <td>Panado</td>
                                     <td>Tablet</td>
-                                    
-                                    
-                                    
+                                    <td>1</td>
 
+
+
+                                    <td>2</td>
                                     <td>
                                         2
 
@@ -82,7 +83,11 @@
                                     <td>Tablet</td>
 
 
-                                   
+                                    <td>1</td>
+
+
+
+                                    <td>2</td>
 
                                     <td>
                                         7
@@ -113,7 +118,11 @@
                                     <td>Insulin</td>
                                     <td>Pill</td>
 
+                                    <td>1</td>
 
+
+
+                                    <td>2</td>
 
                                     <td>
                                         4
@@ -139,7 +148,6 @@
 
                         </table>
                         
-                        <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
 
                     </div>
                 </div>
@@ -157,6 +165,9 @@
                 <!-- Your table content here -->
                 <table class="table">
                     <h1><center>Auto Order</center></h1>
+            <center>
+                <input class="form-control" id="myInput" type="text" style="width: 50%; height: 40px;" placeholder="Search by medication name">
+            </center>
                     <thead>
                         <tr>
                             <th scope="col">Medication Name</th>

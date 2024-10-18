@@ -29,6 +29,8 @@ namespace DEMO.Models.PharmacistModels
 
         public List<int> PharmMedSchedule { get; set; } = new List<int>(); // Initialize here
 
+        public List<string> ActiveIngredients { get; set; } = new List<string>();
+
         [Required]
         public int StockonHand { get; set; }
 

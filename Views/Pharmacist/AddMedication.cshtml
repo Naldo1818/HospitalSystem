@@ -38,8 +38,14 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form asp-controller="Pharmacist"  asp-action="AddMedication"  method="post">
-                            @Html.AntiForgeryToken() 
+
+                     
+
+
+
+
+
+                        <form   asp-action="AddMedication"  method="post">
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Medication Page</h1></center>
@@ -54,14 +60,16 @@
 
                             <div class="form-group row">
                                 <div class="col-md-4">
-                                    <label for="medicationName" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" name="MedicationName" id="MedicationName" asp-for="MedicationName" value="@Model.MedicationName"  style="width:300px">
+                                    <label for="medicationForm" class="form-label">Medication Name</label>
+
+                                    <label> Medication Name</label>
+                                    <input type="text" class="form-control" name="MedicationName" id="MedicationName"  value="@Model.MedicationName"  style="width:300px">
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
-                                
+                                    >
                                 <div class="col-md-4">
                                     <label for="medicationForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="DosageForm" id="DosageForm" asp-for="DosageForm" value="@Model.DosageForm" style="width:300px">
+                                    <select class="form-control" name="DosageForm" id="DosageForm"  value="@Model.DosageForm" style="width:300px">
                                         @foreach (var item in Model.PharmMedDF.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
@@ -72,7 +80,7 @@
 
                                 <div class="col-md-4">
                                     <label for="schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" value="@Model.Schedule" style="width:300px">
+                                    <select class="form-control" name="Schedule" id="Schedule"  value="@Model.Schedule" style="width:300px">
                                         @foreach (var item in Model.PharmMedSchedule.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
@@ -83,13 +91,13 @@
 
                                 <div class="col-md-4">
                                     <label for="stockOnHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" value="@Model.StockonHand" style="width:300px">
+                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand"  value="@Model.StockonHand" style="width:300px">
                                     <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="reorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ReorderLevel" value="@Model.ReorderLevel" style="width:300px">
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  value="@Model.ReorderLevel" style="width:300px">
                                     <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
                             </div>
@@ -110,7 +118,13 @@
                         <div class="form-group row">
                         <div class="col">
                         <label for="activeIngredient" class="form-label">Active Ingredient</label>
-                        <input type="text" class="form-control" style="width:300px" id="activeIngredient" placeholder="Enter active ingredient">
+                                <select class="form-control"   style="width:300px">
+                                    @foreach (var item in Model.ActiveIngredients.OrderBy(i => i))
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                </select>
+                       
                         </div>
                         <div class="col-md-4">
                         <label for="strength" class="form-label">Strength</label>
@@ -142,7 +156,7 @@
 
                         <div class="form-group row">
                             <div class="col-12 text-center">
-                                <button type="submit" asp-controller="Pharmacist" asp-action="AddMedication" class="btn btn-primary">Add</button>
+                                <button type="submit"  class="btn btn-primary">Add</button>
                             </div>
                         </div>
 
