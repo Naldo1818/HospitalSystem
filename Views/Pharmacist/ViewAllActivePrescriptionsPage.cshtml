@@ -25,6 +25,34 @@
         }
     </style>
 
+    <script>
+        function filterTable() {
+            // Get the value of the search input
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('myTable');
+            const rows = table.getElementsByTagName('tr');
+
+            // Loop through all table rows, except the first (header row)
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowContainsText = false;
+
+                // Loop through each cell in the row
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(input) > -1) {
+                            rowContainsText = true;
+                            break;
+                        }
+                    }
+                }
+                // Show or hide the row based on the search input
+                rows[i].style.display = rowContainsText ? '' : 'none';
+            }
+        }
+    </script>
+
 </head>
 <body>
     
@@ -35,7 +63,10 @@
                 <div class="col">
                     <div class="p-3 mt-5 border">
                         <h2><center>Current Open Prescrptions</center></h2>
-                        <table id="example" class="table display" style="width:100%">
+                        <center>
+                            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+                        </center>
+                        <table id="myTable" class="table display" style="width:100%">
                             <thead>
                                 <tr>
                                     <th scope="col">Patient Name</th>
@@ -62,9 +93,13 @@
                                         <td>@item.DateGiven</td>
                                         <td>@item.Status</td>
                                        @*  <td>@item.Urgency</td> *@
+
+
+
                                         <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
                                             @item.Urgency
                                         </td>
+
 
                                         <td>
                                            

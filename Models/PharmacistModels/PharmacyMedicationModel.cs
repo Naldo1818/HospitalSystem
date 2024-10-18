@@ -39,6 +39,12 @@ namespace DEMO.Models.PharmacistModels
         [Required]
         public int ReorderLevel { get; set; }
 
+
+
+
+        public List<PharmacyMedicationModel> combinedData { get; set; }
+
+
         //public List<PharmacyMedicationModel> combinedData { get; set; }
 
 
@@ -52,7 +58,7 @@ namespace DEMO.Models.PharmacistModels
         //public string Strength { get; set; }
 
 
-      
+
 
 
 

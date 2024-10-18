@@ -156,7 +156,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-                              
+                                @foreach (var item in Model.combinedData)
+                                {
+
+                                    <tr>
+                                        <td>@item.MedicationName</td>
+                                        <td>@item.DosageForm</td>
+                                        <td>@item.Schedule</td>
+                                        <td>@item.StockonHand</td>
+                                        <td>@item.ReorderLevel</td>
+                                       
+
+                                    
+
+
+
+
+
+
+
+                                    </tr>
+
+                                }
                             </tbody>
                         </table>
                     </div>
