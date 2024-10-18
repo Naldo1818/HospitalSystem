@@ -97,42 +97,63 @@ namespace DEMO.Controllers
         //adding pharmacy medication
 
         // GET: AddMedication
-        
+
         public IActionResult AddMedication()
         {
             // Fetch medication names
-            
+
 
             // Fetch medication forms
             var medicationForms = _dbContext.Medication
                                              .Select(m => m.MedicationForm)
+                                             .Distinct()
                                              .ToList();
 
             // Fetch medication schedules
             var medSchedules = _dbContext.Medication
                                          .Select(m => m.Schedule)
+                                         .Distinct()
                                          .ToList();
 
 
             //Fetch Active Ingredients
-            var actives= _dbContext.Activeingredient
+            var actives = _dbContext.Activeingredient
                 .Select(m => m.ActiveIngredientName)
+                .Distinct()
                 .ToList();
 
+            var name = _dbContext.DayHospitalPharmacyMedication
+               .Select(m => m.MedicationName)
+               .Distinct()
+               .ToString();
 
-            var combinedData = _dbContext.DayHospitalPharmacyMedication.ToList();
+            var df = _dbContext.DayHospitalPharmacyMedication
+               .Select(m => m.DosageForm)
+               .Distinct()
+               .ToString();
 
-            
+            var schedule = _dbContext.DayHospitalPharmacyMedication
+                .Select(m => m.Schedule)
+                .Distinct()
+                .ToString();
+
+
+            var stockonhand = _dbContext.DayHospitalPharmacyMedication
+                .Select(m => m.StockonHand)
+                .Distinct()
+                .ToString();
+
             // Create a ViewModel to hold the data
             var viewModel = new PharmacyMedicationModel
             {
 
 
-
+                MedicationName=name,
+                DosageForm=df,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
-                combinedData = combinedData,
                 
+
                 //testMeds=new PharmacyMedicationModel()
 
             };
