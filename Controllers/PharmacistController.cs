@@ -47,14 +47,25 @@ namespace DEMO.Controllers
             //}
 
             var combinedData = (from prescription in _dbContext.Prescription
-                                join medicationInstruction in _dbContext.MedicationInstructions
-                                on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
-                                join medication in _dbContext.Medication
-                                on medicationInstruction.MedicationID equals medication.MedicationID
-                                join patient in _dbContext.PatientInfo
-                                on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
+                                    //join medicationInstruction in _dbContext.MedicationInstructions
+                                    //on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
+
+                                    //join medication in _dbContext.Medication
+                                    //on medicationInstruction.MedicationID equals medication.MedicationID
+
+                                join ap in _dbContext.AdmittedPatients
+                                on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
+
+                                join pi in _dbContext.PatientInfo
+
+                                on ap.PatientID equals pi.PatientID
+
+
+
+
                                 join account in _dbContext.Accounts
                                 on prescription.AccountID equals account.AccountID
+
 
                                 select new ViewActivePrescriptionsModel
 
@@ -76,12 +87,14 @@ namespace DEMO.Controllers
 
 
                                     // PatientInfo fields
-                                    Name = patient.Name,
-                                    Surname = patient.Surname,
+                                    Name = pi.Name,
+                                    Surname = pi.Surname,
 
 
 
-                                }).ToList();
+                                })
+
+                                 .ToList();
 
 
 
@@ -307,6 +320,14 @@ namespace DEMO.Controllers
 
         public IActionResult ViewSpecificPrescription(int patientid, string name, string surname, int prescriptionid)
         {
+
+
+
+            var idtofind = _dbContext.AdmittedPatients
+                .Select(m=>m.AdmittedPatientID)
+                .ToString();
+
+            
 
             var prescriptiondetails = (from p in _dbContext.Prescription
                                  join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
@@ -574,12 +595,22 @@ namespace DEMO.Controllers
             }
 
             var combinedData = (from prescription in _dbContext.Prescription
-                                join medicationInstruction in _dbContext.MedicationInstructions
-                                on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
-                                join medication in _dbContext.Medication
-                                on medicationInstruction.MedicationID equals medication.MedicationID
-                                join patient in _dbContext.PatientInfo
-                                on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
+                                //join medicationInstruction in _dbContext.MedicationInstructions
+                                //on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
+
+                                //join medication in _dbContext.Medication
+                                //on medicationInstruction.MedicationID equals medication.MedicationID
+
+                                join ap in _dbContext.AdmittedPatients
+                                on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
+                                
+                                join pi in _dbContext.PatientInfo
+
+                                on ap.PatientID equals pi.PatientID
+
+
+                                
+
                                 join account in _dbContext.Accounts
                                 on prescription.AccountID equals account.AccountID
 
@@ -605,13 +636,13 @@ namespace DEMO.Controllers
 
 
                                     // PatientInfo fields
-                                    Name = patient.Name,
-                                    Surname = patient.Surname,
+                                    Name = pi.Name,
+                                    Surname = pi.Surname,
 
 
 
                                 })
-                                .Distinct()
+                                
                                 .ToList();
 
             var sortedData = combinedData.OrderByDescending(item => item.Urgency == "Yes").ToList();
