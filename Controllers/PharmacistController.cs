@@ -140,9 +140,7 @@ namespace DEMO.Controllers
                 .Distinct()
                 .ToString();
 
-            // Fetch DayHospitalPharmacyMedication data
-            var combineddata = _dbContext.DayHospitalPharmacyMedication
-                                                      .ToList();
+           
 
 
 
@@ -157,7 +155,7 @@ namespace DEMO.Controllers
                 DosageForm=df,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
-                combinedData = combineddata,
+                
 
 
                 //testMeds=new PharmacyMedicationModel()
@@ -197,6 +195,10 @@ namespace DEMO.Controllers
 
                 _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
                 _dbContext.SaveChanges();
+
+                
+                
+
                 //return RedirectToAction("AddMedication", "Pharmacist");
                 return RedirectToAction("AddMedication","Pharmacist");  // Redirect to the product list
 
@@ -209,18 +211,7 @@ namespace DEMO.Controllers
             return View(model);
         }
 
-
-        
-
-
-
-
-
-
-
-
-
-
+       
        
 
 
@@ -235,7 +226,17 @@ namespace DEMO.Controllers
 
 
 
-       
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -308,8 +309,11 @@ namespace DEMO.Controllers
         {
 
             var prescriptiondetails = (from p in _dbContext.Prescription
-                                 join pi in _dbContext.PatientInfo on p.AdmittedPatientID equals pi.PatientID
-                                 where pi.PatientID == patientid && p.PrescriptionID == prescriptionid
+                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+
+                                 where  p.AdmittedPatientID == ap.AdmittedPatientID && ap.PatientID == pi.PatientID
+ 
 
                                  select new PharmacistViewScriptModel
                                  {
@@ -317,7 +321,9 @@ namespace DEMO.Controllers
                                      Urgency=p.Urgency,
                                      PrescriptionID=p.PrescriptionID,
                                      PatientID=pi.PatientID,
-                                     
+                                     patientname=pi.Name,
+                                     patientsurname=pi.Surname,
+                                     Status=p.Status,
                                  })
   
    .ToList();
@@ -576,16 +582,17 @@ namespace DEMO.Controllers
                                 on prescription.AccountID equals patient.PatientID // Assuming AccountID is linked to PatientID
                                 join account in _dbContext.Accounts
                                 on prescription.AccountID equals account.AccountID
-                                where prescription.Status=="Prescribed" 
+
+                                where prescription.Status == "Prescribed"
 
                                 select new ViewActivePrescriptionsModel
 
 
                                 {
                                     // Prescription fields
-                                    PrescriptionID=prescription.PrescriptionID,
-                                    SurgeonName= account.Name,
-                                    SurgeonSurname=account.Surname,
+                                    PrescriptionID = prescription.PrescriptionID,
+                                    SurgeonName = account.Name,
+                                    SurgeonSurname = account.Surname,
                                     DateGiven = prescription.DateGiven,
                                     Urgency = prescription.Urgency,
                                     Take = prescription.Take,
@@ -603,7 +610,9 @@ namespace DEMO.Controllers
 
 
 
-                                }).ToList();
+                                })
+                                .Distinct()
+                                .ToList();
 
             var sortedData = combinedData.OrderByDescending(item => item.Urgency == "Yes").ToList();
 

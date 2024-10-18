@@ -1,5 +1,6 @@
 ﻿using DEMO.Models;
 using DEMO.ViewModels;
+using Microsoft.Build.ObjectModelRemoting;
 using System.ComponentModel.DataAnnotations;
 
 
@@ -9,6 +10,8 @@ namespace DEMO.ViewModels
     {
         [Required]
         public int PrescriptionID { get; set; }
+
+        public int AdmittedPatientID { get; set; }
 
         [Required(ErrorMessage = "ID Number is required.")]
         [StringLength(13, MinimumLength = 13, ErrorMessage = "ID Number must be exactly 13 characters.")]

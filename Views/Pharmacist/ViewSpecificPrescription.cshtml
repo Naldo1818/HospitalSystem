@@ -34,73 +34,69 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center"> </h1>
+    
         
 
         <!-- Vitals History -->
-
-        <section class="mt-5">
-
-
-
-
-            <h2 class="text-center">Vitals</h2>
-
-            <table class="display">
-                <thead>
-                    <tr>
-                        <th scope="col">Time Taken</th>
-                        <th scope="col">Height(cm)</th>
-                        <th scope="col">Weight(kg)</th>
-                        <th scope="col">Systolic Blood Pressure (mmHg)</th>
-                        <th scope="col">Distolic Blood Pressure (mmHg)</th>
-                        <th scope="col">Heart Rate (bpm)</th>
-                        <th scope="col">Blood Oxygen %</th>
-                        <th scope="col">Respiration Rate (bpm)</th>
-                        <th scope="col">Blood Glucose Level (mg/dL)</th>
-                        <th scope="col">Temperature °C</th>
-                        
-
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Allvitals)
-                    {
-                        <tr>
-
-                            <td>@item.Time</td>
-                            <td>@item.Height</td>
-                            <td>@item.Weight</td>
-                            <td>@item.SystolicBloodPressure</td>
-                            <td>@item.DiastolicBloodPressure</td>
-                            <td>@item.HeartRate</td>
-                            <td>@item.BloodOxygen</td>
-                            <td>@item.Respiration</td>
-                            <td>@item.BloodGlucoseLevel</td>
-                            <td>@item.Temperature</td>
-                            
-                        </tr>
-                    }
-                </tbody>
-
-            </table>
+        <div class="container">
+            <main role="main" class="pb-5">
+                <div class="row" style="width:auto">
+                    <div class="col">
+                        <div class="p-3 mt-5 border">
+                            <h2><center>Vitals</center></h2>
+                            <center>
+                            </center>
+                            <table id="myTable" class="table display" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Time Taken</th>
+                                        <th scope="col">Height(cm)</th>
+                                        <th scope="col">Weight(kg)</th>
+                                        <th scope="col">Systolic Blood Pressure (mmHg)</th>
+                                        <th scope="col">Distolic Blood Pressure (mmHg)</th>
+                                        <th scope="col">Heart Rate (bpm)</th>
+                                        <th scope="col">Blood Oxygen %</th>
+                                        <th scope="col">Respiration Rate (bpm)</th>
+                                        <th scope="col">Blood Glucose Level (mg/dL)</th>
+                                        <th scope="col">Temperature °C</th>
 
 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Allvitals)
+                                    {
+                                        <tr>
 
-        </section>
-       
+                                            <td>@item.Time</td>
+                                            <td>@item.Height</td>
+                                            <td>@item.Weight</td>
+                                            <td>@item.SystolicBloodPressure</td>
+                                            <td>@item.DiastolicBloodPressure</td>
+                                            <td>@item.HeartRate</td>
+                                            <td>@item.BloodOxygen</td>
+                                            <td>@item.Respiration</td>
+                                            <td>@item.BloodGlucoseLevel</td>
+                                            <td>@item.Temperature</td>
 
+                                        </tr>
+                                    }
+                                </tbody>
 
-
+                            </table>
+                            @*                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
+                            *@
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
 
 
 
 
 
         <!-- Medical History -->
-
-
         <form >
           
             <h2 class="text-center">Medical History</h2>
@@ -163,49 +159,49 @@
 
 
             <!-- Prescription Form -->
-            
-            
-            <section class="mt-5">
-        <h2 class="text-center">Prescription Details</h2>
+           
 
-        <table class="display">
-            <thead>
-                <tr>
-                    <th scope="col">Administration Instructions</th>
-                    <th scope="col">Urgent?</th>
-                    <th scope="col">Status</th>
-                   
+            <div class="container">
+                <main role="main" class="pb-5">
+                    <div class="row" style="width:auto">
+                        <div class="col">
+                            <div class="p-3 mt-5 border">
+                                <h2><center>Prescription Details</center></h2>
+                                <center>
+                                    
+                                </center>
+                                <table id="myTable" class="table display" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Patient Surname</th>
+                                            <th scope="col">Surgeon Name</th>
+                                            <th scope="col">Surgeon Surname</th>
+                                            <th scope="col">Date Given</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Urgent</th>
+                                            <th scope="col">Prescription</th>
 
+                                        </tr>
+                                    </thead>
+                                    <tbody>
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.PrescrptionDetails)
-                {
-                    <tr>
+                                        
 
-                        <td>@item.Take</td>
-                        <td>@item.Urgency</td>
-                        <td>@item.Status</td>
-
-                        
-
-                    </tr>
-                }
-            </tbody>
-
-        </table>
-
-
-
+                                    </tbody>
+                                </table>
+                                @*                         <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
+                                *@
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
                  
 
             <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
         <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary" asp-route-id="@Model.PrescriptionID">Reject</a>
-@*             <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary ">Back</a>
- *@               
-            
-</section>
+
 
         
 
