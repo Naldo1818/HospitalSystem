@@ -69,65 +69,46 @@ namespace DEMO.Controllers
 
         public IActionResult Vitals(PatientVitals model, int AdmittedPatientID)
         {
-            // Fetch the existing vitals record for the patient if it exists
-            var existingVital = (from pv in _dbContext.PatientVitals
-                                 join ad in _dbContext.AdmittedPatients
-                                 on pv.PatientID equals ad.PatientID
-                                 where ad.AdmittedPatientID == AdmittedPatientID
-                                 select new PatientVitals
-                                 {
-                                     SystolicBloodPressure = model.SystolicBloodPressure,
-                                     DiastolicBloodPressure = model.DiastolicBloodPressure,
-                                     HeartRate = model.HeartRate,
-                                     BloodOxygen = model.BloodOxygen,
-                                     Respiration = model.Respiration,
-                                     BloodGlucoseLevel = model.BloodGlucoseLevel,
-                                     Temperature = model.Temperature,
-                                     time = model.time,
+            // Fetch the admitted patient based on AdmittedPatientID
+            var admittedPatient = _dbContext.AdmittedPatients
+                                            .FirstOrDefault(ad => ad.AdmittedPatientID == AdmittedPatientID);
 
-                                 }).OrderBy(pv => pv.time);
-
-            var existingVitals = _dbContext.PatientVitals
-                                    .FirstOrDefault(v => v.PatientID == model.PatientID);
-
-            // If patient vitals exist, retain the existing height and weight
-            if (existingVitals != null)
+            if (admittedPatient == null)
             {
-                existingVitals.SystolicBloodPressure = model.SystolicBloodPressure;
-                existingVitals.DiastolicBloodPressure = model.DiastolicBloodPressure;
-                existingVitals.HeartRate = model.HeartRate;
-                existingVitals.BloodOxygen = model.BloodOxygen;
-                existingVitals.Respiration = model.Respiration;
-                existingVitals.BloodGlucoseLevel = model.BloodGlucoseLevel;
-                existingVitals.Temperature = model.Temperature;
-                existingVitals.time = model.time;
-
-                _dbContext.PatientVitals.Update(existingVitals);
-            }
-            else
-            {
-                // If no existing vitals, add a new entry including height and weight
-                var patientVitals = new PatientVitals
-                {
-                    PatientID = model.PatientID,
-                    Height = model.Height,
-                    Weight = model.Weight,
-                    SystolicBloodPressure = model.SystolicBloodPressure,
-                    DiastolicBloodPressure = model.DiastolicBloodPressure,
-                    HeartRate = model.HeartRate,
-                    BloodOxygen = model.BloodOxygen,
-                    Respiration = model.Respiration,
-                    BloodGlucoseLevel = model.BloodGlucoseLevel,
-                    Temperature = model.Temperature,
-                    time = model.time,
-                };
-                _dbContext.PatientVitals.Add(patientVitals);
+                return NotFound("Admitted patient not found.");
             }
 
-            // Save changes to the database
+            // Fetch the previously recorded vitals for the patient to get height and weight
+            var previousVitals = _dbContext.PatientVitals
+                                           .Where(v => v.PatientID == admittedPatient.PatientID)
+                                           .OrderByDescending(v => v.time)
+                                           .FirstOrDefault();
+
+            // Always add a new entry into the PatientVitals table with previous height and weight
+            var newVitals = new PatientVitals
+            {
+                PatientID = admittedPatient.PatientID,
+                SystolicBloodPressure = model.SystolicBloodPressure,
+                DiastolicBloodPressure = model.DiastolicBloodPressure,
+                HeartRate = model.HeartRate,
+                BloodOxygen = model.BloodOxygen,
+                Respiration = model.Respiration,
+                BloodGlucoseLevel = model.BloodGlucoseLevel,
+                Temperature = model.Temperature,
+                time = model.time,
+                Height = previousVitals?.Height ?? model.Height,  // Use previous height or model's if none
+                Weight = previousVitals?.Weight ?? model.Weight   // Use previous weight or model's if none
+            };
+
+            _dbContext.PatientVitals.Add(newVitals);
+
+            // Save the new record to the database
             _dbContext.SaveChanges();
+
             return View("AdmittedPatients", model);
         }
+
+
 
         public IActionResult Discharge()
         {
