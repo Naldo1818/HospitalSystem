@@ -196,7 +196,7 @@ namespace DEMO.Controllers
 
                 var detailstoadd = new PharmacyMedicationModel
                 {
-                    
+                    PharmacyMedicationID = model.PharmacyMedicationID,
                     MedicationName = model.MedicationName,
                     DosageForm = model.DosageForm,
                     Schedule = model.Schedule,
@@ -204,28 +204,29 @@ namespace DEMO.Controllers
                     ReorderLevel = model.ReorderLevel,
                     PharmMedDF=model.PharmMedDF,
                     PharmMedSchedule=model.PharmMedSchedule,
+                
                 };
 
                 _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
                 _dbContext.SaveChanges();
 
-                
-                
+
+
 
                 //return RedirectToAction("AddMedication", "Pharmacist");
-                return RedirectToAction("AddMedication","Pharmacist");  // Redirect to the product list
+                return RedirectToAction("AddMedication");
+
+         
 
             }
-            
 
-            model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).ToList();
-            model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).ToList();
+
+            model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
+            model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
 
             return View(model);
         }
 
-       
-       
 
 
 

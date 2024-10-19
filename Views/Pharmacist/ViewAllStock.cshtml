@@ -7,15 +7,47 @@
 <html lang="en">
     <head>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+   @*  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> *@
+
+
+
+
+    <script>
+        function filterTable() {
+            // Get the value of the search input
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('myTable');
+            const rows = table.getElementsByTagName('tr');
+
+            // Loop through all table rows, except the first (header row)
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowContainsText = false;
+
+                // Loop through each cell in the row
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(input) > -1) {
+                            rowContainsText = true;
+                            break;
+                        }
+                    }
+                }
+                // Show or hide the row based on the search input
+                rows[i].style.display = rowContainsText ? '' : 'none';
+            }
+        }
+    </script>
     </head>
 
 <body>
 
     
+    
 
-
+    <h1><center>Stock Order Page</center></h1>
     <!--All Medication Stock-->
     <div class="container">
         <main role="main" class="pb-5">
@@ -28,13 +60,16 @@
                         <!-- Your table content here -->
                         <table class="table">
                             <h1><center>All Current Stock</center></h1>
+                            <center>
+                                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+                            </center>
+
                             <thead>
                                 <tr>
                                     <th scope="col">Medication Name</th>
                                     <th scope="col">Dosage Form</th>
                                     <th scope="col">Schedule</th>
                                     <th scope="col">Stock on Hand</th>
-
                                     <th scope="col">Re-order level</th>
                                     
                                     
@@ -166,7 +201,7 @@
                 <table class="table">
                     <h1><center>Auto Order</center></h1>
             <center>
-                <input class="form-control" id="myInput" type="text" style="width: 50%; height: 40px;" placeholder="Search by medication name">
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
             </center>
                     <thead>
                         <tr>
@@ -265,7 +300,8 @@
         <table class="table">
             <h1><center>Manual order</center></h1>
             <center>
-                <input class="form-control" id="myInput" type="text" style="width: 50%; height: 40px;" placeholder="Search by medication name">
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+
             </center>
             <thead>
                 <tr>
@@ -347,16 +383,6 @@
         <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
 
     </div>
-    <script>
-        $(document).ready(function(){
-          $("#myInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function() {
-              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
-          });
-        });
-    </script>
-
+    
 </body>
 </html>

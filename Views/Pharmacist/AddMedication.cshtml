@@ -27,7 +27,36 @@
 
 
 
-        
+    <script>
+        $(document).ready(function () {
+            $('#addMedicationForm').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+                var actionUrl = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: actionUrl,
+                    data: formData,
+                    success: function (data) {
+                        var newRow = '<tr>' +
+                            '<td>' + data.MedicationName + '</td>' +
+                            '<td>' + data.DosageForm + '</td>' +
+                            '<td>' + data.Schedule + '</td>' +
+                            '<td>' + data.StockonHand + '</td>' +
+                            '<td>' + data.ReorderLevel + '</td>' +
+                            '</tr>';
+                        $('#medicationsBody').append(newRow);
+                        form[0].reset(); // Clear the form fields
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
         
     <title>Medication Add</title>
 </head>
@@ -98,15 +127,15 @@
                                 </div>
 
 
-                                <div class="col-md-4" style="display:none;">
+                                <div class="col-md-4">
                                     <label for="stockOnHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand"  asp-for="StockonHand" value="0" style="width:300px" readonly>
+                                    <input type="int" class="form-control" id="StockonHand" name="StockonHand"  asp-for="StockonHand" value="@Model.StockonHand" style="width:300px" readonly>
                                     <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="reorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  asp-for="ReorderLevel" style="width:300px">
+                                    <input type="int" class="form-control" id="ReorderLevel" name="ReorderLevel"  asp-for="ReorderLevel" style="width:300px">
                                     <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
                             </div>
@@ -124,6 +153,11 @@
                                 <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedSchedule" value="@Model.PharmMedSchedule" style="width:300px">
                                 <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                             </div>
+
+
+
+
+
                             <!--end of hide-->
 
                             <div class="form-group row">
@@ -162,29 +196,23 @@
                                     <th scope="col">IngredientsandStrengths</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach (var item in Model.combinedData)
+                            <tbody id="medicationsBody">
+                              
+                                
+                             @*    @foreach (var medication in Model)
+                                
+              
                                 {
-
                                     <tr>
-                                        <td>@item.MedicationName</td>
-                                        <td>@item.DosageForm</td>
-                                        <td>@item.Schedule</td>
-                                        <td>@item.StockonHand</td>
-                                        <td>@item.ReorderLevel</td>
-                                       
-
-                                    
-
-
-
-
-
-
-
+                                    <td>@medication.MedicationName</td>
+                                    <td>@medication.DosageForm</td>
+                                    <td>@medication.Schedule</td>
+                                    <td>@medication.StockonHand</td>
+                                    <td>@medication.ReorderLevel</td>
                                     </tr>
+                                } *@
 
-                                }
+
                             </tbody>
                         </table>
                     </div>
