@@ -49,7 +49,7 @@ namespace DEMO.Data
         public DbSet<ConditionActiveIngredient> ConditionActiveIngredient { get; set; }
 
 
-        public DbSet<PharmacyMedicationModel> DayHospitalPharmacyMedication{ get; set; }
+        public DbSet<PharmacyMedicationModel> PharmacyMedicationModel { get; set; }
 
         public DbSet<OrderStockModel> StockOrderedTable { get; set; }
         
