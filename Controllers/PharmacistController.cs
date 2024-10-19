@@ -225,23 +225,40 @@ namespace DEMO.Controllers
                 .ToString();
 
 
-            
-            
-
-               
-
-
+            var activeingredientslist=_dbContext.Activeingredient
+                .Select(m=>m.ActiveIngredientName)
+                .Distinct()
+                .ToList();
 
 
-                // Create a ViewModel to hold the data
-                var viewModel = new PharmacyMedicationModel
+
+            //al for table display
+            var names = _dbContext.DayHospitalPharmacyMedication
+             .Select(m => m.MedicationName)
+             .Distinct()
+             .ToString();
+
+
+           var combineddata=_dbContext.DayHospitalPharmacyMedication
+                .Select(m=>m)
+                .ToList();
+
+
+
+
+            // Create a ViewModel to hold the data
+            var viewModel = new PharmacyMedicationModel
             {
 
 
-               
+                 ActiveIngredientsDropDown = activeingredientslist,
                 DosageForm=df,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
+                MedicationName=names,
+                combined=combineddata,
+               
+
                 
 
 
@@ -257,17 +274,131 @@ namespace DEMO.Controllers
 
 
         //post medication to database
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult AddMedication(PharmacyMedicationModel model, string IngredientsString, string StrengthsString)
+        //{
+
+
+        //    if (ModelState.IsValid)
+        //    {
+
+
+
+        //        var detailstoadd = new PharmacyMedicationModel
+        //        {
+        //            PharmacyMedicationID = model.PharmacyMedicationID,
+        //            MedicationName = model.MedicationName,
+        //            DosageForm = model.DosageForm,
+        //            Schedule = model.Schedule,
+        //            StockonHand = model.StockonHand,
+        //            ReorderLevel = model.ReorderLevel,
+        //            PharmMedDF=model.PharmMedDF,
+        //            PharmMedSchedule=model.PharmMedSchedule,
+
+        //        };
+
+        //        _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
+        //        _dbContext.SaveChanges();
+
+
+
+
+        //        //return RedirectToAction("AddMedication", "Pharmacist");
+        //        return RedirectToAction("AddMedication");
+
+
+
+        //    }
+
+
+        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
+        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
+        //    model.ActiveIngredientsDropDown=_dbContext.Activeingredient.Select(m=>m.ActiveIngredientName).Distinct().ToList();  
+        //    return View(model);
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public IActionResult AddMedication(PharmacyMedicationModel model, string IngredientsAndStrengthsString)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        // Split the combined string into individual pairs
+        //        var ingredientStrengthPairs = IngredientsAndStrengthsString.Split(';')
+        //            .Select(pair => pair.Trim())
+        //            .Where(pair => !string.IsNullOrWhiteSpace(pair))
+        //            .ToList();
+
+        //        // Create a new PharmacyMedicationModel instance
+        //        var detailstoadd = new PharmacyMedicationModel
+        //        {
+        //            PharmacyMedicationID = model.PharmacyMedicationID,
+        //            MedicationName = model.MedicationName,
+        //            DosageForm = model.DosageForm,
+        //            Schedule = model.Schedule,
+        //            StockonHand = model.StockonHand,
+        //            ReorderLevel = model.ReorderLevel,
+        //            PharmMedDF = model.PharmMedDF,
+        //            PharmMedSchedule = model.PharmMedSchedule,
+        //        };
+
+        //        // Add the medication to the database
+        //        _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
+        //        _dbContext.SaveChanges();
+
+        //        // Now save the active ingredients and strengths
+        //        foreach (var pair in ingredientStrengthPairs)
+        //        {
+        //            var parts = pair.Split(',')
+        //                .Select(part => part.Trim())
+        //                .ToList();
+
+        //            if (parts.Count == 2)
+        //            {
+        //                var ingredient = parts[0].Trim();
+        //                var strength = parts[1].Trim();
+
+        //                if (!string.IsNullOrWhiteSpace(ingredient) && !string.IsNullOrWhiteSpace(strength))
+        //                {
+        //                    // Combine ingredient and strength into one variable
+        //                    var combined = $"{ingredient}:{strength}";
+
+        //                    // Create a new entity for the active ingredient
+        //                    var activeIngredient = new PharmacyMedicationModel
+        //                    {
+        //                        IngredientandStrength = combined // Assuming you have a property for this
+        //                    };
+
+        //                    _dbContext.DayHospitalPharmacyMedication.Add(activeIngredient);
+        //                }
+        //            }
+
+
+        //            // Save changes for the active ingredients
+        //            _dbContext.SaveChanges();
+
+        //            // Redirect to the AddMedication page or another page
+        //            return RedirectToAction("AddMedication");
+        //        }
+
+        //        // If the model state is invalid, repopulate the model data
+        //        model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
+        //        model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
+        //        model.ActiveIngredientsDropDown = _dbContext.Activeingredient.Select(m => m.ActiveIngredientName).Distinct().ToList();
+        //        return View(model);
+        //    }
+        //}
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddMedication(PharmacyMedicationModel model)
+        public IActionResult AddMedication(PharmacyMedicationModel model, string IngredientsAndStrengthsString)
         {
-            
-                
             if (ModelState.IsValid)
             {
+              
 
-
-
+                // Create a new PharmacyMedicationModel instance
                 var detailstoadd = new PharmacyMedicationModel
                 {
                     PharmacyMedicationID = model.PharmacyMedicationID,
@@ -276,34 +407,71 @@ namespace DEMO.Controllers
                     Schedule = model.Schedule,
                     StockonHand = model.StockonHand,
                     ReorderLevel = model.ReorderLevel,
-                    PharmMedDF=model.PharmMedDF,
-                    PharmMedSchedule=model.PharmMedSchedule,
-                
+                    PharmMedDF = model.PharmMedDF,
+                    PharmMedSchedule = model.PharmMedSchedule,
+                    ActiveIngredientsDropDown = model.ActiveIngredientsDropDown,
+                    
                 };
 
+                // Add the medication to the database
                 _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
+                _dbContext.SaveChanges(); // Save here to get the ID for the next inserts
+
+                // Split the combined string into individual pairs
+                var ingredientStrengthPairs = IngredientsAndStrengthsString.Split(';')
+      .Select(pair => pair.Trim())
+      .Where(pair => !string.IsNullOrWhiteSpace(pair))
+      .ToList();
+
+
+                // Now save the active ingredients and strengths
+                foreach (var pair in ingredientStrengthPairs)
+                {
+                    var parts = pair.Split(',')
+                       .Select(part => part.Trim())
+                       .ToList();
+
+                    if (parts.Count == 2)
+                    {
+                        var ingredient = parts[0];
+                        var strength = parts[1];
+
+                        if (!string.IsNullOrWhiteSpace(ingredient) && !string.IsNullOrWhiteSpace(strength))
+                        {
+                            var combined = $"{ingredient}:{strength}";
+
+                            var activeIngredient = new PharmacyMedicationModel
+                            {
+                                // Link to the medication
+                                PharmacyMedicationID = detailstoadd.PharmacyMedicationID,
+                                IngredientandStrength = combined
+                            };
+
+                            _dbContext.DayHospitalPharmacyMedication.Add(activeIngredient);
+                        }
+                    }
+                }
+                
+                // Save changes for the active ingredients
                 _dbContext.SaveChanges();
 
-
-
-
-                //return RedirectToAction("AddMedication", "Pharmacist");
+                // Redirect to the AddMedication page or another page
                 return RedirectToAction("AddMedication");
-
-         
-
             }
 
+            // If the model state is invalid, repopulate the model data
+            
+    model.MedicationName = "";
+            model.StockonHand = 0; // Assuming StockOnHand is an integer
+            model.ReorderLevel = 0; // Assuming ReorderLevel is an integer
 
             model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
             model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
-
+            model.ActiveIngredientsDropDown = _dbContext.Activeingredient.Select(m => m.ActiveIngredientName).Distinct().ToList();
             return View(model);
         }
 
 
-       
-        
 
 
 
@@ -395,73 +563,64 @@ namespace DEMO.Controllers
 
       
 
-        public IActionResult ViewSpecificPrescription(int admittedpatientid)
+        public IActionResult ViewSpecificPrescription(int id)
         {
 
-
-
-
-
-            var patient = _dbContext.AdmittedPatients.FirstOrDefault(apt => apt.AdmittedPatientID == admittedpatientid);
-
-
-
+            var patient = _dbContext.Prescription.Find(id);
 
             if (patient == null)
             {
                 return NotFound();
             }
+            return View(patient);
+
+            //         var ScriptAndVitals = (from p in _dbContext.Prescription
+            //                                    join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+            //                                    join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+            //                                    join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+
+            //                                    where p.PrescriptionID == prescriptionid
+
+
+            //                                    select new PharmacistViewScriptModel
+            //                                    {
+            //                                        Take = p.Take,
+            //                                        Urgency = p.Urgency,
+            //                                        PrescriptionID = p.PrescriptionID,
+            //                                        PatientID = pi.PatientID,
+            //                                        patientname = pi.Name,
+            //                                        patientsurname = pi.Surname,
+            //                                        Status = p.Status,
+            //                                        Height=pv.Height,
+            //                                        Weight=pv.Weight,
+            //                                        SystolicBloodPressure=pv.SystolicBloodPressure,  
+            //                                        DiastolicBloodPressure=pv.DiastolicBloodPressure,
+            //                                        HeartRate=pv.HeartRate,
+            //                                        BloodOxygen=pv.BloodOxygen,
+            //                                        Respiration=pv.Respiration,
+            //                                        BloodGlucoseLevel=pv.BloodGlucoseLevel,
+            //                                        Temperature=pv.Temperature,
+
+
+
+            //                                    })
+
+            //.ToList();
 
 
 
 
-            var ScriptAndVitals = (from p in _dbContext.Prescription
-                                       join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                       join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                                       join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+            //         var viewModel = new PharmacistViewScriptModel
+            //         {
 
-                                       where p.AdmittedPatientID == admittedpatientid
-
-
-                                       select new PharmacistViewScriptModel
-                                       {
-                                           Take = p.Take,
-                                           Urgency = p.Urgency,
-                                           PrescriptionID = p.PrescriptionID,
-                                           PatientID = pi.PatientID,
-                                           patientname = pi.Name,
-                                           patientsurname = pi.Surname,
-                                           Status = p.Status,
-                                           Height=pv.Height,
-                                           Weight=pv.Weight,
-                                           SystolicBloodPressure=pv.SystolicBloodPressure,  
-                                           DiastolicBloodPressure=pv.DiastolicBloodPressure,
-                                           HeartRate=pv.HeartRate,
-                                           BloodOxygen=pv.BloodOxygen,
-                                           Respiration=pv.Respiration,
-                                           BloodGlucoseLevel=pv.BloodGlucoseLevel,
-                                           Temperature=pv.Temperature,
-                                           
-
-
-                                       })
-
-   .ToList();
+            //             combinedData = ScriptAndVitals,
 
 
 
-
-            var viewModel = new PharmacistViewScriptModel
-            {
-
-                combinedData = ScriptAndVitals,
+            //         };
 
 
-
-            };
-
-
-            return View(viewModel);
+            //         return View(viewModel);
 
 
 

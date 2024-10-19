@@ -73,7 +73,7 @@
 
 
 
-
+@* 
                         <form asp-action="AddMedication"  >
                             <div class="form-group row">
                                 <div class="col-12">
@@ -168,7 +168,173 @@
                            
 
                            
+                        </form> *@
+
+
+                        <form asp-action="AddMedication">
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <center><h1>Add Medication</h1></center>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <h2>Medication Section</h2>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <label for="MedicationName" class="form-label">Medication Name</label>
+                                    <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="MedicationName" style="width:300px">
+                                    <span asp-validation-for="MedicationName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="DosageForm" class="form-label">Dosage Form</label>
+                                    <select class="form-control" name="DosageForm" id="DosageForm" asp-for="DosageForm" style="width:300px">
+                                        @foreach (var item in Model.PharmMedDF.OrderBy(i => i))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="DosageForm" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="Schedule" class="form-label">Schedule</label>
+                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" style="width:300px">
+                                        @foreach (var item in Model.PharmMedSchedule.OrderBy(i => i))
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    </select>
+                                    <span asp-validation-for="Schedule" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="StockonHand" class="form-label">Stock on Hand</label>
+                                    <input type="number" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" value="@Model.StockonHand" style="width:300px">
+                                    <span asp-validation-for="StockonHand" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label for="ReorderLevel" class="form-label">Re-order Level</label>
+                                    <input type="number" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ReorderLevel" style="width:300px">
+                                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                                </div>
+
+
+                                <!--hide-->
+                                <div class="col-md-4" style="display:none;">
+                                    <label for="reorderLevel" class="form-label">Re-order Level </label>
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedDF" value="@Model.PharmMedDF" style="width:300px">
+                                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4" style="display:none;">
+                                    <label for="reorderLevel" class="form-label">Re-order Level</label>
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedSchedule" value="@Model.PharmMedSchedule" style="width:300px">
+                                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                                </div>
+
+                                
+
+                                <div class="col-md-4" style="display:none;">
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ActiveIngredientsDropDown" value="@Model.ActiveIngredientsDropDown" style="width:300px">
+                                </div>
+
+
+                                <!--end of hide-->
+                            </div>
+                            <br />
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h3>Active Ingredients Section</h3>
+                                    <table class="table" id="ingredientsTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Active Ingredient</th>
+                                                <th>Strength</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Dynamic rows will be added here -->
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn btn-secondary style="float:right" onclick="addIngredient()">Add Ingredient</button>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </div>
+                            </div>
                         </form>
+
+                        <script>
+                            const activeIngredients = @Html.Raw(Json.Serialize(Model.ActiveIngredientsDropDown.OrderBy(i => i).ToList()));
+
+                            function addIngredient() {
+                                const table = document.getElementById("ingredientsTable").getElementsByTagName('tbody')[0];
+                                const newRow = table.insertRow();
+
+                                const ingredientCell = newRow.insertCell(0);
+                                const strengthCell = newRow.insertCell(1);
+                                const actionCell = newRow.insertCell(2);
+
+                                const select = document.createElement('select');
+                                select.className = 'form-control';
+                                select.name = 'ActiveIngredients[]';
+                                select.style.width = '300px';
+                                activeIngredients.forEach(ingredient => {
+                                    const option = document.createElement('option');
+                                    option.value = ingredient;
+                                    option.textContent = ingredient;
+                                    select.appendChild(option);
+                                });
+
+                                ingredientCell.appendChild(select);
+                                strengthCell.innerHTML = '<input type="text" class="form-control" name="Strengths[]" style="width:100px">';
+                                actionCell.innerHTML = '<button type="button" class="btn btn-danger" onclick="removeIngredient(this)">Remove</button>';
+                            }
+
+                            function removeIngredient(button) {
+                                const row = button.parentNode.parentNode;
+                                row.parentNode.removeChild(row);
+                            }
+
+                            // Gather data before submitting the form
+                            document.querySelector('form').onsubmit = function () {
+                                const ingredients = [];
+                                const strengths = [];
+
+                                const tableRows = document.querySelectorAll('#ingredientsTable tbody tr');
+                                tableRows.forEach(row => {
+                                    const select = row.querySelector('select[name="ActiveIngredients[]"]');
+                                    const strengthInput = row.querySelector('input[name="Strengths[]"]');
+
+                                    if (select && strengthInput) {
+                                        ingredients.push(select.value);
+                                        strengths.push(strengthInput.value);
+                                    }
+                                });
+
+                                // Convert arrays to strings for database insertion
+                                const ingredientsAndStrengthsString = ingredients.map((ingredient, index) => `${ingredient},${strengths[index]}`).join(';');
+
+                                const ingredientsInput = document.createElement('input');
+                                ingredientsInput.type = 'hidden';
+                                ingredientsInput.name = 'IngredientsAndStrengthsString';
+                                ingredientsInput.value = ingredientsAndStrengthsString;
+                                this.appendChild(ingredientsInput);
+                            }
+                        </script>
+
+
 
 
 
@@ -199,7 +365,7 @@
                             <tbody id="medicationsBody">
                               
                                 
-                             @*    @foreach (var medication in Model)
+                                @foreach (var medication in Model.combined)
                                 
               
                                 {
@@ -209,8 +375,9 @@
                                     <td>@medication.Schedule</td>
                                     <td>@medication.StockonHand</td>
                                     <td>@medication.ReorderLevel</td>
+                                    <td>@medication.IngredientandStrength</td>
                                     </tr>
-                                } *@
+                                } 
 
 
                             </tbody>

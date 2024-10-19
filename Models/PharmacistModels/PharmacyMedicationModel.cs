@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
 
@@ -25,7 +26,7 @@ namespace DEMO.Models.PharmacistModels
         [Range(0, 6, ErrorMessage = "Schedule must be between 0 and 6.")]
         public int Schedule { get; set; }
 
-
+        
         public int StockonHand { get; set; }
 
         [Required]
@@ -35,6 +36,12 @@ namespace DEMO.Models.PharmacistModels
 
         public List<int> PharmMedSchedule { get; set; } = new List<int>(); // Initialize here
 
+
+        public List<string> ActiveIngredientsDropDown { get; set; }= new List<string>();
+
+
+
+
         //public List<string> ActiveIngredients { get; set; } = new List<string>();
 
 
@@ -43,13 +50,13 @@ namespace DEMO.Models.PharmacistModels
 
 
 
-
-      
-
-
-        //public string IngredientandStrength { get; set; }
+        
 
 
+
+        public string IngredientandStrength { get; set; }
+
+        public List<PharmacyMedicationModel> combined { get; set; }    
         //public List<string> IngredientsplusStrength { get; set; }
 
         //public string Ingredient { get; set; }
