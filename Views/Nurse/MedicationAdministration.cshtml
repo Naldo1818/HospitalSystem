@@ -2,6 +2,8 @@
     ViewData["Title"] = "Medication Administration";
     Layout = "_LayoutNurse";
 }
+
+@model DEMO.ViewModels.PrescriptionListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,13 +120,13 @@
                     <hr />
                     <div class="row-two-columns">
                         <div class="header-labels">
-                            <label>Name: </label>
-                            <label>Surname:</label>
-                            <label>Date:</label>
+                            <label>Name: @ViewBag.PatientName</label>
+                            <label>Surname: @ViewBag.PatientSurname</label>
+                            
                         </div>
                         <div class="header-labels">
-                            <label>Ward: </label>
-                            <label>Bed:</label>
+                            <label>Ward: @ViewBag.patientWard </label>
+                            <label>Bed: @ViewBag.patientBed</label>
                         </div>
                     </div>
                     <hr />
@@ -134,9 +136,57 @@
                                 <fieldset id="f-2">
                                     <div class="form-card">
                                         <h2 class="fs-title">View Prescription</h2>
+                                        <div class="row" style="width:auto ;display:none" id="rejectedRow">
+                                            <div class="col">
+                                                <div class="p-3 mt-5 border" style="background-color: white;">
+                                                    <h2>Patient Prescription</h2>
+                                                    <table id="PatientPrescript" class="display" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th scope="col">Name</th>
+                                                                <th scope="col">Surname</th>
+                                                                <th scope="col">Prescription Date</th>
+                                                                <th scope="col">Pharmacist Name</th>
+                                                                <th scope="col">Pharmacist Surname</th>
+                                                                <th scope="col">Urgency</th>
+                                                                <th scope="col">Take</th>
+                                                                <th scope="col">Status</th>
+                                                                <th scope="col">Rejected Reason</th>
+                                                                <th scope="col">Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @* @foreach (var Data in Model.AllPrescribedRejected)
+                                                            {
+                                                                <tr>
+
+                                                                    <td>@Data.PatientName</td>
+                                                                    <td>@Data.PatientSurname</td>
+                                                                    <td>@Data.DateGiven</td>
+                                                                    <td>@Data.AccountName</td>
+                                                                    <td>@Data.AccountSurname</td>
+                                                                    <td>@Data.Urgency</td>
+                                                                    <td>@Data.Take</td>
+                                                                    <td>@Data.Status</td>
+                                                                    <td>@Data.RejectionReason</td>
+
+                                                                    <td>
+                                                                        <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                                                            Check Prescription
+                                                                        </button>
+                                                                    </td>
+
+                                                                </tr>
+                                                            } *@
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <hr />
-                                            <h4>Prescribed Medication</h4>
+                                            <h4>Administer Medication</h4>
                                             <hr />
                                             <div class="row-two-columns">
                                                 <div class="vital-group">

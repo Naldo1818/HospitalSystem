@@ -284,9 +284,9 @@ namespace DEMO.Controllers
 
             // If the model state is invalid, repopulate the model data
             
-    model.MedicationName = "";
+            model.MedicationName = "";
             model.StockonHand = 0; // Assuming StockOnHand is an integer
-           model.ReorderLevel = 0; // Assuming ReorderLevel is an integer
+            model.ReorderLevel = 0; // Assuming ReorderLevel is an integer
 
             model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
             model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();

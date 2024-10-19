@@ -4,6 +4,7 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241019124828_hope")]
+    partial class hope
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -465,8 +468,8 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("BloodGlucoseLevel")
                         .HasColumnType("int");
 
-                    b.Property<double>("BloodOxygen")
-                        .HasColumnType("float");
+                    b.Property<int>("BloodOxygen")
+                        .HasColumnType("int");
 
                     b.Property<int>("DiastolicBloodPressure")
                         .HasColumnType("int");
@@ -483,8 +486,8 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("SystolicBloodPressure")
                         .HasColumnType("int");
 
-                    b.Property<double>("Temperature")
-                        .HasColumnType("float");
+                    b.Property<int>("Temperature")
+                        .HasColumnType("int");
 
                     b.Property<TimeOnly>("time")
                         .HasColumnType("time");

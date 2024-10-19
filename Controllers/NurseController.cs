@@ -17,6 +17,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Runtime.Intrinsics.X86;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DEMO.Controllers
 {
@@ -67,45 +68,58 @@ namespace DEMO.Controllers
         }
 
 
-        public IActionResult Vitals(PatientVitals model, int AdmittedPatientID)
+        public IActionResult Vitals(PatientAllergyViewModel  model, int AdmittedPatientID, string name, string Surname, string Ward, int bed, DateOnly date)
         {
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            ViewBag.PatientSurname = Surname;
+            ViewBag.PatientName = name;
+            ViewBag.patientWard = Ward;
+            ViewBag.patientBed = bed;
+            ViewBag.date = date;
+
             // Fetch the admitted patient based on AdmittedPatientID
-            var admittedPatient = _dbContext.AdmittedPatients
-                                            .FirstOrDefault(ad => ad.AdmittedPatientID == AdmittedPatientID);
+            //var admittedPatient = _dbContext.AdmittedPatients
+            //                                .FirstOrDefault(ad => ad.AdmittedPatientID == AdmittedPatientID);
 
-            if (admittedPatient == null)
-            {
-                return NotFound("Admitted patient not found.");
-            }
+            //if (admittedPatient == null)
+            //{
+            //    return NotFound("Admitted patient not found.");
+            //}
 
-            // Fetch the previously recorded vitals for the patient to get height and weight
-            var previousVitals = _dbContext.PatientVitals
-                                           .Where(v => v.PatientID == admittedPatient.PatientID)
-                                           .OrderByDescending(v => v.time)
-                                           .FirstOrDefault();
+            //// Fetch the previously recorded vitals for the patient to get height and weight
+            //var previousVitals = _dbContext.PatientVitals
+            //                               .Where(v => v.PatientID == admittedPatient.PatientID)
+            //                               .OrderByDescending(v => v.time)
+            //                               .FirstOrDefault();
 
-            // Always add a new entry into the PatientVitals table with previous height and weight
-            var newVitals = new PatientVitals
-            {
-                PatientID = admittedPatient.PatientID,
-                SystolicBloodPressure = model.SystolicBloodPressure,
-                DiastolicBloodPressure = model.DiastolicBloodPressure,
-                HeartRate = model.HeartRate,
-                BloodOxygen = model.BloodOxygen,
-                Respiration = model.Respiration,
-                BloodGlucoseLevel = model.BloodGlucoseLevel,
-                Temperature = model.Temperature,
-                time = model.time,
-                Height = previousVitals?.Height ?? model.Height,  // Use previous height or model's if none
-                Weight = previousVitals?.Weight ?? model.Weight   // Use previous weight or model's if none
-            };
+            //// Always add a new entry into the PatientVitals table with previous height and weight
+            //var newVitals = new PatientVitals
+            //{
+            //    PatientID = admittedPatient.PatientID,
+            //    SystolicBloodPressure = model.SystolicBloodPressure,
+            //    DiastolicBloodPressure = model.DiastolicBloodPressure,
+            //    HeartRate = model.HeartRate,
+            //    BloodOxygen = model.BloodOxygen,
+            //    Respiration = model.Respiration,
+            //    BloodGlucoseLevel = model.BloodGlucoseLevel,
+            //    Temperature = model.Temperature,
+            //    time = model.time,
+            //    Height = previousVitals?.Height ?? model.Height,  // Use previous height or model's if none
+            //    Weight = previousVitals?.Weight ?? model.Weight   // Use previous weight or model's if none
+            //};
 
-            _dbContext.PatientVitals.Add(newVitals);
+            //_dbContext.PatientVitals.Add(newVitals);
 
-            // Save the new record to the database
-            _dbContext.SaveChanges();
+            //// Save the new record to the database
+            //_dbContext.SaveChanges();
 
-            return View("AdmittedPatients", model);
+            return View(model);
         }
 
 
@@ -169,6 +183,12 @@ namespace DEMO.Controllers
         [HttpPost]
         public IActionResult AdmissionPage(string ConditionsJson, string AllergiesJson, string MedicationJson, BookedPatientInfo model)
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                accountID = 0;
+            }
+
             int patientAllergyID = 0;
             int patientConditionID = 0;
             int patientMedicationId = 0;
@@ -238,11 +258,15 @@ namespace DEMO.Controllers
                 {
                     var patientInfo = new AdmittedPatientsModel()
                     {
+                        AccountID = accountID,
                         PatientID = booking.PatientID,
                         Date = DateOnly.FromDateTime(DateTime.Now),
+                        Height = model.Height,
+                        Weight = model.Weight,
                         AdmissionStatusID = _dbContext.AdmissionStatus.Where(x => x.Description == "Admitted").FirstOrDefault().AdmissionStatusId,
                     };
-
+                        double HeightinM = patientInfo.Height/ 100;
+                        double BMI = Math.Round(patientInfo.Weight / (HeightinM * HeightinM));
                     _dbContext.AdmittedPatients.Add(patientInfo);
                     _dbContext.SaveChanges();
 
@@ -333,15 +357,12 @@ namespace DEMO.Controllers
 
                         }
 
-                        double HeightinM = model.Vitals.Height / 100;
-                        double BMI = Math.Round(model.Vitals.Weight / (HeightinM * HeightinM));
+                        
                         if (model.Vitals != null)
                         {
                             var patientVitals = new PatientVitals
                             {
                                 PatientID = booking.PatientID,
-                                Height = model.Vitals.Height,
-                                Weight = model.Vitals.Weight,
                                 SystolicBloodPressure = model.Vitals.SystolicBloodPressure,
                                 DiastolicBloodPressure = model.Vitals.DiastolicBloodPressure,
                                 HeartRate = model.Vitals.HeartRate,
@@ -392,7 +413,7 @@ namespace DEMO.Controllers
                                 updateAdmission.WardID = model.Ward.WardId;
                                 updateAdmission.BedId = model.Bed.BedId;
                                 updateAdmission.AddressID = pationetAddressId;
-
+                               
                                 _dbContext.AdmittedPatients.Update(updateAdmission);
                                 _dbContext.SaveChanges();
                             }
@@ -419,7 +440,7 @@ namespace DEMO.Controllers
             }
 
             // Return the view with the model if validation fails
-            return View("AdmittedPatients");
+            return View("AdmittedPatients", model);
         }
 
         public IActionResult AdmittedPatients()
@@ -437,6 +458,7 @@ namespace DEMO.Controllers
                                 join bed in _dbContext.Bed on ap.BedId equals bed.BedId
                                 join w in _dbContext.Ward on bed.WardID equals w.WardId
                                 join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
+
 
                                 select new AdmissionsListViewModel
                                 {
@@ -513,10 +535,28 @@ namespace DEMO.Controllers
         }
         public IActionResult MedicationCollection()
         {
+
             return View();
         }
-        public IActionResult MedicationAdministration()
+        public IActionResult MedicationAdministration(string name, string Surname,string Ward,int bed, int AdmittedPatientId, DateOnly date)
         {
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            ViewBag.PatientSurname = Surname;
+            ViewBag.PatientName = name;
+            ViewBag.patientWard = Ward;
+            ViewBag.patientBed = bed;
+            ViewBag.date = date;
+
+
             return View();
         }
         public IActionResult PatientRecords(int AdmittedPatientID, string name, string surname)
@@ -581,8 +621,8 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height = pv.Height,
-                                     Weight = pv.Weight,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,
@@ -673,8 +713,8 @@ namespace DEMO.Controllers
                                       orderby pv.time descending // Get the latest vitals
                                       select new EmailVital
                                       {
-                                          Height = pv.Height,
-                                          Weight = pv.Weight,
+                                          Height = ad.Height,
+                                          Weight = ad.Weight,
                                           SystolicBloodPressure = pv.SystolicBloodPressure,
                                           DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                           HeartRate = pv.HeartRate,
@@ -744,8 +784,8 @@ namespace DEMO.Controllers
                                           orderby pv.time descending // Get the latest vitals
                                           select new EmailVital
                                           {
-                                              Height = pv.Height,
-                                              Weight = pv.Weight,
+                                              Height = ad.Height,
+                                              Weight = ad.Weight,
                                               SystolicBloodPressure = pv.SystolicBloodPressure,
                                               DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                               HeartRate = pv.HeartRate,

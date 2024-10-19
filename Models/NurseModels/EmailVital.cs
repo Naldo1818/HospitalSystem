@@ -22,10 +22,10 @@ namespace DEMO.Models.NurseModels
         public int SystolicBloodPressure { get; set; }
         public int DiastolicBloodPressure { get; set; }
         public int HeartRate { get; set; }
-        public int BloodOxygen { get; set; }
+        public double BloodOxygen { get; set; }
         public int Respiration { get; set; }
         public int BloodGlucoseLevel { get; set; }
-        public int Temperature { get; set; }
+        public double Temperature { get; set; }
         public TimeOnly Time { get; set; }
         public DateOnly Date { get; set; }
 

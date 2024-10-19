@@ -2,6 +2,7 @@
     ViewData["Title"] = "Medication Collection";
     Layout = "_LayoutNurse";
 }
+@model DEMO.ViewModels.PatientAllergyViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -160,17 +161,17 @@
                     <div class="header-section">
                         <div class="header-labels">
                             <div>
-                                <label>Name: </label>
-                                <label>Surname:</label>
-                                <label>Date:</label>
+                                <label>Name: @ViewBag.PatientName</label>
+                                <label>Surname: @ViewBag.PatientSurname</label>
+                              
                             </div>
                             <div>
-                                <label>Ward: </label>
-                                <label>Bed:</label>
+                                <label>Ward: @ViewBag.patientWard </label>
+                                <label>Bed: @ViewBag.patientBed</label>
                             </div>
                             <div>
-                                <label>Height: </label>
-                                <label>Weight:</label>
+                                <label>Height: @Model.Height</label>
+                                <label>Weight: @Model.Weight</label>
                             </div>
                         </div>
                     </div>
@@ -219,9 +220,16 @@
                                                 
                                                 <div class="vital-group">
                                                     <label for="Temperature">Temperature (°C)</label>
-                                                    <input type="number" name="Temperature" min="30.0" max="40.0" value="">
+                                                    <input type="number" name="Temperature" min="30.0" max="40.0" value="" step="0.1">
                                                 </div>
                                             </div>
+                                            <div class="row-two-column">
+                                                <div class="vital-group">
+                                                    <label for="BMI">BMI</label>
+                                                    <input type="number" name="Vitals.BMI" value="" disabled>
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
                                         <input type="submit" name="submit" class="next action-button" value="Submit" />

@@ -841,15 +841,15 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height =pv.Height,
-                                     Weight= pv.Weight,
+                                     Height =ap.Height,
+                                     Weight= ap.Weight,
                                      SystolicBloodPressure= pv.SystolicBloodPressure,
                                      DiastolicBloodPressure= pv.DiastolicBloodPressure,
                                      HeartRate=  pv.HeartRate,
                                      BloodOxygen=  pv.BloodOxygen,
                                      Respiration= pv.Respiration,
                                      BloodGlucoseLevel= pv.BloodGlucoseLevel,
-                                     Temperature =  pv.Temperature
+                                     Temperature =  pv.Temperature,
                                     
                                    
                                  }).OrderBy(ap => ap.Date).ToList();
@@ -1069,8 +1069,8 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height = pv.Height,
-                                     Weight = pv.Weight,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,
@@ -1812,8 +1812,8 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height = pv.Height,
-                                     Weight = pv.Weight,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,

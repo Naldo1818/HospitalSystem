@@ -1,4 +1,4 @@
-﻿@model DEMO.ViewModels.AdmissionsListViewModel
+﻿@model DEMO.ViewModels.BookedPatientInfo
 @{
     ViewData["Title"] = "Patient Records";
     Layout = "_LayoutNurse";
@@ -79,10 +79,10 @@
                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Patient Information</a>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Medication Administration" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Administer Medication</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationAdministration" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Administer Medication</a>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Retake Vitals</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Retake Vitals</a>
                                             </td>
                                             <td>
                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Collect Medication</a>
