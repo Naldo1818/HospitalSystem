@@ -25,41 +25,43 @@
         }
 
             .input-container input {
-                padding-right: 30px; /* Space for the icon */
-            }
-
-            .input-container .icon {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
                 font-size: 16px;
-                color: #dc3545; /* Red color for invalid input */
             }
 
-            .input-container input.is-valid + .icon {
-                color: #28a745; /* Green color for valid input */
-            }
+                .input-container input.is-invalid {
+                    border-color: #dc3545; /* Red border for invalid input */
+                }
+
+                .input-container input.is-valid {
+                    border-color: #28a745; /* Green border for valid input */
+                }
+
+        .text-danger {
+            color: #dc3545; /* Red text for error messages */
+            font-size: 12px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>Apollo+</h1>
         <br />
-        <br />
-        <form asp-action="Index" method="post">
+        <form asp-action="Index" method="post" novalidate>
             <h4>Username</h4>
             <div class="input-container">
                 <input asp-for="Username" class="form-control" placeholder="Username" />
-             
-                <i class="fas fa-exclamation-circle icon"></i> <!-- Validation icon -->
+                <span asp-validation-for="Username" class="text-danger"></span> <!-- Error message displayed here -->
             </div>
             <br />
             <h4>Password</h4>
             <div class="input-container">
                 <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
-             
-                <i class="fas fa-exclamation-circle icon"></i> <!-- Validation icon -->
+                <span asp-validation-for="Password" class="text-danger"></span> <!-- Error message displayed here -->
             </div>
             <br />
             <div>
@@ -69,23 +71,37 @@
     </div>
 
     <script>
-        // JavaScript to toggle icon color based on input validation
+        // JavaScript to toggle valid/invalid classes based on input validation
         document.querySelectorAll('.form-control').forEach(input => {
             input.addEventListener('input', function () {
-                const icon = this.nextElementSibling.nextElementSibling;
-                if (this.checkValidity()) {
+                const errorMessage = this.parentElement.querySelector('.text-danger'); // Get the error message span
+                const isValid = this.checkValidity();
+
+                if (isValid) {
                     this.classList.add('is-valid');
                     this.classList.remove('is-invalid');
-                    icon.classList.remove('fa-exclamation-circle');
-                    icon.classList.add('fa-check-circle');
+                    errorMessage.style.display = 'none'; // Hide error message when valid
                 } else {
                     this.classList.add('is-invalid');
                     this.classList.remove('is-valid');
-                    icon.classList.remove('fa-check-circle');
-                    icon.classList.add('fa-exclamation-circle');
+                    errorMessage.style.display = 'block'; // Show error message when invalid
+                }
+
+                // Additional check for the password regex
+                if (this.name === 'Password') {
+                    const passwordRegex = /^\S*$/; // Regex to check for spaces
+                    if (!passwordRegex.test(this.value)) {
+                        this.classList.add('is-invalid');
+                        this.classList.remove('is-valid');
+                        errorMessage.innerText = "Password must not contain spaces."; // Set custom error message
+                        errorMessage.style.display = 'block'; // Show error message when invalid
+                    }
                 }
             });
         });
     </script>
+
+    <!-- Include the validation scripts -->
+    <partial name="_ValidationScriptsPartial" />
 </body>
 </html>
