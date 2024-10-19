@@ -1,13 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using DEMO.Data.Migrations;
-using DEMO.Models;
-using DEMO.ViewModels;
 
-
-namespace DEMO.Models.PharmacistModels
+namespace DEMO.ViewModels
 {
-    public class PharmacyMedicationModel
+    public class PharmacyMedicationViewModel
     {
         [Key]
         public int PharmacyMedicationID { get; set; }
@@ -27,7 +22,5 @@ namespace DEMO.Models.PharmacistModels
         public string MedicationForm { get; set; }
         [Required]
         public int Schedule { get; set; }
-
-
     }
 }

@@ -61,27 +61,27 @@ namespace DEMO.Controllers
         }
 
 
-        public async Task<IActionResult> StockOrderPage()
-        {
-            var stocks = await _dbContext.DayHospitalPharmacyMedication
-                  .Where(m => m.StockonHand <= m.ReorderLevel)
-                  .ToListAsync();
+        //public async Task<IActionResult> StockOrderPage()
+        //{
+        //    var stocks = await _dbContext.DayHospitalPharmacyMedication
+        //          .Where(m => m.StockonHand <= m.ReorderLevel)
+        //          .ToListAsync();
 
-            return View(stocks);
+        //    return View(stocks);
 
-        }
+        //}
 
-        //page 2 
+        ////page 2 
 
-        public async Task<IActionResult> StockOrderPage2()
-        {
-            var stocks = await _dbContext.DayHospitalPharmacyMedication
-                  .Where(m => m.StockonHand <= m.ReorderLevel)
-                  .ToListAsync();
+        //public async Task<IActionResult> StockOrderPage2()
+        //{
+        //    var stocks = await _dbContext.DayHospitalPharmacyMedication
+        //          .Where(m => m.StockonHand <= m.ReorderLevel)
+        //          .ToListAsync();
 
-            return View(stocks);
+        //    return View(stocks);
 
-        }
+        //}
 
 
 
@@ -160,74 +160,74 @@ namespace DEMO.Controllers
 
         // GET: AddMedication
 
-        public IActionResult AddMedication()
-        {
-            // Fetch medication names
+        //public IActionResult AddMedication()
+        //{
+        //    // Fetch medication names
 
 
-            // Fetch medication forms
-            var medicationForms = _dbContext.Medication
-                                             .Select(m => m.MedicationForm)
-                                             .Distinct()
-                                             .ToList();
+        //    // Fetch medication forms
+        //    var medicationForms = _dbContext.Medication
+        //                                     .Select(m => m.MedicationForm)
+        //                                     .Distinct()
+        //                                     .ToList();
 
-            // Fetch medication schedules
-            var medSchedules = _dbContext.Medication
-                                         .Select(m => m.Schedule)
-                                         .Distinct()
-                                         .ToList();
+        //    // Fetch medication schedules
+        //    var medSchedules = _dbContext.Medication
+        //                                 .Select(m => m.Schedule)
+        //                                 .Distinct()
+        //                                 .ToList();
 
 
-            //Fetch Active Ingredients
-            var actives = _dbContext.Activeingredient
-                .Select(m => m.ActiveIngredientName)
-                .Distinct()
-                .ToList();
+        //    //Fetch Active Ingredients
+        //    var actives = _dbContext.Activeingredient
+        //        .Select(m => m.ActiveIngredientName)
+        //        .Distinct()
+        //        .ToList();
 
            
 
-            var df = _dbContext.DayHospitalPharmacyMedication
-               .Select(m => m.DosageForm)
-               .Distinct()
-               .ToString();
+        //    var df = _dbContext.DayHospitalPharmacyMedication
+        //       .Select(m => m.DosageForm)
+        //       .Distinct()
+        //       .ToString();
 
-            var schedule = _dbContext.DayHospitalPharmacyMedication
-                .Select(m => m.Schedule)
-                .Distinct()
-                .ToString();
-
-
-            var stockonhand = _dbContext.DayHospitalPharmacyMedication
-                .Select(m => m.StockonHand)
-                .Distinct()
-                .ToString();
+        //    var schedule = _dbContext.DayHospitalPharmacyMedication
+        //        .Select(m => m.Schedule)
+        //        .Distinct()
+        //        .ToString();
 
 
-            var activeingredientslist=_dbContext.Activeingredient
-                .Select(m=>m.ActiveIngredientName)
-                .Distinct()
-                .ToList();
+        //    var stockonhand = _dbContext.DayHospitalPharmacyMedication
+        //        .Select(m => m.StockonHand)
+        //        .Distinct()
+        //        .ToString();
 
 
-
-
-
-           var combineddata=_dbContext.DayHospitalPharmacyMedication
-                .Select(m=>m)
-                .ToList();
+        //    var activeingredientslist=_dbContext.Activeingredient
+        //        .Select(m=>m.ActiveIngredientName)
+        //        .Distinct()
+        //        .ToList();
 
 
 
 
-            // Create a ViewModel to hold the data
-            var viewModel = new PharmacyMedicationModel
-            {
+
+        //   var combineddata=_dbContext.DayHospitalPharmacyMedication
+        //        .Select(m=>m)
+        //        .ToList();
 
 
-                 ActiveIngredientsDropDown = activeingredientslist,
-                DosageForm=df,
-                PharmMedDF = medicationForms,
-                PharmMedSchedule = medSchedules,
+
+
+        //    // Create a ViewModel to hold the data
+        //    var viewModel = new PharmacyMedicationModel
+        //    {
+
+
+        //         ActiveIngredientsDropDown = activeingredientslist,
+        //        DosageForm=df,
+        //        PharmMedDF = medicationForms,
+        //        PharmMedSchedule = medSchedules,
                 
                 
                
@@ -235,64 +235,63 @@ namespace DEMO.Controllers
                 
 
 
-                //testMeds=new PharmacyMedicationModel()
+        //        //testMeds=new PharmacyMedicationModel()
 
-            };
+        //    };
 
-            // Pass the ViewModel to the view
-            return View(viewModel);
-        }
-
-
-
-
-
+        //    // Pass the ViewModel to the view
+        //    return View(viewModel);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddMedication(PharmacyMedicationModel model)
+        public IActionResult AddMedication(PharmacyMedicationViewModel model)
         {
             if (ModelState.IsValid)
             {
-              
-
-                // Create a new PharmacyMedicationModel instance
-                var detailstoadd = new PharmacyMedicationModel
+                // Create a new Medication entity
+                Medication med = new Medication
                 {
-                    PharmacyMedicationID = model.PharmacyMedicationID,
                     MedicationName = model.MedicationName,
-                    DosageForm = model.DosageForm,
+                    MedicationForm = model.MedicationForm,
                     Schedule = model.Schedule,
-                    StockonHand = model.StockonHand,
-                    ReorderLevel = model.ReorderLevel,
-                    PharmMedDF = model.PharmMedDF,
-                    PharmMedSchedule = model.PharmMedSchedule,
-                    ActiveIngredientsDropDown = model.ActiveIngredientsDropDown,
-                    
                 };
 
-                // Add the medication to the database
-                _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
-                _dbContext.SaveChanges(); // Save here to get the ID for the next inserts
+                // Add and save the new Medication entity to the database
+                _dbContext.Medication.Add(med);
+                _dbContext.SaveChanges();
 
-              
+                // Fetch the Medication entity just saved
+                var medEntity = _dbContext.Medication
+                                .FirstOrDefault(m => m.MedicationName == model.MedicationName);
 
-               
+                // Ensure medication was successfully retrieved before proceeding
+                if (medEntity != null)
+                {
+                    // Create a new PharmMedModel entity and link to the saved Medication
+                    PharmMedModel pharmMed = new PharmMedModel
+                    {
+                        MedicationID = medEntity.MedicationID,
+                        StockonHand = model.StockonHand,
+                        ReorderLevel = model.ReorderLevel,
+                    };
 
-                // Redirect to the AddMedication page or another page
-                return RedirectToAction("AddMedication");
+                    // Add and save the PharmMedModel entity to the database
+                    _dbContext.PharmacyMedication.Add(pharmMed);
+                    _dbContext.SaveChanges();
+
+                    return RedirectToAction("AddMedication");
+                }
+                else
+                {
+                    // Handle error: Medication retrieval failed
+                    ModelState.AddModelError("", "Error saving medication.");
+                }
             }
 
-            // If the model state is invalid, repopulate the model data
-            
-    model.MedicationName = "";
-            model.StockonHand = 0; // Assuming StockOnHand is an integer
-           model.ReorderLevel = 0; // Assuming ReorderLevel is an integer
-
-            model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
-            model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
-            model.ActiveIngredientsDropDown = _dbContext.Activeingredient.Select(m => m.ActiveIngredientName).Distinct().ToList();
+            // Return the view with validation errors if any
             return View(model);
         }
+
 
 
 
