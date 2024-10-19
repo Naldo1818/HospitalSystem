@@ -128,7 +128,7 @@
                                     <th scope="col">Respiration Rate bpm</th>
                                     <th scope="col">Blood Glucose Level mg/dL</th>
                                     <th scope="col">Temperature °C</th>
-
+                                    <th scope="col">BMI</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,6 +146,12 @@
                                         <td>@item.Respiration</td>
                                         <td>@item.BloodGlucoseLevel</td>
                                         <td>@item.Temperature</td>
+                                        @{
+                                            // Calculate BMI
+                                            double heightInMeters = item.Height / 100.0; // Convert height to meters
+                                            double bmi = item.Weight / (heightInMeters * heightInMeters); // BMI formula
+                                        }
+                                        <td>@Math.Round(bmi, 2)</td>
                                     </tr>
                                 }
                             </tbody>

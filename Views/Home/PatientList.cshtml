@@ -94,13 +94,18 @@
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">ID number</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ID number" style="width:300px">
+                                    <div class="input-container">
+                                        <input type="text" class="form-control" id="idNumber" placeholder="ID number"
+                                               pattern="^\d{13}$" required title="ID number must be exactly 13 digits." />
+                                        <span id="idNumberError" class="text-danger"></span> <!-- Error message displayed here -->
+                                      
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <button type="button" class="btn btn-success" style="width:160px;" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
+                                    <button type="button" class="btn btn-primary" style="width:160px;" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
                                 </div>
                             </div>
                         </form>
@@ -389,7 +394,7 @@
             // Custom search function for the search input
             $(document).ready(function () {
                 // Custom search function for the search input
-                $('#exampleFormControlInput1').on('keyup', function () {
+                $('#idNumber').on('keyup', function () {
                     var searchText = this.value.trim(); // Trim whitespace
                     if (searchText === '') {
                         $('#example_wrapper').hide(); // Hide table if search input is empty
@@ -430,6 +435,31 @@
                     }
                 });
             });
+        });
+    </script>
+    <script>
+        // JavaScript to toggle valid/invalid classes based on input validation
+        const idNumberInput = document.getElementById('idNumber');
+        const idNumberError = document.getElementById('idNumberError');
+
+        idNumberInput.addEventListener('input', function () {
+            const isValid = this.checkValidity();
+
+            if (isValid) {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+                idNumberError.style.display = 'none'; // Hide error message when valid
+            } else {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+                idNumberError.style.display = 'block'; // Show error message when invalid
+
+                if (this.value.length !== 13) {
+                    idNumberError.innerText = "ID number must be exactly 13 digits."; // Custom error message
+                } else {
+                    idNumberError.innerText = "ID number must be numeric."; // Additional check for numeric input
+                }
+            }
         });
     </script>
 </body>
