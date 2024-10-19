@@ -153,14 +153,17 @@ namespace DEMO.Controllers
                 .Distinct()
                 .ToString();
 
-           
+
+            
+            
+
+               
 
 
 
 
-
-            // Create a ViewModel to hold the data
-            var viewModel = new PharmacyMedicationModel
+                // Create a ViewModel to hold the data
+                var viewModel = new PharmacyMedicationModel
             {
 
 
@@ -228,7 +231,8 @@ namespace DEMO.Controllers
         }
 
 
-
+       
+        
 
 
 
