@@ -27,7 +27,7 @@
 
 
 
-    <script>
+  @*   <script>
         $(document).ready(function () {
             $('#addMedicationForm').submit(function (e) {
                 e.preventDefault();
@@ -56,7 +56,7 @@
                 });
             });
         });
-    </script>
+    </script> *@
 
     <title>Medication Add</title>
 </head>
@@ -94,25 +94,35 @@
 
                                 <div class="col-md-4">
                                     <label for="DosageForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control"  asp-for="MedicationForm" style="width:300px">
-                                      
+                                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="MedicationForm" style="width:300px">
 
+
+                                        @foreach (var item in Model.DosageForms)
+                                        {
+                                            <option value="@item">@item</option>
+                                            // Adjust properties based on your model
+                                        }
                                     </select>
                                     <span asp-validation-for="MedicationForm" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="Schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" style="width:300px">
+                                    <select class="form-control" name="Schedules" id="Schedules" asp-for="Schedule" style="width:300px">
 
-                                      @*   @foreach (var item in Model.Schedule)
+                                        
+                                        @foreach (var item in Model.Schedules)
                                         {
                                             <option value="@item">@item</option>
-                                        } *@
+                                            // Adjust properties based on your model
+                                        }
                                     </select>
+                                    
                                     <span asp-validation-for="Schedule" class="text-danger"></span>
                                 </div>
 
+
+           
                                 <div class="col-md-4">
                                     <label for="StockonHand" class="form-label">Stock on Hand</label>
                                     <input type="number" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" value="@Model.StockonHand" style="width:300px">
@@ -193,6 +203,11 @@
                                 </tr>
                             </thead>
                             <tbody id="medicationsBody">
+
+                                @foreach (var item in Model.)
+                                {
+                                    <tr>@item</tr>
+                                }
                             </tbody>
                         </table>
                     </div>

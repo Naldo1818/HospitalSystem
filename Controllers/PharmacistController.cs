@@ -183,6 +183,13 @@ namespace DEMO.Controllers
 
 
 
+            var dfdropdown = _dbContext.Medication
+               .Select(m => m.MedicationForm)
+               .Distinct()
+               .ToList();
+
+
+
             var df = _dbContext.Medication
                .Select(m => m.MedicationForm)
                .Distinct()
@@ -192,6 +199,7 @@ namespace DEMO.Controllers
                 .Select(m => m.Schedule)
                 .Distinct()
                 .ToString();
+
 
 
             var stockonhand = _dbContext.PharmacyMedication
@@ -223,6 +231,9 @@ namespace DEMO.Controllers
 
                 MedicationForm=df,
                 
+                Schedules=medSchedules,
+                DosageForms=dfdropdown,
+               
                 
 
 
@@ -284,9 +295,28 @@ namespace DEMO.Controllers
                     // Handle error: Medication retrieval failed
                     ModelState.AddModelError("", "Error saving medication.");
                 }
+
+               
             }
 
             // Return the view with validation errors if any
+            // Fetch schedules
+
+            //model.Schedules=sched
+            var schedules = _dbContext.Medication
+                   .Select(m => m.Schedule)
+                   .Distinct()
+                   .ToList();
+
+            var dosageforms = _dbContext.Medication
+                .Select(m => m.MedicationForm)
+                .Distinct()
+                .ToList();
+
+           
+
+            model.Schedules=schedules;
+            model.DosageForms=dosageforms;
             return View(model);
         }
 

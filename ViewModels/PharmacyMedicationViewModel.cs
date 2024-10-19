@@ -22,5 +22,16 @@ namespace DEMO.ViewModels
         public string MedicationForm { get; set; }
         [Required]
         public int Schedule { get; set; }
+
+
+        public List<int> Schedules { get; set; }    
+
+
+        public List<string> DosageForms { get; set; }
+
+        public List<PharmacyMedicationViewModel> combinedinfo { get; set; }
+
+
+  
     }
 }
