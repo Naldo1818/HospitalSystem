@@ -71,6 +71,18 @@ namespace DEMO.Controllers
 
         }
 
+        //page 2 
+
+        public async Task<IActionResult> StockOrderPage2()
+        {
+            var stocks = await _dbContext.DayHospitalPharmacyMedication
+                  .Where(m => m.StockonHand <= m.ReorderLevel)
+                  .ToListAsync();
+
+            return View(stocks);
+
+        }
+
 
 
 
@@ -198,11 +210,6 @@ namespace DEMO.Controllers
 
 
 
-            //al for table display
-            var names = _dbContext.DayHospitalPharmacyMedication
-             .Select(m => m.MedicationName)
-             .Distinct()
-             .ToString();
 
 
            var combineddata=_dbContext.DayHospitalPharmacyMedication
@@ -218,7 +225,7 @@ namespace DEMO.Controllers
 
 
                  ActiveIngredientsDropDown = activeingredientslist,
-                //DosageForm=df,
+                DosageForm=df,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
                 
@@ -239,122 +246,6 @@ namespace DEMO.Controllers
 
 
 
-        //post medication to database
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult AddMedication(PharmacyMedicationModel model, string IngredientsString, string StrengthsString)
-        //{
-
-
-        //    if (ModelState.IsValid)
-        //    {
-
-
-
-        //        var detailstoadd = new PharmacyMedicationModel
-        //        {
-        //            PharmacyMedicationID = model.PharmacyMedicationID,
-        //            MedicationName = model.MedicationName,
-        //            DosageForm = model.DosageForm,
-        //            Schedule = model.Schedule,
-        //            StockonHand = model.StockonHand,
-        //            ReorderLevel = model.ReorderLevel,
-        //            PharmMedDF=model.PharmMedDF,
-        //            PharmMedSchedule=model.PharmMedSchedule,
-
-        //        };
-
-        //        _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
-        //        _dbContext.SaveChanges();
-
-
-
-
-        //        //return RedirectToAction("AddMedication", "Pharmacist");
-        //        return RedirectToAction("AddMedication");
-
-
-
-        //    }
-
-
-        //    model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
-        //    model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
-        //    model.ActiveIngredientsDropDown=_dbContext.Activeingredient.Select(m=>m.ActiveIngredientName).Distinct().ToList();  
-        //    return View(model);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult AddMedication(PharmacyMedicationModel model, string IngredientsAndStrengthsString)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        // Split the combined string into individual pairs
-        //        var ingredientStrengthPairs = IngredientsAndStrengthsString.Split(';')
-        //            .Select(pair => pair.Trim())
-        //            .Where(pair => !string.IsNullOrWhiteSpace(pair))
-        //            .ToList();
-
-        //        // Create a new PharmacyMedicationModel instance
-        //        var detailstoadd = new PharmacyMedicationModel
-        //        {
-        //            PharmacyMedicationID = model.PharmacyMedicationID,
-        //            MedicationName = model.MedicationName,
-        //            DosageForm = model.DosageForm,
-        //            Schedule = model.Schedule,
-        //            StockonHand = model.StockonHand,
-        //            ReorderLevel = model.ReorderLevel,
-        //            PharmMedDF = model.PharmMedDF,
-        //            PharmMedSchedule = model.PharmMedSchedule,
-        //        };
-
-        //        // Add the medication to the database
-        //        _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
-        //        _dbContext.SaveChanges();
-
-        //        // Now save the active ingredients and strengths
-        //        foreach (var pair in ingredientStrengthPairs)
-        //        {
-        //            var parts = pair.Split(',')
-        //                .Select(part => part.Trim())
-        //                .ToList();
-
-        //            if (parts.Count == 2)
-        //            {
-        //                var ingredient = parts[0].Trim();
-        //                var strength = parts[1].Trim();
-
-        //                if (!string.IsNullOrWhiteSpace(ingredient) && !string.IsNullOrWhiteSpace(strength))
-        //                {
-        //                    // Combine ingredient and strength into one variable
-        //                    var combined = $"{ingredient}:{strength}";
-
-        //                    // Create a new entity for the active ingredient
-        //                    var activeIngredient = new PharmacyMedicationModel
-        //                    {
-        //                        IngredientandStrength = combined // Assuming you have a property for this
-        //                    };
-
-        //                    _dbContext.DayHospitalPharmacyMedication.Add(activeIngredient);
-        //                }
-        //            }
-
-
-        //            // Save changes for the active ingredients
-        //            _dbContext.SaveChanges();
-
-        //            // Redirect to the AddMedication page or another page
-        //            return RedirectToAction("AddMedication");
-        //        }
-
-        //        // If the model state is invalid, repopulate the model data
-        //        model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
-        //        model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
-        //        model.ActiveIngredientsDropDown = _dbContext.Activeingredient.Select(m => m.ActiveIngredientName).Distinct().ToList();
-        //        return View(model);
-        //    }
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -395,7 +286,7 @@ namespace DEMO.Controllers
             
     model.MedicationName = "";
             model.StockonHand = 0; // Assuming StockOnHand is an integer
-            model.ReorderLevel = 0; // Assuming ReorderLevel is an integer
+           model.ReorderLevel = 0; // Assuming ReorderLevel is an integer
 
             model.PharmMedDF = _dbContext.Medication.Select(m => m.MedicationForm).Distinct().ToList();
             model.PharmMedSchedule = _dbContext.Medication.Select(m => m.Schedule).Distinct().ToList();
