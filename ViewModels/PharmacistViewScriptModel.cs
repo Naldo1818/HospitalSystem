@@ -3,6 +3,10 @@ using DEMO.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
+using System.ComponentModel.DataAnnotations;
+using DEMO.ViewModels;
+using Microsoft.Build.ObjectModelRemoting;
+
 
 namespace DEMO.ViewModels
 {
@@ -75,13 +79,13 @@ namespace DEMO.ViewModels
         public List<PharmacistViewScriptModel> combinedData { get; set; }
 
 
-        public List<PharmacistViewScriptModel> Allvitals { get; set; }
-        public List<PharmacistViewScriptModel> Allallergy { get; set; }
-        public List<PharmacistViewScriptModel> AllCurrentMed { get; set; }
-        public List<PharmacistViewScriptModel> AllConditions { get; set; }
+        //public List<PharmacistViewScriptModel> Allvitals { get; set; }
+        //public List<PharmacistViewScriptModel> Allallergy { get; set; }
+        //public List<PharmacistViewScriptModel> AllCurrentMed { get; set; }
+        //public List<PharmacistViewScriptModel> AllConditions { get; set; }
 
 
-        public List<PharmacistViewScriptModel> PrescrptionDetails {  get; set; }
+        //public List<PharmacistViewScriptModel> PrescriptionDetails {  get; set; }
 
 
 

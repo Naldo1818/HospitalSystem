@@ -317,13 +317,7 @@ namespace DEMO.Controllers
         }
 
 
-        //public IActionResult ViewSpecificPrescription(int id) 
-        //{
-        //     var patientid = id;
-                
-
-        //    return View();
-        //}
+      
 
         public IActionResult ViewSpecificPrescription(int admittedpatientid)
         {
@@ -332,22 +326,25 @@ namespace DEMO.Controllers
 
 
 
-            var patient = _dbContext.AdmittedPatients.FirstOrDefault(ap => ap.AdmittedPatientID == admittedpatientid);
+            var patient = _dbContext.AdmittedPatients.FirstOrDefault(apt => apt.AdmittedPatientID == admittedpatientid);
 
-            if (patient == null) 
-            { 
+
+
+
+            if (patient == null)
+            {
                 return NotFound();
             }
 
 
 
 
-           var ScriptAndVitals = (from p in _dbContext.Prescription
+            var ScriptAndVitals = (from p in _dbContext.Prescription
                                        join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
                                        join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
                                        join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
 
-                                       where ap.AdmittedPatientID == admittedpatientid
+                                       where p.AdmittedPatientID == admittedpatientid
 
 
                                        select new PharmacistViewScriptModel
@@ -378,11 +375,10 @@ namespace DEMO.Controllers
 
 
 
-
-
             var viewModel = new PharmacistViewScriptModel
             {
-                PrescrptionDetails= ScriptAndVitals,
+
+                combinedData = ScriptAndVitals,
 
 
 
@@ -733,15 +729,6 @@ namespace DEMO.Controllers
 
 
 
-        //Adding my Pharmacy Medication
-        //[HttpGet]
-        //public ActionResult AddMedication()
-        //{
-        //    PharmacyMedicationModel pharmacymedication = new PharmacyMedicationModel();
-        //    return View(pharmacymedication);
-        //}
-
-       
 
 
 
