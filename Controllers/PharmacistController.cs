@@ -34,7 +34,19 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        public async Task<IActionResult> ViewAllStock()
+        {
+            var stocks = await _dbContext.DayHospitalPharmacyMedication
+                  .Where(m => m.StockonHand <= m.ReorderLevel)
+                  .ToListAsync();
 
+            return View(stocks);
+
+        }
+
+
+
+        //Auto order function
 
         //public void AutoOrderProducts(PharmacyMedicationModel product)
         //{
@@ -52,16 +64,16 @@ namespace DEMO.Controllers
         //{
         //    var order = new OrderStockModel
         //    {
-               
+
         //        OrderDate = DateTime.Now
-                 
-            
+
+
         //        //new OrderItem
         //        //{
         //        //    ProductId = product.Id,
         //        //     // Assuming you have a price property
         //        //}
-            
+
         //    };
 
         //    // Save the order to the database
@@ -562,14 +574,7 @@ namespace DEMO.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ViewAllStock()
-        {
-          var stocks= await _dbContext.DayHospitalPharmacyMedication.ToListAsync();
-
-                return View(stocks);
-            
-        }
-
+      
 
         public ActionResult OrderStock()
         {

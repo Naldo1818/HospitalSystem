@@ -26,7 +26,7 @@ namespace DEMO.Models.PharmacistModels
         public int Schedule { get; set; }
 
 
-        public int StockonHand { get; set; } = 0;
+        public int StockonHand { get; set; }
 
         [Required]
         public int ReorderLevel { get; set; }
