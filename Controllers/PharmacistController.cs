@@ -156,92 +156,90 @@ namespace DEMO.Controllers
         }
 
 
-    
+
 
         // GET: AddMedication
 
-        //public IActionResult AddMedication()
-        //{
-        //    // Fetch medication names
+        public IActionResult AddMedication()
+        {
+            // Fetch medication names
 
 
-        //    // Fetch medication forms
-        //    var medicationForms = _dbContext.Medication
-        //                                     .Select(m => m.MedicationForm)
-        //                                     .Distinct()
-        //                                     .ToList();
-
-        //    // Fetch medication schedules
-        //    var medSchedules = _dbContext.Medication
-        //                                 .Select(m => m.Schedule)
-        //                                 .Distinct()
-        //                                 .ToList();
-
-
-        //    //Fetch Active Ingredients
-        //    var actives = _dbContext.Activeingredient
-        //        .Select(m => m.ActiveIngredientName)
-        //        .Distinct()
-        //        .ToList();
-
+            // Fetch medication forms
            
 
-        //    var df = _dbContext.DayHospitalPharmacyMedication
-        //       .Select(m => m.DosageForm)
-        //       .Distinct()
-        //       .ToString();
-
-        //    var schedule = _dbContext.DayHospitalPharmacyMedication
-        //        .Select(m => m.Schedule)
-        //        .Distinct()
-        //        .ToString();
+            // Fetch medication schedules
+            var medSchedules = _dbContext.Medication
+                                         .Select(m => m.Schedule)
+                                         .Distinct()
+                                         .ToList();
 
 
-        //    var stockonhand = _dbContext.DayHospitalPharmacyMedication
-        //        .Select(m => m.StockonHand)
-        //        .Distinct()
-        //        .ToString();
-
-
-        //    var activeingredientslist=_dbContext.Activeingredient
-        //        .Select(m=>m.ActiveIngredientName)
-        //        .Distinct()
-        //        .ToList();
+            //Fetch Active Ingredients
+            var actives = _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .ToList();
 
 
 
+            var df = _dbContext.Medication
+               .Select(m => m.MedicationForm)
+               .Distinct()
+               .ToString();
+
+            var schedule = _dbContext.Medication
+                .Select(m => m.Schedule)
+                .Distinct()
+                .ToString();
 
 
-        //   var combineddata=_dbContext.DayHospitalPharmacyMedication
-        //        .Select(m=>m)
-        //        .ToList();
+            var stockonhand = _dbContext.PharmacyMedication
+                .Select(m => m.StockonHand)
+                .Distinct()
+                .ToString();
+
+
+            var activeingredientslist = _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .ToList();
 
 
 
 
-        //    // Create a ViewModel to hold the data
-        //    var viewModel = new PharmacyMedicationModel
-        //    {
+
+            var combineddata = _dbContext.PharmacyMedication
+                 .Select(m => m)
+                 .ToList();
 
 
-        //         ActiveIngredientsDropDown = activeingredientslist,
-        //        DosageForm=df,
-        //        PharmMedDF = medicationForms,
-        //        PharmMedSchedule = medSchedules,
+
+
+            // Create a ViewModel to hold the data
+            var viewModel = new PharmacyMedicationViewModel
+            {
+
+
+                MedicationForm=df,
                 
                 
-               
-
-                
 
 
-        //        //testMeds=new PharmacyMedicationModel()
 
-        //    };
 
-        //    // Pass the ViewModel to the view
-        //    return View(viewModel);
-        //}
+
+
+
+
+
+                //testMeds=new PharmacyMedicationModel()
+
+            };
+
+            // Pass the ViewModel to the view
+            return View(viewModel);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddMedication(PharmacyMedicationViewModel model)
