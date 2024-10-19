@@ -10,7 +10,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- jQuery -->
+     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
     <!-- DataTables CSS -->
@@ -25,11 +25,11 @@
     <!-- Bootstrap JS -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
+ 
 
 
         
-        
-    <title>Medication Add</title>
+    <title>Add Medication</title>
 </head>
 <body>
     
@@ -39,16 +39,13 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
 
-                     
+ 
 
 
-
-
-
-                        <form   asp-action="AddMedication"  method="post">
+                        <form asp-action="AddMedication">
                             <div class="form-group row">
                                 <div class="col-12">
-                                    <center><h1>Medication Page</h1></center>
+                                    <center><h1>Add Medication</h1></center>
                                 </div>
                             </div>
 
@@ -60,16 +57,14 @@
 
                             @* <div class="form-group row">
                                 <div class="col-md-4">
-                                    <label for="medicationForm" class="form-label">Medication Name</label>
-
-                                    <label> Medication Name</label>
-                                    <input type="text" class="form-control" name="MedicationName" id="MedicationName"  value="@Model.MedicationName"  style="width:300px">
+                                    <label for="MedicationName" class="form-label">Medication Name</label>
+                                    <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="MedicationName" style="width:300px">
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
-                                    >
+
                                 <div class="col-md-4">
-                                    <label for="medicationForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="DosageForm" id="DosageForm"  value="@Model.DosageForm" style="width:300px">
+                                    <label for="DosageForm" class="form-label">Dosage Form</label>
+                                    <select class="form-control" name="DosageForm" id="DosageForm" asp-for="DosageForm" style="width:300px">
                                         @foreach (var item in Model.PharmMedDF.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
@@ -79,8 +74,8 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="Schedule" id="Schedule"  value="@Model.Schedule" style="width:300px">
+                                    <label for="Schedule" class="form-label">Schedule</label>
+                                    <select class="form-control" name="Schedule" id="Schedule" asp-for="Schedule" style="width:300px">
                                         @foreach (var item in Model.PharmMedSchedule.OrderBy(i => i))
                                         {
                                             <option value="@item">@item</option>
@@ -90,75 +85,59 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="stockOnHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand"  value="@Model.StockonHand" style="width:300px">
+                                    <label for="StockonHand" class="form-label">Stock on Hand</label>
+                                    <input type="number" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" value="@Model.StockonHand" style="width:300px">
                                     <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label for="reorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel"  value="@Model.ReorderLevel" style="width:300px">
+                                    <label for="ReorderLevel" class="form-label">Re-order Level</label>
+                                    <input type="number" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ReorderLevel" style="width:300px">
                                     <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
-                            </div> *@
 
-                           
 
-                           
+                                <!--hide-->
+                                <div class="col-md-4" style="display:none;">
+                                    <label for="reorderLevel" class="form-label">Re-order Level </label>
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedDF" value="@Model.PharmMedDF" style="width:300px">
+                                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-4" style="display:none;">
+                                    <label for="reorderLevel" class="form-label">Re-order Level</label>
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="PharmMedSchedule" value="@Model.PharmMedSchedule" style="width:300px">
+                                    <span asp-validation-for="ReorderLevel" class="text-danger"></span>
+                                </div>
+
+                                
+
+                              
+
+
+
+                                <!--end of hide-->
+                            </div>
+                            <br />
+
+                         
+
+                            <div class="form-group row">
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </div>
+                            </div>
                         </form>
 
+                   
 
 
-                        <!--Active ingredient-->
-                        <div class="form-group row">
-                        <div class="col-12">
-                        <h2>Active Ingredient Section</h2>
-                        </div>
-                        </div>
-                        <div class="form-group row">
-                        <div class="col">
-                        <label for="activeIngredient" class="form-label">Active Ingredient</label>
-                                <select class="form-control"   style="width:300px">
-                                    @foreach (var item in Model.ActiveIngredients.OrderBy(i => i))
-                                    {
-                                        <option value="@item">@item</option>
-                                    }
-                                </select>
+
+
+                      
+
+
                        
-                        </div>
-                        <div class="col-md-4">
-                        <label for="strength" class="form-label">Strength</label>
-                        <input type="text" class="form-control" style="width:300px" id="strength" placeholder="Enter strength">
-                        </div>
-                        <div class="col-md-4 d-flex align-items-end">
-                        <button type="button" id="addRow" class="btn btn-primary">Add Row</button>
-                        <br></br>
-                        </div>
-
-                        </div>
-                        <div class="form-group row">
-                        <div class="col-12">
-                        <table class="table table-bordered" id="dynamicTable">
-                        <thead>
-                        <tr>
-                        <th scope="col">Active Ingredient</th>
-                        <th scope="col">Strength</th>
-                        <th scope="col">Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Rows will be added here dynamically -->
-                        </tbody>
-                        </table>
-                        </div>
-                        </div> 
-
-
-                        <div class="form-group row">
-                            <div class="col-12 text-center">
-                                <button type="submit"  class="btn btn-primary">Add</button>
-                            </div>
-                        </div>
 
                     </div>
                 </div>
@@ -179,102 +158,32 @@
                                     <th scope="col">IngredientsandStrengths</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="medicationsBody">
                               
+                              @*   
+                                @foreach (var medication in Model.combined)
+                                
+              
+                                {
+                                    <tr>
+                                    <td>@medication.MedicationName</td>
+                                    <td>@medication.DosageForm</td>
+                                    <td>@medication.Schedule</td>
+                                    <td>@medication.StockonHand</td>
+                                    <td>@medication.ReorderLevel</td>
+                                    <td>@medication.IngredientandStrength</td>
+                                    </tr>
+                                }  *@
+
+
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
             
-
-            <script>
-                $(document).ready(function () {
-                    $('#medicationTable').DataTable();
-
-                    $('#openMedicationButton').on('click', function () {
-                        $('#confirmMedicationModal').modal('show');
-                    });
-
-                    $('#cancelSaveButton').on('click', function () {
-                        $('#confirmMedicationModal').modal('hide');
-                    });
-
-                    $('#saveMedicationButton').on('click', function () {
-                        $.ajax({
-                            url: '@Url.Action("AddMedication", "Admin")',
-                            type: 'POST',
-                            data: $('#addMedicationForm').serialize(),
-                            success: function (response) {
-                                window.location.href = '@Url.Action("ListMedication", "Admin")';
-                            },
-                            error: function (xhr, status, error) {
-                                console.log("Error occurred:", error);
-                            }
-                        });
-                    });
-
-                    $('#addRow').click(function () {
-                        var activeIngredient = $('#activeIngredient').val();
-                        var strength = $('#strength').val();
-
-                        if (activeIngredient && strength) {
-                            var rowHtml = `<tr>
-                                                                <td>${activeIngredient}</td>
-                                                                <td>${strength}</td>
-                                                                <td>
-                                                                    <button class="btn btn-danger btn-sm deleteRow">Delete</button>
-                                                                </td>
-                                                            </tr>`;
-
-                            $('#dynamicTable tbody').append(rowHtml);
-
-                            $('#dynamicTable').on('click', '.deleteRow', function () {
-                                $(this).closest('tr').remove();
-                            });
-                            $('#activeIngredient').val('');
-                            $('#strength').val('');
-                        } else {
-                            alert('Please fill out both fields.');
-                        }
-                    });
-
-                    $('#activeIngredientModal').on('show.bs.modal', function (event) {
-                        var button = $(event.relatedTarget);
-                        var medicationId = button.data('medication-id');
-                        var modal = $(this);
-                        modal.find('input[name="MedicationID"]').val(medicationId);
-                    });
-
-                    $('#mainSaveActiveIngredientButton').on('click', function () {
-                        $('#confirmActiveIngredientModal').modal('show');
-                    });
-
-                    $('#cancelSaveButton').on('click', function () {
-                        $('#confirmActiveIngredientModal').modal('hide');
-                    });
-
-                    $('#saveActiveIngredientButton').on('click', function () {
-                        $.ajax({
-                            url: '@Url.Action("AddActiveingredient", "Admin")',
-                            type: 'POST',
-                            data: $('#activeIngredientForm').serialize(),
-                            success: function (response) {
-                                window.location.href = '@Url.Action("ListMedication", "Admin")';
-                            },
-                            error: function (xhr, status, error) {
-                                console.log("Error occurred:", error);
-                            }
-                        });
-                    });
-                });
-
-
-
-
-              
-            </script>
+            
+                  
         </main>
     </div>
 </body>
@@ -287,318 +196,3 @@
 
 
 
-
-
-@* @{
-    ViewData["Title"] = "Add Medication";
-    Layout = "_LayoutPharmacist";
-}
-
-
-
-
-@model DEMO.ViewModels.AddMedicationViewModel
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script>
-
-           function showMedications() {
-            $('#f-3').show('slow', 'swing');
-            $('#f-1, #f-2, #f-4').hide('slow', 'swing');
-            setActiveTab('Medication');
-        }
-
-        $(document).ready(function () {
-            $.ajax({
-                url: "/lookup/GetAllPharmMedications",
-                type: "Get",
-                success: function (data) {
-
-                    for (var i = 0; i < data.length; i++) {
-                        var opt = new Option(data[i].medicationName, data[i].medicationID);
-                        $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
-                    }
-
-                }
-
-            });
-        });
-
-
-
-
-                //  $(document).ready(function () {
-                //     $.ajax({
-                //                 url: "/lookup/GetAllDosageForms",
-                //         type: "Get",
-                //         success: function (data) {
-
-                //             for (var i = 0; i < data.length; i++) {
-                //                 var opt = new Option(data[i].medicationName, data[i].medicationID);
-                //                 $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
-                //             }
-
-                //         }
-
-                //     });
-                // });
-
-
-
-                //          $(document).ready(function () {
-                //             $.ajax({
-                //                                 url: "/lookup/GetAllSchedules",
-                //                 type: "Get",
-                //                 success: function (data) {
-
-                //                     for (var i = 0; i < data.length; i++) {
-                //                         var opt = new Option(data[i].medicationName, data[i].medicationID);
-                //                         $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
-                //                     }
-
-                //                 }
-
-                //             });
-                //         });
-
-
-
-    </script>
-</head>
-
-
-
-
-
-<body>
-
-
-
-
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-
-
-
-
-                
-
-                            <h2><center>Add Medication</center></h2>
-
-                            <div class="form-group row">
-
-                                <div class="col-4">
-                                    <br/>
-                                <label for="Medication" Medication Name</label>
-
-                                <select class="select2" id="Medication" name="PharmacyMedications.MedicationID">
-                                    <option value="" disabled selected>Select Medication</option>
-                                    <!-- Add more options as needed -->
-                                </select>
-
-                                <input type="hidden" id="HiddenMedicationInput" name="MedicationJson"></input>
-
-                                </div>
-
-
-
-                            <div class="col-4">
-                                <br />
-                                <label for="exampleFormControlInput1" class="form-label">Stock on hand</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px" placeholder="0">
-                            </div>
-
-
-
-                                <div class="col-4">
-
-                                    <br />
-                                    <label for="exampleFormControlInput1" class="form-label">Dosage form</label>
-                                    <div class="form-group row">
-                                        <div class="col-4">
-                                            <select input class="form-control" placeholder="Cephalexin" style=" width:300px">
-                                                <option value="Capsule">Capsule</option>
-                                                <option value="Powder">Powder</option>
-                                                <option value="Injection">Injection</option>
-
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-
-
-
-                                <div class="col-4">
-
-                                    <br />
-
-                                    <label for="exampleFormControlInput1" class="form-label">Schedule</label>
-                                    <div class="form-group row">
-                                        <div class="col-4">
-                                            <select input class="form-control" style=" width:300px">
-                                                <option value="Schedule 1">Schedule 1</option>
-                                                <option value="Schedule 1">Schedule 2</option>
-                                                <option value="Schedule 1">Schedule 3</option>
-                                                <option value="Schedule 1">Schedule 4</option>
-                                                <option value="Schedule 1">Schedule 5</option>
-                                                <option value="Schedule 1">Schedule 6</option>
-
-
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-
-                            <div class="col-4">
-                                <br />
-                                <label for="exampleFormControlInput1" class="form-label">Stock on hand</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px" placeholder="0">
-                            </div>
-
-
-
-                                <div class="col-4">
-                                    <br />
-                                    <label for="exampleFormControlInput1" class="form-label">Re-order level</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" style=" width:300px">
-                                </div>
-
-
-
-                        </div>
-                        
-                        <div class="form-group row">
-                            <div class="col-4">
-                                <br />
-                                <label for="exampleFormControlInput1" class="form-label">Please state all the active ingredients and their strengths. E.g. 'povidone-200mg'</label>
-
-
-                                <textarea name="large-text-area" rows="10" cols="50">
-
-                                </textarea>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-
-                    
-
-                </div>
-
-
-                    <div class="form-group row">
-                        <div class="col-4">
-                            <br>
-                            <a asp-action="MedicationAdded" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Add </a>
-                            <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-danger btn-lg">Back </a>
-
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- More form inputs can be added here -->
-             
-                                        
-                
-
-
-
-
-        </main>
-        
-
-
-        <table class="table">
-            <h1><center>Medication Stock</center></h1>
-            <thead>
-                <tr>
-                    <th scope="col">Medication Name</th>
-                    <th scope="col">Dosage Form</th>
-                    <th scope="col">Schedule</th>
-                    <th scope="col">Current level</th>
-
-                    <th scope="col">Re-order level</th>
-                    <th scope="col">Active ingredients</th>
-
-                    
-
-
-                    <!-- More table headers can be added here -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Panado</td>
-                    <td>Tablet</td>
-
-
-                    <td>
-                        Schedule 1
-
-
-                    </td>
-
-                    <td>
-                        2
-
-                    </td>
-
-                    <td>
-                        5
-
-                    </td>
-
-                    <td>
-                        <a asp-action="ViewSpecificActiveIngredients" asp-controller="Pharmacist" class="btn btn-primary">View in full</a>
-
-
-
-                    </td>
-
-
-
-
-                    <!-- More table data can be added here -->
-                </tr>
-
-
-
-            </tbody>
-        </table>
-    </div>
-
-
-
-
-</body>
-
-
-
-
-
-</html>
-
-
-
-
-
-
-
- *@

@@ -13,11 +13,11 @@
     <title>Prescription View</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+   @*  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> *@
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
 
-    <style>
+  @*   <style>
         .form-container {
             padding: 20px;
             border: 1px solid #dee2e6;
@@ -31,418 +31,268 @@
         .container-fluid {
             margin: 0 auto;
         }
-    </style>
+    </style> *@
+
+    <script>
+        $(document).ready(function () {
+            $('#rejectButton').on('click', function (e) {
+                e.preventDefault();
+                $('#rejectModal').modal('show');
+            });
+
+            $('#confirmReject').on('click', function () {
+                const prescriptionId = $('#rejectButton').data('prescription-id');
+                const reason = $('#rejectionReason').val();
+
+                // Validate reason
+                if (reason.trim() === "") {
+                    alert("Please enter a reason for rejection.");
+                    return;
+                }
+
+                // Submit the rejection reason
+                $.ajax({
+                    url: '@Url.Action("RejectScript", "Pharmacist")',
+                    type: 'POST',
+                    data: { id: prescriptionId, reason: reason },
+                    success: function (response) {
+                        $('#rejectModal').modal('hide');
+                        // Optionally, show a success message or reload the page
+                        alert("Prescription rejected successfully.");
+                        location.reload();
+                    },
+                    error: function () {
+                        alert("An error occurred while rejecting the prescription.");
+                    }
+                });
+            });
+        });
+    </script>
 </head>
+
+
+
 <body>
-    <div class="container">
-        <h1 class="text-center">@ViewBag.userName @ViewBag.userSurname </h1>
+    
         
 
+        <!-- Vitals History -->
 
-       
+    <div class="container-left">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+
+                    <div class="p-3 mt-5 border">
+                        <h2><center>Vitals</center></h2>
+                        <center>
+                        </center>
+                        <table id="myTable" class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+
+                                    <th scope="col">Time Taken</th>
+                                    <th scope="col">Height(cm)</th>
+                                    <th scope="col">Weight(kg)</th>
+                                    <th scope="col">Systolic Blood Pressure (mmHg)</th>
+                                    <th scope="col">Distolic Blood Pressure (mmHg)</th>
+                                    <th scope="col">Heart Rate (bpm)</th>
+                                    <th scope="col">Blood Oxygen %</th>
+                                    <th scope="col">Respiration Rate (bpm)</th>
+                                    <th scope="col">Blood Glucose Level (mg/dL)</th>
+                                    <th scope="col">Temperature °C</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                               @*  @foreach (var item in Model.combinedData)
+                                {
+
+                                    <tr>
+                                        <td>@item.Time</td> <!-- Assuming TimeTaken is a property in your model -->
+                                        <td>@item.Height</td>
+                                        <td>@item.Weight</td>
+                                        <td>@item.SystolicBloodPressure</td>
+                                        <td>@item.DiastolicBloodPressure</td>
+                                        <td>@item.HeartRate</td>
+                                        <td>@item.BloodOxygen</td>
+                                        <td>@item.Respiration</td>
+                                        <td>@item.BloodGlucoseLevel</td>
+                                        <td>@item.Temperature</td>
+                                        
+                                        
 
 
 
+                                       
+
+
+
+
+
+
+                                    </tr>
+
+                                } *@
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
 
 
 
 
 
         <!-- Medical History -->
-        
-    <section class="mt-5">
-         <div class="form-container">
-                    <form>
-                        <h2 class="text-center">Medical History</h2>
-                        <div class="form-group row">
-                            <div class="col-4 mb-3">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"> Conditions</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.combinedData)
-                                    {
-                                        <tr>
-                                            <td>@item.Condition</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                               
-                                
-                              
-                            </div>
-
-                            <div class="col-4 mb-3">
-                               
+       @*  <form >
+          
+            <h2 class="text-center">Medical History</h2>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label  class="form-label">Conditions</label>
+                    <select class="form-control"  style="width:300px">
+                        @foreach (var item in Model.AllConditions)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
 
 
-
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"> Current Medications</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.combinedData)
-                                    {
-                                        <tr>
-                                            <td>@item.patientMedication</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                            </div>
-
-                            <div class="col-4 mb-3">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"> Allergies</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.combinedData)
-                                    {
-                                        <tr>
-                                            <td>@item.allergy</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                            </div>
-                        </div>
-                    </form>
-                
+                    
                 </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Current medicatons</label>
+                    <select class="form-control" style="width:300px">
+                        @foreach (var item in Model.AllCurrentMed)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
+
+
+                    
+                </div>
+
+
+                <div class="col-md-4">
+                    <label class="form-label">Allergies</label>
+                    <select class="form-control"  style="width:300px">
+                        @foreach (var item in Model.Allallergy)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
+
+
+
+                </div>
+
+
               
 
-                
-            </div>
-           
-
-                </section>
-        
-
-        
-
-
-        <!-- Vitals History -->
-
-        <section class="mt-5">
-
-
-
-            <div class="form-container">
-                <form>
-                    <h2 class="text-center">Vitals</h2>
-                    <div class="form-group row">
-
-                        <div class="col-4 mb-3">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"> Height</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.combinedData)
-                                    {
-                                        <tr>
-                                            <td>@item.Height</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-
-
-
-                        </div>
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Weight</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.Weight</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Systolic Blood Pressure</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.SystolicBloodPressure</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Diastolic Blood Pressure</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.DiastolicBloodPressure</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Heart Rate</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.HeartRate</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Blood Oxygen</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.BloodOxygen</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Respiration</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.Respiration</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> BloodGlucoseLevel</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.BloodGlucoseLevel</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-                            
-                            <div class="col-4 mb-3">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"> Temperature</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.Temperature</td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-
-
-
-                            </div>
-
-
-                            
-
-                           
-                            
-                            
-                            
-
-                       
-                    </div>
-                </form>
             </div>
 
 
 
 
-        </section>
+        </form>
+         *@
+
+        
+
+
+        
 
 
             <!-- Prescription Form -->
-            <section class="mt-5">
+           
 
-                <div class="form-container">
-
-                    <form>
-                        <h2 class="form-title"><h2 class="text-center">Prescription</h2></h2>
-                        <div class="form-group row">
-
-                            <div class="col-4 mb-3">
-                                <table class="table">
+           @*  <div class="container">
+                <main role="main" class="pb-5">
+                    <div class="row" style="width:auto">
+                        <div class="col">
+                            <div class="p-3 mt-5 border">
+                                <h2><center>Prescription Details</center></h2>
+                                <center>
+                                    
+                                </center>
+                                <table id="myTable" class="table display" style="width:100%">
                                     <thead>
                                         <tr>
-                                            <th scope="col"> Administration Instructions</th>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Patient Surname</th>
+                                            <th scope="col">Surgeon Name</th>
+                                            <th scope="col">Surgeon Surname</th>
+                                            <th scope="col">Date Given</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Urgent</th>
+                                            <th scope="col">Prescription</th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var item in Model.combinedData)
-                                        {
-                                            <tr>
-                                                <td>@item.Take</td>
-                                            </tr>
-                                        }
+
+                                        
+
                                     </tbody>
                                 </table>
-
+                                                       <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="PharmacistHomePage">Back</a>
+                                
                             </div>
-
-
-
-
-                    <div class="col-4 mb-3">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col"> Urgent</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.combinedData)
-                                {
-                                    <tr>
-                                        <td>@item.Urgency</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-
+                        </div>
                     </div>
-
-                    
-
-
-
-
-
-
-
-                    
-                              
-                          
-                    </form>
+                </main>
+            </div> *@
+                 
 
             <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
-            <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary">Reject</a>
-            <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary ">Back</a>
+        <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary">Reject</a>
+
+
+    <!-- Reject Button -->
+    <a asp-action="ViewSpecificPrescription" class="btn btn-primary" id="rejectButton" data-prescription-id="@Model.PrescriptionID">Reject</a>
+
+    <!-- Modal Structure -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Prescription</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-            </section>
+                <div class="modal-body">
+                    <label for="rejectionReason">Reason for Rejection:</label>
+                    <textarea id="rejectionReason" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmReject">Confirm Rejection</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        
 
-        
-@* 
+    <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary">Back</a>
+   
+
+
+
+
+
+
+    @* 
         <!-- Modal for dispensing medication -->
         <div class="modal fade" id="MedicationDispensedModal" tabindex="-1" role="dialog" aria-labelledby="MedicationDispensedModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -483,16 +333,16 @@
     </div> *@
 
     <!-- jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    @* <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> *@
 
-    <script>
+  @*   <script>
         $(document).ready(function () {
             $('#confirmRejectButton').click(function () {
                 $('#rejectModal').modal('hide');
                 alert('Script rejected successfully.');
             });
         });
-    </script>
+    </script> *@
 </body>
 </html>

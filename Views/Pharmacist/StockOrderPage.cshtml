@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "AllMedicationStock";
+    Layout = "_LayoutPharmacist";
+
+}
+
+@model IEnumerable<DEMO.Models.PharmacistModels.PharmacyMedicationModel>
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+
+
+
+
+    <script>
+        function filterTable() {
+            // Get the value of the search input
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('myTable');
+            const rows = table.getElementsByTagName('tr');
+
+            // Loop through all table rows, except the first (header row)
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowContainsText = false;
+
+                // Loop through each cell in the row
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(input) > -1) {
+                            rowContainsText = true;
+                            break;
+                        }
+                    }
+                }
+                // Show or hide the row based on the search input
+                rows[i].style.display = rowContainsText ? '' : 'none';
+            }
+        }
+    </script>
+    </head>
+
+<body>
+
+    
+    
+
+    <h1><center>Stock Order Page</center></h1>
+
+    <!--Stock that needs to be ordered. Manual order-->
+    <div class="p-3 mt-5 border">
+        <!-- Your table content here -->
+        <table class="table">
+            <h1><center>Manual order</center></h1>
+            <center>
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+
+            </center>
+            <thead>
+                <tr>
+                    <th scope="col">Medication Name</th>
+                    <th scope="col">Dosage Form</th>
+                    <th scope="col">Stock on Hand</th>
+                    <th scope="col">Re-order level</th>
+                    <th scope="col">Amount to order</th>
+
+
+
+                    <!-- More table headers can be added here -->
+                </tr>
+            </thead>
+            <tbody id="myTable">
+
+                @foreach (var stock in Model)
+                {
+                    <tr>
+                        <td>@stock.MedicationName</td>
+                        <td>@stock.DosageForm</td>
+                        <td>@stock.StockonHand</td>
+                        <td>@stock.ReorderLevel</td>
+                        <td><input type="text" name="textbox1" size="5" placeholder="" /></td>
+                    </tr>
+                }
+             
+
+
+
+            </tbody>
+
+
+            
+           
+        </table>
+
+
+        <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
+
+    </div>
+
+
+
+
+
+   
+
+
+
+
+
+
+    
+</body>
+</html>

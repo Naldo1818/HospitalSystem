@@ -4,6 +4,7 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241019083214_a")]
+    partial class a
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -647,6 +650,10 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IngredientandStrength")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MedicationName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -659,6 +666,9 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PharmacyMedicationModelPharmacyMedicationID")
+                        .HasColumnType("int");
+
                     b.Property<int>("ReorderLevel")
                         .HasColumnType("int");
 
@@ -669,6 +679,8 @@ namespace DEMO.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("PharmacyMedicationID");
+
+                    b.HasIndex("PharmacyMedicationModelPharmacyMedicationID");
 
                     b.ToTable("DayHospitalPharmacyMedication");
                 });
@@ -1016,6 +1028,13 @@ namespace DEMO.Data.Migrations
                     b.ToTable("PatientInfo");
                 });
 
+            modelBuilder.Entity("DEMO.Models.PharmacistModels.PharmacyMedicationModel", b =>
+                {
+                    b.HasOne("DEMO.Models.PharmacistModels.PharmacyMedicationModel", null)
+                        .WithMany("combined")
+                        .HasForeignKey("PharmacyMedicationModelPharmacyMedicationID");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1065,6 +1084,11 @@ namespace DEMO.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DEMO.Models.PharmacistModels.PharmacyMedicationModel", b =>
+                {
+                    b.Navigation("combined");
                 });
 #pragma warning restore 612, 618
         }
