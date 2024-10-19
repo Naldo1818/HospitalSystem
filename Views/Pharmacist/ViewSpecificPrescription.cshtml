@@ -255,7 +255,7 @@
                  
 
             <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
-        <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary" asp-route-id="@Model.PrescriptionID">Reject</a>
+        <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary">Reject</a>
 
 
     <!-- Reject Button -->
@@ -333,16 +333,16 @@
     </div> *@
 
     <!-- jQuery and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    @* <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> *@
 
-    <script>
+  @*   <script>
         $(document).ready(function () {
             $('#confirmRejectButton').click(function () {
                 $('#rejectModal').modal('hide');
                 alert('Script rejected successfully.');
             });
         });
-    </script>
+    </script> *@
 </body>
 </html>

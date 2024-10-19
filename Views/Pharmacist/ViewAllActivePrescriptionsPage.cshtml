@@ -91,10 +91,7 @@
                                         <td>@item.SurgeonName</td>
                                         <td>@item.SurgeonSurname</td>
                                         <td>@item.DateGiven</td>
-                                        <td>@item.Status</td>
-                                       @*  <td>@item.Urgency</td> *@
-
-
+                                        <td>@item.Status</td>                               
 
                                         <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
                                             @item.Urgency
@@ -104,7 +101,7 @@
                                         <td>
 
 
-                                            <a class="btn btn-primary" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription" asp-route-id="@item.PrescriptionID">View</a>
+                                            <a class="btn btn-primary" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription">View</a>
 
                                         </td>
 

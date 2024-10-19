@@ -252,11 +252,11 @@ namespace DEMO.Controllers
 
 
                  ActiveIngredientsDropDown = activeingredientslist,
-                DosageForm=df,
+                //DosageForm=df,
                 PharmMedDF = medicationForms,
                 PharmMedSchedule = medSchedules,
-                MedicationName=names,
-                combined=combineddata,
+                
+                
                
 
                 
@@ -392,7 +392,7 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AddMedication(PharmacyMedicationModel model, string IngredientsAndStrengthsString)
+        public IActionResult AddMedication(PharmacyMedicationModel model)
         {
             if (ModelState.IsValid)
             {
@@ -417,43 +417,9 @@ namespace DEMO.Controllers
                 _dbContext.DayHospitalPharmacyMedication.Add(detailstoadd);
                 _dbContext.SaveChanges(); // Save here to get the ID for the next inserts
 
-                // Split the combined string into individual pairs
-                var ingredientStrengthPairs = IngredientsAndStrengthsString.Split(';')
-      .Select(pair => pair.Trim())
-      .Where(pair => !string.IsNullOrWhiteSpace(pair))
-      .ToList();
+              
 
-
-                // Now save the active ingredients and strengths
-                foreach (var pair in ingredientStrengthPairs)
-                {
-                    var parts = pair.Split(',')
-                       .Select(part => part.Trim())
-                       .ToList();
-
-                    if (parts.Count == 2)
-                    {
-                        var ingredient = parts[0];
-                        var strength = parts[1];
-
-                        if (!string.IsNullOrWhiteSpace(ingredient) && !string.IsNullOrWhiteSpace(strength))
-                        {
-                            var combined = $"{ingredient}:{strength}";
-
-                            var activeIngredient = new PharmacyMedicationModel
-                            {
-                                // Link to the medication
-                                PharmacyMedicationID = detailstoadd.PharmacyMedicationID,
-                                IngredientandStrength = combined
-                            };
-
-                            _dbContext.DayHospitalPharmacyMedication.Add(activeIngredient);
-                        }
-                    }
-                }
-                
-                // Save changes for the active ingredients
-                _dbContext.SaveChanges();
+               
 
                 // Redirect to the AddMedication page or another page
                 return RedirectToAction("AddMedication");
@@ -563,16 +529,11 @@ namespace DEMO.Controllers
 
       
 
-        public IActionResult ViewSpecificPrescription(int id)
+        public ActionResult ViewSpecificPrescription()
         {
 
-            var patient = _dbContext.Prescription.Find(id);
-
-            if (patient == null)
-            {
-                return NotFound();
-            }
-            return View(patient);
+            
+            return View();
 
             //         var ScriptAndVitals = (from p in _dbContext.Prescription
             //                                    join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
