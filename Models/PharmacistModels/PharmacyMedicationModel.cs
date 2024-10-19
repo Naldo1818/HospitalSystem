@@ -42,20 +42,6 @@ namespace DEMO.Models.PharmacistModels
 
 
 
-        //public List<string> ActiveIngredients { get; set; } = new List<string>();
-
-
-
-
-
-        //public List<string> IngredientsplusStrength { get; set; }
-
-        //public string Ingredient { get; set; }
-
-        //public string Strength { get; set; }
-
-
-
 
 
 
