@@ -26,6 +26,10 @@ namespace DEMO.Models.NurseModels
 
         [Required]
         public DateOnly Date { get; set; }
+        [Required]
+        public int Height { get; set; }
+        [Required]
+        public int Weight { get; set; }
 
         [Required]
         public int AdmissionStatusID { get; set; }

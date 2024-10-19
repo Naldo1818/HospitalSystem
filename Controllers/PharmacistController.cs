@@ -249,7 +249,7 @@ namespace DEMO.Controllers
             };
 
             // Pass the ViewModel to the view
-            return View(viewModel);
+            return View(/*viewModel*/);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

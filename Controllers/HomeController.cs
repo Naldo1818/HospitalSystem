@@ -33,6 +33,7 @@ namespace DEMO.Controllers
 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Index(LoginViewModel login)
         {
             if (ModelState.IsValid)
@@ -253,6 +254,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult RegisterPatient(PatientInfo model)
         {
             if (ModelState.IsValid)
@@ -325,6 +327,7 @@ namespace DEMO.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult BookSurgery(BookSurgery model)
         {
             if (ModelState.IsValid)
@@ -444,6 +447,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddTreatmentCode(int bookingID, int treatmentCodeID)
         {
             // Create a new SurgeryTreatmentCode entity
@@ -461,6 +465,7 @@ namespace DEMO.Controllers
             return RedirectToAction("SurgeryTreatmentCodes", new { bookingId = bookingID });
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult RemoveTreatmentCode(int btcID, int bookingID)
         {
 
@@ -573,6 +578,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditTreatment(int bookingID, int treatmentCodeID)
         {
             // Create a new SurgeryTreatmentCode entity
@@ -595,6 +601,7 @@ namespace DEMO.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteTreatmentCode(int btcID, int bookingID)
         {
             // Find the surgery treatment code to delete
@@ -710,6 +717,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Discharge(AdmittedPatientsModel model)
         {
             if (ModelState.IsValid)
@@ -841,15 +849,15 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height =pv.Height,
-                                     Weight= pv.Weight,
+                                     Height =ap.Height,
+                                     Weight= ap.Weight,
                                      SystolicBloodPressure= pv.SystolicBloodPressure,
                                      DiastolicBloodPressure= pv.DiastolicBloodPressure,
                                      HeartRate=  pv.HeartRate,
                                      BloodOxygen=  pv.BloodOxygen,
                                      Respiration= pv.Respiration,
                                      BloodGlucoseLevel= pv.BloodGlucoseLevel,
-                                     Temperature =  pv.Temperature
+                                     Temperature =  pv.Temperature,
                                     
                                    
                                  }).OrderBy(ap => ap.Date).ToList();
@@ -948,6 +956,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditSurgery(BookSurgery model)
         {
             if (ModelState.IsValid)
@@ -1069,8 +1078,8 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height = pv.Height,
-                                     Weight = pv.Weight,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,
@@ -1323,6 +1332,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddMedication(MedicationInstructions model)
         {
             if (ModelState.IsValid)
@@ -1348,6 +1358,7 @@ namespace DEMO.Controllers
 
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteMedication(int Medid, int prescriptionId)
         {
             // Find the medication instruction to delete
@@ -1430,6 +1441,7 @@ namespace DEMO.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendPatientEmail(int bookingID, string notes)
         {
             var combinedData = await (from st in _dbContext.SurgeryTreatmentCode
@@ -1527,6 +1539,7 @@ namespace DEMO.Controllers
                               join pr in _dbContext.Prescription
                               on ap.AdmittedPatientID equals pr.AdmittedPatientID
                               where pr.Status == "Prescribed" && pr.AccountID == accountID
+                              orderby pr.Urgency == "Yes" descending
                               select new PrescriptionListViewModal
 
                               {   PrescriptionID = pr.PrescriptionID,
@@ -1536,7 +1549,7 @@ namespace DEMO.Controllers
                                   Urgency = pr.Urgency,
                                   Take = pr.Take,
                                   Status = pr.Status
-                              }).OrderBy(a => a.Name).ToList();
+                              }).ToList();
 
             var PrescribedDispensed = (from p in _dbContext.PatientInfo
                                        join ap in _dbContext.AdmittedPatients
@@ -1548,7 +1561,7 @@ namespace DEMO.Controllers
                                        join a in _dbContext.Accounts
                                        on rs.AccountID equals a.AccountID
                                        where pr.Status == "Dispensed" && pr.AccountID == accountID
-                                       orderby p.Name
+                                       orderby pr.Urgency == "Yes" descending, p.Name
                                        select new PrescriptionListViewModal
                                        {
                                            PrescriptionID = pr.PrescriptionID,
@@ -1572,7 +1585,7 @@ namespace DEMO.Controllers
                                       join a in _dbContext.Accounts
                                       on rs.AccountID equals a.AccountID
                                       where pr.Status == "Rejected" && pr.AccountID == accountID
-                                      orderby p.Name
+                                      orderby pr.Urgency == "Yes" descending, p.Name
                                       select new PrescriptionListViewModal
                                       {
                                           PrescriptionID = pr.PrescriptionID,
@@ -1812,8 +1825,8 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height = pv.Height,
-                                     Weight = pv.Weight,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,
