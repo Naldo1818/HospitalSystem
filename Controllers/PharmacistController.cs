@@ -36,6 +36,38 @@ namespace DEMO.Controllers
 
 
 
+        //public void AutoOrderProducts(PharmacyMedicationModel product)
+        //{
+        //    var productsToReorder = _dbContext.DayHospitalPharmacyMedication
+        //       .Where(p => p.StockonHand <= p.ReorderLevel)
+        //       .ToList();
+
+        //    foreach (var product in productsToReorder)
+        //    {
+        //        PlaceOrder(product);
+        //    }
+        //}
+
+        //public void PlaceOrder(PharmacyMedicationModel product)
+        //{
+        //    var order = new OrderStockModel
+        //    {
+               
+        //        OrderDate = DateTime.Now
+                 
+            
+        //        //new OrderItem
+        //        //{
+        //        //    ProductId = product.Id,
+        //        //     // Assuming you have a price property
+        //        //}
+            
+        //    };
+
+        //    // Save the order to the database
+        //    _dbContext.StockOrderedTable.Add(order);
+        //    _dbContext.SaveChanges();
+        //}
 
         public IActionResult ViewAllPrescriptions()
         {

@@ -50,6 +50,8 @@ namespace DEMO.Data
 
 
         public DbSet<PharmacyMedicationModel> DayHospitalPharmacyMedication{ get; set; }
+
+        public DbSet<OrderStockModel> StockOrderedTable { get; set; }
         
     }
 }
