@@ -526,10 +526,12 @@ namespace DEMO.Controllers
             return View();
         }
 
-        public ActionResult ViewAllStock()
+        public async Task<IActionResult> ViewAllStock()
         {
+          var stocks= await _dbContext.DayHospitalPharmacyMedication.ToListAsync();
 
-            return View();
+                return View(stocks);
+            
         }
 
 
@@ -542,7 +544,7 @@ namespace DEMO.Controllers
 
         public ActionResult StockOrdered()
         {
-
+            
             return View();
         }
 

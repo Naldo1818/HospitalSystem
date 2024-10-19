@@ -3,6 +3,9 @@
     Layout = "_LayoutPharmacist";
 
 }
+
+@model IEnumerable<DEMO.Models.PharmacistModels.PharmacyMedicationModel>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -49,7 +52,105 @@
 
     <h1><center>Stock Order Page</center></h1>
 
+    <!--Stock that needs to be ordered. Manual order-->
+    <div class="p-3 mt-5 border">
+        <!-- Your table content here -->
+        <table class="table">
+            <h1><center>Manual order</center></h1>
+            <center>
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
 
+            </center>
+            <thead>
+                <tr>
+                    <th scope="col">Medication Name</th>
+                    <th scope="col">Dosage Form</th>
+                    <th scope="col">Stock on Hand</th>
+                    <th scope="col">Re-order level</th>
+                    <th scope="col">Amount to order</th>
+
+
+
+                    <!-- More table headers can be added here -->
+                </tr>
+            </thead>
+            <tbody id="myTable">
+
+                @foreach (var stock in Model)
+                {
+                    <tr>
+                        <td>@stock.MedicationName</td>
+                        <td>@stock.DosageForm</td>
+                        <td>@stock.StockonHand</td>
+                        <td>@stock.ReorderLevel</td>
+                        <td><input type="text" name="textbox1" size="5" placeholder="Enter quantity" /></td>
+                    </tr>
+                }
+                 
+                <tr>
+                    <td>Panado</td>
+                    <td>Tablet</td>
+
+
+
+
+                    <td>
+                        2
+
+                    </td>
+
+                    <td>
+                        5
+
+                    </td>
+
+                    <td><input type="text" name="textbox1" size="5" /></td>
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+
+
+            <tbody id="myTable">
+                <tr>
+                    <td>Insulin</td>
+                    <td>Pill</td>
+
+
+
+
+                    <td>
+                        4
+
+                    </td>
+
+                    <td>
+                        6
+
+                    </td>
+                    <td><input type="text" name="textbox1" size="5" /></td>
+
+
+
+
+
+                    <!-- More table data can be added here -->
+                </tr>
+
+
+
+            </tbody>
+        </table>
+
+
+        <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
+
+    </div>
 
 
     <!--All Medication Stock-->
@@ -298,95 +399,7 @@
 
 
 
-<!--Stock that needs to be ordered. Manual order-->
-    <div class="p-3 mt-5 border">
-        <!-- Your table content here -->
-        <table class="table">
-            <h1><center>Manual order</center></h1>
-            <center>
-                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
 
-            </center>
-            <thead>
-                <tr>
-                    <th scope="col">Medication Name</th>
-                    <th scope="col">Dosage Form</th>
-                    
-                    <th scope="col">Current level</th>
-
-                    <th scope="col">Re-order level</th>
-                    <th scope="col">Amount to order</th>
-
-
-
-                    <!-- More table headers can be added here -->
-                </tr>
-            </thead>
-            <tbody id="myTable">
-                <tr>
-                    <td>Panado</td>
-                    <td>Tablet</td>
-
-
-                   
-
-                    <td>
-                        2
-
-                    </td>
-
-                    <td>
-                        5
-
-                    </td>
-
-                    <td><input type="text" name="textbox1" size="5" /></td>
-
-
-
-                    <!-- More table data can be added here -->
-                </tr>
-
-
-
-            </tbody>
-
-
-            <tbody id="myTable">
-                <tr>
-                    <td>Insulin</td>
-                    <td>Pill</td>
-
-
-                    
-
-                    <td>
-                        4
-
-                    </td>
-
-                    <td>
-                        6
-
-                    </td>
-                    <td><input type="text" name="textbox1" size="5" /></td>
-
-
-
-
-
-                    <!-- More table data can be added here -->
-                </tr>
-
-
-
-            </tbody>
-        </table>
-
-
-        <a asp-action="StockOrdered" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Place Order</a>
-
-    </div>
     
 </body>
 </html>
