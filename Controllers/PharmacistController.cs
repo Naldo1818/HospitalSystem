@@ -33,6 +33,33 @@ namespace DEMO.Controllers
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
+        public ActionResult RejectScript()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RejectScript(int id, string reason)
+        {
+            if (string.IsNullOrEmpty(reason))
+            {
+                return BadRequest("Reason is required.");
+            }
+
+            // Your logic to save the rejection reason in the database
+            var prescription = _dbContext.RejectScriptModel.Find(id);
+            if (prescription != null)
+            {
+                prescription.RejectionReason = reason;
+                prescription.RejectionID = id;           
+                _dbContext.SaveChanges();
+                return Json(new { success = true });
+            }
+
+            return NotFound();
+        }
+
 
         public async Task<IActionResult> StockOrderPage()
         {
@@ -547,11 +574,7 @@ namespace DEMO.Controllers
         }
 
 
-        public ActionResult RejectScript()
-        {
-
-            return View();
-        }
+       
 
 
         public ActionResult MedicationDispensed()
@@ -728,7 +751,7 @@ namespace DEMO.Controllers
 
 
                                 })
-                                
+                                .OrderByDescending(item => item.Urgency=="Yes")
                                 .ToList();
 
             var sortedData = combinedData.OrderByDescending(item => item.Urgency == "Yes").ToList();

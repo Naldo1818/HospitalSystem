@@ -32,7 +32,46 @@
             margin: 0 auto;
         }
     </style> *@
+
+    <script>
+        $(document).ready(function () {
+            $('#rejectButton').on('click', function (e) {
+                e.preventDefault();
+                $('#rejectModal').modal('show');
+            });
+
+            $('#confirmReject').on('click', function () {
+                const prescriptionId = $('#rejectButton').data('prescription-id');
+                const reason = $('#rejectionReason').val();
+
+                // Validate reason
+                if (reason.trim() === "") {
+                    alert("Please enter a reason for rejection.");
+                    return;
+                }
+
+                // Submit the rejection reason
+                $.ajax({
+                    url: '@Url.Action("RejectScript", "Pharmacist")',
+                    type: 'POST',
+                    data: { id: prescriptionId, reason: reason },
+                    success: function (response) {
+                        $('#rejectModal').modal('hide');
+                        // Optionally, show a success message or reload the page
+                        alert("Prescription rejected successfully.");
+                        location.reload();
+                    },
+                    error: function () {
+                        alert("An error occurred while rejecting the prescription.");
+                    }
+                });
+            });
+        });
+    </script>
 </head>
+
+
+
 <body>
     
         
@@ -217,6 +256,33 @@
 
             <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
         <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary" asp-route-id="@Model.PrescriptionID">Reject</a>
+
+
+    <!-- Reject Button -->
+    <a asp-action="ViewSpecificPrescription" class="btn btn-primary" id="rejectButton" data-prescription-id="@Model.PrescriptionID">Reject</a>
+
+    <!-- Modal Structure -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Reject Prescription</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="rejectionReason">Reason for Rejection:</label>
+                    <textarea id="rejectionReason" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmReject">Confirm Rejection</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary">Back</a>
    
