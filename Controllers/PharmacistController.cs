@@ -425,8 +425,27 @@ namespace DEMO.Controllers
         public ActionResult ViewSpecificPrescription(int? prescriptionid)
         {
 
+            var allConditions = _dbContext.Condition
+     .Select(m => m.ConditionName)
+     .Distinct()
+     .OrderBy(name => name) // Order by name
+     .ToList();
 
-            
+            var allAllergies = _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .OrderBy(name => name) // Order by name
+                .ToList();
+
+            var currentMeds = _dbContext.Medication
+                .Select(m => m.MedicationForm)
+                .Distinct()
+                .OrderBy(name => name) // Order by name
+                .ToList();
+
+
+
+
 
             var alldata = (from p in _dbContext.Prescription
                                    join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
@@ -477,6 +496,9 @@ namespace DEMO.Controllers
             {
 
                 combinedData = alldata,
+                Allallergy= allAllergies,
+                AllConditions  = allConditions,
+                AllCurrentMed = currentMeds,
 
 
 
