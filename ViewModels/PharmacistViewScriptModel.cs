@@ -76,7 +76,7 @@ namespace DEMO.ViewModels
 
         public DateOnly Date { get; set; } 
 
-        public List<PharmacistViewScriptModel> combinedData { get; set; }
+        //public List<PharmacistViewScriptModel> combinedData { get; set; }
 
 
         //public List<PharmacistViewScriptModel> Allvitals { get; set; }

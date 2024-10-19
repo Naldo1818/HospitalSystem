@@ -61,27 +61,17 @@ namespace DEMO.Controllers
         }
 
 
-        //public async Task<IActionResult> StockOrderPage()
-        //{
-        //    var stocks = await _dbContext.DayHospitalPharmacyMedication
-        //          .Where(m => m.StockonHand <= m.ReorderLevel)
-        //          .ToListAsync();
+        public async Task<IActionResult> StockOrderPage()
+        {
+            var stocks = await _dbContext.PharmacyMedication
+                  .Where(m => m.StockonHand <= m.ReorderLevel)
+                  .ToListAsync();
 
-        //    return View(stocks);
+            return View(stocks);
 
-        //}
+        }
 
-        ////page 2 
-
-        //public async Task<IActionResult> StockOrderPage2()
-        //{
-        //    var stocks = await _dbContext.DayHospitalPharmacyMedication
-        //          .Where(m => m.StockonHand <= m.ReorderLevel)
-        //          .ToListAsync();
-
-        //    return View(stocks);
-
-        //}
+      
 
 
 
@@ -96,12 +86,7 @@ namespace DEMO.Controllers
             //}
 
             var combinedData = (from prescription in _dbContext.Prescription
-                                    //join medicationInstruction in _dbContext.MedicationInstructions
-                                    //on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
-
-                                    //join medication in _dbContext.Medication
-                                    //on medicationInstruction.MedicationID equals medication.MedicationID
-
+                               
                                 join ap in _dbContext.AdmittedPatients
                                 on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
 
@@ -249,7 +234,7 @@ namespace DEMO.Controllers
             };
 
             // Pass the ViewModel to the view
-            return View(/*viewModel*/);
+            return View(viewModel);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -413,11 +398,11 @@ namespace DEMO.Controllers
 
       
 
-        public ActionResult ViewSpecificPrescription()
+        public ActionResult ViewSpecificPrescription(PharmacistViewScriptModel model)
         {
 
             
-            return View();
+            return View(model);
 
             //         var ScriptAndVitals = (from p in _dbContext.Prescription
             //                                    join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID

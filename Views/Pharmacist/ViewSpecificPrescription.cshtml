@@ -3,7 +3,7 @@
     Layout = "_LayoutPharmacist";
 } 
 
- @model DEMO.ViewModels.PharmacistViewScriptModel 
+ @model DEMO.ViewModels.PharmacistViewScriptModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -106,7 +106,7 @@
                             </thead>
                             <tbody>
 
-                               @*  @foreach (var item in Model.combinedData)
+                                @*  @foreach (var item in Model.combinedData)
                                 {
 
                                     <tr>
@@ -123,18 +123,9 @@
                                         
                                         
 
-
-
-                                       
-
-
-
-
-
-
                                     </tr>
 
-                                } *@
+                                }  *@
 
 
                             </tbody>
@@ -152,12 +143,16 @@
 
 
         <!-- Medical History -->
-       @*  <form >
+        <form >
           
             <h2 class="text-center">Medical History</h2>
             <div class="form-group row">
+
+
+
+
                 <div class="col-md-4">
-                    <label  class="form-label">Conditions</label>
+             @*        <label  class="form-label">Conditions</label>
                     <select class="form-control"  style="width:300px">
                         @foreach (var item in Model.AllConditions)
                         {
@@ -194,7 +189,7 @@
 
 
 
-                </div>
+                </div> *@
 
 
               
@@ -205,7 +200,7 @@
 
 
         </form>
-         *@
+         
 
         
 
@@ -214,9 +209,8 @@
 
 
             <!-- Prescription Form -->
-           
-
-           @*  <div class="container">
+         
+            <div class="container">
                 <main role="main" class="pb-5">
                     <div class="row" style="width:auto">
                         <div class="col">
@@ -251,7 +245,7 @@
                         </div>
                     </div>
                 </main>
-            </div> *@
+            </div>
                  
 
             <a asp-action="MedicationDispensed" asp-controller="Pharmacist" class="btn btn-danger ">Dispense</a>
@@ -284,7 +278,6 @@
     </div>
 
 
-    <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn btn-primary">Back</a>
    
 
 
