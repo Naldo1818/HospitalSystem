@@ -52,8 +52,13 @@ namespace DEMO.ViewModels
         public string allergy { get; set; }
 
 
+        //surgeon info
+       public string SurgeonName { get; set; }  
 
-      //vitals
+        public string SurgeonSurname { get; set; }
+
+
+        //vitals
         public int Height { get; set; }
        
         public int Weight { get; set; }
@@ -66,17 +71,17 @@ namespace DEMO.ViewModels
         public int HeartRate { get; set; }
 
       
-        public int BloodOxygen { get; set; }
+        public double BloodOxygen { get; set; }
        
         public int Respiration { get; set; }
         
-        public int BloodGlucoseLevel { get; set; }
+        public int  BloodGlucoseLevel { get; set; }
         
-        public int Temperature { get; set; }
+        public double Temperature { get; set; }
 
-        public DateOnly Date { get; set; } 
+        public DateOnly Date { get; set; }
 
-        //public List<PharmacistViewScriptModel> combinedData { get; set; }
+        public List<PharmacistViewScriptModel> combinedData { get; set; }
 
 
         //public List<PharmacistViewScriptModel> Allvitals { get; set; }

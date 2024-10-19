@@ -225,10 +225,12 @@
                 </div>
             </div>
 
+            <!--MedicationTable on the same view-->
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table id="medicationTable" class="table table-striped">
+                        <center> <h2> Medication Table</h2></center>
+                        <table  class="table ">
                             <thead>
 
                                 <tr>
@@ -240,12 +242,27 @@
                                     <th scope="col">IngredientsandStrengths</th>
                                 </tr>
                             </thead>
-                            <tbody id="medicationsBody">
+                            <tbody >
 
-                                @* @foreach (var item in Model.)
+                                @foreach (var item in Model.combinedinfo)
                                 {
-                                    <tr>@item</tr>
-                                } *@
+                                    <tr>@item.MedicationName</tr>
+                                    <tr>@item.MedicationForm</tr>
+                                    <tr>@item.Schedule</tr>
+                                    <tr>@item.StockonHand</tr>
+                                    <tr>@item.ReorderLevel</tr>
+                                    
+
+
+
+
+
+
+                                }
+
+
+
+                               
                             </tbody>
                         </table>
                     </div>

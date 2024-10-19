@@ -147,11 +147,36 @@ namespace DEMO.Controllers
 
         public IActionResult AddMedication()
         {
-            // Fetch medication names
+            var combinedData = (from m in _dbContext.Medication
+                                join pm in _dbContext.PharmacyMedication
+                                on m.MedicationID equals pm.MedicationID
+                                join pmm in _dbContext.PharmacyMedicationModel
+                                on m.MedicationID equals pmm.MedicationID
+
+                               
+
+                                
 
 
-            // Fetch medication forms
-           
+                                select new PharmacyMedicationViewModel
+
+
+                                {
+                                   MedicationName= m.MedicationName,
+                                   MedicationForm= m.MedicationForm,
+                                   Schedule=m.Schedule,
+                                   StockonHand=pm.StockonHand,
+                                   ReorderLevel=pm.ReorderLevel,
+                                  
+                                   
+
+
+
+
+                                })
+
+                                 .ToList();
+
 
             // Fetch medication schedules
             var medSchedules = _dbContext.Medication
@@ -161,17 +186,7 @@ namespace DEMO.Controllers
 
 
             //Fetch Active Ingredients
-            var actives = _dbContext.Activeingredient
-                .Select(m => m.ActiveIngredientName)
-                .Distinct()
-                .ToList();
-
-
-
-            var dfdropdown = _dbContext.Medication
-               .Select(m => m.MedicationForm)
-               .Distinct()
-               .ToList();
+            
 
 
 
@@ -180,12 +195,12 @@ namespace DEMO.Controllers
                .Distinct()
                .ToString();
 
+
+
             var schedule = _dbContext.Medication
-                .Select(m => m.Schedule)
-                .Distinct()
-                .ToString();
-
-
+               .Select(m => m.Schedule)
+               .Distinct()
+               .ToString();
 
             var stockonhand = _dbContext.PharmacyMedication
                 .Select(m => m.StockonHand)
@@ -202,10 +217,18 @@ namespace DEMO.Controllers
 
 
 
-            var combineddata = _dbContext.PharmacyMedication
-                 .Select(m => m)
-                 .ToList();
 
+            var actives = _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .ToList();
+
+
+
+            var dfdropdown = _dbContext.Medication
+               .Select(m => m.MedicationForm)
+               .Distinct()
+               .ToList();
 
 
 
@@ -218,7 +241,8 @@ namespace DEMO.Controllers
                 
                 Schedules=medSchedules,
                 DosageForms=dfdropdown,
-               
+                combinedinfo=combinedData,
+              
                 
 
 
@@ -229,7 +253,7 @@ namespace DEMO.Controllers
 
 
 
-                //testMeds=new PharmacyMedicationModel()
+                
 
             };
 
@@ -396,61 +420,70 @@ namespace DEMO.Controllers
         }
 
 
-      
 
-        public ActionResult ViewSpecificPrescription(PharmacistViewScriptModel model)
+
+        public ActionResult ViewSpecificPrescription(int? prescriptionid)
         {
 
+
             
-            return View(model);
 
-            //         var ScriptAndVitals = (from p in _dbContext.Prescription
-            //                                    join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-            //                                    join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-            //                                    join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
-
-            //                                    where p.PrescriptionID == prescriptionid
+            var alldata = (from p in _dbContext.Prescription
+                                   join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                   join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                   join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
 
 
-            //                                    select new PharmacistViewScriptModel
-            //                                    {
-            //                                        Take = p.Take,
-            //                                        Urgency = p.Urgency,
-            //                                        PrescriptionID = p.PrescriptionID,
-            //                                        PatientID = pi.PatientID,
-            //                                        patientname = pi.Name,
-            //                                        patientsurname = pi.Surname,
-            //                                        Status = p.Status,
-            //                                        Height=pv.Height,
-            //                                        Weight=pv.Weight,
-            //                                        SystolicBloodPressure=pv.SystolicBloodPressure,  
-            //                                        DiastolicBloodPressure=pv.DiastolicBloodPressure,
-            //                                        HeartRate=pv.HeartRate,
-            //                                        BloodOxygen=pv.BloodOxygen,
-            //                                        Respiration=pv.Respiration,
-            //                                        BloodGlucoseLevel=pv.BloodGlucoseLevel,
-            //                                        Temperature=pv.Temperature,
+                           join account in _dbContext.Accounts
+                           on p.AccountID equals account.AccountID
+
+                           where p.AdmittedPatientID == ap.AdmittedPatientID
 
 
-
-            //                                    })
-
-            //.ToList();
-
-
-
-
-            //         var viewModel = new PharmacistViewScriptModel
-            //         {
-
-            //             combinedData = ScriptAndVitals,
+                                   select new PharmacistViewScriptModel
+                                   {
+                                       Take = p.Take,
+                                       Urgency = p.Urgency,
+                                       PrescriptionID = p.PrescriptionID,
+                                       PatientID = pi.PatientID,
+                                       patientname = pi.Name,
+                                       patientsurname = pi.Surname,
+                                       Status = p.Status,
+                                       Height = ap.Height,
+                                       Weight = ap.Weight,
+                                       SystolicBloodPressure = pv.SystolicBloodPressure,
+                                       DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                       HeartRate = pv.HeartRate,
+                                       BloodOxygen=pv.BloodOxygen,                          
+                                       Respiration = pv.Respiration,
+                                       BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                       Temperature = pv.Temperature,
+                                       SurgeonName=account.Name,
+                                       SurgeonSurname=account.Surname,
+                                       
 
 
 
-            //         };
+                                   })
+
+   .ToList();
 
 
-            //         return View(viewModel);
+
+
+
+
+            var viewModel = new PharmacistViewScriptModel
+            {
+
+                combinedData = alldata,
+
+
+
+            };
+
+
+            return View(viewModel);
 
 
 
@@ -726,6 +759,7 @@ namespace DEMO.Controllers
                                     Take = prescription.Take,
                                     Status = prescription.Status,
                                     AdmittedPatientID = prescription.AdmittedPatientID,
+                                    PrescriptionID = prescription.PrescriptionID,
 
                                     // Medication fields
 
