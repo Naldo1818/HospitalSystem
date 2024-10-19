@@ -34,7 +34,7 @@ namespace DEMO.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<IActionResult> ViewAllStock()
+        public async Task<IActionResult> StockOrderPage()
         {
             var stocks = await _dbContext.DayHospitalPharmacyMedication
                   .Where(m => m.StockonHand <= m.ReorderLevel)
