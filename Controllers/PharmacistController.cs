@@ -19,6 +19,7 @@ using MailKit.Net.Smtp;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
+using System.Security.Principal;
 
 
 
@@ -501,64 +502,71 @@ namespace DEMO.Controllers
             return View();
         }
 
-
-        public IActionResult ViewSpecificPrescription(int id)
-        {
-           
-           
-
-            // Retrieve all conditions, allergies, and current medications
-            var allConditions = _dbContext.Condition
-                .Select(m => m.ConditionName)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToList();
-
-            var allAllergies = _dbContext.Activeingredient
-                .Select(m => m.ActiveIngredientName)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToList();
-
-            var currentMeds = _dbContext.Medication
-                .Select(m => m.MedicationForm)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToList();
+        //[HttpGet]
+        //public async Task<IActionResult> ViewSpecificPrescription(int pid)
+        //{
+        //  var prescription  =   await _dbContext.Prescription(pid);
 
 
-            // Get the specific prescription using the provided id
-            var alldata = (from p in _dbContext.Prescription
-                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
-                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
-                           where p.PrescriptionID == id // Filter by prescription ID
+        //    if (prescription == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-                           select new PharmacistViewScriptModel
-                           {
+
+        //    // Retrieve all conditions, allergies, and current medications
+        //    var allConditions = _dbContext.Condition
+        //        .Select(m => m.ConditionName)
+        //        .Distinct()
+        //        .OrderBy(name => name)
+        //        .ToList();
+
+        //    var allAllergies = _dbContext.Activeingredient
+        //        .Select(m => m.ActiveIngredientName)
+        //        .Distinct()
+        //        .OrderBy(name => name)
+        //        .ToList();
+
+        //    var currentMeds = _dbContext.Medication
+        //        .Select(m => m.MedicationForm)
+               
+        //        .Distinct()
+        //        .OrderBy(name => name)
+                
+        //        .ToList();
+
+
+        //    // Get the specific prescription using the provided id
+        //    var alldata = (from p in _dbContext.Prescription
+        //                   join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+        //                   join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+        //                   join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+        //                   join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+        //                   where p.PrescriptionID == pid // Filter by prescription ID
+
+        //                   select new PharmacistViewScriptModel
+        //                   {
                               
-                               Take = p.Take,
-                               Urgency = p.Urgency,
-                               PrescriptionID = p.PrescriptionID,
-                               AdmittedPatientID = p.AdmittedPatientID,
-                               patientname = pi.Name,
-                               patientsurname = pi.Surname,
-                               Status = p.Status,
-                               Height = ap.Height,
-                               Weight = ap.Weight,
-                               SystolicBloodPressure = pv.SystolicBloodPressure,
-                               DiastolicBloodPressure = pv.DiastolicBloodPressure,
-                               HeartRate = pv.HeartRate,
-                               BloodOxygen = pv.BloodOxygen,
-                               Respiration = pv.Respiration,
-                               BloodGlucoseLevel = pv.BloodGlucoseLevel,
-                               Temperature = pv.Temperature,
-                               SurgeonName = account.Name,
-                               SurgeonSurname = account.Surname,
-                           })
+        //                       Urgency = p.Urgency,
+        //                       PrescriptionID = p.PrescriptionID,
+        //                       AdmittedPatientID = p.AdmittedPatientID,
+        //                       patientname = pi.Name,
+        //                       patientsurname = pi.Surname,
+        //                       Status = p.Status,
+        //                       Height = ap.Height,
+        //                       Weight = ap.Weight,
+        //                       SystolicBloodPressure = pv.SystolicBloodPressure,
+        //                       DiastolicBloodPressure = pv.DiastolicBloodPressure,
+        //                       HeartRate = pv.HeartRate,
+        //                       BloodOxygen = pv.BloodOxygen,
+        //                       Respiration = pv.Respiration,
+        //                       BloodGlucoseLevel = pv.BloodGlucoseLevel,
+        //                       Temperature = pv.Temperature,
+        //                       SurgeonName = account.Name,
+        //                       SurgeonSurname = account.Surname,
+        //                   })
 
-                           .ToList();
+        //                   .ToList();
 
 
          
@@ -566,15 +574,95 @@ namespace DEMO.Controllers
 
 
 
+        //    var viewModel = new PharmacistViewScriptModel
+        //    {
+        //        combinedData = alldata,
+        //        Allallergy = allAllergies,
+        //        AllConditions = allConditions,
+        //        AllCurrentMed = currentMeds,
+        //    };
+
+        //    return View(viewModel);
+        //}
+
+
+        [HttpGet]
+        public async Task<IActionResult> ViewSpecificPrescription(int pid)
+        {
+            // Retrieve the specific prescription using the provided id
+            var prescription = await _dbContext.Prescription.FindAsync(pid);
+
+            if (prescription == null)
+            {
+                return NotFound();
+            }
+
+            var admittedpatientid= prescription.AdmittedPatientID;
+
+    
+
+
+
+
+
+            var allConditions = await _dbContext.Condition
+                .Select(m => m.ConditionName)
+                .Distinct()
+                
+                .OrderBy(name => name)
+                .ToListAsync();
+
+            var allAllergies = await _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .OrderBy(name => name)
+                .ToListAsync();
+
+            var currentMeds = await _dbContext.Medication
+                .Select(m => m.MedicationForm)
+                .Distinct()
+                .OrderBy(name => name)
+                .ToListAsync();
+
+            // Get the specific prescription data along with related patient information
+            var alldata = await (from p in _dbContext.Prescription
+                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                 join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                 join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+                                 where p.PrescriptionID == pid // Filter by prescription ID
+                                 select new PharmacistViewScriptModel
+                                 {
+                                     Urgency = p.Urgency,
+                                     PrescriptionID = p.PrescriptionID,
+                                     AdmittedPatientID = p.AdmittedPatientID,
+                                     patientname = pi.Name,
+                                     patientsurname = pi.Surname,
+                                     Status = p.Status,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
+                                     SystolicBloodPressure = pv.SystolicBloodPressure,
+                                     DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                     HeartRate = pv.HeartRate,
+                                     BloodOxygen = pv.BloodOxygen,
+                                     Respiration = pv.Respiration,
+                                     BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                     Temperature = pv.Temperature,
+                                     SurgeonName = account.Name,
+                                     SurgeonSurname = account.Surname,
+                                 })
+                                  .ToListAsync();
+
+            // Create the view model with combined data and additional information
             var viewModel = new PharmacistViewScriptModel
             {
-                combinedData = alldata,
+                combinedData = alldata, // Ensure property names match your model's definition
                 Allallergy = allAllergies,
                 AllConditions = allConditions,
                 AllCurrentMed = currentMeds,
             };
 
-            return View(alldata);
+            return View(viewModel);
         }
 
 
@@ -582,94 +670,23 @@ namespace DEMO.Controllers
 
 
 
+       
+
+            //var patient = await _dbContext.Prescription.Select(m=>m.AdmittedPatientID).ToListAsync();
+
+            //RejectedScriptsModel datatoadd = new RejectedScriptsModel();
+            //{
+            //    PrescriptionID= rejectionReason.
+            //};
 
 
 
 
 
 
+        
 
 
-
-
-
-
-
-
-
-        //var item = _dbContext.AdmittedPatients
-        //    .Where(m=>m.AdmittedPatientID == model.AdmittedPatientID)    
-        //    .FirstOrDefault();
-
-
-        //    if (item == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var viewModel = new PharmacistViewScriptModel
-        //    {
-
-        //   };
-
-
-
-
-
-
-
-
-
-        //         var patientVitals = (from pv in _dbContext.PatientVitals
-        //                              join ap in _dbContext.AdmittedPatients
-        //                              on pv.PatientID equals ap.PatientID
-        //                              where pv.PatientID == patientid
-
-        //                              select new PharmacistViewScriptModel
-        //                              {
-        //                                  Date = ap.Date,
-        //                                  Time = pv.time,
-        //                                  Height = pv.Height,
-        //                                  Weight = pv.Weight,
-        //                                  SystolicBloodPressure = pv.SystolicBloodPressure,
-        //                                  DiastolicBloodPressure = pv.DiastolicBloodPressure,
-        //                                  HeartRate = pv.HeartRate,
-        //                                  BloodOxygen = pv.BloodOxygen,
-        //                                  Respiration = pv.Respiration,
-        //                                  BloodGlucoseLevel = pv.BloodGlucoseLevel,
-        //                                  Temperature = pv.Temperature
-
-
-        //                              }).OrderBy(ap => ap.Date).ToList();
-
-
-        //         var allergy = (from pa in _dbContext.PatientAllergy
-        //                        join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
-        //                        join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-        //                        where pa.PatientID == patientid
-        //                        select new PharmacistViewScriptModel
-        //                        {
-        //                            patientname = p.Name,
-        //                            patientsurname = p.Surname,
-        //                            ActiveIngredientName = ai.ActiveIngredientName
-        //                        })
-        //       .OrderBy(ai => ai.ActiveIngredientName)
-        //       .ToList();
-
-
-
-
-        //         var conditions = (from pc in _dbContext.PatientConditions
-        //                           join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
-        //                           join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
-        //                           where pc.PatientID == patientid
-
-        //                           select new PharmacistViewScriptModel
-        //                           {
-        //                               patientname = pt.Name,
-        //                               patientsurname = pt.Surname,
-        //                               Condition = c.ConditionName // Ensure this property exists in your view model
-        //                           }).OrderBy(c => c.Condition).ToList();
 
 
         //         var currentMed = (from pm in _dbContext.patientMedication
@@ -1006,17 +1023,11 @@ namespace DEMO.Controllers
                 .Count();
 
 
-            var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
-                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
-                                   select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
                                   join ap in _dbContext.AdmittedPatients
                                   on p.PatientID equals ap.PatientID
+
                                   join pr in _dbContext.Prescription
                                    on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                   where pr.Status == "Dispensed" && pr.AccountID == accountID
@@ -1032,7 +1043,6 @@ namespace DEMO.Controllers
 
             // Pass the prescribed count to the view
             ViewBag.SurgeryCount = surgeryCount;
-            ViewBag.PrescribedCount = prescribedCount;
             ViewBag.DispensedCount = dispensedCount;
             ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;

@@ -146,22 +146,40 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
 
-     <script>
-        function confirmReject() {
-            const confirmation = confirm("Are you sure you want to reject this script");
-            if (confirmation) {
-                const reason = prompt("Please provide a reason for rejection:");
-                if (reason) {
-                    alert("Rejection reason " + reason + "submitted to  Surgeon");
-                    // Here you can add code to handle the rejection
-                } else {
-                    alert("Rejection cancelled: No reason provided.");
+   <script>
+    async function confirmReject() {
+        const confirmation = confirm("Are you sure you want to reject this script?");
+        if (confirmation) {
+            const reason = prompt("Please provide a reason for rejection:");
+            if (reason) {
+                try {
+                    const response = await fetch('/Pharmacist/ViewSpecificPrescription', {  // Adjust the endpoint as necessary
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ reason }),
+                    });
+
+                    if (response.ok) {
+                        alert("Rejection reason submitted to the Surgeon: " + reason);
+                        // Redirect to another page after successful submission
+                        window.location.href = '/ViewAllPrescriptions'; // Adjust the URL for the redirection
+                    } else {
+                        alert("Failed to submit the rejection reason.");
+                    }
+                } catch (error) {
+                    alert("Error submitting rejection reason: " + error.message);
                 }
             } else {
-                alert("Rejection cancelled.");
+                alert("Rejection cancelled: No reason provided.");
             }
+        } else {
+            alert("Rejection cancelled.");
         }
-    </script>
+    }
+</script>
+
 </head>
 
 
