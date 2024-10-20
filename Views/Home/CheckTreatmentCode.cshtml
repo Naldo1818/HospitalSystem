@@ -30,8 +30,8 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="addTreatmentForm" method="post" action="@Url.Action("EditTreatment", "Home")">
-                            <h2>Edit Treatment Codes -  @ViewBag.PatientName @ViewBag.PatientSurname</h2>
+                        <form id="addTreatmentForm" method="post" asp-action="EditTreatment" asp-controller="Home">
+                            <h2>Edit Treatment Codes</h2>
 
                             <div class="form-group row">
                                 <div class="col-4">
@@ -54,6 +54,7 @@
                                     <br>
                                     <br />
                                     <input type="hidden" name="BookingID" value="@ViewBag.BookSurgeryID" />
+                                  
                                     <button type="button" id="openTreatmentButton" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
@@ -146,15 +147,14 @@
         data: $('#addTreatmentForm').serialize(),
         success: function (response) {
             // Redirect to the treatment codes list after successful addition
-            window.location.href = '@Url.Action("CheckTreatmentCode", "Home", new { bookingId = @ViewBag.BookSurgeryID, name = "@ViewBag.PatientName", surname = "@ViewBag.PatientSurname" })';
+            window.location.href = '@Url.Action("CheckTreatmentCode", "Home", new { bookingId = @ViewBag.BookSurgeryID })';
         },
         error: function (xhr, status, error) {
             console.log("Error occurred:", error);
         }
     });
 });
-
-                // Function to filter treatment names
+   // Function to filter treatment names
                function filterTreatmentNames() {
                 var input = $('#searchTreatmentInput').val().toLowerCase();
                 $('#treatmentSelect option').each(function () {

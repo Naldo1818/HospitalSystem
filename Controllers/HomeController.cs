@@ -353,9 +353,7 @@ namespace DEMO.Controllers
                     return RedirectToAction("SurgeryTreatmentCodes", new
                     {
                         bookingId = booking.BookingID,
-                        patientID = patient.PatientID,
-                        name = patient.Name,
-                        surname = patient.Surname
+                        patientID = patient.PatientID
                     });
                 }
             }
