@@ -5,46 +5,50 @@
 
 @model DEMO.ViewModels.PharmacyMedicationViewModel
 
-<!--MedicationTable on the same view-->
-<div class="row" style="width:auto">
-    <div class="col">
-        <div class="p-3 mt-5 border" style="background-color: white;">
-            <center> <h2> Medication Table</h2></center>
-            <table class="table ">
-                <thead>
-
-                    <tr>
-                        <th scope="col">Medication Name</th>
-                        <th scope="col">Dosage Form</th>
-                        <th scope="col">Schedule</th>
-                        <th scope="col">Stock on Hand</th>
-                        <th scope="col">Reorder level</th>
-                        <th scope="col">IngredientsandStrengths</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @foreach (var item in Model.combinedinfo)
-                    {
-                        <tr>@item.MedicationName</tr>
-                        <tr>@item.MedicationForm</tr>
-                        <tr>@item.Schedule</tr>
-                        <tr>@item.StockonHand</tr>
-                        <tr>@item.ReorderLevel</tr>
-
-
-
-
-
-
-
-                    }
-
-
-
-
-                </tbody>
-            </table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>View Medication</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    <!--MedicationTable on the same view-->
+    <div class="row" style="width:auto">
+        <div class="col">
+            <div class="p-3 mt-5 border" style="background-color: white;">
+                <center><h2>Medication Table</h2></center>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Medication Name</th>
+                            <th scope="col">Dosage Form</th>
+                            <th scope="col">Schedule</th>
+                            <th scope="col">Stock on Hand</th>
+                            <th scope="col">Reorder Level</th>
+                            <th scope="col">Ingredients and Strengths</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.combinedinfo)
+                        {
+                            <tr>
+                                <td>@item.MedicationName</td>
+                                <td>@item.MedicationForm</td>
+                                <td>@item.Schedule</td>
+                                <td>@item.StockonHand</td>
+                                <td>@item.ReorderLevel</td>
+                                <td>
+                                    @* @foreach (var ingredient in item.IngredientsAndStrengths) // Assuming this property exists
+                                    {
+                                        <div>@ingredient.ActiveIngredient: @ingredient.Strength</div>
+                                    } *@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+</body>
+</html>
