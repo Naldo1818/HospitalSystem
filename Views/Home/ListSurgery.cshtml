@@ -67,7 +67,7 @@
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="searchInput" class="form-label">Name or Surname</label>
+                                    <label for="searchInput" class="form-label">Enter Name, Surname or Theatre</label>
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
                                 <div class="col-4">
@@ -121,11 +121,10 @@
    data-patient-id="@Data.PatientID">Edit Booking</a>
                                             </div>
                                             <a class="btn btn-primary"
+                                               aria-hidden="true"
                                                asp-controller="Home"
                                                asp-action="CheckTreatmentCode"
-                                               asp-route-bookingId="@Data.BookingID"
-                                               asp-route-name="@Data.Name"
-                                               asp-route-surname="@Data.Surname">
+                                               asp-route-bookingId="@Data.BookingID">
                                                 Show Treatment Codes
                                             </a>
                                        
@@ -353,22 +352,50 @@
 
             // Custom search function for the search input and date input
             $('#searchInput, #dateInput').on('keyup change', function () {
-                var searchText = $('#searchInput').val().trim(); // Trim whitespace
-                var dateText = $('#dateInput').val(); // Get date value
-                var dateFilter = dateText ? '^' + dateText + '$' : ''; // Format date filter for exact match
+                var searchText = $('#searchInput').val().trim(); // Trim whitespace from search input
+                var dateText = $('#dateInput').val(); // Get the selected date in YYYY-MM-DD format
 
-                table.column(3).search(dateFilter, true, false); // Apply date filter to the Date column (index 3)
-                table.search(searchText).draw(); // Apply text search to all columns
+                // If a date is selected, proceed with date filtering
+                if (dateText) {
+                    // Iterate through each row in the Date column (assuming it's the 4th column, index 3)
+                    table.column(3).data().each(function (value, index) {
+                        // Assume the date format in the table is MM/DD/YYYY
+                        var tableDate = value.trim(); // Get the date from the table cell
+                        var parts = tableDate.split("/"); // Split the date into month, day, year
 
+                        if (parts.length === 3) {
+                            // Reformat the date from MM/DD/YYYY to YYYY-MM-DD to match the date input
+                            var reformattedDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
+
+                            // Compare the reformatted table date with the selected date
+                            if (reformattedDate === dateText) {
+                                table.row(index).nodes().to$().show(); // Show matching row
+                            } else {
+                                table.row(index).nodes().to$().hide(); // Hide non-matching row
+                            }
+                        }
+                    });
+                } else {
+                    // If no date is selected, reset the rows visibility
+                    table.rows().nodes().to$().show();
+                }
+
+                // Apply text search to all columns
+                table.search(searchText).draw();
+
+                // Control table visibility based on inputs and search results
                 if (searchText === '' && dateText === '') {
                     $('#example').hide(); // Hide table if both search inputs are empty
                 } else {
-                    $('#example').show(); // Show table if either search input is not empty
+                    $('#example').show(); // Show table if either input is not empty
+
+                    // Hide table if there are no matching records after filtering
                     if (table.page.info().recordsDisplay === 0) {
                         $('#example').hide();
                     }
                 }
             });
+
         });
     </script>
     <script>
