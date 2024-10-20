@@ -24,15 +24,16 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form>
+                        <form id="searchForm">
                             <h2>Admissions List</h2>
                             <div class="form-group row">
                                 <div class="col-4">
-                                    <label for="searchInput" class="form-label">Name or Surname</label>
+                                    <br>
+                                    <label for="searchInput" class="form-label">Enter Name, Surname or Theatre</label>
                                     <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
                                 </div>
                                 <div class="col-4">
-                                    
+                                    <br>
                                     <label for="dateInput" class="form-label">Date</label>
                                     <input type="date" class="form-control" id="dateInput" style="width:300px">
                                 </div>
@@ -88,14 +89,13 @@
                                                    data-patient-id="@Data.PatientID">Edit Booking</a>
                                             </div>
                                             <div class="w-100 btn-group" role="group">
-                                            <a class="btn btn-primary"
-                                               asp-controller="Home"
-                                               asp-action="CheckTreatmentCode"
-                                               asp-route-bookingId="@Data.BookingID"
-                                               asp-route-name="@Data.Name"
-                                               asp-route-surname="@Data.Surname">
-                                                Show Treatment Codes
-                                            </a>
+                                                <a class="btn btn-primary"
+                                                   aria-hidden="true"
+                                                   asp-controller="Home"
+                                                   asp-action="CheckTreatmentCode"
+                                                   asp-route-bookingId="@Data.BookingID">
+                                                    Show Treatment Codes
+                                                </a>
                                             </div>
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
@@ -109,15 +109,15 @@
                                                    data-patient-id="@Data.PatientID">Give Prescription</a>
                                             </div>
                                             <div class="w-100 btn-group" role="group">
-                                          <a class="btn btn-primary"
-                                               aria-hidden="true"
-                                               asp-controller="Home"
-                                               asp-action="vitalsAndHistory"
-                                               asp-route-name="@Data.Name"
-                                               asp-route-surname="@Data.Surname"
+                                                <a class="btn btn-primary"
+                                                   aria-hidden="true"
+                                                   asp-controller="Home"
+                                                   asp-action="vitalsAndHistory"
+                                                   asp-route-name="@Data.Name"
+                                                   asp-route-surname="@Data.Surname"
                                                    asp-route-patientID="@Data.PatientID">
-                                                Check Vitals and Medical History
-                                           </a>
+                                                    Check Vitals and Medical History
+                                                </a>
                                             </div>
                                             <div class="w-100 btn-group" role="group">
                                                 <form asp-action="Discharge" asp-controller="Home" method="post">
@@ -144,7 +144,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="editUserForm" method="post" action="@Url.Action("EditSurgery", "Home")">
+                            <form id="editUserForm" method="post" asp-action="EditSurgery" asp-controller="Home">
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <input type="hidden" id="PatientID" name="PatientID" />
@@ -153,13 +153,13 @@
 
                                         <br>
                                         <label for="nameInput" class="form-label">Name</label>
-                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" style="width:250px">
+                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" disabled style="width:250px">
 
                                     </div>
                                     <div class="col-4">
                                         <br>
                                         <label for="surnameInput" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" style="width:250px">
+                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" disabled style="width:250px">
                                     </div>
                                     <div class="col-4">
                                         <br>
@@ -205,8 +205,8 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -231,6 +231,8 @@
                     </div>
                 </div>
             </div>
+
+
             <!-- Add Prescription Modal -->
             <div class="modal fade" id="addPrescriptionModal" role="dialog" tabindex="-1" aria-labelledby="addPrescriptionModal" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -247,17 +249,15 @@
                                         <input type="hidden" id="BookingID" name="BookingID" />
                                         <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
 
-                                        <br>
                                         <label for="nameInput" class="form-label">Name</label>
                                         <input type="text" class="form-control" id="nameInput" name="Name" disabled style="width:250px">
                                     </div>
                                     <div class="col-4">
-                                        <br>
+                                        
                                         <label for="surnameInput" class="form-label">Surname</label>
                                         <input type="text" class="form-control" id="surnameInput" name="Surname" disabled style="width:250px">
                                     </div>
                                     <div class="col-4">
-                                        <br>
                                         <label for="surgeonName" class="form-label">Surgeon Name</label>
                                         <input type="text" class="form-control" id="surgeonName" name="SurgeonName" style="width:250px" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
                                     </div>
@@ -282,12 +282,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="Take" class="form-label">Time Instructions(When will Prescription be given) </label>
-                                        <input type="text" class="form-control" name="Take" id="Take" placeholder="Enter Instruction" style="width:300px">
-
-                                    </div>
+                                 
                                 </div>
                                 <div class="form-group row">
 
@@ -339,33 +334,56 @@
                 }
             });
 
-            // Function to filter the table
-            function filterTable() {
-                var searchText = $('#searchInput').val().trim();
-                var dateText = $('#dateInput').val();
+            // Custom search function for the search input and date input
+            $('#searchInput, #dateInput').on('keyup change', function () {
+                var searchText = $('#searchInput').val().trim(); // Trim whitespace from search input
+                var dateText = $('#dateInput').val(); // Get the selected date in YYYY-MM-DD format
 
-                // Apply date filter on column 3 and general search
-                table.column(3).search(dateText ? dateText : '', true, false);
+                // If a date is selected, proceed with date filtering
+                if (dateText) {
+                    // Iterate through each row in the Date column (assuming it's the 4th column, index 3)
+                    table.column(3).data().each(function (value, index) {
+                        // Assume the date format in the table is MM/DD/YYYY
+                        var tableDate = value.trim(); // Get the date from the table cell
+                        var parts = tableDate.split("/"); // Split the date into month, day, year
+
+                        if (parts.length === 3) {
+                            // Reformat the date from MM/DD/YYYY to YYYY-MM-DD to match the date input
+                            var reformattedDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
+
+                            // Compare the reformatted table date with the selected date
+                            if (reformattedDate === dateText) {
+                                table.row(index).nodes().to$().show(); // Show matching row
+                            } else {
+                                table.row(index).nodes().to$().hide(); // Hide non-matching row
+                            }
+                        }
+                    });
+                } else {
+                    // If no date is selected, reset the rows visibility
+                    table.rows().nodes().to$().show();
+                }
+
+                // Apply text search to all columns
                 table.search(searchText).draw();
 
-                // Hide or show the table based on the input
+                // Control table visibility based on inputs and search results
                 if (searchText === '' && dateText === '') {
-                    $('#example').hide();
+                    $('#example').hide(); // Hide table if both search inputs are empty
                 } else {
-                    $('#example').show();
+                    $('#example').show(); // Show table if either input is not empty
+
+                    // Hide table if there are no matching records after filtering
                     if (table.page.info().recordsDisplay === 0) {
                         $('#example').hide();
                     }
                 }
-            }
-
-            // Event listeners for search and date input changes
-            $('#searchInput, #dateInput').on('keyup change', filterTable);
+            });
 
 
             // Edit Booking Modal: Populate modal fields with data from the clicked button
             $('#editBookingModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget); // Button that triggered the modal
+                var button = $(event.relatedTarget);
                 var patientID = button.data('patient-id');
                 var name = button.data('name');
                 var surname = button.data('surname');
@@ -374,15 +392,22 @@
                 var theater = button.data('theater');
                 var bookingID = button.data('booking-id');
 
+                // Create a Date object from the surgeryDate and adjust for timezone offset
+                var localDate = new Date(surgeryDate);
+                var correctedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+
+                // Format the date in 'YYYY-MM-DD' format
+                var formattedDate = correctedDate.toISOString().split('T')[0];
+
                 // Update the modal's content
                 var modal = $(this);
                 modal.find('#nameInput').val(name);
                 modal.find('#surnameInput').val(surname);
-                modal.find('#surgeryDateInput').val(surgeryDate);
+                modal.find('#surgeryDateInput').val(formattedDate); // Correctly formatted date
                 modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
                 modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
                 modal.find('#PatientID').val(patientID);
-                modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+                modal.find('#BookingID').val(bookingID);
                 modal.find('#AccountID').val(button.data('account-id'));
             });
 
