@@ -2,7 +2,7 @@
     ViewData["Title"] = "Patient Records";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.AdmissionsListViewModel
+@model DEMO.ViewModels.BookedPatientInfo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,14 +124,15 @@
                                             <td>@Data.Surname</td>
                                             <td>@Data.SurgeonName @Data.SurgeonSurname</td>
                                             <td>@Data.WardName</td>
-                                            <td>@Data.BedNumber</td>
                                             <td>@Data.Gender</td>
+                                            <td>@Data.BedNumber</td>
+                                            
                                           
                                             <td>
                                             <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientVitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-surname="@Data.Surname">Medical Info</a>
                                             </td>
                                             <td>
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="EmailVitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Email Surgeon</a>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="EmailVitals" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-Temperature="@Data.Temperature" asp-route-SystolicBloodPressure="@Data.SystolicBloodPressure" asp-route-DiastolicBloodPressure="@Data.DiastolicBloodPressure" asp-route-Respiration="@Data.Respiration" asp-route-BloodGlucoseLevel="@Data.BloodGlucoseLevel" asp-route-BloodOxygen="@Data.BloodOxygen" asp-route-HeartRate="@Data.HeartRate">Email Surgeon</a>
                                             </td>
                                         </tr>
                                     }

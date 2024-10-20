@@ -2,7 +2,8 @@
     ViewData["Title"] = "Medication Collection";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.PatientAllergyViewModel
+@model DEMO.ViewModels.BookedPatientInfo
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,10 +13,12 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
     <style>
         .container {
             padding-top: 50px;
         }
+
         .active-tab {
             background-color: teal;
             color: white;
@@ -42,17 +45,17 @@
 
         .header-labels {
             display: flex;
-            justify-content: space-between; /* Distribute space between columns */
+            justify-content: space-between;
         }
 
             .header-labels div {
-                flex: 1; /* Ensure each column takes equal space */
-                text-align: center; /* Center align labels in each column */
-                margin-right: 20px; /* Add margin for spacing */
+                flex: 1;
+                text-align: center;
+                margin-right: 20px;
             }
 
                 .header-labels div:last-child {
-                    margin-right: 0; /* Remove margin from the last column */
+                    margin-right: 0;
                 }
 
             .header-labels label {
@@ -66,37 +69,6 @@
             margin: 20px 0;
         }
 
-        .list-view-box {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            max-height: 200px;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-            .list-view-box p {
-                margin: 5px 0;
-                padding: 5px;
-                background-color: #f1f1f1;
-                border-radius: 3px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-                .list-view-box p span {
-                    flex-grow: 1;
-                }
-
-                .list-view-box p button {
-                    border: none;
-                    background-color: red;
-                    color: white;
-                    border-radius: 3px;
-                    padding: 5px;
-                    cursor: pointer;
-                }
-
         .row-two-columns {
             display: flex;
             flex-wrap: wrap;
@@ -104,8 +76,8 @@
         }
 
         .vital-group {
-            text-align: left;
             flex: 1 1 48%;
+            text-align: left;
         }
 
             .vital-group label {
@@ -115,39 +87,29 @@
                 color: #333;
             }
 
-            .vital-group input,
-            .vital-group select {
+            .vital-group input {
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 font-size: 14px;
                 color: #333;
                 width: 100%;
-                max-width: 400px;
                 box-sizing: border-box;
                 height: 40px;
                 margin: 0;
             }
 
-            .vital-group .radio-group {
-                display: flex;
-                align-items: center;
-            }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
 
-                .vital-group .radio-group label {
-                    margin-left: 5px;
-                    font-size: 14px;
-                }
-
-                .vital-group .radio-group input {
-                    width: auto;
-                    height: auto;
-                }
-
-        /* Style for the scrollable dropdown */
-        .select2-container--default .select2-results {
-            max-height: 150px; /* Adjust the height as needed */
-            overflow-y: auto;
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
         }
     </style>
 </head>
@@ -157,82 +119,84 @@
             <div class="text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                     <h2><strong>Retake Vitals</strong></h2>
-                    <hr></hr>
+                    <hr>
                     <div class="header-section">
                         <div class="header-labels">
                             <div>
                                 <label>Name: @ViewBag.PatientName</label>
                                 <label>Surname: @ViewBag.PatientSurname</label>
-                              
                             </div>
                             <div>
-                                <label>Ward: @ViewBag.patientWard </label>
-                                <label>Bed: @ViewBag.patientBed</label>
+                                <label>Ward: @ViewBag.PatientWard</label>
+                                <label>Bed: @ViewBag.PatientBed</label>
                             </div>
                             <div>
-                                <label>Height: @Model.Height</label>
-                                <label>Weight: @Model.Weight</label>
+                                <label>Height: <span id="patientHeight">@ViewBag.PHeight</span> cm</label>
+                                <label>Weight: <span id="patientWeight">@ViewBag.PWeight</span> kg</label>
+                               
                             </div>
                         </div>
                     </div>
-                    <hr></hr>
+                    <hr>
                     <div class="row">
                         <div class="col-md-12 mx-0">
-                            <form id="msform">
+                            <form id="msform" method="post" action="@Url.Action("SaveVitalsAndRedirect", "Nurse")" onsubmit="return validateVitals(); ">
                                 <fieldset id="f-4">
                                     <div class="form-card">
                                         <h2 class="fs-title">Vitals</h2>
                                         <div class="form-group">
-                                            <hr></hr>
-
-                                            
+                                            <hr>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="SystolicBP">Systolic BP (mmHg)</label>
-                                                    <input type="number" name="SystolicBP" min="80" max="150" value="">
+                                                    <input type="number" name="SystolicBloodPressure" min="80" max="250" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="DiastolicBP">Diastolic BP (mmHg)</label>
-                                                    <input type="number" name="DiastolicBP" min="40" max="100" value="">
+                                                    <input type="number" name="DiastolicBloodPressure" min="40" max="130" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Pulse">Pulse (bpm)</label>
-                                                    <input type="number" name="Pulse" min="50" max="100" value="">
+                                                    <input type="number" name="HeartRate" min="50" max="200" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BloodOxygen">Blood Oxygen (%)</label>
-                                                    <input type="number" name="BloodOxygen" min="90" max="100" value="">
+                                                    <input type="number" name="BloodOxygen" min="90" max="100" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Respiration">Respiration Rate (Breaths/min)</label>
-                                                    <input type="number" name="Respiration" min="10" max="30" value="">
+                                                    <input type="number" name="Respiration" min="10" max="50" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BGL">Blood Glucose Level (mg/dL)</label>
-                                                    <input type="number" name="BGL" min="50" max="170" value="">
+                                                    <input type="number" name="BloodGlucoseLevel" min="50" max="500" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
-                                                
                                                 <div class="vital-group">
                                                     <label for="Temperature">Temperature (°C)</label>
-                                                    <input type="number" name="Temperature" min="30.0" max="40.0" value="" step="0.1">
+                                                    <input type="number" name="Temperature" min="30.0" max="42.0" step="0.1" required>
                                                 </div>
                                             </div>
-                                            <div class="row-two-column">
+                                            <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="BMI">BMI</label>
-                                                    <input type="number" name="Vitals.BMI" value="" disabled>
+                                                    <input type="number" name="Vitals.BMI" id="bmiInput" value="" disabled>
                                                 </div>
                                             </div>
-
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <input type="time" name="time" id="time" value="" hidden>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <input type="button" name="previous" class="previous action-button-previous" onclick="showMedications()" value="Previous" />
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
                                         <input type="submit" name="submit" class="next action-button" value="Submit" />
+                                    </div>
                                 </fieldset>
                             </form>
                         </div>
@@ -241,20 +205,121 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Vital Signs Alert</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="alertContent">
+                    <!-- Alert messages will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="SendEmail">Send Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $(document).ready(function () {
+            // Calculate BMI based on height and weight
+            const height = parseFloat(document.getElementById('patientHeight').innerText);
+            const weight = parseFloat(document.getElementById('patientWeight').innerText);
+
+            // Calculate BMI if height and weight are valid
+            if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
+                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2); // Convert height to meters
+                document.getElementById('bmiInput').value = bmi;
+            }
+
+            // Initialize DataTables
+            $('#myTable').DataTable();
+
             // Initialize Select2 with searchable functionality
             $('.select2').select2({
                 placeholder: 'Select an option',
                 allowClear: true
             });
+
+            // Add click event for Send Email button
+            $('#SendEmail').click(function () {
+                // Redirect to the EmailVitals view
+                window.location.href = '@Url.Action("EmailVitals", "Nurse")'; // Replace 'Vitals' with your actual controller name if different
+            });
+            $('#SendEmail').click(function () {
+                // Submit the form when the modal closes
+                $('#msform').submit();
+            });
         });
 
-        // Function to remove a list item
-        function removeItem(button) {
-            const p = button.parentElement;
-            p.remove();
+        function validateVitals() {
+            var alertMessages = [];
+
+            // Get input values
+            var systolicBP = parseFloat($('input[name="SystolicBloodPressure"]').val());
+            var diastolicBP = parseFloat($('input[name="DiastolicBloodPressure"]').val());
+            var pulse = parseFloat($('input[name="HeartRate"]').val());
+            var bloodOxygen = parseFloat($('input[name="BloodOxygen"]').val());
+            var respiration = parseFloat($('input[name="Respiration"]').val());
+            var bloodGlucose = parseFloat($('input[name="BloodGlucoseLevel"]').val());
+            var temperature = parseFloat($('input[name="Temperature"]').val());
+
+            // Threshold checks for alert
+            if (systolicBP < 90 || systolicBP > 140) {
+                alertMessages.push("Systolic BP is out of the normal range (90-140 mmHg).");
+            }
+
+            if (diastolicBP < 60 || diastolicBP > 90) {
+                alertMessages.push("Diastolic BP is out of the normal range (60-90 mmHg).");
+            }
+
+            if (pulse < 60 || pulse > 100) {
+                alertMessages.push("Pulse is out of the normal range (60-100 bpm).");
+            }
+
+            if (bloodOxygen < 95) {
+                alertMessages.push("Blood Oxygen is below the normal range (< 95%).");
+            }
+
+            if (respiration < 12 || respiration > 20) {
+                alertMessages.push("Respiration rate is out of the normal range (12-20 breaths/min).");
+            }
+
+            if (bloodGlucose < 70 || bloodGlucose > 180) {
+                alertMessages.push("Blood Glucose Level is out of the normal range (70-180 mg/dL).");
+            }
+
+            if (temperature < 36.1 || temperature > 37.2) {
+                alertMessages.push("Temperature is out of the normal range (36.1-37.2°C).");
+            }
+
+            // Check if any alerts exist
+            if (alertMessages.length > 0) {
+                // Display the modal with alert messages
+                var alertContent = document.getElementById('alertContent');
+                alertContent.innerHTML = ''; // Clear previous alerts
+                alertMessages.forEach(function (message) {
+                    alertContent.innerHTML += '<p>' + message + '</p>';
+                });
+                $('#alertModal').modal('show'); // Show modal
+                $('#close').click(function () {
+                    $('#alertModal').modal('hide'); // Hide modal when close button is clicked
+                });
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission if no alerts
         }
     </script>
+
+
 </body>
 </html>

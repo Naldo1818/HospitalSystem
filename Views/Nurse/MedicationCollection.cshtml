@@ -2,6 +2,7 @@
     ViewData["Title"] = "Medication Collection";
     Layout = "_LayoutNurse";
 }
+@model DEMO.ViewModels.BookedPatientInfo
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,13 +172,13 @@
                     <hr></hr>
                     <div class="row-two-columns">
                         <div class="header-labels">
-                            <label>Name: </label>
-                            <label>Surname:</label>
-                            <label>Date:</label>
+                            <label>Name: @ViewBag.PatientName</label>
+                            <label>Surname: @ViewBag.PatientSurname </label>
+                            
                         </div>
                         <div class="header-labels">
-                            <label>Ward: </label>
-                            <label>Bed:</label>
+                            <label>Ward: ViewBag.patientWard </label>
+                            <label>Bed: ViewBag.patientBed </label>
                         </div>
                     </div>
                     <hr></hr>
@@ -192,32 +193,19 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Nurse">Nurse:</label>
-                                                    <select class="select2" id="NurseSelect">
-                                                        <option value="" disabled selected>Choose Nurse</option>
-                                                        <option value="Nurse1">Nurse1</option>
-                                                        <option value="Nurse2">Nurse2</option>
-                                                        <option value="Nurse3">Nurse3</option>
-                                                        <!-- Add more options as needed -->
-                                                    </select>
+                                                    <input type="text" value="@ViewBag.UserName @ViewBag.UserSurname" id="Nurse" min="1" step="1" disabled />
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Surgeon">Surgeon:</label>
-                                                    <input type="text" value="" id="SurgeonInput" min="1" step="1" disabled/>
+                                                    <input type="text" value="@Model.SurgeonName @ViewBag.SurgeonSurname" id="SurgeonInput" min="1" step="1" disabled/>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Collection">Collection</label>
                                                     <input type="radio" id="CollectionInput" class="CollectionInput" onclick="toggleRadio(this)" />
-                                                </div>
-                                            </div>
-
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
-                                                    <label for="Date">Date:</label>
-                                                    <input type="date" id="Date" name="Date" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
