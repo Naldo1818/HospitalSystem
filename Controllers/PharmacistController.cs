@@ -63,13 +63,45 @@ namespace DEMO.Controllers
         }
 
 
-        public async Task<IActionResult> StockOrderPage()
+        public IActionResult StockOrderPage()
         {
-            var stocks = await _dbContext.PharmacyMedication
-                  .Where(m => m.StockonHand <= m.ReorderLevel)
-                  .ToListAsync();
+            var stocks =   (from pm in _dbContext.PharmacyMedication
+                            join m in _dbContext.Medication
+                            on pm.MedicationID equals m.MedicationID
+                            where pm.StockonHand<=pm.ReorderLevel
 
-            return View(stocks);
+              
+
+                select new PharmacistStockOrderViewModel
+
+
+                {
+                    MedicationName = m.MedicationName,
+                    MedicationForm = m.MedicationForm,
+                    Schedule = m.Schedule,
+                    StockonHand = pm.StockonHand,
+                    ReorderLevel = pm.ReorderLevel,
+                   
+
+
+
+
+
+
+                })
+                           .ToList();
+
+
+            var viewModel = new PharmacistStockOrderViewModel
+            {
+                PharmacistStockOrders = stocks,
+            };
+
+            return View(viewModel);
+
+
+
+           
 
         }
 
@@ -502,91 +534,10 @@ namespace DEMO.Controllers
             return View();
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> ViewSpecificPrescription(int pid)
-        //{
-        //  var prescription  =   await _dbContext.Prescription(pid);
-
-
-        //    if (prescription == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-
-        //    // Retrieve all conditions, allergies, and current medications
-        //    var allConditions = _dbContext.Condition
-        //        .Select(m => m.ConditionName)
-        //        .Distinct()
-        //        .OrderBy(name => name)
-        //        .ToList();
-
-        //    var allAllergies = _dbContext.Activeingredient
-        //        .Select(m => m.ActiveIngredientName)
-        //        .Distinct()
-        //        .OrderBy(name => name)
-        //        .ToList();
-
-        //    var currentMeds = _dbContext.Medication
-        //        .Select(m => m.MedicationForm)
-               
-        //        .Distinct()
-        //        .OrderBy(name => name)
-                
-        //        .ToList();
-
-
-        //    // Get the specific prescription using the provided id
-        //    var alldata = (from p in _dbContext.Prescription
-        //                   join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-        //                   join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-        //                   join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
-        //                   join account in _dbContext.Accounts on p.AccountID equals account.AccountID
-        //                   where p.PrescriptionID == pid // Filter by prescription ID
-
-        //                   select new PharmacistViewScriptModel
-        //                   {
-                              
-        //                       Urgency = p.Urgency,
-        //                       PrescriptionID = p.PrescriptionID,
-        //                       AdmittedPatientID = p.AdmittedPatientID,
-        //                       patientname = pi.Name,
-        //                       patientsurname = pi.Surname,
-        //                       Status = p.Status,
-        //                       Height = ap.Height,
-        //                       Weight = ap.Weight,
-        //                       SystolicBloodPressure = pv.SystolicBloodPressure,
-        //                       DiastolicBloodPressure = pv.DiastolicBloodPressure,
-        //                       HeartRate = pv.HeartRate,
-        //                       BloodOxygen = pv.BloodOxygen,
-        //                       Respiration = pv.Respiration,
-        //                       BloodGlucoseLevel = pv.BloodGlucoseLevel,
-        //                       Temperature = pv.Temperature,
-        //                       SurgeonName = account.Name,
-        //                       SurgeonSurname = account.Surname,
-        //                   })
-
-        //                   .ToList();
-
-
-         
 
 
 
-
-        //    var viewModel = new PharmacistViewScriptModel
-        //    {
-        //        combinedData = alldata,
-        //        Allallergy = allAllergies,
-        //        AllConditions = allConditions,
-        //        AllCurrentMed = currentMeds,
-        //    };
-
-        //    return View(viewModel);
-        //}
-
-
-       
+        [HttpGet]
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
             // Retrieve the specific prescription using the provided id

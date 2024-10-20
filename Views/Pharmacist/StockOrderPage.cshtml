@@ -61,7 +61,8 @@
     <div class="p-3 mt-5 border">
         <!-- Your table content here -->
         <table class="table">
-            <h1><center>Manual order</center></h1>
+            <h1><center>Quick order</center></h1>
+            <p>Please enter the amount of each medication you want to order</p>
             <center>
                 <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
 
@@ -81,17 +82,17 @@
             </thead>
             <tbody id="myTable">
 
-             @*     @foreach (var stock in Model.)
+                 @foreach (var stock in Model.PharmacistStockOrders)
                 {
                     <tr>
                         <td>@stock.MedicationName</td>
-                        <td>@stock.DosageForm</td>
+                        <td>@stock.MedicationForm</td>
                         <td>@stock.StockonHand</td>
                         <td>@stock.ReorderLevel</td>
                         <td><input type="text" name="textbox1" size="5" placeholder="" /></td>
                     </tr>
                 }
-  *@
+ 
 
 
 

@@ -32,6 +32,8 @@ namespace DEMO.ViewModels
 
         public List<string> DosageForms { get; set; }
 
+        public List<PharmacistStockOrderViewModel> PharmacistStockOrders { get;set; }
+
                  
                         
 
