@@ -341,12 +341,26 @@ namespace DEMO.Controllers
                 .OrderBy(form => form)  
                 .ToList();
 
-            var activeingredientslist = _dbContext.Activeingredient
-                                   .Select(m => m.ActiveIngredientName)
-                                   .Distinct()
-                                   .OrderBy(name => name) // Order in alphabetical order
-                                   .ToList();
+         
 
+            var activeingredientslist = _dbContext.Activeingredient
+                                 .Select(m => m.ActiveIngredientName)
+                                 .Distinct()
+                                 .OrderBy(name => name) // Order in alphabetical order
+                                 .ToList();
+
+
+
+
+
+
+
+            var active = _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .ToString();
+
+            model.ActiveIngredientsDropdown=activeingredientslist;
             model.Schedules=schedules;
             model.DosageForms=dosageforms;
             return View(model);
