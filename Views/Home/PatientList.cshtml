@@ -94,13 +94,18 @@
                                 <div class="col-4">
                                     <br>
                                     <label for="exampleFormControlInput1" class="form-label">ID number</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="ID number" style="width:300px">
+                                    <div class="input-container">
+                                        <input type="text" class="form-control" id="idNumber" placeholder="ID number"
+                                               pattern="^\d{13}$" required title="ID number must be exactly 13 digits." />
+                                        <span id="idNumberError" class="text-danger"></span> <!-- Error message displayed here -->
+                                      
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <button type="button" class="btn btn-success" style="width:160px;" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
+                                    <button type="button" class="btn btn-primary" style="width:160px;" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
                                 </div>
                             </div>
                         </form>
@@ -166,19 +171,20 @@
                     </button>
                 </div>
                 <div class="modal-body" id="f-1">
-                    <form id="bookingForm" method="post" action="@Url.Action("BookSurgery", "Home")">
+                    <form id="bookingForm" method="post" asp-action="BookSurgery" asp-controller="Home" )">
                        
                         <div class="form-group row">
                             <div class="col-4">
                                 <br>
                                 <label for="nameInput" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="nameInput" name="Name" disabled style="width:250px">
+                                <input type="text" class="form-control" id="nameInput" name="Name" readonly style="width:250px">
                             </div>
                             <div class="col-4">
                                 <br>
                                 <label for="surnameInput" class="form-label">Surname</label>
-                                <input type="text" class="form-control" id="surnameInput" name="Surname" disabled style="width:250px">
+                                <input type="text" class="form-control" id="surnameInput" name="Surname" readonly style="width:250px">
                             </div>
+
                         </div>
                         <div class="form-group row">
                             <div class="col-4">
@@ -229,37 +235,19 @@
                         <input type="hidden" id="PatientID" name="PatientID">
                         <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
                         <div class="modal-footer">
-                            <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
+                            <button type="button" id="confirmBookSurgeryButton" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
+                        
                     </form>
                 </div>
               </div>
         </div>
     </div>
    
-    <!-- Confirmation Modal for Book Surgery -->
-    <div class="modal fade" id="confirmBookSurgeryModal" tabindex="-1" role="dialog" aria-labelledby="confirmBookSurgeryModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmBookSurgeryModalLabel">Confirm Booking</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to book this surgery?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="confirmBookSurgeryButton" class="btn btn-primary">Yes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
- 
-    <!-- ModalAddPatient --> 
+   
+
+    <!-- ModalAddPatient -->
     <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -270,46 +258,73 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="addPatientForm" method="post" action="@Url.Action("RegisterPatient", "Home")">
+                    <form id="addPatientForm" method="post" asp-action="RegisterPatient" asp-controller="Home">
+                        @Html.AntiForgeryToken() <!-- Ensure you include the anti-forgery token -->
                         <div class="form-group row">
-            <div class="col-4">
-                <label for="nameInput" class="form-label">Name</label>
-                <input type="text" class="form-control" name="Name" placeholder="Enter Name">
-            </div>
-            <div class="col-4">
-                <label for="surnameInput" class="form-label">Surname</label>
-                <input type="text" class="form-control" name="Surname" placeholder="Enter Surname">
-            </div>
-            <div class="col-4">
-                <label for="idNumberInput" class="form-label">ID Number</label>
-                <input type="text" class="form-control" name="IdNumber" placeholder="Enter ID Number">
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-4">
+                            <div class="col-4">
+                                <label for="nameInput" class="form-label">Name</label>
+                                <input type="text" class="form-control" name="Name" placeholder="Enter Name" required maxlength="100">
+                                <span class="text-danger" id="nameError"></span>
+                            </div>
+                            <div class="col-4">
+                                <label for="surnameInput" class="form-label">Surname</label>
+                                <input type="text" class="form-control" name="Surname" placeholder="Enter Surname" required maxlength="100">
+                                <span class="text-danger" id="surnameError"></span>
+                            </div>
+                            <div class="col-4">
+                                <label for="idNumberInput" class="form-label">ID Number</label>
+                                <input type="text" class="form-control" name="IdNumber" placeholder="Enter ID Number" pattern="^\d{13}$" required title="ID Number must be exactly 13 digits." maxlength="13">
+                                <span class="text-danger" id="idNumberError"></span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <label for="gender" class="form-label">Gender</label>
+                                <div id="gender" style="width:250px; padding: 10px;">
+                                    <div class="form-check" style="margin: 0;">
+                                        <input class="form-check-input" type="radio" name="Gender" value="Male" required checked>
+                                        <label class="form-check-label">Male</label>
+                                    </div>
+                                    <div class="form-check" style="margin: 0;">
+                                        <input class="form-check-input" type="radio" name="Gender" value="Female" required>
+                                        <label class="form-check-label">Female</label>
+                                    </div>
+                                </div>
+                                <span class="text-danger" id="genderError"></span>
+                            </div>
+                            <div class="col-4">
+                                <label for="emailInput" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="Email" placeholder="Enter Email" required>
+                                <span class="text-danger" id="emailError"></span>
+                            </div>
+                            <div class="col-4">
+                                <label for="contactNumberInput" class="form-label">Contact Number</label>
+                                <input type="text" class="form-control" id="contactNumber" name="ContactNumber" placeholder="Contact Number" required />
+                                <span id="contactNumberError" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <!-- Confirmation Modal -->
+                        <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmSaveModalLabel">Confirm Save</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to save this patient?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="confirmSaveButton" class="btn btn-primary" data-dismiss="modal">Yes</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                <label for="gender" class="form-label">Gender</label>
-                <div id="gender" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
-                    <div class="form-check" style="margin: 0;">
-                        <input class="form-check-input" type="radio" name="Gender" value="Male">
-                        <label class="form-check-label" for="male">Male</label>
-                    </div>
-                    <div class="form-check" style="margin: 0;">
-                        <input class="form-check-input" type="radio" name="Gender" value="Female">
-                        <label class="form-check-label" for="female">Female</label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-4">
-                <label for="emailInput" class="form-label">Email</label>
-                <input type="text" class="form-control" name="Email" placeholder="Enter Email">
-            </div>
-            <div class="col-4">
-                <label for="ContactNumberInput" class="form-label">Contact Number</label>
-                <input type="text" class="form-control" name="ContactNumber" placeholder="Enter Contact Number">
-            </div>
-        </div>
-    </form>
+                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="mainSavePatientButton" class="btn btn-primary">Save</button>
@@ -319,53 +334,7 @@
         </div>
     </div>
 
-  
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmSaveModalLabel">Confirm Save</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to save this patient?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="savePatientButton" class="btn btn-primary">Yes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        // Handle the "Save" button click in the Book Surgery Modal
-        $('#bookSurgeryModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var patientID = button.data('patient-id'); // Extract the PatientID from data-* attributes
-            var name = button.data('name');
-            var surname = button.data('surname');
-
-            // Update the modal's content
-            var modal = $(this);
-            modal.find('#nameInput').val(name);
-            modal.find('#surnameInput').val(surname);
-            modal.find('#PatientID').val(patientID);
-        });
-
-        // Show confirmation modal before submitting the booking form
-        $('#openConfirmModalButton').on('click', function () {
-            $('#confirmBookSurgeryModal').modal('show'); // Show confirmation modal
-        });
-
-        // Handle the "Yes" button click in the confirmation modal
-        $('#confirmBookSurgeryButton').on('click', function () {
-            $('#bookingForm').submit(); // Submit the form
-        });
-    </script>
 
     <script>
         $(document).ready(function () {
@@ -375,62 +344,137 @@
                     "zeroRecords": "No matching records found"
                 }
             });
-                      
-            // Handle 'Save' button click
-            $('#mainSavePatientButton').on('click', function () {
-                $('#confirmSaveModal').modal('show');
+
+            $('#contactNumber').on('input', function () {
+                const value = this.value;
+                const errorMessage = $('#contactNumberError');
+
+                // Check if the input contains any spaces
+                if (/\s/.test(value)) {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                    errorMessage.text("Contact number cannot contain spaces.");
+                } else {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                    errorMessage.text('');
+                }
+            });
+            // Show confirmation modal on clicking the Save button
+            $('#mainSavePatientButton').on('click', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                if (validateForm()) {
+                    $('#confirmSaveModal').modal('show'); // Show confirmation modal if the form is valid
+                }
+            });
+            // Handle the "Yes" button click in the confirmation modal
+            $('#confirmSaveButton').on('click', function () {
+                $('#addPatientForm').submit(); // Submit the form
+            });
+            // Handle the "Yes" button click in the confirmation modal
+            $('#confirmBookSurgeryButton').on('click', function () {
+                // Optional: Enable the fields if they need to be included in the form submission
+                $('#nameInput, #surnameInput').prop('disabled', false); // Enable fields before submitting
+                $('#bookingForm').submit(); // Submit the booking form
+              
             });
 
-            // Ensure 'No' button closes the confirmation modal
+            // Close confirmation modal on 'No' button click
             $('#cancelSaveButton').on('click', function () {
                 $('#confirmSaveModal').modal('hide');
             });
 
-            // Custom search function for the search input
-            $(document).ready(function () {
-                // Custom search function for the search input
-                $('#exampleFormControlInput1').on('keyup', function () {
-                    var searchText = this.value.trim(); // Trim whitespace
-                    if (searchText === '') {
-                        $('#example_wrapper').hide(); // Hide table if search input is empty
-                    } else {
-                        $('#example_wrapper').show(); // Show table if search input is not empty
-                        table.search(searchText).draw();
-                        if (table.page.info().recordsDisplay === 0) {
-                            $('#example_wrapper').hide();
-                        }
-                    }
-                });
+            // Submit the form when the user confirms
+            $('#savePatientButton').on('click', function () {
+                $('#addPatientForm').submit(); // Directly submit the form
+            });
+           
+
+            $('#bookSurgeryModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget); // Button that triggered the modal
+                var patientID = button.data('patient-id'); // Extract the PatientID from data-* attributes
+                var name = button.data('name');
+                var surname = button.data('surname');
+
+                // Update the modal's content
+                var modal = $(this);
+                modal.find('#nameInput').val(name);
+                modal.find('#surnameInput').val(surname);
+                modal.find('#PatientID').val(patientID); // Ensure this remains intact
             });
 
-        });
-        function Next1(){
-            $('#f-1, #f-2').toggle('slow','swing')
-        }
-        function Next2() {
-            $('#f-2, #f-1').toggle('slow', 'swing')
-        }
-    </script>
-   
-  
-    <script>
-        $(document).ready(function () {
-            $('#savePatientButton').on('click', function () {
-                $.ajax({
-                    url: '@Url.Action("RegisterPatient", "Home")',
-                    type: 'POST',
-                    data: $('#addPatientForm').serialize(),
-                    success: function (response) {
-                        // Handle success response
-                        window.location.href = '@Url.Action("PatientList", "Home")'; // Redirect to Patient List
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle error response
-                        console.log(error);
+            // Validate the form before submission
+            function validateForm() {
+                let isValid = true;
+                $('.text-danger').text(''); // Clear previous error messages
+
+                $('#addPatientForm input, #addPatientForm select').each(function () {
+                    if (!this.checkValidity()) {
+                        isValid = false;
+                        const errorMessage = this.validationMessage || 'This field is required.';
+                        $(this).siblings('.text-danger').text(errorMessage); // Display error message
                     }
                 });
+                return isValid; // Return validation status
+            }
+
+            // Display server-side errors
+            function displayErrors(errors) {
+                for (const key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        const errorMessage = errors[key].join(', '); // Join error messages if there are multiple
+                        $('[name="' + key + '"]').siblings('.text-danger').text(errorMessage);
+                    }
+                }
+            }
+
+            // ID Number Validation
+            const idNumberInput = $('#idNumber');
+            const idNumberError = $('#idNumberError');
+
+            idNumberInput.on('input', function () {
+                const isValid = this.checkValidity();
+                if (isValid) {
+                    this.classList.add('is-valid');
+                    this.classList.remove('is-invalid');
+                    idNumberError.hide(); // Hide error message when valid
+                } else {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                    idNumberError.show(); // Show error message when invalid
+
+                    if (this.value.length !== 13) {
+                        idNumberError.text("ID number must be exactly 13 digits."); // Custom error message
+                    } else {
+                        idNumberError.text("ID number must be numeric."); // Additional check for numeric input
+                    }
+                }
             });
+
+            // Custom search function for the search input
+            $('#idNumber').on('keyup', function () {
+                var searchText = this.value.trim(); // Trim whitespace
+                if (searchText === '') {
+                    $('#example_wrapper').hide(); // Hide table if search input is empty
+                } else {
+                    $('#example_wrapper').show(); // Show table if search input is not empty
+                    table.search(searchText).draw();
+                    if (table.page.info().recordsDisplay === 0) {
+                        $('#example_wrapper').hide();
+                    }
+                }
+            });
+
+            // Toggle functions for multi-step forms
+            function Next1() {
+                $('#f-1, #f-2').toggle('slow', 'swing');
+            }
+            function Next2() {
+                $('#f-2, #f-1').toggle('slow', 'swing');
+            }
         });
     </script>
+
+
 </body>
 </html>

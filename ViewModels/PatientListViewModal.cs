@@ -31,6 +31,7 @@ namespace DEMO.ViewModels
         [Required(ErrorMessage = "Contact number is required.")]
         [Phone(ErrorMessage = "Invalid contact number.")]
         [StringLength(15, ErrorMessage = "Contact number cannot be longer than 15 characters.")]
+        [RegularExpression(@"^\S*$", ErrorMessage = "Contact number cannot contain spaces.")]
         public string ContactNumber { get; set; }
 
         // BookSurgery

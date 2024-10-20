@@ -30,7 +30,7 @@
             <div class="row">
                 <div class="col">
                     <div class="p-3 mt-5 border bg-white">
-                        <form id="addTreatmentForm" method="post" action="@Url.Action("AddTreatmentCode", "Home")">
+                        <form id="addTreatmentForm" method="post" asp-action="AddTreatmentCode" asp-controller="Home">
                             <h2>Add Treatment Codes</h2>
 
                             <div class="form-group row">
@@ -42,7 +42,7 @@
                                 <div class="col-4">
                                     <label for="treatmentSelect" class="form-label">Treatment Description</label>
                                     <select id="treatmentSelect" name="treatmentCodeID" class="form-control" style="width:300px">
-                                        <option value="">Select a Treatment Description</option>
+                                        <option disabled >Select a Treatment Description</option>
                                         @foreach (var treatment in Model.AllTreatmentCodes)
                                         {
                                             <option value="@treatment.TreatmentCodeID">@treatment.TreatmentName</option>
@@ -50,7 +50,7 @@
                                     </select>
                                 </div>
                                 <div class="col-4">
-                                    <input type="hidden" name="BookingID" value="@ViewBag.BookSurgeryID" />
+                                  
                                     <button type="button" id="openTreatmentButton" class="btn btn-primary">Add</button>
                                 </div>
                             </div>
@@ -128,7 +128,7 @@
                             Are you sure you want to add this treatment?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="saveTreatmentButton" class="btn btn-primary">Yes</button>
+                            <button type="button" id="confirmAddTreatmentButton" class="btn btn-primary">Yes</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
                         </div>
                     </div>
@@ -151,21 +151,8 @@
                 $('#confirmTreatmentModal').modal('show');
             });
 
-            $('#saveTreatmentButton').on('click', function () {
-                $.ajax({
-                    url: '@Url.Action("EditTreatment", "Home")',
-                    type: 'POST',
-                    data: $('#addTreatmentForm').serialize(),
-                    success: function (response) {
-                        var bookingID = $('#bookingID').val();
-
-                        // Redirect to the SurgeryTreatmentCodes with bookingID
-                        window.location.href = '@Url.Action("SurgeryTreatmentCodes", "Home")' + '?bookingID=' + bookingID;
-                    },
-                    error: function (xhr, status, error) {
-                        console.log("Error occurred:", error);
-                    }
-                });
+            $('#confirmAddTreatmentButton').on('click', function () {
+                $('#addTreatmentForm').submit(); // Submit the form
             });
 
 

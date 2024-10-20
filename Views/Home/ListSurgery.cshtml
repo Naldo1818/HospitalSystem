@@ -155,7 +155,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="editUserForm" method="post" action="@Url.Action("EditSurgery", "Home")">
+                            <form id="editUserForm" method="post" asp-action="EditSurgery" asp-controller="Home">
                                 <div class="form-group row">
                                     <div class="col-4">
                                         <input type="hidden" id="PatientID" name="PatientID" />
@@ -164,13 +164,13 @@
 
                                         <br>
                                         <label for="nameInput" class="form-label">Name</label>
-                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" style="width:250px">
+                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" disabled style="width:250px">
                                         
                                     </div>
                                     <div class="col-4">
                                         <br>
                                         <label for="surnameInput" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" style="width:250px">
+                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" disabled style="width:250px">
                                     </div>
                                     <div class="col-4">
                                         <br>
@@ -216,8 +216,8 @@
                              </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -373,7 +373,7 @@
     </script>
     <script>
         $('#editBookingModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
+            var button = $(event.relatedTarget);
             var patientID = button.data('patient-id');
             var name = button.data('name');
             var surname = button.data('surname');
@@ -382,17 +382,26 @@
             var theater = button.data('theater');
             var bookingID = button.data('booking-id');
 
+            // Create a Date object from the surgeryDate and adjust for timezone offset
+            var localDate = new Date(surgeryDate);
+            var correctedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
+
+            // Format the date in 'YYYY-MM-DD' format
+            var formattedDate = correctedDate.toISOString().split('T')[0];
+
             // Update the modal's content
             var modal = $(this);
             modal.find('#nameInput').val(name);
             modal.find('#surnameInput').val(surname);
-            modal.find('#surgeryDateInput').val(surgeryDate);
+            modal.find('#surgeryDateInput').val(formattedDate); // Correctly formatted date
             modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
             modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
             modal.find('#PatientID').val(patientID);
-            modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
+            modal.find('#BookingID').val(bookingID);
             modal.find('#AccountID').val(button.data('account-id'));
         });
+
+
 
 
 

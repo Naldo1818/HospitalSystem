@@ -353,9 +353,7 @@ namespace DEMO.Controllers
                     return RedirectToAction("SurgeryTreatmentCodes", new
                     {
                         bookingId = booking.BookingID,
-                        patientID = patient.PatientID,
-                        name = patient.Name,
-                        surname = patient.Surname
+                        patientID = patient.PatientID
                     });
                 }
             }
@@ -849,9 +847,9 @@ namespace DEMO.Controllers
                                  {
                                      Date = ap.Date,
                                      Time = pv.time,
-                                     Height =ap.Height,
-                                     Weight= ap.Weight,
-                                     SystolicBloodPressure= pv.SystolicBloodPressure,
+                                     Height = ap.Height,
+                                     Weight = ap.Weight,
+                                     SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure= pv.DiastolicBloodPressure,
                                      HeartRate=  pv.HeartRate,
                                      BloodOxygen=  pv.BloodOxygen,
@@ -860,7 +858,7 @@ namespace DEMO.Controllers
                                      Temperature =  pv.Temperature,
                                     
                                    
-                                 }).OrderBy(ap => ap.Date).ToList();
+                                 }).OrderByDescending(ap => ap.Date).ToList();
 
 
             var allergy = (from pa in _dbContext.PatientAllergy
@@ -1087,7 +1085,7 @@ namespace DEMO.Controllers
                                      Respiration = pv.Respiration,
                                      BloodGlucoseLevel = pv.BloodGlucoseLevel,
                                      Temperature = pv.Temperature
-                                 }).OrderBy(ap => ap.Date).ToList();
+                                 }).OrderByDescending(ap => ap.Date).ToList();
 
             var allGoodMedications = _dbContext.PharmacyMedication
                             .Where(pm => !_dbContext.MedicationActiveIngredient
