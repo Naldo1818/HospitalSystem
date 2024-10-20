@@ -821,7 +821,6 @@ namespace DEMO.Controllers
                     AccountID = model.AccountID,
                     DateGiven = model.DateGiven,
                     Urgency = model.Urgency,
-                    Take = model.Take,
                     Status = model.Status,
 
                 };
@@ -963,9 +962,7 @@ namespace DEMO.Controllers
 
                 if (booking != null)
                 {
-                    // Update the existing account with new values
-                    booking.PatientID = model.PatientID;
-                    booking.AccountID = model.AccountID;
+                  
                     booking.SurgeryTime = model.SurgeryTime;
                     booking.SurgeryDate = model.SurgeryDate;
                     booking.Theater = model.Theater;
@@ -973,7 +970,7 @@ namespace DEMO.Controllers
                     _dbContext.SaveChanges();
                 }
 
-                return RedirectToAction("ListSurgery");
+                return RedirectToAction("SurgeonHome");
             }
 
             return View(model);
@@ -1290,6 +1287,11 @@ namespace DEMO.Controllers
                 CurrentMedications = currentMed,
                 Conditions = conditions// Add this property to your view model
             };
+         
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
             var today = DateOnly.FromDateTime(DateTime.Today);
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var surgeryCount = _dbContext.BookSurgery
@@ -1327,10 +1329,12 @@ namespace DEMO.Controllers
             ViewBag.DispensedCount = dispensedCount;
             ViewBag.RejectedCount = rejectedCount;
             ViewBag.PrescriptionID = id;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult AddMedication(MedicationInstructions model)
         {
             if (ModelState.IsValid)
@@ -1545,7 +1549,6 @@ namespace DEMO.Controllers
                                   Surname=p.Surname,
                                   DateGiven = pr.DateGiven,
                                   Urgency = pr.Urgency,
-                                  Take = pr.Take,
                                   Status = pr.Status
                               }).ToList();
 
@@ -1567,7 +1570,6 @@ namespace DEMO.Controllers
                                            PatientSurname = p.Surname,
                                            DateGiven = pr.DateGiven,
                                            Urgency = pr.Urgency,
-                                           Take = pr.Take,
                                            Status = pr.Status,
                                            AccountName = a.Name,
                                            AccountSurname = a.Surname
@@ -1591,7 +1593,6 @@ namespace DEMO.Controllers
                                           PatientSurname = p.Surname,
                                           DateGiven = pr.DateGiven,
                                           Urgency = pr.Urgency,
-                                          Take = pr.Take,
                                           Status = pr.Status,
                                           RejectionReason = rs.RejectionReason,
                                           AccountName = a.Name,

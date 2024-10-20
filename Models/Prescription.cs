@@ -16,9 +16,7 @@ namespace DEMO.Models
 
         [Required]
         public string Urgency { get; set; }
-        [Required]
-        [StringLength(500, ErrorMessage = "Take instructions cannot be longer than 500 characters.")]
-        public string Take { get; set; }
+       
 
         [Required]
         public string Status { get; set; }

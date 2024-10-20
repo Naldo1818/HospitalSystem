@@ -50,9 +50,7 @@ namespace DEMO.ViewModels
         [Required]
         public int PrescriptionID { get; set; }
         
-        [Required]
-        [StringLength(500, ErrorMessage = "Take cannot be longer than 500 characters.")]
-        public string Take { get; set; }
+      
         public DateOnly DateGiven { get; set; }
         public List<PrescriptionListViewModal> AllPrescribedRejected { get; set; }
         public List<PrescriptionListViewModal> AllPrescribedDispensed { get; set; }

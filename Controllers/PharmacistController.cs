@@ -111,7 +111,6 @@ namespace DEMO.Controllers
                                     SurgeonSurname = account.Surname,
                                     DateGiven = prescription.DateGiven,
                                     Urgency = prescription.Urgency,
-                                    Take = prescription.Take,
                                     Status = prescription.Status,
 
                                     // Medication fields
@@ -809,7 +808,6 @@ namespace DEMO.Controllers
                                     SurgeonSurname = account.Surname,
                                     DateGiven = prescription.DateGiven,
                                     Urgency = prescription.Urgency,
-                                    Take = prescription.Take,
                                     Status = prescription.Status,
                                     AdmittedPatientID = ap.AdmittedPatientID,
                                     PrescriptionID = prescription.PrescriptionID,
