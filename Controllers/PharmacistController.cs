@@ -424,6 +424,7 @@ namespace DEMO.Controllers
 
         public ActionResult ViewSpecificPrescription(int? prescriptionid)
         {
+            var validscriptid= _dbContext.Prescription.Find(id)
 
             var allConditions = _dbContext.Condition
      .Select(m => m.ConditionName)
