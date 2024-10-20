@@ -670,47 +670,6 @@ namespace DEMO.Controllers
 
 
 
-       
-
-            //var patient = await _dbContext.Prescription.Select(m=>m.AdmittedPatientID).ToListAsync();
-
-            //RejectedScriptsModel datatoadd = new RejectedScriptsModel();
-            //{
-            //    PrescriptionID= rejectionReason.
-            //};
-
-
-
-
-
-
-        
-
-
-
-
-        //         var currentMed = (from pm in _dbContext.patientMedication
-        //                           join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
-        //                           join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
-        //                           where pm.PatientID == patientid
-        //                           select new PharmacistViewScriptModel
-        //                           {
-        //                               patientname = pi.Name,
-        //                               patientsurname = pi.Surname,
-        //                               patientMedication = cm.MedicationName // Ensure this property exists in your view model
-        //                           }).OrderBy(cm => cm.patientMedication).ToList();
-
-        //         var viewModel = new PharmacistViewScriptModel
-        //         {
-        //             Allvitals = patientVitals,
-        //             Allallergy = allergy,
-        //             AllConditions = conditions,
-        //             AllCurrentMed = currentMed,
-        //             PrescrptionDetails= prescriptiondetails,
-
-
-        //         };
-
 
 
 
@@ -994,20 +953,25 @@ namespace DEMO.Controllers
             }
 
             var combinedData = (from p in _dbContext.PatientInfo
-                                join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
-                                join stc in _dbContext.SurgeryTreatmentCode on bs.BookingID equals stc.BookingID
-                                join tc in _dbContext.TreatmentCodes on stc.TreatmentCodeID equals tc.TreatmentCodeID
-                                where bs.AccountID == accountID
-                                orderby bs.SurgeryDate
-                                select new ReportViewModel
+                                join pp in _dbContext.AdmittedPatients on p.PatientID equals pp.PatientID
+                                join prp in _dbContext.Prescription on pp.AdmittedPatientID equals prp.AdmittedPatientID  
+                                join pharmacist in _dbContext.Accounts on prp.AccountID equals pharmacist.AccountID
+
+                                where prp.AccountID == accountID
+                                orderby prp.DateGiven
+
+                                select new PharmacistReportViewModel
                                 {
-                                    Patient = p.Name + " " + p.Surname,
-                                    SurgeryDate = bs.SurgeryDate,
+                                    PrescriptionDate = prp.DateGiven,                               
+                                    Patient=p.Name + " " + p.Surname,
+                                    Surgeon=pharmacist.Name + " " + pharmacist.Surname,
+
+                                    
                                     TreatmentCode = tc.TreatmentCode,
                                     TreatmentName = tc.TreatmentName
                                 }).ToList();
 
-            var viewModel = new ReportViewModel
+            var viewModel = new PharmacistReportViewModel
             {
                 AllcombinedData = combinedData,
 
