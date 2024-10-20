@@ -28,9 +28,6 @@ namespace DEMO.Models.NurseModels
         public double Temperature { get; set; }
         [Required]
         public TimeOnly time { get; set; }
-        //public string GetFormattedTime()
-        //{
-        //    return time.ToString("HH:mm:ss");
-        //}
+        
     }
 }

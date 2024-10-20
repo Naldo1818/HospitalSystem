@@ -49,7 +49,22 @@ namespace DEMO.ViewModels
         public string WardName { get; set; }
         public string AdmissionStatusDescription { get; set; }
         public int BedNumber { get; set; }
-        public List<AdmissionsListViewModel> AllcombinedData { get; set; }
+        public List<BookedPatientInfo> AllcombinedData { get; set; }
+        public string ActiveIngredientName { get; set; }
+        public string ConditionName { get; set; }
+        public string MedicationName { get; set; }
+        public int SystolicBloodPressure { get; set; }
+        public int DiastolicBloodPressure { get; set; }
+        public int HeartRate { get; set; }
+        public double BloodOxygen { get; set; }
+        public int Respiration { get; set; }
+        public int BloodGlucoseLevel { get; set; }
+        public double Temperature { get; set; }
+
+        public List<BookedPatientInfo> Allvitals { get; set; }
+        public List<BookedPatientInfo> Allallergy { get; set; }
+        public List<BookedPatientInfo> AllCurrentMed { get; set; }
+        public List<BookedPatientInfo> AllConditions { get; set; }
 
 
     }
