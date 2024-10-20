@@ -73,6 +73,14 @@
             }
     </style>
 
+    <style>
+        .medical-history-form {
+            border: 2px solid #000; /* Black border */
+            padding: 20px; /* Space inside the border */
+            border-radius: 8px; /* Optional: rounded corners */
+            margin: 20px; /* Optional: space outside the border */
+        }
+    </style>
 
 
 
@@ -138,48 +146,92 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
 
-    <script>
-        $(document).ready(function () {
-            $('#rejectButton').on('click', function (e) {
-                e.preventDefault();
-                $('#rejectModal').modal('show');
-            });
-
-            $('#confirmReject').on('click', function () {
-                const prescriptionId = $('#rejectButton').data('prescription-id');
-                const reason = $('#rejectionReason').val();
-
-                // Validate reason
-                if (reason.trim() === "") {
-                    alert("Please enter a reason for rejection.");
-                    return;
+     <script>
+        function confirmReject() {
+            const confirmation = confirm("Are you sure you want to reject this script");
+            if (confirmation) {
+                const reason = prompt("Please provide a reason for rejection:");
+                if (reason) {
+                    alert("Rejection reason " + reason + "submitted to  Surgeon");
+                    // Here you can add code to handle the rejection
+                } else {
+                    alert("Rejection cancelled: No reason provided.");
                 }
-
-                // Submit the rejection reason
-                $.ajax({
-                    url: '@Url.Action("RejectScript", "Pharmacist")',
-                    type: 'POST',
-                    data: { id: prescriptionId, reason: reason },
-                    success: function (response) {
-                        $('#rejectModal').modal('hide');
-                        // Optionally, show a success message or reload the page
-                        alert("Prescription rejected successfully.");
-                        location.reload();
-                    },
-                    error: function () {
-                        alert("An error occurred while rejecting the prescription.");
-                    }
-                });
-            });
-        });
+            } else {
+                alert("Rejection cancelled.");
+            }
+        }
     </script>
 </head>
 
 
 
 <body>
-    
-        
+    <center>
+        <h2>Prescription for</h2>
+    </center>
+
+    <!-- Medical History -->
+    <form class="medical-history-form">
+
+        <center><h1>Medical History</h1></center>"
+        <div class="form-group row">
+
+
+
+            <div class="col-md-4">
+                <label for="DosageForm" class="form-label">Conditions</label>
+                <select class="form-control" name="DosageForms" id="DosageForms" asp-for="AllConditions" style="width:300px" >
+                    @foreach (var item in Model.AllConditions)
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </select>
+
+            </div>
+
+            <div class="col-md-4">
+                <label for="DosageForm" class="form-label">Current Medications</label>
+                <select class="form-control" name="DosageForms" id="DosageForms" asp-for="AllCurrentMed" style="width:300px" >
+
+
+                    @foreach (var item in Model.AllCurrentMed)
+                    {
+                        <option value="@item">@item</option>
+                        // Adjust properties based on your model
+                    }
+                </select>
+
+            </div>
+
+            <div class="col-md-4">
+                <label for="DosageForm" class="form-label">Allergies</label>
+                <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Allallergy" style="width:300px" >
+
+
+                    @foreach (var item in Model.Allallergy)
+                    {
+                        <option value="@item">@item</option>
+                        // Adjust properties based on your model
+                    }
+                </select>
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </form>
+
 
         <!-- Vitals History -->
 
@@ -249,117 +301,66 @@
 
 
 
-        <!-- Medical History -->
-    <form >
-        
+
+
+
+
+
+
+
+
+    <form class="medical-history-form">
+        <center>
+            <h2>Prescription Details</h2>
+        </center>
 
         <div class="form-group row">
+            <div class="col-md-4">
+                <label for="MedicationName" class="form-label">Patient Name</label>
+                <input type="text" class="form-control" id="MedicationName" name="MedicationName" value="@Model.patientname" style="width:300px" readonly>
+            </div>
 
-          
+           
+            <div class="col-md-4">
+                <label for="MedicationName" class="form-label">Patient Surname</label>
+                <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="patientsurname" style="width:300px" readonly>
+            </div>
+         
+
+
+           
 
             <div class="col-md-4">
-                <label for="DosageForm" class="form-label">Conditions</label>
-                <select class="form-control" name="DosageForms" id="DosageForms" asp-for="AllConditions" style="width:300px">
-
-
-                    @foreach (var item in Model.AllConditions)
-                    {
-                        <option value="@item">@item</option>
-                        // Adjust properties based on your model
-                    }
-                </select>
-                
+                <label for="ReorderLevel" class="form-label">Surgeon Name</label>
+                <input type="number" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="SurgeonName" style="width:300px" readonly>
             </div>
 
             <div class="col-md-4">
-                <label for="DosageForm" class="form-label">CurrentMed</label>
-                <select class="form-control" name="DosageForms" id="DosageForms" asp-for="AllCurrentMed" style="width:300px">
+                <label for="ReorderLevel" class="form-label">Surgeon Surname</label>
+                <input type="number" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="SurgeonSurname" style="width:300px" readonly>
 
-
-                    @foreach (var item in Model.AllCurrentMed)
-                    {
-                        <option value="@item">@item</option>
-                        // Adjust properties based on your model
-                    }
-                </select>
 
             </div>
 
+           
+
             <div class="col-md-4">
-                <label for="DosageForm" class="form-label">Allergies</label>
-                <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Allallergy" style="width:300px">
+                <label for="ReorderLevel" class="form-label">Prescribed meds</label>
+                <select class="form-control" name="Schedules" id="Schedules" asp-for="patientMedication" style="width:300px">
 
 
-                    @foreach (var item in Model.Allallergy)
-                    {
-                        <option value="@item">@item</option>
-                        // Adjust properties based on your model
-                    }
+              
                 </select>
 
             </div>
 
-
-
-
-
-
-        </div>
-      
-
-
-
-
-
-    </form>
-
-
-
-
-
-
-
-
-    <form>
-        <center><h2>Prescription Details</h2></center>
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label for="patientName" class="form-label">Patient Name</label>
-                <input type="text" class="form-control" id="patientName" asp-for="patientname" readonly size="40">
+            <div class="col-md-4">
+                <label for="StockonHand" class="form-label">Instructions</label>
+                <input type="number" class="form-control" id="StockonHand" name="StockonHand"  value="@Model.Take" style="width:300px" readonly>
             </div>
-            <div class="col-md-6">
-                <label for="patientSurname" class="form-label">Patient Surname</label>
-                <input type="text" class="form-control" id="patientSurname" placeholder="" readonly size="20">
-            </div>
-        </div>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="prescriptionPrescribed" class="form-label">Prescription Prescribed</label>
-                <input type="text" class="form-control" id="prescriptionPrescribed" placeholder="Prescription Prescribed" readonly size="40">
-            </div>
-            <div class="col-md-6">
-                <label for="take" class="form-label">Take</label>
-                <input type="text" class="form-control" id="take" placeholder="" readonly size="20">
-            </div>
-        </div>
 
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="surgeonName" class="form-label">Surgeon Name</label>
-                <input type="text" class="form-control" id="surgeonName" placeholder="" readonly size="40">
-            </div>
-            <div class="col-md-6">
-                <label for="surgeonSurname" class="form-label">Surgeon Surname</label>
-                <input type="text" class="form-control" id="surgeonSurname" placeholder="" readonly size="20">
-            </div>
-        </div>
 
-        <div class="row mb-3">
-            <div class="col-md-12">
-                <label for="urgent" class="form-label">Urgent</label>
-                <input type="text" class="form-control" id="urgent" placeholder="" readonly size="40">
-            </div>
         </div>
     </form>
 
@@ -419,53 +420,11 @@
         }
     </script>
 
-    @* <a asp-action="RejectScript" asp-controller="Pharmacist" class="btn btn-primary">Reject</a> *@
 
 
 
 
-    <button id="rejectBtn">Reject</button>
-
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Reason for Rejection</h3>
-            <textarea id="reason" rows="4" placeholder="Enter your reason here..."></textarea><br>
-            <button id="submitReason">Submit</button>
-        </div>
-    </div>
-
-    <script>
-        const modal = document.getElementById("myModal");
-        const btn = document.getElementById("rejectBtn");
-        const span = document.getElementsByClassName("close")[0];
-        const submitBtn = document.getElementById("submitReason");
-
-        btn.onclick = function () {
-            modal.style.display = "block";
-        }
-
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-
-        submitBtn.onclick = function () {
-            const reason = document.getElementById("reason").value;
-            if (reason.trim() === "") {
-                alert("Please provide a reason for rejection.");
-            } else {
-                alert("Application rejected for the following reason: " + reason);
-                modal.style.display = "none";
-                document.getElementById("reason").value = ""; // Clear the textarea
-            }
-        }
-    </script>
+ <button onclick="confirmReject()">Reject</button>
     <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
 
@@ -480,16 +439,9 @@
 
 
     <!-- jQuery and Bootstrap JS -->
-    @* <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> *@
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> 
 
-  @*   <script>
-        $(document).ready(function () {
-            $('#confirmRejectButton').click(function () {
-                $('#rejectModal').modal('hide');
-                alert('Script rejected successfully.');
-            });
-        });
-    </script> *@
+     
 </body>
 </html>
