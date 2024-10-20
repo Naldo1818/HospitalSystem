@@ -86,11 +86,22 @@ namespace DEMO.ViewModels
 
         public List<PharmacistViewScriptModel> combinedData { get; set; }
 
- public List<string> Allallergy { get; set; }
+ public List<PharmacistViewScriptModel> Allallergy { get; set; }
 
-        public List<string> AllCurrentMed { get; set; }
+        public List<PharmacistViewScriptModel> AllCurrentMed { get; set; }
 
-        public List<string> AllConditions { get; set; }
+        public List<PharmacistViewScriptModel> AllConditions { get; set; }
+
+
+        public string Instructions { get; set; }
+
+        public int qty { get; set; }
+
+        public string medication { get; set; }
+
+
+        public List<string> allpresribedmeds { get; set; }
+
 
 
         //public List<PharmacistViewScriptModel> PrescriptionDetails {  get; set; }

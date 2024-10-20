@@ -100,10 +100,12 @@
                                 @foreach (var Data in Model.AllcombinedData)
                                 {
                                     <tr>
-                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.PrescriptionDate</td>
                                         <td>@Data.Patient</td>
-                                        <td>@Data.TreatmentName</td>
-                                        <td>@Data.TreatmentCode</td>
+                                        <td>@Data.Surgeon</td>
+                                        <td>@Data.Medication</td>
+                                        <td>@Data.qty</td>
+                                        <td>@Data.status</td>
                                     </tr>
                                 }
                             </tbody>
@@ -115,12 +117,12 @@
                             Total Scripts Rejected: <span id="totalPatients">0</span>
                         </div>
 
-                        <h3>Summary Per  Medicine:</h3>
+                        <h3>SUMMARY PER MEDICINE:</h3>
                         <table id="Summary" class="table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Medcicne</th>
-                                    <th scope="col">Qty Dispensed</th>
+                                    <th scope="col">MEDICINE</th>
+                                    <th scope="col">QTY ORDERED</th>
                                 </tr>
                             </thead>
                             <tbody id="summaryBody">

@@ -586,7 +586,7 @@ namespace DEMO.Controllers
         //}
 
 
-        [HttpGet]
+       
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
             // Retrieve the specific prescription using the provided id
@@ -596,33 +596,45 @@ namespace DEMO.Controllers
             {
                 return NotFound();
             }
-
-            var admittedpatientid= prescription.AdmittedPatientID;
-
-    
+            
 
 
 
 
 
-            var allConditions = await _dbContext.Condition
-                .Select(m => m.ConditionName)
-                .Distinct()
-                
-                .OrderBy(name => name)
-                .ToListAsync();
 
-            var allAllergies = await _dbContext.Activeingredient
-                .Select(m => m.ActiveIngredientName)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToListAsync();
 
-            var currentMeds = await _dbContext.Medication
-                .Select(m => m.MedicationForm)
-                .Distinct()
-                .OrderBy(name => name)
-                .ToListAsync();
+            var patientConditions = await (from c in _dbContext.Condition
+                                           join pc in _dbContext.PatientConditions
+                                           on c.ConditionID equals pc.ConditionsID
+
+                                           select new PharmacistViewScriptModel
+                                           {
+                                               Condition = c.ConditionName
+                                           })
+                                            .ToListAsync();
+
+            var currentmeds = await (from m in _dbContext.Medication
+                                           join cm in _dbContext.patientMedication
+                                           on m.MedicationID equals cm.MedicationID
+
+                                           select new PharmacistViewScriptModel
+                                           {
+                                               patientMedication=m.MedicationName
+                                           })
+                                           .ToListAsync();
+
+            var allalergies = await (from ai in _dbContext.Activeingredient
+                                     join pa in _dbContext.PatientAllergy
+                                     on ai.ActiveingredientID equals pa.ActiveingredientID
+
+                                     select new PharmacistViewScriptModel
+                                     {
+                                         allergy = ai.ActiveIngredientName
+                                     })
+                                        .ToListAsync();
+
+
 
             // Get the specific prescription data along with related patient information
             var alldata = await (from p in _dbContext.Prescription
@@ -630,6 +642,10 @@ namespace DEMO.Controllers
                                  join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
                                  join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
                                  join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+
+                                 join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                               
                                  where p.PrescriptionID == pid // Filter by prescription ID
                                  select new PharmacistViewScriptModel
                                  {
@@ -650,6 +666,11 @@ namespace DEMO.Controllers
                                      Temperature = pv.Temperature,
                                      SurgeonName = account.Name,
                                      SurgeonSurname = account.Surname,
+                                   
+
+                                     qty= mi.Quantity,
+                                     Instructions = mi.Instructions, 
+                                     medication=m.MedicationName,
                                  })
                                   .ToListAsync();
 
@@ -657,9 +678,9 @@ namespace DEMO.Controllers
             var viewModel = new PharmacistViewScriptModel
             {
                 combinedData = alldata, // Ensure property names match your model's definition
-                Allallergy = allAllergies,
-                AllConditions = allConditions,
-                AllCurrentMed = currentMeds,
+                Allallergy = allalergies,
+                AllConditions = patientConditions,
+                AllCurrentMed = currentmeds,
             };
 
             return View(viewModel);
@@ -956,6 +977,7 @@ namespace DEMO.Controllers
                                 join pp in _dbContext.AdmittedPatients on p.PatientID equals pp.PatientID
                                 join prp in _dbContext.Prescription on pp.AdmittedPatientID equals prp.AdmittedPatientID  
                                 join pharmacist in _dbContext.Accounts on prp.AccountID equals pharmacist.AccountID
+                                
 
                                 where prp.AccountID == accountID
                                 orderby prp.DateGiven
@@ -965,10 +987,10 @@ namespace DEMO.Controllers
                                     PrescriptionDate = prp.DateGiven,                               
                                     Patient=p.Name + " " + p.Surname,
                                     Surgeon=pharmacist.Name + " " + pharmacist.Surname,
+                                    status = prp.Status,
 
-                                    
-                                    TreatmentCode = tc.TreatmentCode,
-                                    TreatmentName = tc.TreatmentName
+
+
                                 }).ToList();
 
             var viewModel = new PharmacistReportViewModel
