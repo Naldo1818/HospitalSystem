@@ -81,41 +81,45 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (Model.combinedData != null && Model.combinedData.Count > 0)
+                                {
+                                    @foreach (var item in Model.combinedData)
+                                    {
 
-                                @foreach (var item in Model.combinedData)
-                              {
-                                  
-                                    <tr >
-                                        <td>@item.Name</td>
-                                        <td>@item.Surname</td>
-                                        <td>@item.SurgeonName</td>
-                                        <td>@item.SurgeonSurname</td>
-                                        <td>@item.DateGiven</td>
-                                        <td>@item.Status</td>                               
+                                        <tr>
+                                            <td>@item.Name</td>
+                                            <td>@item.Surname</td>
+                                            <td>@item.SurgeonName</td>
+                                            <td>@item.SurgeonSurname</td>
+                                            <td>@item.DateGiven</td>
+                                            <td>@item.Status</td>
 
-                                        <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
-                                            @item.Urgency
-                                        </td>
-
-
-                                        <td>
+                                            <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
+                                                @item.Urgency
+                                            </td>
 
 
-                                           
-                                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription">View</a>
-
-
-                                        </td>
-
-                                        
-                                      
-                                        
+                                            <td>
 
 
 
-                                  </tr>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription">View</a>
 
-                              }
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription" asp-route-AdmittedPatientID="@item.AdmittedPatientID">View</a>
+
+                                            </td>
+
+
+
+
+
+
+
+                                        </tr>
+
+                                    }
+                                }
+                                
                                
                             </tbody>
                         </table>

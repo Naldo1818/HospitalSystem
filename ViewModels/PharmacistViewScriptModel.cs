@@ -16,7 +16,9 @@ namespace DEMO.ViewModels
 
         //prescription
 
-        public int PatientID {  get; set; }  
+        public int PatientID {  get; set; } 
+        
+        public int AdmittedPatientID { get; set; }  
 
         public int PrescriptionID {  get; set; }    
 
