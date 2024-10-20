@@ -179,13 +179,16 @@ namespace DEMO.Controllers
 
             // Fetch medication schedules
             var medSchedules = _dbContext.Medication
-                                         .Select(m => m.Schedule)
-                                         .Distinct()
-                                         .ToList();
+                              .Select(m => m.Schedule)
+                              .Distinct()
+                              .OrderBy(schedule => schedule) // Order by ascending
+                              .ToList();
+
+
 
 
             //Fetch Active Ingredients
-            
+
 
 
 
@@ -207,27 +210,33 @@ namespace DEMO.Controllers
                 .ToString();
 
 
+
+
             var activeingredientslist = _dbContext.Activeingredient
+                                   .Select(m => m.ActiveIngredientName)
+                                   .Distinct()
+                                   .OrderBy(name => name) // Order in alphabetical order
+                                   .ToList();
+
+
+
+
+
+
+
+            var active = _dbContext.Activeingredient
                 .Select(m => m.ActiveIngredientName)
                 .Distinct()
-                .ToList();
-
-
-
-
-
-
-            var actives = _dbContext.Activeingredient
-                .Select(m => m.ActiveIngredientName)
-                .Distinct()
-                .ToList();
+                .ToString();
 
 
 
             var dfdropdown = _dbContext.Medication
-               .Select(m => m.MedicationForm)
-               .Distinct()
-               .ToList();
+                            .Select(m => m.MedicationForm)
+                            .Distinct()
+                            .OrderBy(form => form) // Order by ascending
+                            .ToList();
+
 
 
 
@@ -240,7 +249,12 @@ namespace DEMO.Controllers
                 
                 Schedules=medSchedules,
                 DosageForms=dfdropdown,
-                combinedinfo=combinedData,
+                ActiveIngredientsDropdown=activeingredientslist,
+                
+
+
+                combinedinfo =combinedData,
+
               
                 
 
@@ -311,18 +325,41 @@ namespace DEMO.Controllers
             // Fetch schedules
 
             //model.Schedules=sched
+            
+
+
             var schedules = _dbContext.Medication
-                   .Select(m => m.Schedule)
-                   .Distinct()
-                   .ToList();
+                              .Select(m => m.Schedule)
+                              .Distinct()
+                              .OrderBy(schedule => schedule) // Order by ascending
+                              .ToList();
 
             var dosageforms = _dbContext.Medication
                 .Select(m => m.MedicationForm)
                 .Distinct()
+                .OrderBy(form => form)  
                 .ToList();
 
-           
+         
 
+            var activeingredientslist = _dbContext.Activeingredient
+                                 .Select(m => m.ActiveIngredientName)
+                                 .Distinct()
+                                 .OrderBy(name => name) // Order in alphabetical order
+                                 .ToList();
+
+
+
+
+
+
+
+            var active = _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .ToString();
+
+            model.ActiveIngredientsDropdown=activeingredientslist;
             model.Schedules=schedules;
             model.DosageForms=dosageforms;
             return View(model);
@@ -335,7 +372,60 @@ namespace DEMO.Controllers
 
 
 
+        public IActionResult ViewAddedMedication()
+        {
+            var combinedData = (from m in _dbContext.Medication
+                                join pm in _dbContext.PharmacyMedication
+                                on m.MedicationID equals pm.MedicationID
+                                join pmm in _dbContext.PharmacyMedicationModel
+                                on m.MedicationID equals pmm.MedicationID
 
+
+
+
+
+
+                                select new PharmacyMedicationViewModel
+
+
+                                {
+                                    MedicationName = m.MedicationName,
+                                    MedicationForm = m.MedicationForm,
+                                    Schedule = m.Schedule,
+                                    StockonHand = pm.StockonHand,
+                                    ReorderLevel = pm.ReorderLevel,
+
+
+
+
+
+
+                                })
+
+                                .ToList();
+
+            var viewModel = new PharmacyMedicationViewModel
+            {
+
+
+                
+                combinedinfo = combinedData,
+
+
+
+
+
+
+
+
+
+
+
+
+
+            };
+            return View(viewModel);  
+        }
 
 
 
