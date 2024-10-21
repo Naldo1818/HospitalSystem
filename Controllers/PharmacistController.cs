@@ -611,6 +611,7 @@ namespace DEMO.Controllers
             var patientConditions = await (from c in _dbContext.Condition
                                            join pc in _dbContext.PatientConditions
                                            on c.ConditionID equals pc.ConditionsID
+                                         
 
                                            select new PharmacistViewScriptModel
                                            {
@@ -716,6 +717,9 @@ namespace DEMO.Controllers
             {
                 return RedirectToAction("ViewAllActivePrescriptions", "Pharmacist"); // Redirect to login page if account ID is not valid
             }
+
+
+            
 
             // Find the prescription by ID
             var prescription = await _dbContext.Prescription.FindAsync(model.PrescriptionID);

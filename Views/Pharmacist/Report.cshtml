@@ -57,9 +57,7 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form>
-                            <center>
-                                <h1>DISPENSARY REPORT</h1>
-                            </center>
+                            
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
@@ -76,12 +74,27 @@
                     </div>
                 </div>
             </div>
+
             <div class="row" style="width:auto">
                 <div class="col">
+                   
                     <div class="p-3 mt-6 border" style="background-color: white;">
-                        <h2>Reports of @ViewBag.UserName @ViewBag.UserSurname:</h2>
-                        <h2>Report Generated:<span id="todayDate"></span></h2>
-                        <h2>Date Range: <span id="selectedDateRange"></span></h2>
+                        <center>
+                            <h1>DISPENSARY REPORT</h1>
+                        </center>
+
+                        <center> <h2>@ViewBag.UserName @ViewBag.UserSurname:</h2></center>
+
+                      
+
+                       
+                            <h2>Date Range: <span id="selectedDateRange"></span></h2>
+                            <h2>Report Generated: <span id="todayDate"></span></h2>
+                      
+                       
+                         
+                       
+                        
 
                         <table id="Surgeries" class="table" style="width:100%">
                             <thead>
@@ -111,11 +124,14 @@
                             </tbody>
                         </table>
                         <div class="totals">
-                            Total Scripts Dispensed: <span id="totalPatients">0</span>
+                            TOTAL SCRIPTS DISPENSED: <span id="totalPatients">0</span>
                         </div>
                         <div class="totals">
-                            Total Scripts Rejected: <span id="totalPatients">0</span>
+                            TOTAL SCRIPTS REJECTED: <span id="totalPatients">0</span>
                         </div>
+
+                        <br />
+                        <br />
 
                         <h3>SUMMARY PER MEDICINE:</h3>
                         <table id="Summary" class="table" style="width:100%">

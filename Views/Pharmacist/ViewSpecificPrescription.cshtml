@@ -206,7 +206,7 @@
     <!-- Medical History -->
     <form class="medical-history-form">
 
-        <center><h1>Medical History</h1></center>"
+        <center><h1>Medical History</h1></center>
         <div class="form-group row">
 
            
@@ -216,11 +216,15 @@
                     <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
                         @foreach (var item in Model.AllConditions)
                         {
-                            <option value="@item.Condition"></option>
+                        <option value="@item">@item></option>
                         }
                     </select>
 
                 </div>
+
+            
+                 
+            
 
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Current Medications</label>
@@ -229,7 +233,7 @@
 
                         @foreach (var item in Model.AllCurrentMed)
                         {
-                            <option value="@item.patientMedication"></option>
+                        <option value="@item">@item></option>
                             // Adjust properties based on your model
                         }
                     </select>
@@ -243,14 +247,14 @@
 
                         @foreach (var item in Model.Allallergy)
                         {
-                            <option value="@item.allergy"></option>
+                        <option value="@item">@item></option>
                             // Adjust properties based on your model
                         }
                     </select>
 
                 </div>
 
-            }
+            
 
 
 
