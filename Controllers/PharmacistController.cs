@@ -176,8 +176,8 @@ namespace DEMO.Controllers
                     // Create email message
                     var emailMessage = new MimeMessage();
                     emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
-                    emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "sam12mensah@gmail.com"));
-                    emailMessage.Subject = "Stock Order Request";
+                    emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "nmostert@nmmu.ac.za"));
+                    emailMessage.Subject = $"Stock Order Request {bitmap}";
 
                     var builder = new BodyBuilder();
                     builder.Attachments.Add("StockOrder.png", ms.ToArray());
@@ -189,8 +189,9 @@ namespace DEMO.Controllers
                         using (var client = new MailKit.Net.Smtp.SmtpClient())
                         {
                             await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                            await client.AuthenticateAsync("sam12mensah@gmail.com", "xqqx kiox hcgm xvmr");
+                            await client.AuthenticateAsync("nmostert@nmmu.ac.za", "xqqx kiox hcgm xvmr");
                             await client.SendAsync(emailMessage);
+                            await client.DisconnectAsync(true);
                         }
 
                         return Ok("Email sent successfully");
