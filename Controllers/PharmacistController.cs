@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using static DEMO.Controllers.PharmacistController;
+using DEMO.Models.NurseModels;
 
 
 
@@ -75,7 +76,7 @@ namespace DEMO.Controllers
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
                                 on pm.MedicationID equals m.MedicationID
-                                //where pm.StockonHand <= pm.ReorderLevel
+                                where pm.StockonHand <= pm.ReorderLevel
                                 select new PharmacistStockOrderViewModel
                                 {
                                     MedicationID = m.MedicationID,
@@ -118,6 +119,7 @@ namespace DEMO.Controllers
             var medicationsToReorder = await (from pm in _dbContext.PharmacyMedication
                                               join m in _dbContext.Medication
                                               on pm.MedicationID equals m.MedicationID
+                                              where pm.StockonHand <= pm.ReorderLevel
                                               select new
                                               {
                                                   MedicationName = m.MedicationName,
@@ -666,6 +668,54 @@ namespace DEMO.Controllers
                 .ToListAsync();
 
 
+           
+
+            var pallergy = await (from p in _dbContext.Prescription
+                                  join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                  join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                           join pa in _dbContext.PatientAllergy on pi.PatientID equals pa.PatientID
+                           join ai  in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                                  where p.PrescriptionID== pid
+
+                           select new PharmacistViewScriptModel
+                           {
+                               
+                               ActiveIngredientName = ai.ActiveIngredientName
+                           })
+            .OrderBy(ai => ai.ActiveIngredientName)
+            .ToListAsync();
+
+
+            var pconditions = await (from p in _dbContext.Prescription
+                                     join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                     join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                     join pc in _dbContext.PatientConditions on pi.PatientID equals pc.PatientID
+                                     join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
+                                     where p.PrescriptionID == pid
+
+                                     select new PharmacistViewScriptModel
+                                     {
+
+                                         Condition = c.ConditionName,
+                                     })
+            .OrderBy(ai => ai.Condition)
+            .ToListAsync(); ;
+
+            var pcurrentMed = await (from p in _dbContext.Prescription
+                                     join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                     join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                     join pm in _dbContext.patientMedication on pi.PatientID equals pm.PatientID
+                                     join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+                                     where p.PrescriptionID == pid
+
+                                     select new PharmacistViewScriptModel
+                                     {
+
+                                         medication = m.MedicationName,
+                                     })
+            .OrderBy(ai => ai.Condition)
+            .ToListAsync(); ;
+
 
 
             // Get the specific prescription data along with related patient information
@@ -706,7 +756,13 @@ namespace DEMO.Controllers
                                  })
                                   .ToListAsync();
 
-            // Create the view model with combined data and additional information
+
+
+
+
+
+            //This is the correct one in case of hurry
+
             var viewModel = new PharmacistViewScriptModel
             {
                 combinedData = alldata, // Ensure property names match your model's definition
@@ -843,7 +899,30 @@ namespace DEMO.Controllers
 
         public ActionResult ViewAllOrders()
         {
-            return View();
+
+            // Query to get the medications that need to be reordered
+            var combinedData = (from pm in _dbContext.PharmacyMedication
+                                join m in _dbContext.Medication
+                                on pm.MedicationID equals m.MedicationID
+                                
+                                select new PharmacistStockOrderViewModel
+                                {
+                                    MedicationID = m.MedicationID,
+                                    MedicationName = m.MedicationName,
+                                    MedicationForm = m.MedicationForm,
+                                    Schedule = m.Schedule,
+                                    StockonHand = pm.StockonHand,
+                                    ReorderLevel = pm.ReorderLevel
+
+                                }).ToList();
+
+            var viewModel = new PharmacistStockOrderViewModel
+            {
+                PharmacistStockOrders = combinedData
+            };
+
+            // Pass the list of data to the view
+            return View(viewModel);
         }
 
 
