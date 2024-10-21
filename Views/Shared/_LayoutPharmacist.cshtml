@@ -1,12 +1,10 @@
-﻿
-
-@{
-    // var userAccountId = Context.Session.GetString("UserAccountId");
+﻿@{
+     var userAccountId = Context.Session.GetString("UserAccountId");
 
     var userName = Context.Session.GetString("UserName");
     var userSurname = Context.Session.GetString("UserSurname");
     var userEmail = Context.Session.GetString("UserEmail");
-} 
+}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/site3.css" rel="stylesheet">
 
-    
+
 </head>
 
 
@@ -41,8 +39,8 @@
     <div class="container" style="float:right">
         <main role="main" class="">
             <div class="row">
-                <div class="col-md-9" >
-    @RenderBody()
+                <div class="col-md-9">
+                    @RenderBody()
                 </div>
                 <div class="card mt-5 custom-card" style="width:200px">
 
@@ -50,20 +48,20 @@
                         <h5 class="card-title text-center">Logged in as Pharmacist: </h5>
                         <p>@ViewBag.UserName @ViewBag.UserSurname</p>
 
-                      <br />
-                      
-                        <p>@ViewBag.UserEmail</p>
+                        <br />
+
+
 
                         <br>
                         <p class="card-text text-center">Active prescriptions</p>
-                        
-                       
-                        
+
+
+
                         <br>
 
                         <p class="card-text text-center">Received stock</p>
-                     
-                       
+
+
 
 
                         <hr>
@@ -75,7 +73,7 @@
 
 
 
-    
+
 
     <!--Left Main Menu Sidebar-->
     <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
@@ -86,13 +84,13 @@
         <div class="offcanvas-body">
             <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
-                   
-                 <br />
+
+                    <br />
 
                     <strong>
                         <header>DISPENSING</header>
                     </strong>
-            
+
                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllPrescriptions">View all prescriptions</a>
                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">View open prescriptions</a>
 
@@ -101,25 +99,25 @@
                     <strong>
                         <header>STOCK CONTROL</header>
                     </strong>
-                   
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="AddMedication">Add Medication</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAddedMedication">View Added Medication</a>
 
-                    
-                    
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="StockOrderPage">Order Stock</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllOrders">View Stock Orders</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="IncomingStockPage">View Received Stock and Update Current levels</a>
-@*                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewCurrentLevels">View Current levels</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="AddMedication">Add Medication</a>
+@*                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAddedMedication">View Added Medication</a>
  *@
 
 
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="StockOrderPage">Order Stock</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllOrders">View Stock Orders</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="IncomingStockPage">View Received Stock and Update Current levels</a>
+                    @*                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewCurrentLevels">View Current levels</a>
+                    *@
 
-                    
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewDailyUsageReport">Report</a>
-                    
-                    
-                    
+
+
+
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="Report">Report</a>
+
+
+
                     <br />
                     <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="Index">Log out</a>
 
@@ -127,21 +125,21 @@
             </ul>
         </div>
     </div>
-   
 
 
-  
-    
 
-  
-    
+
+
+
+
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js">
-        
+
     </script>
 
 
-   
+
 </body>
 </html>

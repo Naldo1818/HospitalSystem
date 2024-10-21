@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using MimeKit;
 using MailKit.Net.Smtp;
+using Microsoft.Identity.Client;
 
 namespace DEMO.Controllers
 {
@@ -20,50 +21,25 @@ namespace DEMO.Controllers
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-        public IActionResult AdminHome(int accountId)
-        {// Try to get data from session first
-            //var accountID = HttpContext.Session.GetString("UserAccountId");
-            //var name = HttpContext.Session.GetString("UserName");
-            //var surname = HttpContext.Session.GetString("UserSurname");
-            //var email = HttpContext.Session.GetString("UserEmail");
+        public IActionResult AdminHome()
+        {
 
-            //if (!string.IsNullOrEmpty(accountID) && !string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(surname) && !string.IsNullOrEmpty(email))
-            //{
-            //    // Use existing session data
-            //    ViewBag.UserName = accountID;
-            //    ViewBag.UserName = name;
-            //    ViewBag.UserSurname = surname;
-            //    ViewBag.UserEmail = email;
-            //}
-            //else
-            //{
-            //    // Retrieve from database if not in session
-                var admin = _dbContext.Accounts
-                    .Where(a => a.AccountID == accountId)
-                    .Select(a => new AdminViewModel
-                    {
-                        AccountID = a.AccountID,
-                        Name = a.Name,
-                        Surname = a.Surname,
-                        Email = a.Email
-                    })
-                    .SingleOrDefault();
+            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
-                if (admin == null)
-                {
-                    return NotFound();
-                }
+            var totalUsers = _dbContext.Accounts.Count();
+            var totalMedications = _dbContext.Medication.Count();
+            var totalTreatmentCodes = _dbContext.TreatmentCodes.Count();
 
-                // Store user data in session
-                HttpContext.Session.SetString("UserAccountId", admin.AccountID.ToString());
-                HttpContext.Session.SetString("UserName", admin.Name);
-                HttpContext.Session.SetString("UserSurname", admin.Surname);
-                HttpContext.Session.SetString("UserEmail", admin.Email);
-
-                ViewBag.UserAccountID = admin.AccountID.ToString();
-                ViewBag.UserName = admin.Name;
-                ViewBag.UserSurname = admin.Surname;
-                ViewBag.UserEmail = admin.Email;
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalMedications = totalMedications;
+            ViewBag.TotalTreatmentCodes = totalTreatmentCodes;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             //}
             return View();
         }
@@ -82,7 +58,13 @@ namespace DEMO.Controllers
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
 
+            var totalUsers = _dbContext.Accounts.Count();
+            var totalMedications = _dbContext.Medication.Count();
+            var totalTreatmentCodes = _dbContext.TreatmentCodes.Count();
 
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalMedications = totalMedications;
+            ViewBag.TotalTreatmentCodes = totalTreatmentCodes;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -131,6 +113,22 @@ namespace DEMO.Controllers
                 return NotFound(); // Return 404 if user is not found
             }
 
+            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var totalUsers = _dbContext.Accounts.Count();
+            var totalMedications = _dbContext.Medication.Count();
+            var totalTreatmentCodes = _dbContext.TreatmentCodes.Count();
+
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalMedications = totalMedications;
+            ViewBag.TotalTreatmentCodes = totalTreatmentCodes;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             // Prepare the view model
             var viewModel = new EmailViewModel
             {
@@ -317,6 +315,13 @@ namespace DEMO.Controllers
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
 
+            var totalUsers = _dbContext.Accounts.Count();
+            var totalMedications = _dbContext.Medication.Count();
+            var totalTreatmentCodes = _dbContext.TreatmentCodes.Count();
+
+            ViewBag.TotalUsers = totalUsers;
+            ViewBag.TotalMedications = totalMedications;
+            ViewBag.TotalTreatmentCodes = totalTreatmentCodes;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;

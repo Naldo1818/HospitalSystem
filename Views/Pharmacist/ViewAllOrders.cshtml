@@ -1,67 +1,230 @@
 ﻿@{
-    ViewData["Title"] = "AllOrders";
+    ViewData["Title"] = "OrderStock";
     Layout = "_LayoutPharmacist";
-    
+
 }
+
+
+@model DEMO.ViewModels.PharmacistStockOrderViewModel
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .active-tab {
+            background-color: teal;
+            color: white;
+        }
+
+        .container {
+            padding-top: 50px;
+        }
+
+        .form-card {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .row-two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+            .row-two-columns .email-group {
+                flex: 1 1 48%;
+            }
+
+        .email-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .email-group {
+            text-align: left;
+        }
+
+            .email-group input,
+            .email-group textarea,
+            .email-group select {
+                padding: 10px;
+                padding-left: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+                color: #333;
+                width: 100%;
+                max-width: 400px;
+                box-sizing: border-box;
+                height: 40px;
+                margin: 0;
+            }
+
+            .email-group textarea {
+                height: auto;
+                min-height: 40px;
+                resize: vertical;
+            }
+
+        .header-labels {
+            text-align: left;
+            margin-bottom: 20px;
+            padding-left: 50px;
+        }
+
+            .header-labels label {
+                display: block;
+                margin-bottom: 10px;
+                font-size: 18px;
+                color: #333;
+            }
+
+        .form-card hr {
+            margin: 20px 0;
+        }
+    </style>
+
+    <script>
+        function filterTable() {
+            // Get the value of the search input
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('myTable');
+            const rows = table.getElementsByTagName('tr');
+
+            // Loop through all table rows, except the first (header row)
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let rowContainsText = false;
+
+                // Loop through each cell in the row
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const cellText = cells[j].textContent || cells[j].innerText;
+                        if (cellText.toLowerCase().indexOf(input) > -1) {
+                            rowContainsText = true;
+                            break;
+                        }
+                    }
+                }
+                // Show or hide the row based on the search input
+                rows[i].style.display = rowContainsText ? '' : 'none';
+            }
+        }
+    </script>
+</head>
 
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-           
-
-
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-                        <!-- Your table content here -->
-                        <table class="table">
-                            <h1><center>Medication Stock Orders</center></h1>
-                            <thead>
-                                <tr>
-                                    <th scope="col">Medication Name</th>
-                                    <th scope="col">Amount ordered</th>
-                                    
-                                    <th scope="col">Order status</th>
-
-                                    <!-- More table headers can be added here -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Panado</td>
-                                    <td>14</td>
-                                    <td>Fulfilled</td>
-
-                                    
-                                    <!-- More table data can be added here -->
-                                </tr>
-
-                              
-                              
-                            </tbody>
-
-
-                            <tbody>
-                                <tr>
-                                    <td>Disprin</td>
-                                    <td>14</td>
-                                    <td>Placed</td>
-
-
-                                    <!-- More table data can be added here -->
-                                </tr>
 
 
 
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-@*             <a asp-action="PharmacistHomePage" asp-controller="Pharmacist" class="btn btn-primary btn-lg">Back</a>
- *@        </main>
+
+
+
+    <!--Stock that needs to be ordered. Auto order-->
+    <div class="p-3 mt-5 border">
+        <!-- Your table content here -->
+        <h1><center>Medication Stock Orders</center></h1>
+        <center>
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+
+        </center>
+
+
+
+        <table class="table">
+
+
+
+
+
+            <thead>
+                <tr>
+                    <th scope="col">Medication Name</th>
+                    <th scope="col">Dosage Form</th>
+                    <th scope="col">Stock on Hand</th>
+                    <th scope="col">Re-order level</th>
+                    <th scope="col">Quantity ordered</th>
+                    <th scope="col">Status</th>
+
+
+
+
+                    <!-- More table headers can be added here -->
+                </tr>
+            </thead>
+            <tbody id="myTable">
+
+                @foreach (var stock in Model.PharmacistStockOrders)
+                {
+                    <tr>
+                        <td>@stock.MedicationName</td>
+                        <td>@stock.MedicationForm</td>
+                        <td>@stock.StockonHand</td>
+                        <td>@stock.ReorderLevel</td>
+                        <td>@stock.qty</td>
+                        
+                    </tr>
+                }
+
+
+
+
+            </tbody>
+
+
+
+
+        </table>
+
+        
+
+
+
+
+
+ 
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
+
 </body>
 </html>

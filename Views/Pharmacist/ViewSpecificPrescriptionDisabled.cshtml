@@ -143,39 +143,7 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
 
-    <script>
-        async function confirmReject() {
-            const confirmation = confirm("Are you sure you want to reject this script?");
-            if (confirmation) {
-                const reason = prompt("Please provide a reason for rejection:");
-                if (reason) {
-                    try {
-                        const response = await fetch('/Pharmacist/ViewSpecificPrescription', {  // Adjust the endpoint as necessary
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ reason }),
-                        });
-
-                        if (response.ok) {
-                            alert("Rejection reason submitted to the Surgeon: " + reason);
-                            // Redirect to another page after successful submission
-                            window.location.href = '/ViewAllPrescriptions'; // Adjust the URL for the redirection
-                        } else {
-                            alert("Failed to submit the rejection reason.");
-                        }
-                    } catch (error) {
-                        alert("Error submitting rejection reason: " + error.message);
-                    }
-                } else {
-                    alert("Rejection cancelled: No reason provided.");
-                }
-            } else {
-                alert("Rejection cancelled.");
-            }
-        }
-    </script>
+ 
 
 </head>
 
@@ -197,34 +165,23 @@
 
 
 
-
-
-
-    
-
-
     <!-- Medical History -->
     <form class="medical-history-form">
 
-        <center><h1>Medical History</h1></center>
+        <center><h1>Medical History</h1></center>"
         <div class="form-group row">
 
-           
-            
-                <div class="col-md-4">
+         
+               @*  <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Conditions</label>
                     <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
                         @foreach (var item in Model.AllConditions)
                         {
-                        <option value="@item">@item</option>
+                            <option value="@item.Condition"></option>
                         }
                     </select>
 
                 </div>
-
-            
-                 
-            
 
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Current Medications</label>
@@ -233,7 +190,7 @@
 
                         @foreach (var item in Model.AllCurrentMed)
                         {
-                        <option value="@item">@item</option>
+                            <option value="@item.patientMedication"></option>
                             // Adjust properties based on your model
                         }
                     </select>
@@ -247,12 +204,12 @@
 
                         @foreach (var item in Model.Allallergy)
                         {
-                        <option value="@item">@item</option>
+                            <option value="@item.allergy"></option>
                             // Adjust properties based on your model
                         }
                     </select>
 
-                </div>
+                </div> *@
 
             
 
@@ -369,8 +326,8 @@
 
 
 
-                                
-                                
+                                @if (Model.combinedData.Any())
+                                {
                                     <tr>
 
                                         <td>@Model.combinedData.First().patientname</td>
@@ -390,7 +347,7 @@
 
 
                                     </tr>
-                                
+                                }
 
 
                             </tbody>
@@ -405,46 +362,33 @@
 
 
 
- 
 
 
 
 
 
 
-   <!-- Trigger/Open The Modal -->
-<button id="myBtn">Dispense</button>
 
-<!-- The Modal -->
-<div id="myModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="modal-header">
-            <span class="close">&times;</span>
-            <h2>Prescription Dispensed</h2>
-        </div>
-        <div class="modal-body">
-            <p>The prescription has been successfully dispensed and the stock quantity has been reduced</p>
-        </div>
-        <div class="modal-footer">
-            <button id="okayBtn" class="btn">Okay</button>
+
+    <!-- Trigger/Open The Modal -->
+    <button id="myBtn">Dispense</button>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Prescription Dispensed</h2>
+            </div>
+            <div class="modal-body">
+                <p>The prescription has been successfully dispensed</p>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn">Okay</a>
+            </div>
         </div>
     </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     <!--Script for modal-->
@@ -477,44 +421,10 @@
     </script>
 
 
-    <script>
-            const rejectModal = document.getElementById('rejectModal');
-        const rejectButton = document.getElementById('rejectButton');
-        const closeButton = document.getElementsByClassName("close")[0];
-        let rejectionReason = '';
-
-        // Open the modal when the reject button is clicked
-        rejectButton.onclick = function() {
-          rejectModal.style.display = "block";
-        };
-
-        // Capture rejection reason on input change
-        document.getElementById('rejectionReason').addEventListener('input', function(event) {
-          rejectionReason = event.target.value; // Store the current input value
-        });
-
-        // Close the modal when the close button is clicked or outside the modal is clicked
-        closeButton.onclick = function() {
-          rejectModal.style.display = "none";
-        };
-
-        window.onclick = function(event) {
-          if (event.target == rejectModal) {
-            rejectModal.style.display = "none";
-          }
-        };
-
-        // Handle form submission (e.g., send rejection reason to server)
-        rejectButton.addEventListener('click', function() {
-          // Your code to send the rejection reason to the server goes here
-          console.log(rejectionReason); // For demonstration, log it to console
-          rejectModal.style.display = "none";
-        });
-    </script>
 
 
-    <button onclick="confirmReject()">Reject</button>
-    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
+
+    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllPrescriptions">Back</a>
 
 
 

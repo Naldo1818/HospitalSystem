@@ -273,7 +273,7 @@
                             </div>
                             <div class="col-4">
                                 <label for="idNumberInput" class="form-label">ID Number</label>
-                                <input type="text" class="form-control" name="IdNumber" placeholder="Enter ID Number" pattern="^\d{13}$" required title="ID Number must be exactly 13 digits." maxlength="13">
+                                <input type="number" class="form-control" name="IdNumber" placeholder="Enter ID Number" pattern="^\d{13}$" required title="ID Number must be exactly 13 digits." maxlength="13">
                                 <span class="text-danger" id="idNumberError"></span>
                             </div>
                         </div>
@@ -299,9 +299,12 @@
                             </div>
                             <div class="col-4">
                                 <label for="contactNumberInput" class="form-label">Contact Number</label>
-                                <input type="text" class="form-control" id="contactNumber" name="ContactNumber" placeholder="Contact Number" required />
+                                <input type="text" class="form-control" id="contactNumber" name="ContactNumber"
+                                       placeholder="Contact Number" required maxlength="10" minlength="10"
+                                       oninput="validateContactNumber()" />
                                 <span id="contactNumberError" class="text-danger"></span>
                             </div>
+
                         </div>
                         <!-- Confirmation Modal -->
                         <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalLabel" aria-hidden="true">
@@ -345,21 +348,7 @@
                 }
             });
 
-            $('#contactNumber').on('input', function () {
-                const value = this.value;
-                const errorMessage = $('#contactNumberError');
-
-                // Check if the input contains any spaces
-                if (/\s/.test(value)) {
-                    this.classList.add('is-invalid');
-                    this.classList.remove('is-valid');
-                    errorMessage.text("Contact number cannot contain spaces.");
-                } else {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
-                    errorMessage.text('');
-                }
-            });
+          
             // Show confirmation modal on clicking the Save button
             $('#mainSavePatientButton').on('click', function (e) {
                 e.preventDefault(); // Prevent the default form submission
@@ -475,6 +464,22 @@
         });
     </script>
 
+    <script>
+        function validateContactNumber() {
+            var contactNumberInput = document.getElementById('contactNumber');
+            var contactNumberError = document.getElementById('contactNumberError');
+
+            // Remove any non-digit characters
+            contactNumberInput.value = contactNumberInput.value.replace(/\D/g, '');
+
+            // Check if the length is exactly 10 digits
+            if (contactNumberInput.value.length !== 10) {
+                contactNumberError.textContent = "Contact number must be exactly 10 digits.";
+            } else {
+                contactNumberError.textContent = ""; // Clear error message if valid
+            }
+        }
+    </script>
 
 </body>
 </html>

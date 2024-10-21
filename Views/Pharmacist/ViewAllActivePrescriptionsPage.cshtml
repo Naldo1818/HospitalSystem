@@ -17,7 +17,7 @@
 
     <style>
         .highlight-urgent {
-            background-color:red; /* Light red background for urgent items */
+            background-color: red; /* Light red background for urgent items */
         }
 
         .highlight-low-stock {
@@ -55,7 +55,7 @@
 
 </head>
 <body>
-    
+
     <!--Table-->
     <div class="container">
         <main role="main" class="pb-5">
@@ -77,54 +77,54 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Urgent</th>
                                     <th scope="col">Prescription</th>
-                                   
+
                                 </tr>
                             </thead>
                             <tbody>
-                                
-                                    @foreach (var item in Model.combinedData)
-                                    {
 
-                                        <tr>
-                                            <td>@item.Name</td>
-                                            <td>@item.Surname</td>
-                                            <td>@item.SurgeonName</td>
-                                            <td>@item.SurgeonSurname</td>
-                                            <td>@item.DateGiven</td>
-                                            <td>@item.Status</td>
+                                @foreach (var item in Model.combinedData)
+                                {
 
-                                            <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
-                                                @item.Urgency
-                                            </td>
+                                    <tr>
+                                        <td>@item.Name</td>
+                                        <td>@item.Surname</td>
+                                        <td>@item.SurgeonName</td>
+                                        <td>@item.SurgeonSurname</td>
+                                        <td>@item.DateGiven</td>
+                                        <td>@item.Status</td>
 
-
-                                            <td>
+                                        <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
+                                            @item.Urgency
+                                        </td>
 
 
-
-@*                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription">View</a>
- *@
+                                        <td>
 
 
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription" asp-route-id="@item.PrescriptionID">View</a>
+
+                                            @*                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription">View</a>
+                                        *@
 
 
-                                            </td>
+                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewSpecificPrescription" asp-route-pid="@item.PrescriptionID">View</a>
 
 
+                                        </td>
 
 
 
 
 
-                                        </tr>
 
-                                    }
-                                
-                               
+
+                                    </tr>
+
+                                }
+
+
                             </tbody>
                         </table>
-                  </div>
+                    </div>
                 </div>
             </div>
         </main>

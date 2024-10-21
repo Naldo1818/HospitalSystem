@@ -8,6 +8,7 @@ using DEMO.ViewModels;
 using Microsoft.Build.ObjectModelRemoting;
 
 
+
 namespace DEMO.ViewModels
 {
     public class PharmacistViewScriptModel
@@ -16,11 +17,11 @@ namespace DEMO.ViewModels
 
         //prescription
 
-        public int PatientID {  get; set; } 
-        
-        public int AdmittedPatientID { get; set; }  
+        public int PatientID { get; set; }
 
-        public int PrescriptionID {  get; set; }    
+        public int AdmittedPatientID { get; set; }
+
+        public int PrescriptionID { get; set; }
 
         public string patientname { get; set; }
 
@@ -47,49 +48,60 @@ namespace DEMO.ViewModels
 
 
         //medical history
-        public string Condition  { get; set; }
+        public string Condition { get; set; }
 
-        public string  patientMedication { get; set; }
+        public string patientMedication { get; set; }
 
         public string allergy { get; set; }
 
 
         //surgeon info
-       public string SurgeonName { get; set; }  
+        public string SurgeonName { get; set; }
 
         public string SurgeonSurname { get; set; }
 
 
         //vitals
         public int Height { get; set; }
-       
+
         public int Weight { get; set; }
-      
+
         public int SystolicBloodPressure { get; set; }
-      
+
 
         public int DiastolicBloodPressure { get; set; }
-        
+
         public int HeartRate { get; set; }
 
-      
+
         public double BloodOxygen { get; set; }
-       
+
         public int Respiration { get; set; }
-        
-        public int  BloodGlucoseLevel { get; set; }
-        
+
+        public int BloodGlucoseLevel { get; set; }
+
         public double Temperature { get; set; }
 
         public DateOnly Date { get; set; }
 
         public List<PharmacistViewScriptModel> combinedData { get; set; }
 
- public List<string> Allallergy { get; set; }
+        public List<string> Allallergy { get; set; }
 
         public List<string> AllCurrentMed { get; set; }
 
         public List<string> AllConditions { get; set; }
+
+
+        public string Instructions { get; set; }
+
+        public int qty { get; set; }
+
+        public string medication { get; set; }
+
+
+        public List<string> allpresribedmeds { get; set; }
+
 
 
         //public List<PharmacistViewScriptModel> PrescriptionDetails {  get; set; }

@@ -2,7 +2,7 @@
     ViewData["Title"] = "Pharmacist Script";
     Layout = "_LayoutPharmacist";
 }
-@model DEMO.ViewModels.ReportViewModel
+@model DEMO.ViewModels.PharmacistReportViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,9 +57,7 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
                         <form>
-                            <center>
-                                <h1>DISPENSARY REPORT</h1>
-                            </center>
+                            
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
@@ -76,12 +74,27 @@
                     </div>
                 </div>
             </div>
+
             <div class="row" style="width:auto">
                 <div class="col">
+                   
                     <div class="p-3 mt-6 border" style="background-color: white;">
-                        <h2>Reports of @ViewBag.UserName @ViewBag.UserSurname:</h2>
-                        <h2>Report Generated:<span id="todayDate"></span></h2>
-                        <h2>Date Range: <span id="selectedDateRange"></span></h2>
+                        <center>
+                            <h1>DISPENSARY REPORT</h1>
+                        </center>
+
+                        <center> <h2>@ViewBag.UserName @ViewBag.UserSurname:</h2></center>
+
+                      
+
+                       
+                            <h2>Date Range: <span id="selectedDateRange"></span></h2>
+                            <h2>Report Generated: <span id="todayDate"></span></h2>
+                      
+                       
+                         
+                       
+                        
 
                         <table id="Surgeries" class="table" style="width:100%">
                             <thead>
@@ -100,27 +113,32 @@
                                 @foreach (var Data in Model.AllcombinedData)
                                 {
                                     <tr>
-                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.PrescriptionDate</td>
                                         <td>@Data.Patient</td>
-                                        <td>@Data.TreatmentName</td>
-                                        <td>@Data.TreatmentCode</td>
+                                        <td>@Data.Surgeon</td>
+                                        <td>@Data.Medication</td>
+                                        <td>@Data.qty</td>
+                                        <td>@Data.status</td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                         <div class="totals">
-                            Total Scripts Dispensed: <span id="totalPatients">0</span>
+                            TOTAL SCRIPTS DISPENSED: <span id="totalPatients">0</span>
                         </div>
                         <div class="totals">
-                            Total Scripts Rejected: <span id="totalPatients">0</span>
+                            TOTAL SCRIPTS REJECTED: <span id="totalPatients">0</span>
                         </div>
 
-                        <h3>Summary Per  Medicine:</h3>
+                        <br />
+                        <br />
+
+                        <h3>SUMMARY PER MEDICINE:</h3>
                         <table id="Summary" class="table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Medcicne</th>
-                                    <th scope="col">Qty Dispensed</th>
+                                    <th scope="col">MEDICINE</th>
+                                    <th scope="col">QTY ORDERED</th>
                                 </tr>
                             </thead>
                             <tbody id="summaryBody">
@@ -181,10 +199,10 @@
                     newRow.dataset.treatmentCode = treatmentCode;
 
                     newRow.innerHTML = `
-                                <td>${treatmentName}</td>
-                                <td>${treatmentCode}</td>
-                                <td>1</td>
-                            `;
+                                        <td>${treatmentName}</td>
+                                        <td>${treatmentCode}</td>
+                                        <td>1</td>
+                                    `;
                     summaryBody.appendChild(newRow);
                 }
             }
