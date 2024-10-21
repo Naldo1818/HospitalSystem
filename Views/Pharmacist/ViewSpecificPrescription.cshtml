@@ -213,10 +213,10 @@
             
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Conditions</label>
-                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="AllConditions" style="width:300px">
                         @foreach (var item in Model.AllConditions)
                         {
-                        <option value="@item">@item></option>
+                        <option value="@item">@item</option>
                         }
                     </select>
 
@@ -228,12 +228,12 @@
 
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Current Medications</label>
-                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="patientMedication" style="width:300px">
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="AllCurrentMed" style="width:300px">
 
 
                         @foreach (var item in Model.AllCurrentMed)
                         {
-                        <option value="@item">@item></option>
+                        <option value="@item">@item</option>
                             // Adjust properties based on your model
                         }
                     </select>
@@ -242,12 +242,12 @@
 
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Allergies</label>
-                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="allergy" style="width:300px">
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Allallergy" style="width:300px">
 
 
                         @foreach (var item in Model.Allallergy)
                         {
-                        <option value="@item">@item></option>
+                        <option value="@item">@item</option>
                             // Adjust properties based on your model
                         }
                     </select>
@@ -405,84 +405,46 @@
 
 
 
+ 
 
 
 
 
 
 
+   <!-- Trigger/Open The Modal -->
+<button id="myBtn">Dispense</button>
 
-    @*  <form class="medical-history-form">
-    <center>
-    <h2>Prescription Details</h2>
-    </center>
-
-    <div class="form-group row">
-    <div class="col-md-4">
-    <label>Patient Name</label>
-
-    <input type="text" class="form-control" id="PatientName" name="PatientName" asp-for="patientname" style="width:300px" readonly>
-    </div>
-
-    <div class="col-md-4">
-    <label for="PatientSurname" class="form-label">Patient Surname</label>
-    <input type="text" class="form-control" id="PatientSurname" name="PatientSurname" value="@Model.combinedData" style="width:300px" readonly>
-    </div>
-
-    <div class="col-md-4">
-    <label for="SurgeonName" class="form-label">Surgeon Name</label>
-    <input type="text" class="form-control" id="SurgeonName" name="SurgeonName" value="@Model.SurgeonName" style="width:300px" readonly>
-    </div>
-
-    <div class="col-md-4">
-    <label for="SurgeonSurname" class="form-label">Surgeon Surname</label>
-    <input type="text" class="form-control" id="SurgeonSurname" name="SurgeonSurname" value="@Model.SurgeonSurname" style="width:300px" readonly>
-    </div>
-
-    <div class="col-md-4">
-    <label for="PrescribedMeds" class="form-label">Prescribed Meds</label>
-    <select class="form-control" name="Schedules" id="Schedules" asp-for="patientMedication" style="width:300px">
-    <!-- Assuming patientMedication is a list or collection -->
-    @foreach (var medication in Model.AllCurrentMed)
-    {
-    <option value="@medication">@medication</option>
-    }
-    </select>
-    </div>
-
-    <div class="col-md-4">
-    <label for="Instructions" class="form-label">Instructions</label>
-    <input type="text" class="form-control" id="Instructions" name="Instructions" value="@Model.Take" style="width:300px" readonly>
-    </div>
-    </div>
-
-    </form> *@
-
-
-
-
-
-
-
-    <!-- Trigger/Open The Modal -->
-    <button id="myBtn">Dispense</button>
-
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-        <!-- Modal content -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <span class="close">&times;</span>
-                <h2>Prescription Dispensed</h2>
-            </div>
-            <div class="modal-body">
-                <p>The prescription has been successfully dispensed</p>
-            </div>
-            <div class="modal-footer">
-                <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn">Okay</a>
-            </div>
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close">&times;</span>
+            <h2>Prescription Dispensed</h2>
+        </div>
+        <div class="modal-body">
+            <p>The prescription has been successfully dispensed and the stock quantity has been reduced</p>
+        </div>
+        <div class="modal-footer">
+            <button id="okayBtn" class="btn">Okay</button>
         </div>
     </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     <!--Script for modal-->
@@ -515,7 +477,40 @@
     </script>
 
 
+    <script>
+            const rejectModal = document.getElementById('rejectModal');
+        const rejectButton = document.getElementById('rejectButton');
+        const closeButton = document.getElementsByClassName("close")[0];
+        let rejectionReason = '';
 
+        // Open the modal when the reject button is clicked
+        rejectButton.onclick = function() {
+          rejectModal.style.display = "block";
+        };
+
+        // Capture rejection reason on input change
+        document.getElementById('rejectionReason').addEventListener('input', function(event) {
+          rejectionReason = event.target.value; // Store the current input value
+        });
+
+        // Close the modal when the close button is clicked or outside the modal is clicked
+        closeButton.onclick = function() {
+          rejectModal.style.display = "none";
+        };
+
+        window.onclick = function(event) {
+          if (event.target == rejectModal) {
+            rejectModal.style.display = "none";
+          }
+        };
+
+        // Handle form submission (e.g., send rejection reason to server)
+        rejectButton.addEventListener('click', function() {
+          // Your code to send the rejection reason to the server goes here
+          console.log(rejectionReason); // For demonstration, log it to console
+          rejectModal.style.display = "none";
+        });
+    </script>
 
 
     <button onclick="confirmReject()">Reject</button>
