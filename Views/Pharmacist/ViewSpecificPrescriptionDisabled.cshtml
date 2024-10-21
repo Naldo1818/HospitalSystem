@@ -1,0 +1,442 @@
+﻿@{
+    ViewData["Title"] = "Individual Prescription";
+    Layout = "_LayoutPharmacist";
+}
+
+ @model DEMO.ViewModels.PharmacistViewScriptModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription View</title>
+
+
+
+    @*   <style>
+    .form-container {
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    margin-bottom: 20px;
+    }
+    .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    }
+    .container-fluid {
+    margin: 0 auto;
+    }
+    </style> *@
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+
+    <style>
+        .medical-history-form {
+            border: 2px solid #000; /* Black border */
+            padding: 20px; /* Space inside the border */
+            border-radius: 8px; /* Optional: rounded corners */
+            margin: 20px; /* Optional: space outside the border */
+        }
+    </style>
+
+
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        /* Modal Header */
+        .modal-header {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 2px 16px;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+    </style>
+
+    <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+
+ 
+
+</head>
+
+
+
+<body>
+
+    <center>
+        <h1>Prescription for</h1>
+    </center>
+
+  
+        <center>
+            <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
+        </center>
+
+
+
+
+
+
+    <!-- Medical History -->
+    <form class="medical-history-form">
+
+        <center><h1>Medical History</h1></center>"
+        <div class="form-group row">
+
+         
+               @*  <div class="col-md-4">
+                    <label for="DosageForm" class="form-label">Conditions</label>
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
+                        @foreach (var item in Model.AllConditions)
+                        {
+                            <option value="@item.Condition"></option>
+                        }
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+                    <label for="DosageForm" class="form-label">Current Medications</label>
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="patientMedication" style="width:300px">
+
+
+                        @foreach (var item in Model.AllCurrentMed)
+                        {
+                            <option value="@item.patientMedication"></option>
+                            // Adjust properties based on your model
+                        }
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+                    <label for="DosageForm" class="form-label">Allergies</label>
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="allergy" style="width:300px">
+
+
+                        @foreach (var item in Model.Allallergy)
+                        {
+                            <option value="@item.allergy"></option>
+                            // Adjust properties based on your model
+                        }
+                    </select>
+
+                </div> *@
+
+            
+
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </form>
+
+
+    <!-- Vitals History -->
+
+    <div class="container-left">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+
+                    <div class="p-3 mt-5 border">
+                        <h2><center>Vitals</center></h2>
+                        <center>
+                        </center>
+                        <table id="myTable" class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+
+
+                                    <th scope="col">Height(cm)</th>
+                                    <th scope="col">Weight(kg)</th>
+                                    <th scope="col">Systolic Blood Pressure (mmHg)</th>
+                                    <th scope="col">Distolic Blood Pressure (mmHg)</th>
+                                    <th scope="col">Heart Rate (bpm)</th>
+                                    <th scope="col">Blood Oxygen %</th>
+                                    <th scope="col">Respiration Rate (bpm)</th>
+                                    <th scope="col">Blood Glucose Level (mg/dL)</th>
+                                    <th scope="col">Temperature °C</th>
+                                    <th scope="col">Time Taken</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.combinedData)
+                                {
+
+                                    <tr>
+                                        <!-- Assuming TimeTaken is a property in your model -->
+                                        <td>@item.Height</td>
+                                        <td>@item.Weight</td>
+                                        <td>@item.SystolicBloodPressure</td>
+                                        <td>@item.DiastolicBloodPressure</td>
+                                        <td>@item.HeartRate</td>
+                                        <td>@item.BloodOxygen</td>
+                                        <td>@item.Respiration</td>
+                                        <td>@item.BloodGlucoseLevel</td>
+                                        <td>@item.Temperature</td>
+                                        <td>@item.Time</td>
+
+
+
+                                    </tr>
+
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <div class="container-left">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+
+                    <div class="p-3 mt-5 border">
+                        <h2><center>Prescription</center></h2>
+                        <center>
+                        </center>
+                        <table id="myTable" class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+
+
+                                    <th scope="col">Patient Name</th>
+                                    <th scope="col">Patient Surname</th>
+
+                                    <th scope="col">Medication prescribed</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Instructions</th>
+                                    <th scope="col">Surgeon Name</th>
+                                    <th scope="col">Surgeon Surname</th>
+                                    <th scope="col">Date</th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+
+                                @if (Model.combinedData.Any())
+                                {
+                                    <tr>
+
+                                        <td>@Model.combinedData.First().patientname</td>
+                                        <td>@Model.combinedData.First().patientsurname</td>
+                                        <td>@Model.combinedData.First().medication</td>
+                                        <td>@Model.combinedData.First().qty</td>
+                                        <td>@Model.combinedData.First().Instructions</td>
+
+                                        <td>@Model.combinedData.First().SurgeonName</td>
+                                        <td>@Model.combinedData.First().SurgeonSurname</td>
+                                        <td>@Model.combinedData.First().DateGiven</td>
+
+
+
+
+
+
+
+                                    </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Trigger/Open The Modal -->
+    <button id="myBtn">Dispense</button>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Prescription Dispensed</h2>
+            </div>
+            <div class="modal-body">
+                <p>The prescription has been successfully dispensed</p>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn">Okay</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!--Script for modal-->
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
+
+
+
+
+    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllPrescriptions">Back</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

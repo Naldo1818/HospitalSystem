@@ -967,7 +967,10 @@ namespace DEMO.Controllers
 
 
 
-
+        public ActionResult ViewSpecificPrescriptionDisabled()
+        {
+            return View();
+        }
 
 
 
