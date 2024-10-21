@@ -239,6 +239,39 @@
                 addPageNumbers(pdf);
             }).save();
         }
+    </script>7
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const startDateInput = document.getElementById('StartDateInput');
+            const endDateInput = document.getElementById('EndDateInput');
+
+            function validateDates() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                if (startDate && endDate && startDate > endDate) {
+                    alert("Start Date cannot be after End Date.");
+                    startDateInput.value = endDateInput.value; // Adjust the start date to match end date
+                }
+            }
+
+            startDateInput.addEventListener('change', function () {
+                validateDates();
+                filterByDate();
+                displaySelectedDates();
+            });
+
+            endDateInput.addEventListener('change', function () {
+                validateDates();
+                filterByDate();
+                displaySelectedDates();
+            });
+
+            // Rest of the existing code remains unchanged
+            filterByDate();
+            displaySelectedDates();
+        });
     </script>
+
 </body>
 </html>
