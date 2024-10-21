@@ -170,12 +170,7 @@ namespace DEMO.Controllers
 
         public IActionResult ViewAllPrescriptions()
         {
-            //var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            //if (!int.TryParse(accountIDString, out int accountID))
-            //{
-            //    // Handle the case where accountID is not available or is invalid
-            //    accountID = 0; // Or handle as required
-            //}
+            
 
             var combinedData = (from prescription in _dbContext.Prescription
 
@@ -705,6 +700,49 @@ namespace DEMO.Controllers
 
 
 
+        [HttpPost]
+
+        public async Task<IActionResult> ViewSpecificPrescription(PharmacistViewScriptModel model)
+        {
+            // Validate model state
+            if (!ModelState.IsValid)
+            {
+                return View(model); // Return the model to the view if it's invalid
+            }
+
+            // Retrieve the user account ID from the session
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (string.IsNullOrEmpty(accountIDString) || !int.TryParse(accountIDString, out int pharmacistAccountID))
+            {
+                return RedirectToAction("ViewAllActivePrescriptions", "Pharmacist"); // Redirect to login page if account ID is not valid
+            }
+
+            // Find the prescription by ID
+            var prescription = await _dbContext.Prescription.FindAsync(model.PrescriptionID);
+            if (prescription == null)
+            {
+                return NotFound();
+            }
+
+            // Update the prescription status
+            prescription.Status = "Dispensed";
+
+            // Create a new DispensedScriptsModel object
+            var newDispensedInfo = new DispensedScriptsModel
+            {
+                PrescriptionID = model.PrescriptionID,
+                AccountID = pharmacistAccountID
+            };
+
+            // Add the new dispensed information to the database
+            await _dbContext.DispensedScriptsModel.AddAsync(newDispensedInfo);
+
+            // Save changes asynchronously
+            await _dbContext.SaveChangesAsync();
+
+            // Redirect to the ViewAllPrescriptions action
+            return RedirectToAction("ViewAllPrescriptions");
+        }
 
 
 
