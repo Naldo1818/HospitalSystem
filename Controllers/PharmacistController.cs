@@ -10,14 +10,22 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using MimeKit;
+using MailKit.Net.Smtp;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using DEMO.Models.PharmacistModels;
+using System;
 using System.Linq;
 using System.Threading.Tasks.Dataflow;
 using System.Security.Principal;
+using System.Threading.Tasks;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using static DEMO.Controllers.PharmacistController;
+
 
 
 
@@ -67,14 +75,16 @@ namespace DEMO.Controllers
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
                                 on pm.MedicationID equals m.MedicationID
-                                where pm.StockonHand <= pm.ReorderLevel
+                                //where pm.StockonHand <= pm.ReorderLevel
                                 select new PharmacistStockOrderViewModel
                                 {
+                                    MedicationID = m.MedicationID,
                                     MedicationName = m.MedicationName,
                                     MedicationForm = m.MedicationForm,
                                     Schedule = m.Schedule,
                                     StockonHand = pm.StockonHand,
                                     ReorderLevel = pm.ReorderLevel
+                                    
                                 }).ToList();
 
             var viewModel = new PharmacistStockOrderViewModel
@@ -85,8 +95,17 @@ namespace DEMO.Controllers
             // Pass the list of data to the view
             return View(viewModel);
         }
+        public class OrderItem
+        {
+            public int MedicationId { get; set; }
+            public int Quantity { get; set; }
+        }
 
-
+        public class OrderData
+        {
+            public List<OrderItem> Orders { get; set; }
+            public string Notes { get; set; }
+        }
 
         [HttpPost]
         public async Task<IActionResult> StockOrderPage(string notes)
@@ -96,71 +115,91 @@ namespace DEMO.Controllers
             var PharmacistEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-            // Save data to database 
-            var combinedData = await (from pm in _dbContext.PharmacyMedication
-                                      join m in _dbContext.Medication
-                                      on pm.MedicationID equals m.MedicationID
-                                      where pm.StockonHand <= pm.ReorderLevel
-                                      select new PharmacistStockOrderViewModel
-                                      {
-                                          MedicationName = m.MedicationName,
-                                          MedicationForm = m.MedicationForm,
-                                          Schedule = m.Schedule,
-                                          StockonHand = pm.StockonHand,
-                                          ReorderLevel = pm.ReorderLevel,
-                                      })
-                                      .FirstOrDefaultAsync();
+            var medicationsToReorder = await (from pm in _dbContext.PharmacyMedication
+                                              join m in _dbContext.Medication
+                                              on pm.MedicationID equals m.MedicationID
+                                              select new
+                                              {
+                                                  MedicationName = m.MedicationName,
+                                                  MedicationForm = m.MedicationForm,
+                                                  Schedule = m.Schedule,
+                                                  StockonHand = pm.StockonHand,
+                                                  ReorderLevel = pm.ReorderLevel
+                                              })
+                                              .ToListAsync();
 
-            if (combinedData == null)
+            if (!medicationsToReorder.Any())
             {
-                TempData["ErrorMessage"] = "No medications need to be reordered.";
-                return RedirectToAction("ViewAllOrders", "Pharmacist");
+                return BadRequest("No medications need to be reordered.");
             }
 
-            var emailMessage = new MimeMessage();
-            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
-            emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "sam12mensah@gmail.com"));
-            emailMessage.Subject = $"Stock Order Request {combinedData.MedicationName}";
-
-            var bodyBuilder = new BodyBuilder
+            // Generate image
+            using (var bitmap = new Bitmap(800, 600))
+            using (var graphics = Graphics.FromImage(bitmap))
             {
-                HtmlBody = $@"
-            <h3>Stock Order Details</h3>
-            <ul>
-                <li>Medication: {combinedData.MedicationName}</li>
-                <li>Form: {combinedData.MedicationForm}</li>
-                <li>Schedule: {combinedData.Schedule}</li>
-                <li>Stock on Hand: {combinedData.StockonHand}</li>
-                <li>Reorder Level: {combinedData.ReorderLevel}</li>
-            </ul>
-            <h3>Notes</h3>
-            <p>{notes}</p>
-            <p>Kind Regards,<br/>{PharmacistName}</p>"
-            };
-
-            emailMessage.Body = bodyBuilder.ToMessageBody();
-
-            try
-            {
-                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                graphics.Clear(Color.White);
+                using (var font = new Font("Arial", 12))
                 {
-                    await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                    await client.AuthenticateAsync("sam12mensah@gmail.com", "xqqx kiox hcgm xvmr");
-                    await client.SendAsync(emailMessage);
-                    await client.DisconnectAsync(true);
+                    int y = 10;
+                    graphics.DrawString("Stock Order Details", new Font("Arial", 16, FontStyle.Bold), Brushes.Black, 10, y);
+                    y += 30;
+
+                    foreach (var item in medicationsToReorder)
+                    {
+                        graphics.DrawString($"Medication: {item.MedicationName}", font, Brushes.Black, 10, y);
+                        y += 20;
+                        graphics.DrawString($"Form: {item.MedicationForm}", font, Brushes.Black, 10, y);
+                        y += 20;
+                        graphics.DrawString($"Schedule: {item.Schedule}", font, Brushes.Black, 10, y);
+                        y += 20;
+                        graphics.DrawString($"Stock on Hand: {item.StockonHand}", font, Brushes.Black, 10, y);
+                        y += 20;
+                        graphics.DrawString($"Reorder Level: {item.ReorderLevel}", font, Brushes.Black, 10, y);
+                        y += 30;
+                    }
+
+                    graphics.DrawString($"Notes: {notes}", font, Brushes.Black, 10, y);
+                    y += 30;
+                    graphics.DrawString($"Kind Regards,", font, Brushes.Black, 10, y);
+                    y += 20;
+                    graphics.DrawString($"{PharmacistName} {PharmacistSurname}", font, Brushes.Black, 10, y);
                 }
 
-                TempData["SuccessMessage"] = "Stock placed and email has been successfully sent.";
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
-                // Consider logging the exception for further investigation
-            }
+                // Save image to memory stream
+                using (var ms = new MemoryStream())
+                {
+                    bitmap.Save(ms, ImageFormat.Png);
+                    ms.Position = 0;
 
-            return RedirectToAction("ViewAllOrders", "Pharmacist");
+                    // Create email message
+                    var emailMessage = new MimeMessage();
+                    emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
+                    emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "sam12mensah@gmail.com"));
+                    emailMessage.Subject = "Stock Order Request";
+
+                    var builder = new BodyBuilder();
+                    builder.Attachments.Add("StockOrder.png", ms.ToArray());
+                    emailMessage.Body = builder.ToMessageBody();
+
+                    // Send email
+                    try
+                    {
+                        using (var client = new MailKit.Net.Smtp.SmtpClient())
+                        {
+                            await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                            await client.AuthenticateAsync("sam12mensah@gmail.com", "xqqx kiox hcgm xvmr");
+                            await client.SendAsync(emailMessage);
+                        }
+
+                        return Ok("Email sent successfully");
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest($"Error sending email: {ex.Message}");
+                    }
+                }
+            }
         }
-
 
 
 
@@ -591,6 +630,7 @@ namespace DEMO.Controllers
 
 
         [HttpGet]
+
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
             // Retrieve the specific prescription using the provided id
@@ -607,37 +647,24 @@ namespace DEMO.Controllers
 
 
 
+            var patientConditions = await _dbContext.Condition
+    .Select(m => m.ConditionName)
+    .Distinct()
+    .OrderBy(name => name) // Sort in ascending order
+    .ToListAsync();
 
-            var patientConditions = await (from c in _dbContext.Condition
-                                           join pc in _dbContext.PatientConditions
-                                           on c.ConditionID equals pc.ConditionsID
-                                         
+            var currentMeds = await _dbContext.Medication
+                .Select(m => m.MedicationName)
+                .Distinct()
+                .OrderBy(name => name) // Sort in ascending order
+                .ToListAsync();
 
-                                           select new PharmacistViewScriptModel
-                                           {
-                                               Condition = c.ConditionName
-                                           })
-                                            .ToListAsync();
+            var allAllergies = await _dbContext.Activeingredient
+                .Select(m => m.ActiveIngredientName)
+                .Distinct()
+                .OrderBy(name => name) // Sort in ascending order
+                .ToListAsync();
 
-            var currentmeds = await (from m in _dbContext.Medication
-                                     join cm in _dbContext.patientMedication
-                                     on m.MedicationID equals cm.MedicationID
-
-                                     select new PharmacistViewScriptModel
-                                     {
-                                         patientMedication = m.MedicationName
-                                     })
-                                           .ToListAsync();
-
-            var allalergies = await (from ai in _dbContext.Activeingredient
-                                     join pa in _dbContext.PatientAllergy
-                                     on ai.ActiveingredientID equals pa.ActiveingredientID
-
-                                     select new PharmacistViewScriptModel
-                                     {
-                                         allergy = ai.ActiveIngredientName
-                                     })
-                                        .ToListAsync();
 
 
 
@@ -683,9 +710,9 @@ namespace DEMO.Controllers
             var viewModel = new PharmacistViewScriptModel
             {
                 combinedData = alldata, // Ensure property names match your model's definition
-                Allallergy = allalergies,
+                Allallergy = allAllergies,
                 AllConditions = patientConditions,
-                AllCurrentMed = currentmeds,
+                AllCurrentMed = currentMeds,
             };
 
             return View(viewModel);
@@ -701,51 +728,25 @@ namespace DEMO.Controllers
 
 
 
+
         [HttpPost]
-
-        public async Task<IActionResult> ViewSpecificPrescription(PharmacistViewScriptModel model)
+        [ValidateAntiForgeryToken]
+        public IActionResult ViewSpecificPrescription()
         {
-            // Validate model state
-            if (!ModelState.IsValid)
-            {
-                return View(model); // Return the model to the view if it's invalid
-            }
+            
 
-            // Retrieve the user account ID from the session
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            if (string.IsNullOrEmpty(accountIDString) || !int.TryParse(accountIDString, out int pharmacistAccountID))
-            {
-                return RedirectToAction("ViewAllActivePrescriptions", "Pharmacist"); // Redirect to login page if account ID is not valid
-            }
-
+           var prescription = _dbContext.Prescription.Select(m=>m.Status).ToString();
 
             
 
-            // Find the prescription by ID
-            var prescription = await _dbContext.Prescription.FindAsync(model.PrescriptionID);
-            if (prescription == null)
-            {
-                return NotFound();
-            }
+                string newstatus = "Prescribed";
 
-            // Update the prescription status
-            prescription.Status = "Dispensed";
+            prescription = newstatus;
 
-            // Create a new DispensedScriptsModel object
-            var newDispensedInfo = new DispensedScriptsModel
-            {
-                PrescriptionID = model.PrescriptionID,
-                AccountID = pharmacistAccountID
-            };
+            _dbContext.Add(prescription);
+            _dbContext.SaveChangesAsync();
 
-            // Add the new dispensed information to the database
-            await _dbContext.DispensedScriptsModel.AddAsync(newDispensedInfo);
-
-            // Save changes asynchronously
-            await _dbContext.SaveChangesAsync();
-
-            // Redirect to the ViewAllPrescriptions action
-            return RedirectToAction("ViewAllPrescriptions");
+            return RedirectToAction(nameof(ViewAllActivePrescriptionsPage)); // Redirect to the list of prescriptions
         }
 
 
