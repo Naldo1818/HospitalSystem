@@ -16,9 +16,9 @@ namespace DEMO.ViewModels
 
         public string specificmedication { get; set; }
 
-        public int amountdispensed { get; set; }    
+        public int amountdispensed { get; set; }
 
-        
+
 
 
         public List<PharmacistReportViewModel> AllcombinedData { get; set; }

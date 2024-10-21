@@ -5,11 +5,16 @@ namespace DEMO.ViewModels
     public class PharmacistStockOrderViewModel
     {
         [Key]
-        public int PharmMedStockID { get; set; }
+        public int PharmMedStockOrderID { get; set; }
         [Required]
         public int MedicationID { get; set; }
 
-        
+
+
+        [Required]
+        public int PharmMedID { get; set; }
+
+
 
         public string DosageForm { get; set; }
         [Required]
@@ -32,10 +37,11 @@ namespace DEMO.ViewModels
 
         public List<string> DosageForms { get; set; }
 
-        public List<PharmacistStockOrderViewModel> PharmacistStockOrders { get;set; }
+        public List<PharmacistStockOrderViewModel> PharmacistStockOrders { get; set; }
 
-                 
-                        
+
+        public int qty { get; set; }
+
 
         //public List<PharmacyMedicationViewModel> combinedinfo { get; set; }
 

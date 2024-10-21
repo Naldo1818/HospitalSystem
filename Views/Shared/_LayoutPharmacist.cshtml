@@ -1,73 +1,400 @@
-﻿
+﻿@{
+    ViewData["Title"] = "Individual Prescription";
+    Layout = "_LayoutPharmacist";
+}
 
-@{
-    // var userAccountId = Context.Session.GetString("UserAccountId");
-
-    var userName = Context.Session.GetString("UserName");
-    var userSurname = Context.Session.GetString("UserSurname");
-    var userEmail = Context.Session.GetString("UserEmail");
-} 
+ @model DEMO.ViewModels.PharmacistViewScriptModel
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAGE1</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site3.css" rel="stylesheet">
+    <title>Prescription View</title>
 
-    
+
+
+    @*   <style>
+    .form-container {
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    margin-bottom: 20px;
+    }
+    .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    }
+    .container-fluid {
+    margin: 0 auto;
+    }
+    </style> *@
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+
+    <style>
+        .medical-history-form {
+            border: 2px solid #000; /* Black border */
+            padding: 20px; /* Space inside the border */
+            border-radius: 8px; /* Optional: rounded corners */
+            margin: 20px; /* Optional: space outside the border */
+        }
+    </style>
+
+
+
+    <style>
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        /* Modal Header */
+        .modal-header {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: 2px 16px;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: 2px 16px;
+            background-color: #5cb85c;
+            color: white;
+        }
+    </style>
+
+    <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
+    <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
+
+    <script>
+        async function confirmReject() {
+            const confirmation = confirm("Are you sure you want to reject this script?");
+            if (confirmation) {
+                const reason = prompt("Please provide a reason for rejection:");
+                if (reason) {
+                    try {
+                        const response = await fetch('/Pharmacist/ViewSpecificPrescription', {  // Adjust the endpoint as necessary
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ reason }),
+                        });
+
+                        if (response.ok) {
+                            alert("Rejection reason submitted to the Surgeon: " + reason);
+                            // Redirect to another page after successful submission
+                            window.location.href = '/ViewAllPrescriptions'; // Adjust the URL for the redirection
+                        } else {
+                            alert("Failed to submit the rejection reason.");
+                        }
+                    } catch (error) {
+                        alert("Error submitting rejection reason: " + error.message);
+                    }
+                } else {
+                    alert("Rejection cancelled: No reason provided.");
+                }
+            } else {
+                alert("Rejection cancelled.");
+            }
+        }
+    </script>
+
 </head>
 
 
 
 <body>
 
-    <!--Navbar brand-->
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container-fluid d-flex justify-content-between">
-            <button class="navbar-toggler order-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand order-1" href="#">Apollo+</a>
+    <center>
+        <h1>Prescription for</h1>
+    </center>
+
+    @if (Model.combinedData.Any())
+    {
+        <center>
+            <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
+        </center>
+
+
+
+
+
+
+
+
+
+    }
+
+
+    <!-- Medical History -->
+    <form class="medical-history-form">
+
+        <center><h1>Medical History</h1></center>"
+        <div class="form-group row">
+
+            @if (Model.combinedData.Any())
+            {
+                <div class="col-md-4">
+                    <label for="DosageForm" class="form-label">Conditions</label>
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
+                        @foreach (var item in Model.AllConditions)
+                        {
+                            <option value="@item.Condition"></option>
+                        }
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+                    <label for="DosageForm" class="form-label">Current Medications</label>
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="patientMedication" style="width:300px">
+
+
+                        @foreach (var item in Model.AllCurrentMed)
+                        {
+                            <option value="@item.patientMedication"></option>
+                            // Adjust properties based on your model
+                        }
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+                    <label for="DosageForm" class="form-label">Allergies</label>
+                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="allergy" style="width:300px">
+
+
+                        @foreach (var item in Model.Allallergy)
+                        {
+                            <option value="@item.allergy"></option>
+                            // Adjust properties based on your model
+                        }
+                    </select>
+
+                </div>
+
+            }
+
+
+
+
+
+
 
         </div>
-    </nav>
-
-    <!--Notification dashboard
-      -->
-
-    <div class="container" style="float:right">
-        <main role="main" class="">
-            <div class="row">
-                <div class="col-md-9" >
-    @RenderBody()
-                </div>
-                <div class="card mt-5 custom-card" style="width:200px">
-
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Logged in as Pharmacist: </h5>
-                        <p>@ViewBag.UserName @ViewBag.UserSurname</p>
-
-                      <br />
-                      
-                     
-
-                        <br>
-                        <p class="card-text text-center">Active prescriptions</p>
-                        
-                       
-                        
-                        <br>
-
-                        <p class="card-text text-center">Received stock</p>
-                     
-                       
 
 
-                        <hr>
+
+
+
+
+    </form>
+
+
+    <!-- Vitals History -->
+
+    <div class="container-left">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+
+                    <div class="p-3 mt-5 border">
+                        <h2><center>Vitals</center></h2>
+                        <center>
+                        </center>
+                        <table id="myTable" class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+
+
+                                    <th scope="col">Height(cm)</th>
+                                    <th scope="col">Weight(kg)</th>
+                                    <th scope="col">Systolic Blood Pressure (mmHg)</th>
+                                    <th scope="col">Distolic Blood Pressure (mmHg)</th>
+                                    <th scope="col">Heart Rate (bpm)</th>
+                                    <th scope="col">Blood Oxygen %</th>
+                                    <th scope="col">Respiration Rate (bpm)</th>
+                                    <th scope="col">Blood Glucose Level (mg/dL)</th>
+                                    <th scope="col">Temperature °C</th>
+                                    <th scope="col">Time Taken</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.combinedData)
+                                {
+
+                                    <tr>
+                                        <!-- Assuming TimeTaken is a property in your model -->
+                                        <td>@item.Height</td>
+                                        <td>@item.Weight</td>
+                                        <td>@item.SystolicBloodPressure</td>
+                                        <td>@item.DiastolicBloodPressure</td>
+                                        <td>@item.HeartRate</td>
+                                        <td>@item.BloodOxygen</td>
+                                        <td>@item.Respiration</td>
+                                        <td>@item.BloodGlucoseLevel</td>
+                                        <td>@item.Temperature</td>
+                                        <td>@item.Time</td>
+
+
+
+                                    </tr>
+
+                                }
+
+
+                            </tbody>
+                        </table>
+
                     </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <div class="container-left">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+
+                    <div class="p-3 mt-5 border">
+                        <h2><center>Prescription</center></h2>
+                        <center>
+                        </center>
+                        <table id="myTable" class="table display" style="width:100%">
+                            <thead>
+                                <tr>
+
+
+                                    <th scope="col">Patient Name</th>
+                                    <th scope="col">Patient Surname</th>
+
+                                    <th scope="col">Medication prescribed</th>
+                                    <th scope="col">Qty</th>
+                                    <th scope="col">Instructions</th>
+                                    <th scope="col">Surgeon Name</th>
+                                    <th scope="col">Surgeon Surname</th>
+                                    <th scope="col">Date</th>
+
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+
+
+                                @if (Model.combinedData.Any())
+                                {
+                                    <tr>
+
+                                        <td>@Model.combinedData.First().patientname</td>
+                                        <td>@Model.combinedData.First().patientsurname</td>
+                                        <td>@Model.combinedData.First().medication</td>
+                                        <td>@Model.combinedData.First().qty</td>
+                                        <td>@Model.combinedData.First().Instructions</td>
+
+                                        <td>@Model.combinedData.First().SurgeonName</td>
+                                        <td>@Model.combinedData.First().SurgeonSurname</td>
+                                        <td>@Model.combinedData.First().DateGiven</td>
+
+
+
+
+
+
+
+                                    </tr>
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    </div>
+
                 </div>
             </div>
         </main>
@@ -75,73 +402,133 @@
 
 
 
-    
-
-    <!--Left Main Menu Sidebar-->
-    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Pharmacist Main Menu</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                   
-                 <br />
-
-                    <strong>
-                        <header>DISPENSING</header>
-                    </strong>
-            
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllPrescriptions">View all prescriptions</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">View open prescriptions</a>
-
-                    <br />
-
-                    <strong>
-                        <header>STOCK CONTROL</header>
-                    </strong>
-                   
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="AddMedication">Add Medication</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAddedMedication">View Added Medication</a>
-
-                    
-                    
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="StockOrderPage">Order Stock</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllOrders">View Stock Orders</a>
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="IncomingStockPage">View Received Stock and Update Current levels</a>
-@*                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewCurrentLevels">View Current levels</a>
- *@
 
 
 
-                    
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="Report">Report</a>
-                    
-                    
-                    
-                    <br />
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Home" asp-action="Index">Log out</a>
 
-                </li>
-            </ul>
+
+
+
+    @*  <form class="medical-history-form">
+    <center>
+    <h2>Prescription Details</h2>
+    </center>
+
+    <div class="form-group row">
+    <div class="col-md-4">
+    <label>Patient Name</label>
+
+    <input type="text" class="form-control" id="PatientName" name="PatientName" asp-for="patientname" style="width:300px" readonly>
+    </div>
+
+    <div class="col-md-4">
+    <label for="PatientSurname" class="form-label">Patient Surname</label>
+    <input type="text" class="form-control" id="PatientSurname" name="PatientSurname" value="@Model.combinedData" style="width:300px" readonly>
+    </div>
+
+    <div class="col-md-4">
+    <label for="SurgeonName" class="form-label">Surgeon Name</label>
+    <input type="text" class="form-control" id="SurgeonName" name="SurgeonName" value="@Model.SurgeonName" style="width:300px" readonly>
+    </div>
+
+    <div class="col-md-4">
+    <label for="SurgeonSurname" class="form-label">Surgeon Surname</label>
+    <input type="text" class="form-control" id="SurgeonSurname" name="SurgeonSurname" value="@Model.SurgeonSurname" style="width:300px" readonly>
+    </div>
+
+    <div class="col-md-4">
+    <label for="PrescribedMeds" class="form-label">Prescribed Meds</label>
+    <select class="form-control" name="Schedules" id="Schedules" asp-for="patientMedication" style="width:300px">
+    <!-- Assuming patientMedication is a list or collection -->
+    @foreach (var medication in Model.AllCurrentMed)
+    {
+    <option value="@medication">@medication</option>
+    }
+    </select>
+    </div>
+
+    <div class="col-md-4">
+    <label for="Instructions" class="form-label">Instructions</label>
+    <input type="text" class="form-control" id="Instructions" name="Instructions" value="@Model.Take" style="width:300px" readonly>
+    </div>
+    </div>
+
+    </form> *@
+
+
+
+
+
+
+
+    <!-- Trigger/Open The Modal -->
+    <button id="myBtn">Dispense</button>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Prescription Dispensed</h2>
+            </div>
+            <div class="modal-body">
+                <p>The prescription has been successfully dispensed</p>
+            </div>
+            <div class="modal-footer">
+                <a asp-action="ViewAllActivePrescriptionsPage" asp-controller="Pharmacist" class="btn">Okay</a>
+            </div>
         </div>
     </div>
-   
 
 
-  
-    
+    <!--Script for modal-->
+    <script>
+        // Get the modal
+        var modal = document.getElementById("myModal");
 
-  
-    
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
 
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js">
-        
+        // When the user clicks on the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     </script>
 
 
-   
+
+
+
+    <button onclick="confirmReject()">Reject</button>
+    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

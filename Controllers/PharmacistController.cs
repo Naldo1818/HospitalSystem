@@ -15,9 +15,7 @@ using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Diagnostics;
 using DEMO.Models.PharmacistModels;
-using MailKit.Net.Smtp;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks.Dataflow;
 using System.Security.Principal;
 
@@ -54,7 +52,7 @@ namespace DEMO.Controllers
             if (prescription != null)
             {
                 prescription.RejectionReason = reason;
-                prescription.RejectionID = id;           
+                prescription.RejectionID = id;
                 _dbContext.SaveChanges();
                 return Json(new { success = true });
             }
@@ -65,47 +63,107 @@ namespace DEMO.Controllers
 
         public IActionResult StockOrderPage()
         {
-            var stocks =   (from pm in _dbContext.PharmacyMedication
-                            join m in _dbContext.Medication
-                            on pm.MedicationID equals m.MedicationID
-                            where pm.StockonHand<=pm.ReorderLevel
-
-              
-
-                select new PharmacistStockOrderViewModel
-
-
-                {
-                    MedicationName = m.MedicationName,
-                    MedicationForm = m.MedicationForm,
-                    Schedule = m.Schedule,
-                    StockonHand = pm.StockonHand,
-                    ReorderLevel = pm.ReorderLevel,
-                   
-
-
-
-
-
-
-                })
-                           .ToList();
-
+            // Query to get the medications that need to be reordered
+            var combinedData = (from pm in _dbContext.PharmacyMedication
+                                join m in _dbContext.Medication
+                                on pm.MedicationID equals m.MedicationID
+                                where pm.StockonHand <= pm.ReorderLevel
+                                select new PharmacistStockOrderViewModel
+                                {
+                                    MedicationName = m.MedicationName,
+                                    MedicationForm = m.MedicationForm,
+                                    Schedule = m.Schedule,
+                                    StockonHand = pm.StockonHand,
+                                    ReorderLevel = pm.ReorderLevel
+                                }).ToList();
 
             var viewModel = new PharmacistStockOrderViewModel
             {
-                PharmacistStockOrders = stocks,
+                PharmacistStockOrders = combinedData
             };
 
+            // Pass the list of data to the view
             return View(viewModel);
-
-
-
-           
-
         }
 
-      
+
+
+        [HttpPost]
+        public async Task<IActionResult> StockOrderPage(string notes)
+        {
+            var PharmacistName = HttpContext.Session.GetString("UserName");
+            var PharmacistSurname = HttpContext.Session.GetString("UserSurname");
+            var PharmacistEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            // Save data to database 
+            var combinedData = await (from pm in _dbContext.PharmacyMedication
+                                      join m in _dbContext.Medication
+                                      on pm.MedicationID equals m.MedicationID
+                                      where pm.StockonHand <= pm.ReorderLevel
+                                      select new PharmacistStockOrderViewModel
+                                      {
+                                          MedicationName = m.MedicationName,
+                                          MedicationForm = m.MedicationForm,
+                                          Schedule = m.Schedule,
+                                          StockonHand = pm.StockonHand,
+                                          ReorderLevel = pm.ReorderLevel,
+                                      })
+                                      .FirstOrDefaultAsync();
+
+            if (combinedData == null)
+            {
+                TempData["ErrorMessage"] = "No medications need to be reordered.";
+                return RedirectToAction("ViewAllOrders", "Pharmacist");
+            }
+
+            var emailMessage = new MimeMessage();
+            emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
+            emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "sam12mensah@gmail.com"));
+            emailMessage.Subject = $"Stock Order Request {combinedData.MedicationName}";
+
+            var bodyBuilder = new BodyBuilder
+            {
+                HtmlBody = $@"
+            <h3>Stock Order Details</h3>
+            <ul>
+                <li>Medication: {combinedData.MedicationName}</li>
+                <li>Form: {combinedData.MedicationForm}</li>
+                <li>Schedule: {combinedData.Schedule}</li>
+                <li>Stock on Hand: {combinedData.StockonHand}</li>
+                <li>Reorder Level: {combinedData.ReorderLevel}</li>
+            </ul>
+            <h3>Notes</h3>
+            <p>{notes}</p>
+            <p>Kind Regards,<br/>{PharmacistName}</p>"
+            };
+
+            emailMessage.Body = bodyBuilder.ToMessageBody();
+
+            try
+            {
+                using (var client = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                    await client.AuthenticateAsync("sam12mensah@gmail.com", "xqqx kiox hcgm xvmr");
+                    await client.SendAsync(emailMessage);
+                    await client.DisconnectAsync(true);
+                }
+
+                TempData["SuccessMessage"] = "Stock placed and email has been successfully sent.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
+                // Consider logging the exception for further investigation
+            }
+
+            return RedirectToAction("ViewAllOrders", "Pharmacist");
+        }
+
+
+
+
 
 
 
@@ -120,7 +178,7 @@ namespace DEMO.Controllers
             //}
 
             var combinedData = (from prescription in _dbContext.Prescription
-                               
+
                                 join ap in _dbContext.AdmittedPatients
                                 on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
 
@@ -186,22 +244,22 @@ namespace DEMO.Controllers
                                 join pmm in _dbContext.PharmacyMedicationModel
                                 on m.MedicationID equals pmm.MedicationID
 
-                               
 
-                                
+
+
 
 
                                 select new PharmacyMedicationViewModel
 
 
                                 {
-                                   MedicationName= m.MedicationName,
-                                   MedicationForm= m.MedicationForm,
-                                   Schedule=m.Schedule,
-                                   StockonHand=pm.StockonHand,
-                                   ReorderLevel=pm.ReorderLevel,
-                                  
-                                   
+                                    MedicationName = m.MedicationName,
+                                    MedicationForm = m.MedicationForm,
+                                    Schedule = m.Schedule,
+                                    StockonHand = pm.StockonHand,
+                                    ReorderLevel = pm.ReorderLevel,
+
+
 
 
 
@@ -279,18 +337,15 @@ namespace DEMO.Controllers
             {
 
 
-                MedicationForm=df,
-                
-                Schedules=medSchedules,
-                DosageForms=dfdropdown,
-                ActiveIngredientsDropdown=activeingredientslist,
-                
+                MedicationForm = df,
+
+                Schedules = medSchedules,
+                DosageForms = dfdropdown,
+                ActiveIngredientsDropdown = activeingredientslist,
 
 
-                combinedinfo =combinedData,
 
-              
-                
+                combinedinfo = combinedData,
 
 
 
@@ -300,7 +355,10 @@ namespace DEMO.Controllers
 
 
 
-                
+
+
+
+
 
             };
 
@@ -352,14 +410,14 @@ namespace DEMO.Controllers
                     ModelState.AddModelError("", "Error saving medication.");
                 }
 
-               
+
             }
 
             // Return the view with validation errors if any
             // Fetch schedules
 
             //model.Schedules=sched
-            
+
 
 
             var schedules = _dbContext.Medication
@@ -371,10 +429,10 @@ namespace DEMO.Controllers
             var dosageforms = _dbContext.Medication
                 .Select(m => m.MedicationForm)
                 .Distinct()
-                .OrderBy(form => form)  
+                .OrderBy(form => form)
                 .ToList();
 
-         
+
 
             var activeingredientslist = _dbContext.Activeingredient
                                  .Select(m => m.ActiveIngredientName)
@@ -393,9 +451,9 @@ namespace DEMO.Controllers
                 .Distinct()
                 .ToString();
 
-            model.ActiveIngredientsDropdown=activeingredientslist;
-            model.Schedules=schedules;
-            model.DosageForms=dosageforms;
+            model.ActiveIngredientsDropdown = activeingredientslist;
+            model.Schedules = schedules;
+            model.DosageForms = dosageforms;
             return View(model);
         }
 
@@ -441,16 +499,16 @@ namespace DEMO.Controllers
             {
 
 
-                
-               
+
+
                 combinedinfo = combinedData,
 
-             
+
 
 
 
             };
-            return View(viewModel);  
+            return View(viewModel);
         }
 
 
@@ -547,7 +605,7 @@ namespace DEMO.Controllers
             {
                 return NotFound();
             }
-            
+
 
 
 
@@ -566,13 +624,13 @@ namespace DEMO.Controllers
                                             .ToListAsync();
 
             var currentmeds = await (from m in _dbContext.Medication
-                                           join cm in _dbContext.patientMedication
-                                           on m.MedicationID equals cm.MedicationID
+                                     join cm in _dbContext.patientMedication
+                                     on m.MedicationID equals cm.MedicationID
 
-                                           select new PharmacistViewScriptModel
-                                           {
-                                               patientMedication=m.MedicationName
-                                           })
+                                     select new PharmacistViewScriptModel
+                                     {
+                                         patientMedication = m.MedicationName
+                                     })
                                            .ToListAsync();
 
             var allalergies = await (from ai in _dbContext.Activeingredient
@@ -596,7 +654,7 @@ namespace DEMO.Controllers
 
                                  join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
                                  join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
-                               
+
                                  where p.PrescriptionID == pid // Filter by prescription ID
                                  select new PharmacistViewScriptModel
                                  {
@@ -617,11 +675,11 @@ namespace DEMO.Controllers
                                      Temperature = pv.Temperature,
                                      SurgeonName = account.Name,
                                      SurgeonSurname = account.Surname,
-                                   
 
-                                     qty= mi.Quantity,
-                                     Instructions = mi.Instructions, 
-                                     medication=m.MedicationName,
+
+                                     qty = mi.Quantity,
+                                     Instructions = mi.Instructions,
+                                     medication = m.MedicationName,
                                  })
                                   .ToListAsync();
 
@@ -690,7 +748,7 @@ namespace DEMO.Controllers
         }
 
 
-       
+
 
 
         public ActionResult MedicationDispensed()
@@ -704,7 +762,7 @@ namespace DEMO.Controllers
 
             return View();
         }
-        
+
 
 
         public ActionResult MedicationAdded()
@@ -713,7 +771,7 @@ namespace DEMO.Controllers
             return View();
         }
 
-      
+
 
         public ActionResult OrderStock()
         {
@@ -724,7 +782,7 @@ namespace DEMO.Controllers
 
         public ActionResult StockOrdered()
         {
-            
+
             return View();
         }
 
@@ -819,21 +877,21 @@ namespace DEMO.Controllers
             }
 
             var combinedData = (from prescription in _dbContext.Prescription
-                                //join medicationInstruction in _dbContext.MedicationInstructions
-                                //on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
+                                    //join medicationInstruction in _dbContext.MedicationInstructions
+                                    //on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
 
-                                //join medication in _dbContext.Medication
-                                //on medicationInstruction.MedicationID equals medication.MedicationID
+                                    //join medication in _dbContext.Medication
+                                    //on medicationInstruction.MedicationID equals medication.MedicationID
 
                                 join ap in _dbContext.AdmittedPatients
                                 on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
-                                
+
                                 join pi in _dbContext.PatientInfo
 
                                 on ap.PatientID equals pi.PatientID
 
 
-                                
+
 
                                 join account in _dbContext.Accounts
                                 on prescription.AccountID equals account.AccountID
@@ -845,7 +903,7 @@ namespace DEMO.Controllers
 
                                 {
                                     // Prescription fields
-                                    
+
                                     SurgeonName = account.Name,
                                     SurgeonSurname = account.Surname,
                                     DateGiven = prescription.DateGiven,
@@ -867,10 +925,10 @@ namespace DEMO.Controllers
 
 
                                 })
-                                .OrderByDescending(item => item.Urgency=="Yes")
+                                .OrderByDescending(item => item.Urgency == "Yes")
                                 .ToList();
 
-           
+
 
             var viewModel = new ViewActivePrescriptionsModel
             {
@@ -880,7 +938,7 @@ namespace DEMO.Controllers
             return View(viewModel);
 
 
-           
+
         }
 
 
@@ -926,18 +984,18 @@ namespace DEMO.Controllers
 
             var combinedData = (from p in _dbContext.PatientInfo
                                 join pp in _dbContext.AdmittedPatients on p.PatientID equals pp.PatientID
-                                join prp in _dbContext.Prescription on pp.AdmittedPatientID equals prp.AdmittedPatientID  
+                                join prp in _dbContext.Prescription on pp.AdmittedPatientID equals prp.AdmittedPatientID
                                 join pharmacist in _dbContext.Accounts on prp.AccountID equals pharmacist.AccountID
-                                
+
 
                                 where prp.AccountID == accountID
                                 orderby prp.DateGiven
 
                                 select new PharmacistReportViewModel
                                 {
-                                    PrescriptionDate = prp.DateGiven,                               
-                                    Patient=p.Name + " " + p.Surname,
-                                    Surgeon=pharmacist.Name + " " + pharmacist.Surname,
+                                    PrescriptionDate = prp.DateGiven,
+                                    Patient = p.Name + " " + p.Surname,
+                                    Surgeon = pharmacist.Name + " " + pharmacist.Surname,
                                     status = prp.Status,
 
 
@@ -1005,5 +1063,5 @@ namespace DEMO.Controllers
 
 
 
-    
+
 

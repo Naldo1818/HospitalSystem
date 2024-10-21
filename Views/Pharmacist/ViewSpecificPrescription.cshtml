@@ -1,7 +1,7 @@
-﻿@{ 
+﻿@{
     ViewData["Title"] = "Individual Prescription";
     Layout = "_LayoutPharmacist";
-} 
+}
 
  @model DEMO.ViewModels.PharmacistViewScriptModel
 
@@ -12,22 +12,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription View</title>
 
-   
 
-  @*   <style>
-        .form-container {
-            padding: 20px;
-            border: 1px solid #dee2e6;
-            border-radius: .375rem;
-            margin-bottom: 20px;
-        }
-        .form-title {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .container-fluid {
-            margin: 0 auto;
-        }
+
+    @*   <style>
+    .form-container {
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: .375rem;
+    margin-bottom: 20px;
+    }
+    .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    }
+    .container-fluid {
+    margin: 0 auto;
+    }
     </style> *@
 
     <style>
@@ -143,39 +143,39 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
 
-   <script>
-    async function confirmReject() {
-        const confirmation = confirm("Are you sure you want to reject this script?");
-        if (confirmation) {
-            const reason = prompt("Please provide a reason for rejection:");
-            if (reason) {
-                try {
-                    const response = await fetch('/Pharmacist/ViewSpecificPrescription', {  // Adjust the endpoint as necessary
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ reason }),
-                    });
+    <script>
+        async function confirmReject() {
+            const confirmation = confirm("Are you sure you want to reject this script?");
+            if (confirmation) {
+                const reason = prompt("Please provide a reason for rejection:");
+                if (reason) {
+                    try {
+                        const response = await fetch('/Pharmacist/ViewSpecificPrescription', {  // Adjust the endpoint as necessary
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ reason }),
+                        });
 
-                    if (response.ok) {
-                        alert("Rejection reason submitted to the Surgeon: " + reason);
-                        // Redirect to another page after successful submission
-                        window.location.href = '/ViewAllPrescriptions'; // Adjust the URL for the redirection
-                    } else {
-                        alert("Failed to submit the rejection reason.");
+                        if (response.ok) {
+                            alert("Rejection reason submitted to the Surgeon: " + reason);
+                            // Redirect to another page after successful submission
+                            window.location.href = '/ViewAllPrescriptions'; // Adjust the URL for the redirection
+                        } else {
+                            alert("Failed to submit the rejection reason.");
+                        }
+                    } catch (error) {
+                        alert("Error submitting rejection reason: " + error.message);
                     }
-                } catch (error) {
-                    alert("Error submitting rejection reason: " + error.message);
+                } else {
+                    alert("Rejection cancelled: No reason provided.");
                 }
             } else {
-                alert("Rejection cancelled: No reason provided.");
+                alert("Rejection cancelled.");
             }
-        } else {
-            alert("Rejection cancelled.");
         }
-    }
-</script>
+    </script>
 
 </head>
 
@@ -192,8 +192,8 @@
         <center>
             <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
         </center>
-     
-           
+
+
 
 
 
@@ -202,7 +202,7 @@
 
 
     }
-    
+
 
     <!-- Medical History -->
     <form class="medical-history-form">
@@ -210,7 +210,7 @@
         <center><h1>Medical History</h1></center>"
         <div class="form-group row">
 
-             @if (Model.combinedData.Any())
+            @if (Model.combinedData.Any())
             {
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Conditions</label>
@@ -253,7 +253,7 @@
 
             }
 
-          
+
 
 
 
@@ -269,7 +269,7 @@
     </form>
 
 
-        <!-- Vitals History -->
+    <!-- Vitals History -->
 
     <div class="container-left">
         <main role="main" class="pb-5">
@@ -284,7 +284,7 @@
                             <thead>
                                 <tr>
 
-                                   
+
                                     <th scope="col">Height(cm)</th>
                                     <th scope="col">Weight(kg)</th>
                                     <th scope="col">Systolic Blood Pressure (mmHg)</th>
@@ -300,11 +300,11 @@
                             </thead>
                             <tbody>
 
-                                  @foreach (var item in Model.combinedData)
+                                @foreach (var item in Model.combinedData)
                                 {
 
                                     <tr>
-                                         <!-- Assuming TimeTaken is a property in your model -->
+                                        <!-- Assuming TimeTaken is a property in your model -->
                                         <td>@item.Height</td>
                                         <td>@item.Weight</td>
                                         <td>@item.SystolicBloodPressure</td>
@@ -315,12 +315,12 @@
                                         <td>@item.BloodGlucoseLevel</td>
                                         <td>@item.Temperature</td>
                                         <td>@item.Time</td>
-                                        
-                                        
+
+
 
                                     </tr>
 
-                                }  
+                                }
 
 
                             </tbody>
@@ -350,7 +350,7 @@
 
                                     <th scope="col">Patient Name</th>
                                     <th scope="col">Patient Surname</th>
-                                   
+
                                     <th scope="col">Medication prescribed</th>
                                     <th scope="col">Qty</th>
                                     <th scope="col">Instructions</th>
@@ -358,37 +358,37 @@
                                     <th scope="col">Surgeon Surname</th>
                                     <th scope="col">Date</th>
 
-                                    
+
 
                                 </tr>
                             </thead>
                             <tbody>
 
-                            
+
 
                                 @if (Model.combinedData.Any())
                                 {
                                     <tr>
-                                       
+
                                         <td>@Model.combinedData.First().patientname</td>
                                         <td>@Model.combinedData.First().patientsurname</td>
                                         <td>@Model.combinedData.First().medication</td>
                                         <td>@Model.combinedData.First().qty</td>
                                         <td>@Model.combinedData.First().Instructions</td>
-                                       
+
                                         <td>@Model.combinedData.First().SurgeonName</td>
                                         <td>@Model.combinedData.First().SurgeonSurname</td>
                                         <td>@Model.combinedData.First().DateGiven</td>
 
 
-                                   
+
 
 
 
 
                                     </tr>
                                 }
-                               
+
 
                             </tbody>
                         </table>
@@ -409,56 +409,56 @@
 
 
 
-   @*  <form class="medical-history-form">
-        <center>
-            <h2>Prescription Details</h2>
-        </center>
+    @*  <form class="medical-history-form">
+    <center>
+    <h2>Prescription Details</h2>
+    </center>
 
-        <div class="form-group row">
-            <div class="col-md-4">
-                <label>Patient Name</label>
-               
-                <input type="text" class="form-control" id="PatientName" name="PatientName" asp-for="patientname" style="width:300px" readonly>
-            </div>
+    <div class="form-group row">
+    <div class="col-md-4">
+    <label>Patient Name</label>
 
-            <div class="col-md-4">
-                <label for="PatientSurname" class="form-label">Patient Surname</label>
-                <input type="text" class="form-control" id="PatientSurname" name="PatientSurname" value="@Model.combinedData" style="width:300px" readonly>
-            </div>
+    <input type="text" class="form-control" id="PatientName" name="PatientName" asp-for="patientname" style="width:300px" readonly>
+    </div>
 
-            <div class="col-md-4">
-                <label for="SurgeonName" class="form-label">Surgeon Name</label>
-                <input type="text" class="form-control" id="SurgeonName" name="SurgeonName" value="@Model.SurgeonName" style="width:300px" readonly>
-            </div>
+    <div class="col-md-4">
+    <label for="PatientSurname" class="form-label">Patient Surname</label>
+    <input type="text" class="form-control" id="PatientSurname" name="PatientSurname" value="@Model.combinedData" style="width:300px" readonly>
+    </div>
 
-            <div class="col-md-4">
-                <label for="SurgeonSurname" class="form-label">Surgeon Surname</label>
-                <input type="text" class="form-control" id="SurgeonSurname" name="SurgeonSurname" value="@Model.SurgeonSurname" style="width:300px" readonly>
-            </div>
+    <div class="col-md-4">
+    <label for="SurgeonName" class="form-label">Surgeon Name</label>
+    <input type="text" class="form-control" id="SurgeonName" name="SurgeonName" value="@Model.SurgeonName" style="width:300px" readonly>
+    </div>
 
-            <div class="col-md-4">
-                <label for="PrescribedMeds" class="form-label">Prescribed Meds</label>
-                <select class="form-control" name="Schedules" id="Schedules" asp-for="patientMedication" style="width:300px">
-                    <!-- Assuming patientMedication is a list or collection -->
-                    @foreach (var medication in Model.AllCurrentMed)
-                    {
-                        <option value="@medication">@medication</option>
-                    }
-                </select>
-            </div>
+    <div class="col-md-4">
+    <label for="SurgeonSurname" class="form-label">Surgeon Surname</label>
+    <input type="text" class="form-control" id="SurgeonSurname" name="SurgeonSurname" value="@Model.SurgeonSurname" style="width:300px" readonly>
+    </div>
 
-            <div class="col-md-4">
-                <label for="Instructions" class="form-label">Instructions</label>
-                <input type="text" class="form-control" id="Instructions" name="Instructions" value="@Model.Take" style="width:300px" readonly>
-            </div>
-        </div>
+    <div class="col-md-4">
+    <label for="PrescribedMeds" class="form-label">Prescribed Meds</label>
+    <select class="form-control" name="Schedules" id="Schedules" asp-for="patientMedication" style="width:300px">
+    <!-- Assuming patientMedication is a list or collection -->
+    @foreach (var medication in Model.AllCurrentMed)
+    {
+    <option value="@medication">@medication</option>
+    }
+    </select>
+    </div>
+
+    <div class="col-md-4">
+    <label for="Instructions" class="form-label">Instructions</label>
+    <input type="text" class="form-control" id="Instructions" name="Instructions" value="@Model.Take" style="width:300px" readonly>
+    </div>
+    </div>
 
     </form> *@
 
 
-   
-   
-    
+
+
+
 
 
     <!-- Trigger/Open The Modal -->
@@ -515,7 +515,7 @@
 
 
 
- <button onclick="confirmReject()">Reject</button>
+    <button onclick="confirmReject()">Reject</button>
     <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
 
@@ -527,8 +527,8 @@
 
 
 
- 
 
-     
+
+
 </body>
 </html>
