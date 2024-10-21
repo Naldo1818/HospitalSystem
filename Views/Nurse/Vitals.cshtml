@@ -1,19 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Medication Collection";
+    ViewData["Title"] = "Retake Vitals";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.BookedPatientInfo
+@model DEMO.Models.NurseModels.ViewVitals
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surgery Bookings</title>
+    <title>Retake Vitals</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
     <style>
         .container {
             padding-top: 50px;
@@ -115,7 +115,7 @@
 </head>
 <body>
     <div class="container-fluid" id="grad1">
-        <div class="row justify-content-center mt-0" style="width: contain;">
+        <div class="row justify-content-center mt-0">
             <div class="text-center p-0 mt-3 mb-2">
                 <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
                     <h2><strong>Retake Vitals</strong></h2>
@@ -127,59 +127,59 @@
                                 <label>Surname: @ViewBag.PatientSurname</label>
                             </div>
                             <div>
-                                <label>Ward: @ViewBag.PatientWard</label>
-                                <label>Bed: @ViewBag.PatientBed</label>
+                                <label>Ward: @ViewBag.patientWard </label>
+                                <label>Bed: @ViewBag.patientBed </label>
                             </div>
                             <div>
                                 <label>Height: <span id="patientHeight">@ViewBag.PHeight</span> cm</label>
                                 <label>Weight: <span id="patientWeight">@ViewBag.PWeight</span> kg</label>
-                               
                             </div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-12 mx-0">
-                            <form id="msform" method="post" action="@Url.Action("SaveVitalsAndRedirect", "Nurse")" onsubmit="return validateVitals(); ">
+                            <form asp-action="Vitals" asp-controller="Nurse" method="post" id="vitalForm">
                                 <fieldset id="f-4">
                                     <div class="form-card">
                                         <h2 class="fs-title">Vitals</h2>
                                         <div class="form-group">
+                                            <div id="alerts"></div>
                                             <hr>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="SystolicBP">Systolic BP (mmHg)</label>
-                                                    <input type="number" name="SystolicBloodPressure" min="80" max="250" required>
+                                                    <input type="number" name="SystolicBloodPressure" min="80" max="200" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="DiastolicBP">Diastolic BP (mmHg)</label>
-                                                    <input type="number" name="DiastolicBloodPressure" min="40" max="130" required>
+                                                    <input type="number" name="DiastolicBloodPressure" min="50" max="100" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Pulse">Pulse (bpm)</label>
-                                                    <input type="number" name="HeartRate" min="50" max="200" required>
+                                                    <input type="number" name="HeartRate" min="50" max="120" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BloodOxygen">Blood Oxygen (%)</label>
-                                                    <input type="number" name="BloodOxygen" min="90" max="100" required>
+                                                    <input type="number" name="BloodOxygen" min="94" max="100" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Respiration">Respiration Rate (Breaths/min)</label>
-                                                    <input type="number" name="Respiration" min="10" max="50" required>
+                                                    <input type="number" name="Respiration" min="10" max="25" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BGL">Blood Glucose Level (mg/dL)</label>
-                                                    <input type="number" name="BloodGlucoseLevel" min="50" max="500" required>
+                                                    <input type="number" name="BloodGlucoseLevel" min="60" max="200" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Temperature">Temperature (°C)</label>
-                                                    <input type="number" name="Temperature" min="30.0" max="42.0" step="0.1" required>
+                                                    <input type="number" name="Temperature" min="36.0" max="38.0" step="0.1" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
@@ -190,12 +190,12 @@
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
-                                                    <input type="time" name="time" id="time" value="" hidden>
+                                                    <input type="hidden" name="AdmittedPatientID" id="AdmittedPatientID" value="@Model.AdmittedPatientID" />
+                                                    <input type="hidden" id="notesInput" name="notes" />
                                                 </div>
                                             </div>
                                         </div>
-                                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
-                                        <input type="submit" name="submit" class="next action-button" value="Submit" />
+                                        <input type="submit" class="next action-button" value="Submit" />
                                     </div>
                                 </fieldset>
                             </form>
@@ -206,120 +206,121 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal for Alerts -->
     <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="alertModalLabel">Vital Signs Alert</h5>
+                    <h5 class="modal-title" id="alertModalLabel">Vital Sign Alerts</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" id="alertContent">
-                    <!-- Alert messages will be inserted here -->
+                <div class="modal-body" id="modalAlerts">
+                    <!-- Alerts will be injected here -->
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="SendEmail">Send Email</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" id="emailVitalsButton">Send Email</button>
                 </div>
             </div>
         </div>
     </div>
 
-
     <script>
         $(document).ready(function () {
-            // Calculate BMI based on height and weight
-            const height = parseFloat(document.getElementById('patientHeight').innerText);
-            const weight = parseFloat(document.getElementById('patientWeight').innerText);
+            const height = parseFloat($('#patientHeight').text());
+            const weight = parseFloat($('#patientWeight').text());
 
             // Calculate BMI if height and weight are valid
             if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
-                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2); // Convert height to meters
-                document.getElementById('bmiInput').value = bmi;
+                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+                $('#bmiInput').val(bmi);
             }
 
-            // Initialize DataTables
-            $('#myTable').DataTable();
+            // Set current date and time in hidden inputs (if necessary)
+            const currentDate = new Date();
+            $('#Date').val(currentDate.toISOString().split('T')[0]); // yyyy-mm-dd
+            $('#time').val(currentDate.toTimeString().split(' ')[0].slice(0, 5)); // HH:mm
 
-            // Initialize Select2 with searchable functionality
-            $('.select2').select2({
-                placeholder: 'Select an option',
-                allowClear: true
+            // Validation on form submit
+            $('#vitalForm').on('submit', function (e) {
+                $('#alerts').empty(); // Clear previous alerts
+                let hasErrors = false;
+
+                // Validate each vital sign and create alerts
+                const systolicBP = $('input[name="SystolicBloodPressure"]').val();
+                const diastolicBP = $('input[name="DiastolicBloodPressure"]').val();
+                const heartRate = $('input[name="HeartRate"]').val();
+                const bloodOxygen = $('input[name="BloodOxygen"]').val();
+                const respiration = $('input[name="Respiration"]').val();
+                const bloodGlucoseLevel = $('input[name="BloodGlucoseLevel"]').val();
+                const temperature = $('input[name="Temperature"]').val();
+
+                if (systolicBP < 80 || systolicBP > 200) {
+                    $('#alerts').append('<div class="alert alert-warning">Systolic BP must be between 80 and 200 mmHg.</div>');
+                    hasErrors = true;
+                }
+
+                if (diastolicBP < 50 || diastolicBP > 100) {
+                    $('#alerts').append('<div class="alert alert-warning">Diastolic BP must be between 50 and 100 mmHg.</div>');
+                    hasErrors = true;
+                }
+
+                if (heartRate < 50 || heartRate > 120) {
+                    $('#alerts').append('<div class="alert alert-warning">Heart Rate must be between 50 and 120 bpm.</div>');
+                    hasErrors = true;
+                }
+
+                if (bloodOxygen < 94 || bloodOxygen > 100) {
+                    $('#alerts').append('<div class="alert alert-warning">Blood Oxygen must be between 94% and 100%.</div>');
+                    hasErrors = true;
+                }
+
+                if (respiration < 10 || respiration > 25) {
+                    $('#alerts').append('<div class="alert alert-warning">Respiration Rate must be between 10 and 25 Breaths/min.</div>');
+                    hasErrors = true;
+                }
+
+                if (bloodGlucoseLevel < 60 || bloodGlucoseLevel > 200) {
+                    $('#alerts').append('<div class="alert alert-warning">Blood Glucose Level must be between 60 and 200 mg/dL.</div>');
+                    hasErrors = true;
+                }
+
+                if (temperature < 36.0 || temperature > 38.0) {
+                    $('#alerts').append('<div class="alert alert-warning">Temperature must be between 36.0 and 38.0 °C.</div>');
+                    hasErrors = true;
+                }
+
+                // If there are errors, prevent form submission
+                if (hasErrors) {
+                    e.preventDefault();
+                }
             });
 
-            // Add click event for Send Email button
-            $('#SendEmail').click(function () {
-                // Redirect to the EmailVitals view
-                window.location.href = '@Url.Action("EmailVitals", "Nurse")'; // Replace 'Vitals' with your actual controller name if different
-            });
-            $('#SendEmail').click(function () {
-                // Submit the form when the modal closes
-                $('#msform').submit();
+            // Handle Send Email button action
+            $('#emailVitalsButton').on('click', function () {
+                // Change the action parameter to 'SendEmail' for the AJAX request
+                const formData = $('#vitalForm').serialize() + '&action=SendEmail';
+
+                // Submit the form via AJAX
+                $.ajax({
+                    type: 'POST',
+                    url: $('#vitalForm').attr('action'),
+                    data: formData,
+                    success: function () {
+                        // Redirect to the Email Vitals page
+                        window.location.href = '@Url.Action("EmailVitals", "Nurse")';
+                    },
+                    error: function () {
+                        alert('An error occurred while saving the vitals.');
+                    }
+                });
             });
         });
 
-        function validateVitals() {
-            var alertMessages = [];
-
-            // Get input values
-            var systolicBP = parseFloat($('input[name="SystolicBloodPressure"]').val());
-            var diastolicBP = parseFloat($('input[name="DiastolicBloodPressure"]').val());
-            var pulse = parseFloat($('input[name="HeartRate"]').val());
-            var bloodOxygen = parseFloat($('input[name="BloodOxygen"]').val());
-            var respiration = parseFloat($('input[name="Respiration"]').val());
-            var bloodGlucose = parseFloat($('input[name="BloodGlucoseLevel"]').val());
-            var temperature = parseFloat($('input[name="Temperature"]').val());
-
-            // Threshold checks for alert
-            if (systolicBP < 90 || systolicBP > 140) {
-                alertMessages.push("Systolic BP is out of the normal range (90-140 mmHg).");
-            }
-
-            if (diastolicBP < 60 || diastolicBP > 90) {
-                alertMessages.push("Diastolic BP is out of the normal range (60-90 mmHg).");
-            }
-
-            if (pulse < 60 || pulse > 100) {
-                alertMessages.push("Pulse is out of the normal range (60-100 bpm).");
-            }
-
-            if (bloodOxygen < 95) {
-                alertMessages.push("Blood Oxygen is below the normal range (< 95%).");
-            }
-
-            if (respiration < 12 || respiration > 20) {
-                alertMessages.push("Respiration rate is out of the normal range (12-20 breaths/min).");
-            }
-
-            if (bloodGlucose < 70 || bloodGlucose > 180) {
-                alertMessages.push("Blood Glucose Level is out of the normal range (70-180 mg/dL).");
-            }
-
-            if (temperature < 36.1 || temperature > 37.2) {
-                alertMessages.push("Temperature is out of the normal range (36.1-37.2°C).");
-            }
-
-            // Check if any alerts exist
-            if (alertMessages.length > 0) {
-                // Display the modal with alert messages
-                var alertContent = document.getElementById('alertContent');
-                alertContent.innerHTML = ''; // Clear previous alerts
-                alertMessages.forEach(function (message) {
-                    alertContent.innerHTML += '<p>' + message + '</p>';
-                });
-                $('#alertModal').modal('show'); // Show modal
-                $('#close').click(function () {
-                    $('#alertModal').modal('hide'); // Hide modal when close button is clicked
-                });
-                return false; // Prevent form submission
-            }
-
-            return true; // Allow form submission if no alerts
-        }
     </script>
 
-
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

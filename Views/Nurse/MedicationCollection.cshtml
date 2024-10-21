@@ -2,7 +2,7 @@
     ViewData["Title"] = "Medication Collection";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.BookedPatientInfo
+@model DEMO.ViewModels.PrescriptionListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -177,70 +177,77 @@
                             
                         </div>
                         <div class="header-labels">
-                            <label>Ward: ViewBag.patientWard </label>
-                            <label>Bed: ViewBag.patientBed </label>
+                            <label>Ward: @ViewBag.patientWard </label>
+                            <label>Bed: @ViewBag.patientBed </label>
                         </div>
                     </div>
                     <hr></hr>
-                    <div class="row">
-                        <div class="col-md-12 mx-0">
-                            <form id="msform">
-                                <fieldset id="f-2">
-                                    <div class="form-card">
-                                        <div class="form-group">
-                                            <h4>Collection Information</h4>
-                                            <hr></hr>
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
-                                                    <label for="Nurse">Nurse:</label>
-                                                    <input type="text" value="@ViewBag.UserName @ViewBag.UserSurname" id="Nurse" min="1" step="1" disabled />
-                                                </div>
+                    <div class="col-md-12 mx-0">
+                        <form id="msform">
+                            <fieldset id="f-2">
+                                <div class="form-card">
+                                    <div class="form-group">
+                                        <h4>Collection Information</h4>
+                                        <hr>
+                                        <div class="row-two-columns">
+                                            <div class="vital-group">
+                                                <label for="Nurse">Nurse:</label>
+                                                <input type="text" value="@ViewBag.UserName @ViewBag.UserSurname" id="Nurse" disabled />
                                             </div>
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
-                                                    <label for="Surgeon">Surgeon:</label>
-                                                    <input type="text" value="@Model.SurgeonName @ViewBag.SurgeonSurname" id="SurgeonInput" min="1" step="1" disabled/>
-                                                </div>
-                                            </div>
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
-                                                    <label for="Collection">Collection</label>
-                                                    <input type="radio" id="CollectionInput" class="CollectionInput" onclick="toggleRadio(this)" />
-                                                </div>
-                                            </div>
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
-                                                    <label for="Time">Time:</label>
-                                                    <input type="time" required />
-                                                </div>
-                                            </div>
-                                            <div class="row-two-columns">
-                                                <div class="vital-group">
-                                                    <label for="PreMedication">Prescription Medication:</label>
-                                                    <table id="PreMedicationTable" class="display" style="width:100%">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Medication Name</th>
-                                                                <th>Dosage</th>
-                                                                <th>Frequency</th>
-                                                                <th>Start Date</th>
-                                                                <th>End Date</th>
-                                                                <th>Notes</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="PreMedicationList">
-                                                            <!-- Data rows will be inserted here -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-                                            <input type="button" name="previous" class="previous action-button-previous" value="Back" />
-                                            <input type="button" name="next" class="next action-button" value="Save" />
                                         </div>
+                                        <div class="row-two-columns">
+                                            <div class="vital-group">
+                                                
+                                                <input type="time" name="Time" id="Time" value="" hidden>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Back" />
+                                        <input type="button" name="next" class="next action-button" value="Save" />
                                     </div>
-                                </fieldset>
-                            </form>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="p-3 mt-5 border" style="background-color: white;">
+                                <h2>Prescription Dispensed</h2>
+                                <table id="acceptedTable" class="display" style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Surname</th>
+                                            <th>Prescription Date</th>
+                                            <th>Pharmacist Name</th>
+                                            <th>Pharmacist Surname</th>
+                                            <th>Urgency</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var Data in Model.AllPrescribedDispensed)
+                                        {
+                                            <tr class="@(Data.Urgency == "Yes" ? "table-danger" : "")">
+                                                <td>@Data.PatientName</td>
+                                                <td>@Data.PatientSurname</td>
+                                                <td>@Data.DateGiven.ToString("MM/dd/yyyy")</td>
+                                                <td>@Data.AccountName</td>
+                                                <td>@Data.AccountSurname</td>
+                                                <td>@Data.Urgency</td>
+                                                <td>@Data.Status</td>
+                                                <td>
+                                                    <button class="btn btn-primary collect-medication" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#DmedicationModal">
+                                                        Collect Medication
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -248,41 +255,35 @@
         </div>
     </div>
     <script>
-        function toggleRadio(radio) {
-            if (radio.wasChecked) {
-                radio.checked = false;
-            }
-            radio.wasChecked = radio.checked;
-        }
+        
 
         $(document).ready(function () {
-            // Initialize Select2 with searchable functionality
+            // Initialize DataTable for accepted prescriptions
+            $('#acceptedTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                autoWidth: false,
+                columnDefs: [
+                    { "width": "10%", "targets": 0 }, // Adjust as per your layout
+                    { "width": "10%", "targets": 1 },
+                    { "width": "15%", "targets": 2 },
+                    { "width": "15%", "targets": 3 },
+                    { "width": "15%", "targets": 4 },
+                    { "width": "10%", "targets": 5 },
+                    { "width": "10%", "targets": 6 },
+                    { "width": "10%", "targets": 7 }
+                ]
+            });
+
+            // Initialize Select2 for dropdowns
             $('.select2').select2({
                 placeholder: 'Select an option',
                 allowClear: true
             });
-            $('#PreMedicationTable').DataTable({
-                "paging": true,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "columnDefs": [
-                    { "width": "20%", "targets": 0 },
-                    { "width": "15%", "targets": 1 },
-                    { "width": "15%", "targets": 2 },
-                    { "width": "15%", "targets": 3 },
-                    { "width": "15%", "targets": 4 },
-                    { "width": "20%", "targets": 5 }
-                ]
-            });
         });
 
-        // Function to remove a list item
-        function removeItem(button) {
-            const p = button.parentElement;
-            p.remove();
-        }
         
 
     </script>

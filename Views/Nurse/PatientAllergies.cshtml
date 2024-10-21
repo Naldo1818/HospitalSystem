@@ -1,20 +1,27 @@
 ﻿@{
-    ViewData["Title"] = "Patient Records";
+    ViewData["Title"] = "Retake Vitals";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.PatientAllergyViewModel
+@model DEMO.ViewModels.BookedPatientInfo
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Records</title>
+    <title>Surgery Bookings</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
     <style>
         .container {
             padding-top: 50px;
+        }
+
+        .active-tab {
+            background-color: teal;
+            color: white;
         }
 
         .form-card {
@@ -27,129 +34,428 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .header-section {
+            margin-bottom: 20px;
+            padding-left: 50px;
+        }
+
+        .header-labels {
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .header-labels div {
+                flex: 1;
+                text-align: center;
+                margin-right: 20px;
+            }
+
+                .header-labels div:last-child {
+                    margin-right: 0;
+                }
+
+            .header-labels label {
+                display: block;
+                font-size: 18px;
+                color: #333;
+                margin-bottom: 10px;
+            }
+
+        .form-card hr {
+            margin: 20px 0;
+        }
+
         .row-two-columns {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-            .row-two-columns .vital-group {
-                flex: 1 1 48%;
-            }
-
-        .vital-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
         .vital-group {
+            flex: 1 1 48%;
             text-align: left;
         }
 
-            .vital-group input,
-            .vital-group select {
+            .vital-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
+
+            .vital-group input {
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 font-size: 14px;
                 color: #333;
                 width: 100%;
-                max-width: 400px;
                 box-sizing: border-box;
                 height: 40px;
                 margin: 0;
             }
 
-        .header-labels {
-            text-align: left;
+        .alert {
+            padding: 15px;
             margin-bottom: 20px;
-            padding-left: 50px;
+            border: 1px solid transparent;
+            border-radius: 4px;
         }
 
-            .header-labels label {
-                display: block;
-                margin-bottom: 10px;
-                font-size: 18px;
-                color: #333;
-            }
-
-        .modal-header, .modal-footer {
-            border: none;
-        }
-
-            .modal-footer button {
-                min-width: 100px;
-            }
-
+        .alert-warning {
+            color: #856404;
+            background-color: #fff3cd;
+            border-color: #ffeeba;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:1200px">
-                <div class="col">
-                    <div class="p-3 mt-2 border">
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0" style="width: contain;">
+            <div class="text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Retake Vitals</strong></h2>
+                    <hr>
+                    <div class="header-section">
+                        <div class="header-labels">
+                            <div>
+                                <label>Name: @ViewBag.PatientName</label>
+                                <label>Surname: @ViewBag.PatientSurname</label>
+                            </div>
 
-                        <form>
-                            <h2>Allergies</h2>
-                            <a asp-controller="Nurse" asp-action="PatientRecords"><input type="button" name="Back" class="next action-button btn-danger" value="Back" /></a>
+                            <div>
+                                <label>Height: <span id="patientHeight">@ViewBag.PHeight</span> cm</label>
+                                <label>Weight: <span id="patientWeight">@ViewBag.PWeight</span> kg</label>
 
-                        </form>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12 mx-0">
+                            <form id="msform" asp-controller="Nurse" asp-action="Vitals1" method="post" onsubmit="return validateVitals();">
+                                <fieldset id="f-4">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">Vitals</h2>
+                                        <div class="form-group">
+                                            <hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="SystolicBP">Systolic BP (mmHg)</label>
+                                                    <input type="number" name="SystolicBloodPressure" min="80" max="200" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="DiastolicBP">Diastolic BP (mmHg)</label>
+                                                    <input type="number" name="DiastolicBloodPressure" min="50" max="100" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Pulse">Pulse (bpm)</label>
+                                                    <input type="number" name="HeartRate" min="50" max="120" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="BloodOxygen">Blood Oxygen (%)</label>
+                                                    <input type="number" name="BloodOxygen" min="94" max="100" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Respiration">Respiration Rate (Breaths/min)</label>
+                                                    <input type="number" name="Respiration" min="10" max="25" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="BGL">Blood Glucose Level (mg/dL)</label>
+                                                    <input type="number" name="BloodGlucoseLevel" min="60" max="200" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Temperature">Temperature (°C)</label>
+                                                    <input type="number" name="Temperature" min="36.0" max="38.0" step="0.1" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="BMI">BMI</label>
+                                                    <input type="number" name="Vitals.BMI" id="bmiInput" value="" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <input type="time" name="time" id="time" value="" hidden>
+                                                    <input type="date" name="Date" id="Date" value="" hidden>
+                                                    <input type="number" name="AdmittedPatientID" id="AdmittedPatientID" value="@Model.AdmittedPatientID" hidden>
+                                                    <input type="hidden" id="notesInput" name="notes" />
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                                        <input type="submit" name="submit" class="next action-button" value="Submit" />
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1200px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
-                        <table id="example" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">AllergyID</th>
-                                    <th scope="col">Allergy</th>
-                                  
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var Data in Model.Allallergy)
-                                {
-                                    <tr>
-                                        <td>@Data.Name</td>
-                                    </tr>
-
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+        </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="alertModalLabel">Vital Signs Alert</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="cross">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="alertContent">
+                    <!-- Alert messages will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="close" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="SendEmail">Send Email</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         $(document).ready(function () {
-            var table = $('#example').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
+            // Calculate BMI based on height and weight
+            const height = parseFloat($('#patientHeight').text());
+            const weight = parseFloat($('#patientWeight').text());
+
+            // Calculate BMI if height and weight are valid
+            if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
+                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2); // Convert height to meters
+                $('#bmiInput').val(bmi); // Set the calculated BMI value
+            }
+
+            // Handle form submission for Submit button
+            $('#msform').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+                validateVitals("submit"); // Call validation for Submit button
             });
 
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim().toLowerCase();
-                table.rows().every(function () {
-                    var data = this.data();
-                    var name = data[1].toLowerCase();
-                    var surname = data[2].toLowerCase();
-                    if (name.includes(searchText) || surname.includes(searchText)) {
-                        $(this.node()).show();
-                    } else {
-                        $(this.node()).hide();
+            // Handle click event for Send Email button in modal
+            $('#SendEmail').click(function () {
+                var admittedPatientID = $('#AdmittedPatientID').val();
+                validateVitals("sendEmail", admittedPatientID); // Validate for Send Email button
+            });
+        });
+
+        function validateVitals(action, admittedPatientID = null) {
+            var alertMessages = [];
+            var notes = ''; // Initialize notes string
+
+            // Get input values
+            var systolicBP = parseFloat($('input[name="SystolicBloodPressure"]').val());
+            var diastolicBP = parseFloat($('input[name="DiastolicBloodPressure"]').val());
+            var pulse = parseFloat($('input[name="HeartRate"]').val());
+            var bloodOxygen = parseFloat($('input[name="BloodOxygen"]').val());
+            var respiration = parseFloat($('input[name="Respiration"]').val());
+            var bloodGlucose = parseFloat($('input[name="BloodGlucoseLevel"]').val());
+            var temperature = parseFloat($('input[name="Temperature"]').val());
+
+            // Threshold checks for alert
+            if (systolicBP < 90 || systolicBP > 140) {
+                alertMessages.push("Systolic BP is out of range! Normal range is 90-140 mmHg.");
+            }
+            if (diastolicBP < 60 || diastolicBP > 90) {
+                alertMessages.push("Diastolic BP is out of range! Normal range is 60-90 mmHg.");
+            }
+            if (pulse < 60 || pulse > 100) {
+                alertMessages.push("Pulse is out of range! Normal range is 60-100 bpm.");
+            }
+            if (bloodOxygen < 95) {
+                alertMessages.push("Blood Oxygen level is below normal! Normal range is 95-100%.");
+            }
+            if (respiration < 12 || respiration > 20) {
+                alertMessages.push("Respiration rate is out of range! Normal range is 12-20 breaths/min.");
+            }
+            if (bloodGlucose < 70 || bloodGlucose > 180) {
+                alertMessages.push("Blood Glucose level is out of range! Normal range is 70-180 mg/dL.");
+            }
+            if (temperature < 36.1 || temperature > 37.2) {
+                alertMessages.push("Temperature is out of range! Normal range is 36.1-37.2°C.");
+            }
+
+            // Prepare notes string for EmailVitals
+            if (alertMessages.length > 0) {
+                notes += alertMessages.join(', '); // Join messages into a single string
+                $('#notesInput').val(notes); // Set the notes input value
+
+                // Display the modal with alert messages
+                var alertContent = $('#alertContent');
+                alertContent.empty(); // Clear previous alerts
+                alertMessages.forEach(function (message) {
+                    alertContent.append('<p>' + message + '</p>');
+                });
+                $('#alertModal').modal('show'); // Show modal
+            }
+
+            // Handle the actions based on the button pressed
+            if (action === "submit" && alertMessages.length === 0) {
+                $('#msform').off('submit').submit(); // Submit the form if no alerts
+            } else if (action === "sendEmail") {
+                // Make an AJAX call to save the vitals before redirecting
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("Vitals1", "Nurse")',
+                    data: $('#msform').serialize(), // Serialize form data
+                    success: function () {
+                        // Redirect to EmailVitals after successful vitals saving
+                        window.location.href = '@Url.Action("EmailVitals", "Nurse")?AdmittedPatientID=' + admittedPatientID;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error saving vitals:", status, error); // Log error
+                        alert("There was an error saving the vitals.");
                     }
                 });
-            });
+            }
+        }
+
+    </script>
+
+
+
+</body>
+</html>
+@* @{
+    ViewData["Title"] = "Retake Vitals";
+    Layout = "_LayoutNurse";
+}
+@model DEMO.ViewModels.BookedPatientInfo
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surgery Bookings</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        /* ... styles unchanged ... */
+    </style>
+</head>
+<body>
+    <div class="container-fluid" id="grad1">
+        <div class="row justify-content-center mt-0" style="width: contain;">
+            <div class="text-center p-0 mt-3 mb-2">
+                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                    <h2><strong>Retake Vitals</strong></h2>
+                    <hr>
+                    <div class="header-section">
+                        <div class="header-labels">
+                            <div>
+                                <label>Name: @ViewBag.PatientName</label>
+                                <label>Surname: @ViewBag.PatientSurname</label>
+                            </div>
+
+                            <div>
+                                <label>Height: <span id="patientHeight">@ViewBag.PHeight</span> cm</label>
+                                <label>Weight: <span id="patientWeight">@ViewBag.PWeight</span> kg</label>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12 mx-0">
+                            <!-- Update the form action and method -->
+                            <form asp-action="Vitals1" asp-controller="Nurse" method="post">
+                                <fieldset id="f-4">
+                                    <div class="form-card">
+                                        <h2 class="fs-title">Vitals</h2>
+                                        <div class="form-group">
+                                            <hr>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="SystolicBP">Systolic BP (mmHg)</label>
+                                                    <input type="number" name="SystolicBloodPressure" min="80" max="200" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="DiastolicBP">Diastolic BP (mmHg)</label>
+                                                    <input type="number" name="DiastolicBloodPressure" min="50" max="100" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Pulse">Pulse (bpm)</label>
+                                                    <input type="number" name="HeartRate" min="50" max="120" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="BloodOxygen">Blood Oxygen (%)</label>
+                                                    <input type="number" name="BloodOxygen" min="94" max="100" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Respiration">Respiration Rate (Breaths/min)</label>
+                                                    <input type="number" name="Respiration" min="10" max="25" required>
+                                                </div>
+                                                <div class="vital-group">
+                                                    <label for="BGL">Blood Glucose Level (mg/dL)</label>
+                                                    <input type="number" name="BloodGlucoseLevel" min="60" max="200" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="Temperature">Temperature (°C)</label>
+                                                    <input type="number" name="Temperature" min="36.0" max="38.0" step="0.1" required>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <label for="BMI">BMI</label>
+                                                    <input type="number" name="Vitals.BMI" id="bmiInput" value="" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="row-two-columns">
+                                                <div class="vital-group">
+                                                    <input type="number" name="AdmittedPatientID" id="AdmittedPatientID" value="@Model.AdmittedPatientID" hidden>
+                                                    <input type="time" name="time" id="time" value="" hidden>
+                                                    <input type="date" name="Date" id="Date" value="" hidden>
+                                                    
+                                                    <input type="hidden" id="notesInput" name="notes" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="submit" class="next action-button" value="Submit" />
+                                    </div>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            const height = parseFloat($('#patientHeight').text());
+            const weight = parseFloat($('#patientWeight').text());
+
+            if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
+                const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+                $('#bmiInput').val(bmi);
+            }
         });
     </script>
 </body>
-</html>
+</html> *@
+

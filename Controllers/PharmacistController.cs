@@ -538,7 +538,7 @@ namespace DEMO.Controllers
                            select new PharmacistViewScriptModel
                            {
                               
-                               Take = p.Take,
+                               //Take = p.Take,
                                Urgency = p.Urgency,
                                PrescriptionID = p.PrescriptionID,
                                AdmittedPatientID = p.AdmittedPatientID,
