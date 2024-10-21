@@ -72,7 +72,7 @@
 
                     <a class="nav-link active" aria-hidden="true" asp-controller="Admin" asp-action="ListUser" style="font-size: 1.3rem;">User </a>
 
-                    <a class="nav-link active" aria-hidden="true" asp-controller="Admin" asp-action="ListMedication" style="font-size: 1.3rem;">Medication </a>
+               
 
                     <a class="nav-link active" aria-hidden="true" asp-controller="Admin" asp-action="ListTreatmentCodes" style="font-size: 1.3rem;">Treatment Codes </a>
 
@@ -100,11 +100,11 @@
 						<hr>
 						<br>
                         <p class="card-text text-center">Number of Accounts</p>
-                        <p class="card-text text-center">0</p>
+                            <p class="card-text">@ViewBag.TotalUsers</p>
 						<p class="card-text text-center">Number of Medication</p>
-						<p class="card-text text-center">0</p>
+                            <p class="card-text">@ViewBag.TotalMedications</p>
 						<p class="card-text text-center">Number of Treatment Codes</p>
-                        <p class="card-text text-center">0</p>
+                            <p class="card-text">@ViewBag.TotalTreatmentCodes</p>
 						<hr>
                             <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="Index">Log Out</a>
 					</div>

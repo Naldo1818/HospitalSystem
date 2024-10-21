@@ -45,6 +45,38 @@ namespace DEMO.Controllers
                     if (user.Role == "Admin")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
+
+
+                        var surgeon = _dbContext.Accounts
+               .Where(a => a.AccountID == AccountID)
+               .Select(a => new SurgeonViewModel
+               {
+                   AccountID = a.AccountID,
+                   Name = a.Name,
+                   Surname = a.Surname,
+                   Email = a.Email
+               })
+               .SingleOrDefault();
+
+                        if (surgeon == null)
+                        {
+                            return NotFound();
+                        }
+
+                        // Store user data in session
+                        HttpContext.Session.SetString("UserAccountId", surgeon.AccountID.ToString());
+                        HttpContext.Session.SetString("UserName", surgeon.Name);
+                        HttpContext.Session.SetString("UserSurname", surgeon.Surname);
+                        HttpContext.Session.SetString("UserEmail", surgeon.Email);
+
+                        ViewBag.AccountId = surgeon.AccountID;
+
+
+                        ViewBag.UserName = surgeon.Name;
+                        ViewBag.UserSurname = surgeon.Surname;
+                        ViewBag.UserEmail = surgeon.Email;
+
+
                         return RedirectToAction("AdminHome", "Admin", new { AccountID });
 
                     }
