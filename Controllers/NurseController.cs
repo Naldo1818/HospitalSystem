@@ -13,14 +13,8 @@ using Microsoft.Identity.Client;
 using MimeKit;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using System.Runtime.Intrinsics.X86;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Runtime.Intrinsics.Arm;
-//using System.Runtime.Intrinsics.Arm;
-//using AspNetCore;
+
+
 
 namespace DEMO.Controllers
 {
@@ -69,133 +63,92 @@ namespace DEMO.Controllers
 
             return View();
         }
+
         [HttpGet]
-        public IActionResult Vitals(BookedPatientInfo model, int AdmittedPatientID, string name, string Surname, string Ward, int bed)
+        public IActionResult Vitals(int admittedPatientID, string name, string Surname, string Ward, int Bed)
         {
+            // Fetch the admitted patient details
             var admittedPatient = _dbContext.AdmittedPatients
-                                .FirstOrDefault(ad => ad.AdmittedPatientID == AdmittedPatientID);
+                .FirstOrDefault(ad => ad.AdmittedPatientID == admittedPatientID);
 
             if (admittedPatient == null)
             {
-                return NotFound("Admitted patient not found.");
+                return NotFound("Patient not found.");
             }
 
-            // Get user session data
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
+            // Create a ViewModel to pass to the view
+            var viewModel = new ViewVitals
+            {
+                AdmittedPatientID = admittedPatientID,
+                PatientID = admittedPatient.PatientID // Get PatientID from AdmittedPatientsModel
+            };
 
-            // Set user details in ViewBag for rendering in the view
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
-
-            // Set patient details in ViewBag for rendering in the view
-            ViewBag.PatientSurname = Surname; // Ensure the property matches your model
-            ViewBag.PatientName = name; // Ensure the property matches your model
-            ViewBag.PatientWard = Ward; // Ensure the property matches your model
-            ViewBag.PatientBed = bed; // Ensure the property matches your model
+            ViewBag.PatientSurname = Surname;
+            ViewBag.PatientName = name;
+            ViewBag.patientWard = Ward;
+            ViewBag.patientBed = Bed;
             ViewBag.PHeight = admittedPatient.Height;
             ViewBag.PWeight = admittedPatient.Weight;
 
-            return View(new BookedPatientInfo()); // Pass an empty model to the view
+            return View(viewModel);
         }
+
         [HttpPost]
-        public IActionResult Vitals(BookedPatientInfo model, int AdmittedPatientID)
+        public IActionResult Vitals(ViewVitals model)
         {
-            var admittedPatient = _dbContext.AdmittedPatients
-                                .FirstOrDefault(ad => ad.AdmittedPatientID == AdmittedPatientID);
 
-            if (admittedPatient == null)
+            if (ModelState.IsValid)
             {
-                return NotFound("Admitted patient not found.");
+                var admittedPatient = _dbContext.AdmittedPatients
+                .FirstOrDefault(ad => ad.AdmittedPatientID == model.AdmittedPatientID);
+                // Create a new PatientVitals object
+                var patientVitals = new PatientVitals
+                {
+                    PatientID = admittedPatient.PatientID, // Use the PatientID from the ViewModel
+                    SystolicBloodPressure = model.SystolicBloodPressure,
+                    DiastolicBloodPressure = model.DiastolicBloodPressure,
+                    HeartRate = model.HeartRate,
+                    BloodOxygen = model.BloodOxygen,
+                    Respiration = model.Respiration,
+                    BloodGlucoseLevel = model.BloodGlucoseLevel,
+                    Temperature = model.Temperature,
+                    time = TimeOnly.FromDateTime(DateTime.Now) // Or use another property if needed
+                };
+
+                // Add the new vitals entry to the database
+                _dbContext.PatientVitals.Add(patientVitals);
+                _dbContext.SaveChanges();
+
+                // Redirect to another action, e.g., the list of admitted patients
+                return RedirectToAction("AdmittedPatients", "Nurse"); // Adjust as necessary
             }
-
-            // Prepare new vitals entry
-            var newVitals = new PatientVitals
-            {
-                PatientID = admittedPatient.PatientID,
-                SystolicBloodPressure = model.SystolicBloodPressure,
-                DiastolicBloodPressure = model.DiastolicBloodPressure,
-                HeartRate = model.HeartRate,
-                BloodOxygen = model.BloodOxygen,
-                Respiration = model.Respiration,
-                BloodGlucoseLevel = model.BloodGlucoseLevel,
-                Temperature = model.Temperature,
-                time = TimeOnly.FromDateTime(DateTime.Now)
-                
-
-            };
-
-            // Add the new vitals entry to the database
-            _dbContext.PatientVitals.Add(newVitals);
-
-            // Alert logic
-            var alerts = new List<string>();
-
-            const int SystolicMax = 180, SystolicMin = 90;
-            const int DiastolicMax = 120, DiastolicMin = 60;
-            const int HeartRateMax = 100, HeartRateMin = 60;
-            const int BloodOxygenMax = 100, BloodOxygenMin = 90;
-            const int RespirationMax = 25, RespirationMin = 12;
-            const double BloodGlucoseMax = 7.8, BloodGlucoseMin = 3.9;
-            const double TemperatureMax = 38.0, TemperatureMin = 36.0;
-
-            // Check vitals against alert thresholds
-            if (newVitals.SystolicBloodPressure > SystolicMax || newVitals.SystolicBloodPressure < SystolicMin)
-            {
-                alerts.Add("Alert: Systolic Blood Pressure out of range.");
-            }
-            if (newVitals.DiastolicBloodPressure > DiastolicMax || newVitals.DiastolicBloodPressure < DiastolicMin)
-            {
-                alerts.Add("Alert: Diastolic Blood Pressure out of range.");
-            }
-            if (newVitals.HeartRate > HeartRateMax || newVitals.HeartRate < HeartRateMin)
-            {
-                alerts.Add("Alert: Heart Rate out of range.");
-            }
-            if (newVitals.BloodOxygen > BloodOxygenMax || newVitals.BloodOxygen < BloodOxygenMin)
-            {
-                alerts.Add("Alert: Blood Oxygen out of range.");
-            }
-            if (newVitals.Respiration > RespirationMax || newVitals.Respiration < RespirationMin)
-            {
-                alerts.Add("Alert: Respiration rate out of range.");
-            }
-            if (newVitals.BloodGlucoseLevel > BloodGlucoseMax || newVitals.BloodGlucoseLevel < BloodGlucoseMin)
-            {
-                alerts.Add("Alert: Blood Glucose Level out of range.");
-            }
-            if (newVitals.Temperature > TemperatureMax || newVitals.Temperature < TemperatureMin)
-            {
-                alerts.Add("Alert: Temperature out of range.");
-            }
-
-
-            // Save changes to the database
-            _dbContext.SaveChanges();
-            // Save changes to the database
-            _dbContext.SaveChanges();
-
-            if (alerts.Any())
-            {
-                // Set alert messages in ViewBag
-                ViewBag.AlertMessages = alerts;
-
-                // Return to the same view with alert messages
-                return View("Vitals", model); // Ensure to use the same view
-            }
-
-            // If no alerts, redirect to another action
-            return RedirectToAction("AdmittedPatients", "Nurse");
+            
+            return View(model);
         }
 
 
 
 
-    public IActionResult Discharge()
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Discharge(AdmittedPatientsModel model)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                var admittedPatient = _dbContext.AdmittedPatients.FirstOrDefault(ap => ap.AdmittedPatientID == model.AdmittedPatientID);
+
+                if (admittedPatient != null)
+                {
+                    // Update the existing account with new values
+                    admittedPatient.AdmissionStatusID = 2;
+                    _dbContext.SaveChanges();
+                }
+
+                return RedirectToAction("patientAddmision");
+            }
+
+            return View(model);
         }
         public IActionResult DischargeList()
         {
@@ -443,44 +396,7 @@ namespace DEMO.Controllers
                                 time = TimeOnly.FromDateTime(DateTime.Now),
                             };
 
-                            // Alert thresholds for vital signs
-                            const int SystolicMax = 180, SystolicMin = 90;
-                            const int DiastolicMax = 120, DiastolicMin = 60;
-                            const int HeartRateMax = 100, HeartRateMin = 60;
-                            const int BloodOxygenMax = 100, BloodOxygenMin = 90;
-                            const int RespirationMax = 25, RespirationMin = 12;
-                            const double BloodGlucoseMax = 7.8, BloodGlucoseMin = 3.9;
-                            const double TemperatureMax = 38.0, TemperatureMin = 36.0;
-
-                            // Alert logic
-                            if (patientVitals.SystolicBloodPressure > SystolicMax || patientVitals.SystolicBloodPressure < SystolicMin)
-                            {
-                                Console.WriteLine("Alert: Systolic Blood Pressure out of range.");
-                            }
-                            if (patientVitals.DiastolicBloodPressure > DiastolicMax || patientVitals.DiastolicBloodPressure < DiastolicMin)
-                            {
-                                Console.WriteLine("Alert: Diastolic Blood Pressure out of range.");
-                            }
-                            if (patientVitals.HeartRate > HeartRateMax || patientVitals.HeartRate < HeartRateMin)
-                            {
-                                Console.WriteLine("Alert: Heart Rate out of range.");
-                            }
-                            if (patientVitals.BloodOxygen > BloodOxygenMax || patientVitals.BloodOxygen < BloodOxygenMin)
-                            {
-                                Console.WriteLine("Alert: Blood Oxygen out of range.");
-                            }
-                            if (patientVitals.Respiration > RespirationMax || patientVitals.Respiration < RespirationMin)
-                            {
-                                Console.WriteLine("Alert: Respiration rate out of range.");
-                            }
-                            if (patientVitals.BloodGlucoseLevel > BloodGlucoseMax || patientVitals.BloodGlucoseLevel < BloodGlucoseMin)
-                            {
-                                Console.WriteLine("Alert: Blood Glucose Level out of range.");
-                            }
-                            if (patientVitals.Temperature > TemperatureMax || patientVitals.Temperature < TemperatureMin)
-                            {
-                                Console.WriteLine("Alert: Temperature out of range.");
-                            }
+                           
                             _dbContext.PatientVitals.Add(patientVitals);
                             _dbContext.SaveChanges();
 
@@ -537,7 +453,7 @@ namespace DEMO.Controllers
                                 join bed in _dbContext.Bed on ap.BedId equals bed.BedId
                                 join w in _dbContext.Ward on bed.WardID equals w.WardId
                                 join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
-
+                                where ap.AccountID == accountID
 
                                 select new BookedPatientInfo
                                 {
@@ -612,71 +528,166 @@ namespace DEMO.Controllers
 
             return View(booking);
         }
-        public IActionResult MedicationCollection(string name, string Surname, string Ward, int bed, int AdmittedPatientId)
+        public IActionResult MedicationCollection(string name, string surname, string ward, int bed, int admittedPatientId)
         {
+            // Fetch the dispensed prescriptions along with patient info
+            var combinedData = (from p in _dbContext.PatientInfo
+                                       join ap in _dbContext.AdmittedPatients
+                                       on p.PatientID equals ap.PatientID
+                                       join pr in _dbContext.Prescription
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                       join rs in _dbContext.DispensedScriptsModel
+                                       on pr.PrescriptionID equals rs.PrescriptionID
+                                       join a in _dbContext.Accounts
+                                       on rs.AccountID equals a.AccountID
+                                       where pr.Status == "Dispensed" 
+                                       orderby pr.Urgency == "Yes" descending, p.Name
+                                       select new PrescriptionListViewModal
+                                       {
+                                           PrescriptionID = pr.PrescriptionID,
+                                           PatientName = p.Name,
+                                           PatientSurname = p.Surname,
+                                           DateGiven = pr.DateGiven,
+                                           Urgency = pr.Urgency,
+                                           Status = pr.Status,
+                                           AccountName = a.Name,
+                                           AccountSurname = a.Surname
+                                       }).ToList();
 
-            var CombinedData = (from p in _dbContext.Prescription
-                                join ap in _dbContext.AdmittedPatients
-                                on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                join pa in _dbContext.PatientInfo
-                                on ap.PatientID equals pa.PatientID
-                                where p.AdmittedPatientID == AdmittedPatientId && p.Status == "Dispensed"
-                                select new PrescriptionListViewModal
-                                {
-
-                                }
-                                );
+            // Retrieve user information from the session
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
 
-
+            // Populate ViewBag with necessary information
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
-
-            ViewBag.PatientSurname = Surname;
+            ViewBag.PatientSurname = surname;
             ViewBag.PatientName = name;
-            ViewBag.patientWard = Ward;
+            ViewBag.patientWard = ward;
             ViewBag.patientBed = bed;
             ViewBag.time = TimeOnly.FromDateTime(DateTime.Now);
 
+            // Create a ViewModel instance and pass the data to the view
+            var viewModel = new PrescriptionListViewModal
+            {
+                AllPrescribedDispensed = combinedData // Populate dispensed prescriptions
+            };
 
-
-            return View();
+            return View(viewModel);
         }
-        public IActionResult MedicationAdministration(string name, string Surname,string Ward,int bed, int AdmittedPatientId, DateOnly date)
+        [HttpPost]
+        public IActionResult CollectMedication(int prescriptionId)
         {
+            // Find the prescription in the database
+            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == prescriptionId);
 
-            var CombinedData = (from p in _dbContext.Prescription
+            if (prescription == null)
+            {
+                // Handle the case where the prescription is not found (optional)
+                return NotFound("Prescription not found.");
+            }
+
+            // Update the status to "collected"
+            prescription.Status = "Collected";
+
+            // Save changes to the database
+            _dbContext.SaveChanges();
+
+            // Optionally, return a success message or redirect to another action
+            return RedirectToAction("MedicationCollection", new { /* parameters as needed */ });
+        }
+        public IActionResult MedicationAdministration(string name, string surname, string ward, int bed, int admittedPatientId, DateOnly date)
+        {
+            // Fetch the collected prescriptions along with patient info
+            var combinedData = (from p in _dbContext.Prescription
                                 join ap in _dbContext.AdmittedPatients
                                 on p.AdmittedPatientID equals ap.AdmittedPatientID
                                 join pa in _dbContext.PatientInfo
                                 on ap.PatientID equals pa.PatientID
-                                where p.AdmittedPatientID == AdmittedPatientId && p.Status == "Dispensed"
+                                join ac in _dbContext.Accounts on p.AccountID equals ac.AccountID
+                                where p.AdmittedPatientID == admittedPatientId && p.Status == "Collected"
                                 select new PrescriptionListViewModal
                                 {
+                                    PatientName = pa.Name, // Adjust as per your model
+                                    PatientSurname = pa.Surname, // Adjust as per your model
+                                    DateGiven = p.DateGiven,
+                                    AccountName = ac.Name, // Adjust as per your model
+                                    AccountSurname = ac.Surname, // Adjust as per your model
+                                    Urgency = p.Urgency,
+                                    Status = p.Status,
+                                    PrescriptionID = p.PrescriptionID
+                                }).ToList(); // Convert to list to execute the query
 
-                                }
-                               );
-
-
+            // Retrieve user information from the session
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-
-
+            // Populate ViewBag with necessary information
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            ViewBag.PatientSurname = Surname;
+            ViewBag.PatientSurname = surname;
             ViewBag.PatientName = name;
-            ViewBag.patientWard = Ward;
+            ViewBag.patientWard = ward;
             ViewBag.patientBed = bed;
             ViewBag.date = date;
 
+            // Create a ViewModel instance and pass the data to the view
+            var viewModel = new PrescriptionListViewModal
+            {
+                AllPrescribedDispensed = combinedData // Populate collected prescriptions
+            };
 
-            return View();
+            return View(viewModel);
+        }
+        [HttpPost]
+        public IActionResult AdministerMedication(List<AdministeredMedicationViewModel> administeredMedications, int admittedPatientId)
+        {
+            // Iterate through each administered medication
+            foreach (var medication in administeredMedications)
+            {
+                // Fetch the prescription for validation
+                var prescription = _dbContext.Prescription
+                    .FirstOrDefault(p => p.PrescriptionID == medication.PrescriptionID && p.AdmittedPatientID == admittedPatientId);
+                MedicationInstructions medinstruction = new MedicationInstructions
+                {
+                    PrescriptionID = medication.PrescriptionID,
+                };
+                Medication meds = new Medication { };
+                if (prescription != null)
+                {
+                    // Calculate the total administered quantity for the medication
+                    var totalAdministered = _dbContext.AdministerMedication
+                        .Where(am => am.PrescriptionID == medication.PrescriptionID)
+                        .Sum(am => am.AdministerQuantity) + medication.QuantityAdministered;
+
+                    // Check if the total administered exceeds the prescribed quantity
+                    if (totalAdministered > medinstruction.Quantity)
+                    {
+                        ModelState.AddModelError("Quantity", $"Total administered quantity for {meds.MedicationName} cannot exceed the prescribed quantity of {medinstruction.Quantity}.");
+                        return View(); // Return with errors
+                    }
+
+                    // Create an entry for the administered medication
+                    var administeredMedication = new AdministerMedication
+                    {
+                        PrescriptionID = medication.PrescriptionID,
+                        AdministerQuantity = medication.QuantityAdministered,
+                        Date = DateOnly.FromDateTime(DateTime.Now),                         
+                        Time = TimeOnly.FromDateTime(DateTime.Now)
+                    };
+
+                    // Save to the database
+                    _dbContext.AdministerMedication.Add(administeredMedication);
+                }
+            }
+
+            // Save changes to the database
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("MedicationAdministration", new { admittedPatientId }); // Redirect as needed
         }
         public IActionResult PatientRecords(int AdmittedPatientID, string name, string surname)
         {
@@ -903,6 +914,7 @@ namespace DEMO.Controllers
                                           orderby pv.time descending, ad.Date descending // Get the latest vitals
                                           select new EmailVital
                                           {
+                                              AdmittedPatientID = AdmittedPatientID,
                                               Height = ad.Height,
                                               Weight = ad.Weight,
                                               SystolicBloodPressure = pv.SystolicBloodPressure,
@@ -924,7 +936,7 @@ namespace DEMO.Controllers
             // Prepare the email
             var emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", nurseEmail));
-                emailMessage.To.Add(new MailboxAddress("Surgeon", "zaidsmiles7@gmail.com"));
+                emailMessage.To.Add(new MailboxAddress("Surgeon", combinedData.SurgeonEmail));
                 emailMessage.Subject = $"Latest Vitals for Patient {combinedData.FullName}";
 
             var bodyBuilder = new BodyBuilder

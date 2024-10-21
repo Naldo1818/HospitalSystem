@@ -4,6 +4,7 @@
     {
         public int AdministerMedicationID { get; set; }
         public int AdmittedPatientID {  get; set; }
+        public int PrescriptionID { get; set; }
         public int AccountID { get; set; }
         public int MedicationID {  get; set; }
         public int AdministerQuantity { get; set; }
