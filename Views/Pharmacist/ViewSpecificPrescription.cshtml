@@ -187,8 +187,7 @@
         <h1>Prescription for</h1>
     </center>
 
-    @if (Model.combinedData.Any())
-    {
+  
         <center>
             <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
         </center>
@@ -201,7 +200,7 @@
 
 
 
-    }
+    
 
 
     <!-- Medical History -->
@@ -210,8 +209,8 @@
         <center><h1>Medical History</h1></center>"
         <div class="form-group row">
 
-            @if (Model.combinedData.Any())
-            {
+           
+            
                 <div class="col-md-4">
                     <label for="DosageForm" class="form-label">Conditions</label>
                     <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
@@ -366,8 +365,8 @@
 
 
 
-                                @if (Model.combinedData.Any())
-                                {
+                                
+                                
                                     <tr>
 
                                         <td>@Model.combinedData.First().patientname</td>
@@ -387,7 +386,7 @@
 
 
                                     </tr>
-                                }
+                                
 
 
                             </tbody>
