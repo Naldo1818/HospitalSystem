@@ -182,21 +182,7 @@
             </thead>
             <tbody id="myTable">
 
-                @foreach (var stock in Model.PharmacistStockOrders)
-                {
-                    <tr>
-                        <td>@stock.MedicationName</td>
-                        <td>@stock.MedicationForm</td>
-                        <td>@stock.Schedule</td>
-
-                        <td>@stock.StockonHand</td>
-                        <td>@stock.ReorderLevel</td>
-                        <td>
-                            <input type="text" asp-for="qty" style="width:50px" >
-
-                        </td>
-                    </tr>
-                }
+               
 
 
 
@@ -215,7 +201,7 @@
 
 
 
-        <h1><center>Received stock</center></h1>
+        <h1><center>Update Levels</center></h1>
         <center>
             <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
 
@@ -243,29 +229,7 @@
                     <!-- More table headers can be added here -->
                 </tr>
             </thead>
-            <tbody id="myTable">
-
-                @foreach (var stock in Model.PharmacistStockOrders)
-                {
-                    <tr>
-                        <td>@stock.MedicationName</td>
-                        <td>@stock.MedicationForm</td>
-                        <td>@stock.Schedule</td>
-
-                        <td>@stock.StockonHand</td>
-                        <td>@stock.ReorderLevel</td>
-                        <td>
-                            <input type="text" asp-for="qty" style="width:50px">
-
-                        </td>
-                    </tr>
-                }
-
-
-
-
-            </tbody>
-
+           
 
 
 
