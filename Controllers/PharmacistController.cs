@@ -645,77 +645,48 @@ namespace DEMO.Controllers
             }
 
 
+            //get allergies
+            var allAllergies = await (from p in _dbContext.Prescription
+                                      join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                      join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                      join pa in _dbContext.PatientAllergy on pi.PatientID equals pa.PatientID
+                                      join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                                      
+                                      where p.PrescriptionID==  pid 
+                           select ai.ActiveIngredientName)
+                            .Distinct()
+                            .OrderBy(name => name) // Sort in ascending order
+                            .ToListAsync();
 
 
+            //getConditions
+            var patientConditions = await (from p in _dbContext.Prescription
+                                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                           join pc in _dbContext.PatientConditions on pi.PatientID equals pc.PatientID
+                                           join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
 
-
-
-            var patientConditions = await _dbContext.Condition
-    .Select(m => m.ConditionName)
+                                           where p.PrescriptionID == pid
+                  select c.ConditionName)
     .Distinct()
     .OrderBy(name => name) // Sort in ascending order
     .ToListAsync();
 
-            var currentMeds = await _dbContext.Medication
-                .Select(m => m.MedicationName)
-                .Distinct()
-                .OrderBy(name => name) // Sort in ascending order
-                .ToListAsync();
-
-            var allAllergies = await _dbContext.Activeingredient
-                .Select(m => m.ActiveIngredientName)
-                .Distinct()
-                .OrderBy(name => name) // Sort in ascending order
-                .ToListAsync();
 
 
-           
-
-            var pallergy = await (from p in _dbContext.Prescription
-                                  join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                  join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                           join pa in _dbContext.PatientAllergy on pi.PatientID equals pa.PatientID
-                           join ai  in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-                                  where p.PrescriptionID== pid
-
-                           select new PharmacistViewScriptModel
-                           {
-                               
-                               ActiveIngredientName = ai.ActiveIngredientName
-                           })
-            .OrderBy(ai => ai.ActiveIngredientName)
-            .ToListAsync();
-
-
-            var pconditions = await (from p in _dbContext.Prescription
-                                     join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                     join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                                     join pc in _dbContext.PatientConditions on pi.PatientID equals pc.PatientID
-                                     join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
-                                     where p.PrescriptionID == pid
-
-                                     select new PharmacistViewScriptModel
-                                     {
-
-                                         Condition = c.ConditionName,
-                                     })
-            .OrderBy(ai => ai.Condition)
-            .ToListAsync(); ;
-
-            var pcurrentMed = await (from p in _dbContext.Prescription
+            //get current medication
+            var currentMeds = await (from p in _dbContext.Prescription
                                      join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
                                      join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
                                      join pm in _dbContext.patientMedication on pi.PatientID equals pm.PatientID
                                      join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
                                      where p.PrescriptionID == pid
+            select m.MedicationName)
+                .Distinct()
+                .OrderBy(name => name) // Sort in ascending order
+                .ToListAsync();
 
-                                     select new PharmacistViewScriptModel
-                                     {
 
-                                         medication = m.MedicationName,
-                                     })
-            .OrderBy(ai => ai.Condition)
-            .ToListAsync(); ;
 
 
 
@@ -762,11 +733,11 @@ namespace DEMO.Controllers
 
 
 
-            //This is the correct one in case of hurry
+           
 
             var viewModel = new PharmacistViewScriptModel
             {
-                combinedData = alldata, // Ensure property names match your model's definition
+                combinedData = alldata, 
                 Allallergy = allAllergies,
                 AllConditions = patientConditions,
                 AllCurrentMed = currentMeds,
@@ -790,13 +761,13 @@ namespace DEMO.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ViewSpecificPrescription()
         {
-            
 
-           var prescription = _dbContext.Prescription.Select(m=>m.Status).ToString();
 
-            
+            var prescription = _dbContext.Prescription.Select(m => m.Status).ToString();
 
-                string newstatus = "Prescribed";
+
+
+            string newstatus = "Prescribed";
 
             prescription = newstatus;
 
