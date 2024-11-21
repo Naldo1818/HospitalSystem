@@ -204,10 +204,13 @@
 
 
     <!-- Medical History -->
+
     <form class="medical-history-form">
 
         <center><h1>Medical History</h1></center>
-        <div class="form-group row">
+
+<center>
+ <div class="form-group row">
 
             <table id="myTable" class="table display" style="width:100%">
                 <thead>
@@ -240,8 +243,8 @@
             </table>
 
 
-
-
+</div>
+ <div class="form-group row">
 
             <table id="myTable" class="table display" style="width:100%">
                 <thead>
@@ -272,9 +275,9 @@
 
                 </tbody>
             </table>
+</div>
 
-
-
+ <div class="form-group row">
             <table id="myTable" class="table display" style="width:100%">
                 <thead>
                     <tr>
@@ -304,59 +307,16 @@
 
                 </tbody>
             </table>
-            
-               @*  <div class="col-md-4">
-                    <label for="DosageForm" class="form-label">Conditions</label>
-                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="Condition" style="width:300px">
-                        @foreach (var item in Model.AllConditions)
-                        {
-                        <option value="@item">@item</option>
-                        }
-                    </select>
-
-                </div>
-
-            
-                 
-            
-
-                <div class="col-md-4">
-                    <label for="DosageForm" class="form-label">Current Medications</label>
-                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="patientMedication" style="width:300px">
-
-
-                        @foreach (var item in Model.AllCurrentMed)
-                        {
-                        <option value="@item">@item</option>
-                            // Adjust properties based on your model
-                        }
-                    </select>
-
-                </div>
-
-                <div class="col-md-4">
-                    <label for="DosageForm" class="form-label">Allergies</label>
-                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="allergy" style="width:300px">
-
-
-                        @foreach (var item in Model.Allallergy)
-                        {
-                        <option value="@item">@item</option>
-                            // Adjust properties based on your model
-                        }
-                    </select>
-
-                </div> *@
+            </div>
+</center>
+       
+              
 
             
 
 
 
 
-
-
-
-        </div>
 
 
 
