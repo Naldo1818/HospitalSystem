@@ -278,15 +278,14 @@ namespace DEMO.Controllers
 
 
 
-        // GET: AddMedication
+       
 
-        public IActionResult AddMedication()
+        public ActionResult AddMedication()
         {
             var combinedData = (from m in _dbContext.Medication
                                 join pm in _dbContext.PharmacyMedication
                                 on m.MedicationID equals pm.MedicationID
-                                join pmm in _dbContext.PharmacyMedicationModel
-                                on m.MedicationID equals pmm.MedicationID
+                              
 
 
 
@@ -319,12 +318,6 @@ namespace DEMO.Controllers
                               .Distinct()
                               .OrderBy(schedule => schedule) // Order by ascending
                               .ToList();
-
-
-
-
-            //Fetch Active Ingredients
-
 
 
 
@@ -393,17 +386,6 @@ namespace DEMO.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
             };
 
             // Pass the ViewModel to the view
@@ -448,7 +430,7 @@ namespace DEMO.Controllers
                     _dbContext.PharmacyMedication.Add(pharmMed);
                     _dbContext.SaveChanges();
 
-                    return RedirectToAction("AddMedication");
+                    return RedirectToAction("ViewAllActivePrescriptionsPage");
                 }
 
 
