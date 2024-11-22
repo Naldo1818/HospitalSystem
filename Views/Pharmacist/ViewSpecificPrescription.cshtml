@@ -72,92 +72,6 @@
 
    
 
-   @*  <script>
-        function filterTable() {
-            // Get the value of the search input
-            const input = document.getElementById('searchc').value.toLowerCase();
-            const table = document.getElementById('conditionsTable');
-            const rows = table.getElementsByTagName('tr');
-
-            // Loop through all table rows, except the first (header row)
-            for (let i = 1; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let rowContainsText = false;
-
-                // Loop through each cell in the row
-                for (let j = 0; j < cells.length; j++) {
-                    if (cells[j]) {
-                        const cellText = cells[j].textContent || cells[j].innerText;
-                        if (cellText.toLowerCase().indexOf(input) > -1) {
-                            rowContainsText = true;
-                            break;
-                        }
-                    }
-                }
-                // Show or hide the row based on the search input
-                rows[i].style.display = rowContainsText ? '' : 'none';
-            }
-        }
-    </script>
-
-
-    <script>
-        function filterTable() {
-            // Get the value of the search input
-            const input = document.getElementById('searchm').value.toLowerCase();
-            const table = document.getElementById('medicationsTable');
-            const rows = table.getElementsByTagName('tr');
-
-            // Loop through all table rows, except the first (header row)
-            for (let i = 1; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let rowContainsText = false;
-
-                // Loop through each cell in the row
-                for (let j = 0; j < cells.length; j++) {
-                    if (cells[j]) {
-                        const cellText = cells[j].textContent || cells[j].innerText;
-                        if (cellText.toLowerCase().indexOf(input) > -1) {
-                            rowContainsText = true;
-                            break;
-                        }
-                    }
-                }
-                // Show or hide the row based on the search input
-                rows[i].style.display = rowContainsText ? '' : 'none';
-            }
-        }
-    </script>
-
-    <script>
-        function filterTable() {
-            // Get the value of the search input
-            const input = document.getElementById('searcha').value.toLowerCase();
-            const table = document.getElementById('allergiesTable');
-            const rows = table.getElementsByTagName('tr');
-
-            // Loop through all table rows, except the first (header row)
-            for (let i = 1; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let rowContainsText = false;
-
-                // Loop through each cell in the row
-                for (let j = 0; j < cells.length; j++) {
-                    if (cells[j]) {
-                        const cellText = cells[j].textContent || cells[j].innerText;
-                        if (cellText.toLowerCase().indexOf(input) > -1) {
-                            rowContainsText = true;
-                            break;
-                        }
-                    }
-                }
-                // Show or hide the row based on the search input
-                rows[i].style.display = rowContainsText ? '' : 'none';
-            }
-        }
-    </script> *@
-
-
 
     <style>
         body {
@@ -272,39 +186,6 @@
     <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
 
-    @* <script>
-        async function confirmReject() {
-            const confirmation = confirm("Are you sure you want to reject this script?");
-            if (confirmation) {
-                const reason = prompt("Please provide a reason for rejection:");
-                if (reason) {
-                    try {
-                        const response = await fetch('/Pharmacist/ViewSpecificPrescription', {  // Adjust the endpoint as necessary
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ reason }),
-                        });
-
-                        if (response.ok) {
-                            alert("Rejection reason submitted to the Surgeon: " + reason);
-                            // Redirect to another page after successful submission
-                            window.location.href = '/ViewAllPrescriptions'; // Adjust the URL for the redirection
-                        } else {
-                            alert("Failed to submit the rejection reason.");
-                        }
-                    } catch (error) {
-                        alert("Error submitting rejection reason: " + error.message);
-                    }
-                } else {
-                    alert("Rejection cancelled: No reason provided.");
-                }
-            } else {
-                alert("Rejection cancelled.");
-            }
-        }
-    </script> *@
 
 </head>
 
@@ -316,6 +197,8 @@
         <h1>Prescription for</h1>
     </center>
 
+    
+
   
         <center>
             <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
@@ -323,204 +206,201 @@
 
 
 
+        <form asp-action="ViewSpecificPrescription" method="post">
+
+       
+        <!-- Medical History -->
+
+        <form class="medical-history-form">
+
+            <center><h1>Medical History</h1></center>
 
 
 
 
 
-
-    
-
-
-    <!-- Medical History -->
-
-    <form class="medical-history-form">
-
-        <center><h1>Medical History</h1></center>
-
-
-
-
-
-        <div class="form-group row">
-            <div class="col-md-4">
-                <table id="conditionsTable" class="table display" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">
-                                Conditions
-                                <input type="text" id="searchc" onkeyup="filterTable('searchc', 'conditionsTable')" placeholder="Search condition" />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.AllConditions)
-                        {
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <table id="conditionsTable" class="table display" style="width:100%">
+                        <thead>
                             <tr>
-                                <td>@item</td>
+                                <th scope="col">
+                                    Conditions
+                                    <input type="text" id="searchc" onkeyup="filterTable('searchc', 'conditionsTable')" placeholder="Search condition" />
+                                </th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-md-4">
-                <table id="medicationsTable" class="table display" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">
-                                Current Medications
-                                <input type="text" id="searchm" onkeyup="filterTable('searchm', 'medicationsTable')" placeholder="Search medication" />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.AllCurrentMed)
-                        {
-                            <tr>
-                                <td>@item</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="col-md-4">
-                <table id="allergiesTable" class="table display" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">
-                                Allergies
-                                <input type="text" id="searcha" onkeyup="filterTable('searcha', 'allergiesTable')" placeholder="Search allergy" />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Allallergy)
-                        {
-                            <tr>
-                                <td>@item</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-            
-
-
-
-
-
-
-
-
-
-
-    </form>
-
-
-    <!-- Vitals History -->
-
-    <div class="container-left">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-
-                    <div class="p-3 mt-5 border">
-                        <h2><center>Vitals</center></h2>
-
-                        <center><input type="text" id="searchv" onkeyup="filterTable('searchv', 'myTable')" placeholder="Search vital" /></center>
-                        <center>
-                        </center>
-                        <table id="myTable" class="table display" style="width:100%">
-                            <thead>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AllConditions)
+                            {
                                 <tr>
-
-
-                                    <th scope="col">Height(cm)</th>
-                                    <th scope="col">Weight(kg)</th>
-                                    <th scope="col">Systolic Blood Pressure (mmHg)</th>
-                                    <th scope="col">Distolic Blood Pressure (mmHg)</th>
-                                    <th scope="col">Heart Rate (bpm)</th>
-                                    <th scope="col">Blood Oxygen %</th>
-                                    <th scope="col">Respiration Rate (bpm)</th>
-                                    <th scope="col">Blood Glucose Level (mg/dL)</th>
-                                    <th scope="col">Temperature °C</th>
-                                    <th scope="col">Time Taken</th>
-
+                                    <td>@item</td>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            }
+                        </tbody>
+                    </table>
+                </div>
 
-                                @foreach (var item in Model.combinedData)
-                                {
+                <div class="col-md-4">
+                    <table id="medicationsTable" class="table display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Current Medications
+                                    <input type="text" id="searchm" onkeyup="filterTable('searchm', 'medicationsTable')" placeholder="Search medication" />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AllCurrentMed)
+                            {
+                                <tr>
+                                    <td>@item</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
 
+                <div class="col-md-4">
+                    <table id="allergiesTable" class="table display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col">
+                                    Allergies
+                                    <input type="text" id="searcha" onkeyup="filterTable('searcha', 'allergiesTable')" placeholder="Search allergy" />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Allallergy)
+                            {
+                                <tr>
+                                    <td>@item</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </form>
+
+
+        <!-- Vitals History -->
+
+        <div class="container-left">
+            <main role="main" class="pb-5">
+                <div class="row" style="width:auto">
+                    <div class="col">
+
+                        <div class="p-3 mt-5 border">
+                            <h2><center>Vitals</center></h2>
+
+                            <center><input type="text" id="searchv" onkeyup="filterTable('searchv', 'myTable')" placeholder="Search vital" /></center>
+                            <center>
+                            </center>
+                            <table id="myTable" class="table display" style="width:100%">
+                                <thead>
                                     <tr>
-                                        <!-- Assuming TimeTaken is a property in your model -->
-                                        <td>@item.Height</td>
-                                        <td>@item.Weight</td>
-                                        <td>@item.SystolicBloodPressure</td>
-                                        <td>@item.DiastolicBloodPressure</td>
-                                        <td>@item.HeartRate</td>
-                                        <td>@item.BloodOxygen</td>
-                                        <td>@item.Respiration</td>
-                                        <td>@item.BloodGlucoseLevel</td>
-                                        <td>@item.Temperature</td>
-                                        <td>@item.Time</td>
+
+
+                                        <th scope="col">Height(cm)</th>
+                                        <th scope="col">Weight(kg)</th>
+                                        <th scope="col">Systolic Blood Pressure (mmHg)</th>
+                                        <th scope="col">Distolic Blood Pressure (mmHg)</th>
+                                        <th scope="col">Heart Rate (bpm)</th>
+                                        <th scope="col">Blood Oxygen %</th>
+                                        <th scope="col">Respiration Rate (bpm)</th>
+                                        <th scope="col">Blood Glucose Level (mg/dL)</th>
+                                        <th scope="col">Temperature °C</th>
+                                        <th scope="col">Time Taken</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model.combinedData)
+                                    {
+
+                                        <tr>
+                                            <!-- Assuming TimeTaken is a property in your model -->
+                                            <td>@item.Height</td>
+                                            <td>@item.Weight</td>
+                                            <td>@item.SystolicBloodPressure</td>
+                                            <td>@item.DiastolicBloodPressure</td>
+                                            <td>@item.HeartRate</td>
+                                            <td>@item.BloodOxygen</td>
+                                            <td>@item.Respiration</td>
+                                            <td>@item.BloodGlucoseLevel</td>
+                                            <td>@item.Temperature</td>
+                                            <td>@item.Time</td>
+
+
+
+                                        </tr>
+
+
+
+                                        
+                                    }
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+
+
+        <div class="container-left">
+            <main role="main" class="pb-5">
+                <div class="row" style="width:auto">
+                    <div class="col">
+
+                        <div class="p-3 mt-5 border">
+                            <h2><center>Prescription</center></h2>
+                            <center>
+                            </center>
+                            <table id="myTable" class="table display" style="width:100%">
+                                <thead>
+                                    <tr>
+
+
+                                        <th scope="col">Patient</th>
+                                        <th scope="col">Surgeon</th>
+                                        <th scope="col">Date given</th>
 
 
 
                                     </tr>
-
-                                }
-
-
-                            </tbody>
-                        </table>
-
-                    </div>
-
-                </div>
-            </div>
-        </main>
-    </div>
-
-
-    <div class="container-left">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-
-                    <div class="p-3 mt-5 border">
-                        <h2><center>Prescription</center></h2>
-                        <center>
-                        </center>
-                        <table id="myTable" class="table display" style="width:100%">
-                            <thead>
-                                <tr>
-
-
-                                    <th scope="col">Patient</th>                                
-                                    <th scope="col">Surgeon</th>                                  
-                                    <th scope="col">Date given</th>
+                                </thead>
+                                <tbody>
 
 
 
-                                </tr>
-                            </thead>
-                            <tbody>
 
 
-
-                                
-                                
                                     <tr>
 
                                         <td>@Model.combinedData.First().patientname @Model.combinedData.First().patientsurname</td>
-                                    <td>@Model.combinedData.First().SurgeonName @Model.combinedData.First().SurgeonSurname</td>
+                                        <td>@Model.combinedData.First().SurgeonName @Model.combinedData.First().SurgeonSurname</td>
 
-                                       
+
 
                                         <td>@Model.combinedData.First().DateGiven</td>
 
@@ -532,46 +412,60 @@
 
                                     </tr>
 
-                                   
-                                <tr>
 
-
-                                    <th scope="col">Medications</th>
-                                    <th scope="col">Quantities</th>
-                                    <th scope="col">Instructions</th>
-                                    
-
-
-
-                                </tr>
-
-
-                                @foreach (var item in Model.combinedData)
-                                {
                                     <tr>
-                                        <td>@item.medication</td>
-                                        <td>@item.qty</td>
-                                        <td>@item.Instructions</td>
+
+
+                                        <th scope="col">Medications</th>
+                                        <th scope="col">Quantities</th>
+                                        <th scope="col">Instructions</th>
+
+
+
+
                                     </tr>
-                                }
-
-                            
 
 
-                               
-                                
+                                    @foreach (var item in Model.allmedicationinfo)
+                                    {
+                                        <tr>
+                                            <td>@item.medication</td>
+                                            <td>@item.qty</td>
+                                            <td>@item.Instructions</td>
+                                        </tr>
+                                    }
 
 
-                            </tbody>
-                        </table>
+
+
+
+
+
+
+                                </tbody>
+                            </table>
+
+                        </div>
 
                     </div>
-
                 </div>
-            </div>
-        </main>
-    </div>
+            </main>
+        </div>
 
+
+
+
+        <button type="submit" class="btn btn-primary">Dispense Prescription</button>
+
+
+
+    </form>
+
+
+
+
+
+    
 
 
  
@@ -582,7 +476,7 @@
 
 
    <!-- Trigger/Open The Modal -->
-<button id="myBtn">Dispense</button>
+@* <button id="myBtn">Dispense</button>
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -599,7 +493,7 @@
             <button id="okayBtn" class="btn">Okay</button>
         </div>
     </div>
-</div>
+</div> *@
 
 
 
@@ -682,7 +576,7 @@
     </script>
 
 
-    <button onclick="confirmReject()">Reject</button>
+    @* <button onclick="confirmReject()">Reject</button> *@
     <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
 

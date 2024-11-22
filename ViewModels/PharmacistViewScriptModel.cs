@@ -21,6 +21,8 @@ namespace DEMO.ViewModels
 
         public int AdmittedPatientID { get; set; }
 
+        public int pharmacistID { get; set; }
+
         public int PrescriptionID { get; set; }
 
         public string patientname { get; set; }
@@ -85,6 +87,9 @@ namespace DEMO.ViewModels
         public DateOnly Date { get; set; }
 
         public List<PharmacistViewScriptModel> combinedData { get; set; }
+
+        public List<PharmacistViewScriptModel> allmedicationinfo { get; set; }
+
 
         public List<string> Allallergy { get; set; }
 

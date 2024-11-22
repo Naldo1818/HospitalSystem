@@ -26,6 +26,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using static DEMO.Controllers.PharmacistController;
 using DEMO.Models.NurseModels;
+using System.Security.Cryptography;
 
 
 
@@ -408,6 +409,7 @@ namespace DEMO.Controllers
             // Pass the ViewModel to the view
             return View(viewModel);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddMedication(PharmacyMedicationViewModel model)
@@ -638,7 +640,7 @@ namespace DEMO.Controllers
 
 
 
-        [HttpGet]
+        
 
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
@@ -746,18 +748,46 @@ namespace DEMO.Controllers
 
 
 
+            var allmedicationdata = await (from p in _dbContext.Prescription
+                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                 join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                 join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+                                 join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+                                 where p.PrescriptionID == pid // Filter by prescription ID
+                                 orderby m.MedicationName
+
+                                           select new PharmacistViewScriptModel
+                                           {
+                                               
+                                               qty = mi.Quantity,
+                                               Instructions = mi.Instructions,
+                                               medication = m.MedicationName,
+                                           })
+
+                       .GroupBy(m => m.medication)
+                       .Select(x => x.FirstOrDefault())
+
+
+
+                       .ToListAsync();
+
+
             // Get the specific prescription data along with related patient information
             var alldata = await (from p in _dbContext.Prescription
                                  join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
                                  join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
                                  join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
                                  join account in _dbContext.Accounts on p.AccountID equals account.AccountID
-
                                  join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
                                  join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
 
                                  where p.PrescriptionID == pid // Filter by prescription ID
-
+                                orderby pv.time
+                                
+                               
                                  select new PharmacistViewScriptModel
                                  {
                                      Urgency = p.Urgency,
@@ -777,28 +807,30 @@ namespace DEMO.Controllers
                                      Temperature = pv.Temperature,
                                      SurgeonName = account.Name,
                                      SurgeonSurname = account.Surname,
-                                     Time=pv.time,
-
-
+                                     Time = pv.time,
                                      qty = mi.Quantity,
                                      Instructions = mi.Instructions,
                                      medication = m.MedicationName,
                                  })
-                                 .Distinct()
-                                 .OrderBy(p => p.Time)
-                                 
-                                  .ToListAsync();
+                        
+                       .GroupBy(m=>m.Time)
+                       .Select(x=>x.FirstOrDefault())
+
+                     
+                      
+                       .ToListAsync();
 
 
 
 
 
 
-           
+
 
             var viewModel = new PharmacistViewScriptModel
             {
                 combinedData = alldata, 
+                allmedicationinfo= allmedicationdata,
                 Allallergy = allAllergies,
                 AllConditions = patientConditions,
                 AllCurrentMed = currentMeds,
@@ -824,22 +856,78 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ViewSpecificPrescription()
+        public  async Task<IActionResult>ViewSpecificPrescription(int pid, PharmacistViewScriptModel model)
+
+
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                //Handle the case where accountID is not available or is invalid
+
+               accountID = 0; // Or handle as required
+                }
 
 
-            var prescription = _dbContext.Prescription.Select(m => m.Status).ToString();
 
 
 
-            string newstatus = "Prescribed";
+            // Retrieve the specific prescription using the provided id
+            var prescription = await _dbContext.Prescription.FindAsync(pid);
 
-            prescription = newstatus;
+            //var dispensedscripts = _dbContext.DispensedScriptsModel;
 
-            _dbContext.Add(prescription);
-            _dbContext.SaveChangesAsync();
+            if (prescription == null)
+            {
+                return NotFound();
+            }
 
-            return RedirectToAction(nameof(ViewAllActivePrescriptionsPage)); // Redirect to the list of prescriptions
+            if (ModelState.IsValid)
+            {
+        
+
+
+                DispensedScriptsModel infotoadd = new DispensedScriptsModel
+                {
+
+                    PrescriptionID = model.PrescriptionID ,
+                    AccountID = model.pharmacistID,
+                    
+
+
+                };
+
+                await _dbContext.DispensedScriptsModel.AddAsync(infotoadd);
+
+                prescription.Status = "Dispensed";
+
+                _dbContext.Prescription.Update(prescription);
+
+
+
+
+                await _dbContext.SaveChangesAsync();
+
+
+
+
+
+
+                return RedirectToAction("ViewAllActivePrescriptionsPage","Pharmacist"); // Redirect to the list of prescriptions
+
+
+            }
+
+            else
+            {
+                // Handle error: Medication retrieval failed
+                ModelState.AddModelError("", "Error dispensing script.");
+            }
+
+
+            return View(model);
+
         }
 
 
@@ -849,22 +937,6 @@ namespace DEMO.Controllers
 
 
 
-
-
-        //           
-
-
-
-
-
-
-
-
-        //         var accountID = HttpContext.Session.GetString("UserAccountId");
-        //         var userName = HttpContext.Session.GetString("UserName");
-        //         var userSurname = HttpContext.Session.GetString("UserSurname");
-        //         var userEmail = HttpContext.Session.GetString("UserEmail");
-        //         var today = DateOnly.FromDateTime(DateTime.Today);
 
 
 
@@ -1036,8 +1108,8 @@ namespace DEMO.Controllers
             }
 
             var combinedData = (from prescription in _dbContext.Prescription
-                                 
-                                
+
+
                                 join ap in _dbContext.AdmittedPatients
                                 on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
 
@@ -1082,21 +1154,52 @@ namespace DEMO.Controllers
                                     // PatientInfo fields
                                     Name = pi.Name,
                                     Surname = pi.Surname,
-                                    //allmeds= m.MedicationName,
+
+                                   
+
 
 
 
                                 })
                                    .Distinct()
                                 .OrderByDescending(item => item.Urgency == "Yes")
-                             
-                                
+
+
                                 .ToList();
-           
 
 
 
-            var viewModel = new ViewActivePrescriptionsModel
+            //var allthemedsprescribed = (from prescription in _dbContext.Prescription
+
+
+            //                            join ap in _dbContext.AdmittedPatients
+            //                            on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
+
+            //                            join pi in _dbContext.PatientInfo
+
+            //                            on ap.PatientID equals pi.PatientID
+
+
+
+
+            //                            join account in _dbContext.Accounts
+            //                            on prescription.AccountID equals account.AccountID
+
+            //                            join mi in _dbContext.MedicationInstructions on prescription.PrescriptionID equals mi.PrescriptionID
+            //                            join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+
+            //                            where prescription.Status == "Prescribed"
+
+            //                            select new ViewActivePrescriptionsModel
+            //                            {
+            //                                allmeds=m.MedicationName;
+
+            //                            }
+            //                            .T;
+
+
+                    var viewModel = new ViewActivePrescriptionsModel
             {
                 combinedData = combinedData,
             };
@@ -1133,10 +1236,6 @@ namespace DEMO.Controllers
 
 
 
-        public ActionResult ViewSpecificPrescriptionDisabled()
-        {
-            return View();
-        }
 
 
 
