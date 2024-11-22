@@ -503,7 +503,7 @@
 
                                     <th scope="col">Patient</th>                                
                                     <th scope="col">Surgeon</th>                                  
-                                    <th scope="col">Date</th>
+                                    <th scope="col">Date given</th>
 
 
 
@@ -532,6 +532,7 @@
 
                                     </tr>
 
+                                   
                                 <tr>
 
 
@@ -545,10 +546,12 @@
                                 </tr>
 
 
-                                @foreach (var item in Model.allpresribedmeds)
+                                @foreach (var item in Model.combinedData)
                                 {
                                     <tr>
-                                        <td>@item</td>
+                                        <td>@item.medication</td>
+                                        <td>@item.qty</td>
+                                        <td>@item.Instructions</td>
                                     </tr>
                                 }
 

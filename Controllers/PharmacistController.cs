@@ -212,7 +212,7 @@ namespace DEMO.Controllers
 
         public IActionResult ViewAllPrescriptions()
         {
-            
+
 
             var combinedData = (from prescription in _dbContext.Prescription
 
@@ -255,8 +255,10 @@ namespace DEMO.Controllers
 
 
                                 })
+                                
 
-                                 .ToList();
+                                .Distinct()
+                                                             .ToList();
 
 
 
@@ -267,6 +269,10 @@ namespace DEMO.Controllers
 
             return View(viewModel);
         }
+
+
+
+
 
 
 
@@ -704,6 +710,42 @@ namespace DEMO.Controllers
                 .ToListAsync();
 
 
+
+
+
+            var allqty = await (from p in _dbContext.Prescription
+                                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+
+                                           join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                           join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+                                           where p.PrescriptionID == pid // Filter by prescription ID
+                                           select mi.Quantity)
+               .Distinct()
+               .OrderBy(name => name) // Sort in ascending order
+               .ToListAsync();
+
+
+            var allinstructions = await (from p in _dbContext.Prescription
+                                join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+
+                                join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+                                where p.PrescriptionID == pid // Filter by prescription ID
+                                select mi.Quantity)
+             .Distinct()
+             .OrderBy(name => name) // Sort in ascending order
+             .ToListAsync();
+
+
+
             // Get the specific prescription data along with related patient information
             var alldata = await (from p in _dbContext.Prescription
                                  join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
@@ -735,12 +777,16 @@ namespace DEMO.Controllers
                                      Temperature = pv.Temperature,
                                      SurgeonName = account.Name,
                                      SurgeonSurname = account.Surname,
+                                     Time=pv.time,
 
 
                                      qty = mi.Quantity,
                                      Instructions = mi.Instructions,
                                      medication = m.MedicationName,
                                  })
+                                 .Distinct()
+                                 .OrderBy(p => p.Time)
+                                 
                                   .ToListAsync();
 
 
@@ -757,7 +803,10 @@ namespace DEMO.Controllers
                 AllConditions = patientConditions,
                 AllCurrentMed = currentMeds,
                 allpresribedmeds=allprescribedmeds
-            };
+            }
+            
+            ;
+            
 
             return View(viewModel);
         }
@@ -987,12 +1036,7 @@ namespace DEMO.Controllers
             }
 
             var combinedData = (from prescription in _dbContext.Prescription
-                                    //join medicationInstruction in _dbContext.MedicationInstructions
-                                    //on prescription.PrescriptionID equals medicationInstruction.PrescriptionID
-
-                                    //join medication in _dbContext.Medication
-                                    //on medicationInstruction.MedicationID equals medication.MedicationID
-
+                                 
                                 
                                 join ap in _dbContext.AdmittedPatients
                                 on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
@@ -1043,8 +1087,12 @@ namespace DEMO.Controllers
 
 
                                 })
+                                   .Distinct()
                                 .OrderByDescending(item => item.Urgency == "Yes")
+                             
+                                
                                 .ToList();
+           
 
 
 
