@@ -402,7 +402,7 @@
 
 
 
-                                        <td>@Model.combinedData.First().DateGiven</td>
+                                        <td>@Model.combinedData.First().Date</td>
 
 
 
@@ -576,7 +576,7 @@
     </script>
 
 
-    @* <button onclick="confirmReject()">Reject</button> *@
+     <button style="background-color:red" onclick="confirmReject()">Reject</button> 
     <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
 

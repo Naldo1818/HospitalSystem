@@ -37,7 +37,8 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form asp-action="AddMedication">
+
+                        <form asp-action="AddMedication" method="post">
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Add Medication</h1></center>
@@ -53,7 +54,7 @@
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="MedicationName" class="form-label">Medication Name</label>
-                                    <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="MedicationName" style="width:300px">
+                                    <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="MedicationName" value="@Model.MedicationName" style="width:300px">
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
 
@@ -80,17 +81,20 @@
 
                                 <div class="col-md-4">
                                     <label for="StockonHand" class="form-label">Stock on Hand</label>
-                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" style="width:300px">
+                                    <input type="text" class="form-control" id="StockonHand" name="StockonHand" asp-for="StockonHand" value="@Model.StockonHand" style="width:300px">
                                     <span asp-validation-for="StockonHand" class="text-danger"></span>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="ReorderLevel" class="form-label">Re-order Level</label>
-                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ReorderLevel" style="width:300px">
+                                    <input type="text" class="form-control" id="ReorderLevel" name="ReorderLevel" asp-for="ReorderLevel"  value="@Model.ReorderLevel" style="width:300px">
                                     <span asp-validation-for="ReorderLevel" class="text-danger"></span>
                                 </div>
                             </div>
                             <br />
+
+
+                            <!--Active ingredient section-->
                                                                 <h2>Active Ingredient Section</h2>
 
                             <div class="form-group row">
@@ -133,6 +137,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>

@@ -410,6 +410,7 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult AddMedication(PharmacyMedicationViewModel model)
@@ -449,6 +450,8 @@ namespace DEMO.Controllers
 
                     return RedirectToAction("AddMedication");
                 }
+
+
                 else
                 {
                     // Handle error: Medication retrieval failed
@@ -458,10 +461,7 @@ namespace DEMO.Controllers
 
             }
 
-            // Return the view with validation errors if any
-            // Fetch schedules
 
-            //model.Schedules=sched
 
 
 
@@ -499,6 +499,7 @@ namespace DEMO.Controllers
             model.ActiveIngredientsDropdown = activeingredientslist;
             model.Schedules = schedules;
             model.DosageForms = dosageforms;
+
             return View(model);
         }
 
@@ -811,6 +812,8 @@ namespace DEMO.Controllers
                                      qty = mi.Quantity,
                                      Instructions = mi.Instructions,
                                      medication = m.MedicationName,
+                                     
+                                     Date=p.DateGiven,
                                  })
                         
                        .GroupBy(m=>m.Time)

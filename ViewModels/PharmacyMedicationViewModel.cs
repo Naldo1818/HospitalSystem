@@ -6,6 +6,8 @@ namespace DEMO.ViewModels
     {
         [Key]
         public int PharmacyMedicationID { get; set; }
+
+
         [Required]
         public int MedicationID { get; set; }
 
@@ -29,7 +31,9 @@ namespace DEMO.ViewModels
         public string MedicationName { get; set; }
 
 
-        public string activeingredient { get; set; }
+        //public string activeingredient { get; set; }
+
+
         public string MedicationForm { get; set; }
 
         [Required]
