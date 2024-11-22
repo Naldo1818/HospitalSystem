@@ -687,7 +687,21 @@ namespace DEMO.Controllers
                 .ToListAsync();
 
 
+            // Get the specific prescription data along with related patient information
+            var allprescribedmeds = await (from p in _dbContext.Prescription
+                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                 join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                 join account in _dbContext.Accounts on p.AccountID equals account.AccountID
 
+                                 join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+                                 where p.PrescriptionID == pid // Filter by prescription ID
+                                           select m.MedicationName)
+                .Distinct()
+                .OrderBy(name => name) // Sort in ascending order
+                .ToListAsync();
 
 
             // Get the specific prescription data along with related patient information
@@ -701,6 +715,7 @@ namespace DEMO.Controllers
                                  join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
 
                                  where p.PrescriptionID == pid // Filter by prescription ID
+
                                  select new PharmacistViewScriptModel
                                  {
                                      Urgency = p.Urgency,
@@ -741,6 +756,7 @@ namespace DEMO.Controllers
                 Allallergy = allAllergies,
                 AllConditions = patientConditions,
                 AllCurrentMed = currentMeds,
+                allpresribedmeds=allprescribedmeds
             };
 
             return View(viewModel);
@@ -977,6 +993,7 @@ namespace DEMO.Controllers
                                     //join medication in _dbContext.Medication
                                     //on medicationInstruction.MedicationID equals medication.MedicationID
 
+                                
                                 join ap in _dbContext.AdmittedPatients
                                 on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
 
@@ -990,7 +1007,13 @@ namespace DEMO.Controllers
                                 join account in _dbContext.Accounts
                                 on prescription.AccountID equals account.AccountID
 
+                                join mi in _dbContext.MedicationInstructions on prescription.PrescriptionID equals mi.PrescriptionID
+                                join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+
                                 where prescription.Status == "Prescribed"
+
+
 
                                 select new ViewActivePrescriptionsModel
 
@@ -1015,6 +1038,7 @@ namespace DEMO.Controllers
                                     // PatientInfo fields
                                     Name = pi.Name,
                                     Surname = pi.Surname,
+                                    //allmeds= m.MedicationName,
 
 
 
