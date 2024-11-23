@@ -37,7 +37,7 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
 
-                        <form asp-controller="Pharmacist" asp-action="AddMedication" method="post">
+                        <form asp-action="AddMedicationAction" method="post">
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Add Medication</h1></center>
@@ -57,26 +57,66 @@
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label for="DosageForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="MedicationForm" style="width:300px">
-                                        @foreach (var item in Model.DosageForms)
-                                        {
-                                                    <option value="@item">@item</option>
-                                        }
-                                    </select>
-                                </div>
+                               
 
-                                <div class="col-md-4">
-                                    <label for="Schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="Schedules" id="Schedules" asp-for="Schedule" style="width:300px">
-                                        @foreach (var item in Model.Schedules)
-                                        {
-                                                    <option value="@item">@item</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="Schedule" class="text-danger"></span>
-                                </div>
+                               
+<div class="col-md-4">
+    <label for="DosageForm" class="form-label">Dosage Form</label>                                 
+    <select class="form-control" name="MedicationForm" id="DosageForms" style="width:300px">
+        @if (Model.DosageForms != null)
+        {
+            @foreach (var item in Model.DosageForms)
+            {
+                if (item == Model.MedicationForm)
+                {
+                    <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                    <option value="@item">@item</option>
+                }
+            }
+        }
+    </select>
+    <span asp-validation-for="MedicationForm" class="text-danger"></span>
+</div>
+
+<div class="col-md-4">
+    <label for="Schedule" class="form-label">Schedule</label>                                 
+    <select class="form-control" name="Schedule" id="Schedules" style="width:300px">
+        @if (Model.Schedules != null)
+        {
+            @foreach (var item in Model.Schedules)
+            {
+                if (item == Model.Schedule)
+                {
+                    <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                    <option value="@item">@item</option>
+                }
+            }
+        }
+    </select>
+    <span asp-validation-for="Schedule" class="text-danger"></span>
+</div>
+
+
+                                 <script>
+    $(document).ready(function() {
+        $('#DosageForms').change(function() {
+            var selectedForm = $(this).val();
+            console.log('Selected Dosage Form:', selectedForm);
+        });
+
+        $('#Schedules').change(function() {
+            var selectedSchedule = $(this).val();
+            console.log('Selected Schedule:', selectedSchedule);
+        });
+    });
+</script>
+
 
                                 <div class="col-md-4">
                                     <label for="StockonHand" class="form-label">Stock on Hand</label>
@@ -144,6 +184,8 @@
         </main>
     </div>
 
+  
+
     <script>
         $(document).ready(function () {
             $('#addIngredient').click(function () {
@@ -165,6 +207,7 @@
             });
         });
     </script>
+
 
 
 

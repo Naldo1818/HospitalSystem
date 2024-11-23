@@ -4,11 +4,9 @@ namespace DEMO.ViewModels
 {
     public class PharmacyMedicationViewModel
     {
-        [Key]
-        public int PharmacyMedicationID { get; set; }
+        
 
 
-        [Required]
         public int MedicationID { get; set; }
 
         [Required(ErrorMessage = "Stock on Hand amount is required.")]
@@ -31,22 +29,17 @@ namespace DEMO.ViewModels
         public string MedicationName { get; set; }
 
 
-        //public string activeingredient { get; set; }
 
-
+        [Required]
         public string MedicationForm { get; set; }
 
         [Required]
         public int Schedule { get; set; }
 
 
-        public List<int> Schedules { get; set; }    
-
-
+        public List<int> Schedules { get; set; }   
         public List<string> DosageForms { get; set; }
-
         public List<string> ActiveIngredientsDropdown { get; set; }
-
         public List<PharmacyMedicationViewModel> combinedinfo { get; set; }
 
 

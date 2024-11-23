@@ -280,7 +280,7 @@ namespace DEMO.Controllers
 
        
 
-        public ActionResult AddMedication()
+        public IActionResult AddMedication()
         {
             var combinedData = (from m in _dbContext.Medication
                                 join pm in _dbContext.PharmacyMedication
@@ -374,7 +374,7 @@ namespace DEMO.Controllers
             {
 
 
-                MedicationForm = df,
+                //MedicationForm = df,
 
                 Schedules = medSchedules,
                 DosageForms = dfdropdown,
@@ -393,100 +393,89 @@ namespace DEMO.Controllers
         }
 
 
+
+        
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult AddMedication(PharmacyMedicationViewModel model)
+        public IActionResult AddMedicationAction(PharmacyMedicationViewModel model)
         {
+            // Check if the model state is valid
             if (ModelState.IsValid)
             {
-                // Create a new Medication entity
-                Medication med = new Medication
+                // Reload the dropdown data if the model is invalid
+                PrepareDropDownLists(model);
+                return View("AddMedication", model);
+            }
+
+            else
+            {
+                // Create a new Medication entity from the view model
+                Medication  med = new Medication
                 {
+                   
                     MedicationName = model.MedicationName,
-                    MedicationForm = model.MedicationForm,
-                    Schedule = model.Schedule,
+                    MedicationForm = model.MedicationForm,  // Ensure this has the selected value
+                    Schedule = model.Schedule,                // Ensure this has the selected value
                 };
 
-                // Add and save the new Medication entity to the database
+                // Add the medication to the database context
                 _dbContext.Medication.Add(med);
                 _dbContext.SaveChanges();
 
-                // Fetch the Medication entity just saved
-                var medEntity = _dbContext.Medication
-                                .FirstOrDefault(m => m.MedicationName == model.MedicationName);
 
-                // Ensure medication was successfully retrieved before proceeding
-                if (medEntity != null)
+                // Create a new PharmMedModel and set its properties
+                PharmMedModel pharmMed = new PharmMedModel
                 {
-                    // Create a new PharmMedModel entity and link to the saved Medication
-                    PharmMedModel pharmMed = new PharmMedModel
-                    {
-                        MedicationID = medEntity.MedicationID,
-                        StockonHand = model.StockonHand,
-                        ReorderLevel = model.ReorderLevel,
-                    };
 
-                    // Add and save the PharmMedModel entity to the database
-                    _dbContext.PharmacyMedication.Add(pharmMed);
-                    _dbContext.SaveChanges();
+                    StockonHand = model.StockonHand,
+                    ReorderLevel = model.ReorderLevel,
+                    MedicationID = med.MedicationID
+                };
 
-                    return RedirectToAction("ViewAllActivePrescriptionsPage");
-                }
+                // Add the pharmacy medication to the database context
+                _dbContext.PharmacyMedication.Add(pharmMed);
+                _dbContext.SaveChanges();
 
-
-                else
-                {
-                    // Handle error: Medication retrieval failed
-                    ModelState.AddModelError("", "Error saving medication.");
-                }
-
+                // Set a success message in TempData and redirect to AddMedication action
+                TempData["Success"] = "Medication added successfully!";
+                return RedirectToAction("ViewAllActivePrescriptionsPage");
+                
 
             }
+            //catch (Exception ex)
+            //{
+            //    // Log the exception message for debugging purposes (optional)
+            //    ModelState.AddModelError("", $"Error saving medication: {ex.Message}");
+
+            //    // Prepare dropdown lists again in case of an error and return to the view
+            //    PrepareDropDownLists(model);
+            //    return View("AddMedication", model);
+            //}
+
+        }
 
 
 
+        public void PrepareDropDownLists(PharmacyMedicationViewModel model)
+        {
+            model.Schedules = _dbContext.Medication
+                .Select(m => m.Schedule)
+                .Distinct()
+                .OrderBy(schedule => schedule)
+                .ToList();
 
-
-            var schedules = _dbContext.Medication
-                              .Select(m => m.Schedule)
-                              .Distinct()
-                              .OrderBy(schedule => schedule) // Order by ascending
-                              .ToList();
-
-            var dosageforms = _dbContext.Medication
+            model.DosageForms = _dbContext.Medication
                 .Select(m => m.MedicationForm)
                 .Distinct()
                 .OrderBy(form => form)
                 .ToList();
 
-
-
-            var activeingredientslist = _dbContext.Activeingredient
-                                 .Select(m => m.ActiveIngredientName)
-                                 .Distinct()
-                                 .OrderBy(name => name) // Order in alphabetical order
-                                 .ToList();
-
-
-
-
-
-
-
-            var active = _dbContext.Activeingredient
+            model.ActiveIngredientsDropdown = _dbContext.Activeingredient
                 .Select(m => m.ActiveIngredientName)
                 .Distinct()
-                .ToString();
-
-            model.ActiveIngredientsDropdown = activeingredientslist;
-            model.Schedules = schedules;
-            model.DosageForms = dosageforms;
-
-            return View(model);
+                .OrderBy(name => name)
+                .ToList();
         }
-
-
-
 
 
 
@@ -841,7 +830,7 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public  async Task<IActionResult>ViewSpecificPrescription(int pid, PharmacistViewScriptModel model)
+        public  async Task<IActionResult>ViewSpecificPrescriptionDispense(int pid, PharmacistViewScriptModel model)
 
 
         {
@@ -911,7 +900,7 @@ namespace DEMO.Controllers
             }
 
 
-            return View(model);
+            return RedirectToAction("ViewAllActivePrescriptionsPage", "Pharmacist");
 
         }
 
