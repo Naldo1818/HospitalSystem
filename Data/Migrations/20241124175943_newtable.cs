@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DEMO.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class pharmacystockaddition : Migration
+    public partial class newtable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,21 +31,21 @@ namespace DEMO.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PharmacyMedicationStockOrderTable",
+                name: "PharmacyStock",
                 columns: table => new
                 {
                     MedicationReorderID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MedicationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MedicationForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Schedule = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Schedule = table.Column<int>(type: "int", nullable: false),
                     StockonHand = table.Column<int>(type: "int", nullable: false),
                     ReorderLevel = table.Column<int>(type: "int", nullable: false),
                     qtyOrdered = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PharmacyMedicationStockOrderTable", x => x.MedicationReorderID);
+                    table.PrimaryKey("PK_PharmacyStock", x => x.MedicationReorderID);
                 });
         }
 
@@ -56,7 +56,7 @@ namespace DEMO.Data.Migrations
                 name: "AdministerMedication");
 
             migrationBuilder.DropTable(
-                name: "PharmacyMedicationStockOrderTable");
+                name: "PharmacyStock");
         }
     }
 }

@@ -193,19 +193,20 @@ namespace DEMO.Controllers
                                               })
                                               .ToListAsync();
 
-            var stockOrder = medicationsToReorder.Select(m=> new PharmMedicationStockOrder
+            var stockOrder = medicationsToReorder.Select(m => new PharmMedicationStockOrder
             {
-                MedicationName= m.MedicationName,
-                MedicationForm=m.MedicationForm,
-                Schedule=m.Schedule,
-             
-                 StockonHand = m.StockonHand,
+                MedicationName = m.MedicationName,
+                MedicationForm = m.MedicationForm,
+                Schedule = m.Schedule,
+
+                StockonHand = m.StockonHand,
                 ReorderLevel = m.ReorderLevel,
-                qtyOrdered=m.qty,
+                qtyOrdered = m.qty,
+                Status = "Ordered"
             }).ToList();
 
 
-            _dbContext.PharmacyMedicationStockOrderTable.AddRange(stockOrder);
+            _dbContext.PharmacyStock.AddRange(stockOrder);
             _dbContext.SaveChanges();
 
 
@@ -1352,9 +1353,12 @@ namespace DEMO.Controllers
 
                                 }).ToList();
 
+
+            var stocktoshow= _dbContext.PharmacyStock.ToList();
+
             var viewModel = new PharmacistStockOrderViewModel
             {
-                PharmacistStockOrders = combinedData
+                StockOrder = stocktoshow
             };
 
             // Pass the list of data to the view

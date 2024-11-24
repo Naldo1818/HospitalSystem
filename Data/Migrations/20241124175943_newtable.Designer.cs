@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241124172656_pharmacystockaddition")]
-    partial class pharmacystockaddition
+    [Migration("20241124175943_newtable")]
+    partial class newtable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -610,9 +610,8 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("ReorderLevel")
                         .HasColumnType("int");
 
-                    b.Property<string>("Schedule")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Schedule")
+                        .HasColumnType("int");
 
                     b.Property<int>("StockonHand")
                         .HasColumnType("int");
@@ -622,7 +621,7 @@ namespace DEMO.Data.Migrations
 
                     b.HasKey("MedicationReorderID");
 
-                    b.ToTable("PharmacyMedicationStockOrderTable");
+                    b.ToTable("PharmacyStock");
                 });
 
             modelBuilder.Entity("DEMO.Models.PharmacistModels.OrderStockModel", b =>

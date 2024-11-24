@@ -13,5 +13,7 @@ namespace DEMO.Models
         public int ReorderLevel { get; set; }
 
         public int qtyOrdered { get; set; }
+
+        public string Status {  get; set; }
     }
 }
