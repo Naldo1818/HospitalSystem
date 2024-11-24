@@ -175,21 +175,38 @@ namespace DEMO.Controllers
             ViewBag.LowLevelStock = lowlevelstock;
 
 
-            var medicationsToReorder =  (from pm in _dbContext.PharmacyMedication
+            var medicationsToReorder = await (from pm in _dbContext.PharmacyMedication
                                               join m in _dbContext.Medication
                                               on pm.MedicationID equals m.MedicationID
                                               where pm.StockonHand <= pm.ReorderLevel
-                                              select new
+
+                                              select new PharmacistStockOrderViewModel
                                               {
                                                   MedicationName = m.MedicationName,
                                                   MedicationForm = m.MedicationForm,
                                                   Schedule = m.Schedule,
                                                   StockonHand = pm.StockonHand,
-                                                  ReorderLevel = pm.ReorderLevel
+                                                  ReorderLevel = pm.ReorderLevel,
+                                                  qty=model.qty,
+                                                 
+                                                  
                                               })
                                               .ToListAsync();
 
-            
+            var stockOrder = medicationsToReorder.Select(m=> new PharmMedicationStockOrder
+            {
+                MedicationName= m.MedicationName,
+                MedicationForm=m.MedicationForm,
+                Schedule=m.Schedule,
+             
+                 StockonHand = m.StockonHand,
+                ReorderLevel = m.ReorderLevel,
+                qtyOrdered=m.qty,
+            }).ToList();
+
+
+            _dbContext.PharmacyMedicationStockOrderTable.AddRange(stockOrder);
+            _dbContext.SaveChanges();
 
 
 
@@ -264,7 +281,7 @@ namespace DEMO.Controllers
             //    }
 
 
-            return RedirectToAction("ViewAllOrders");
+            return View("StockOrderPage");
         }
 
 
