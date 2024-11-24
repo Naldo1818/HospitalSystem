@@ -608,19 +608,11 @@ namespace DEMO.Controllers
 
                 // Set a success message in TempData and redirect to AddMedication action
                 TempData["Success"] = "Medication added successfully!";
-                return RedirectToAction("ViewAllActivePrescriptionsPage");
+                return RedirectToAction("ViewAddedMedication");
 
 
             }
-            //catch (Exception ex)
-            //{
-            //    // Log the exception message for debugging purposes (optional)
-            //    ModelState.AddModelError("", $"Error saving medication: {ex.Message}");
-
-            //    // Prepare dropdown lists again in case of an error and return to the view
-            //    PrepareDropDownLists(model);
-            //    return View("AddMedication", model);
-            //}
+           
 
         }
 
@@ -1096,11 +1088,24 @@ namespace DEMO.Controllers
 
 
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
 
 
 
+          
 
-           int dpid = 4047;
+
+
+            ViewBag.UserAccountID = accountID;
+
+
+
+            int dpid = 4047;
 
 
            int pharmid = 1013;
@@ -1116,20 +1121,23 @@ namespace DEMO.Controllers
             }
 
 
+            
+                DispensedScriptsModel infotoadd = new DispensedScriptsModel
+                {
 
-            DispensedScriptsModel infotoadd = new DispensedScriptsModel
-            {
-
-                PrescriptionID=model.PrescriptionID,
-                AccountID = pharmid,
+                    PrescriptionID = dpid,
+                    AccountID = pharmid,
 
 
 
-            };
+                };
 
-            _dbContext.DispensedScriptsModel.Add(infotoadd);
-            prescription.Status = "Dispensed";
-            _dbContext.SaveChanges();
+                _dbContext.DispensedScriptsModel.Add(infotoadd);
+                prescription.Status = "Dispensed";
+                _dbContext.SaveChanges();
+            
+
+           
 
         
 
