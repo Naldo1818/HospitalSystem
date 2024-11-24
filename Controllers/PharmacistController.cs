@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
 using MimeKit;
-using MailKit.Net.Smtp;
+
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -27,6 +27,9 @@ using System.IO;
 using static DEMO.Controllers.PharmacistController;
 using DEMO.Models.NurseModels;
 using System.Security.Cryptography;
+using System.Net;
+using System.Net.Mail;
+using Microsoft.Extensions.Configuration;
 
 
 
@@ -210,79 +213,63 @@ namespace DEMO.Controllers
             _dbContext.SaveChanges();
 
 
+            try
+            {
+                // Set up SMTP client
+                using (var smtpClient = new SmtpClient("smtp.gmail.com"))
+                {
+                    smtpClient.Port = 587;
+                    smtpClient.Credentials = new NetworkCredential("sam12mensah@gmail.com", "churchposters1!");
+                    smtpClient.EnableSsl = true;
+
+                    // Create the email message
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress("sam12mensah@gmail.com"),
+                        Subject = "Stock Order Notification",
+                        IsBodyHtml = true
+                    };
+
+                    // Add recipient(s)
+                    mailMessage.To.Add("sam12mensah@gmail.com");  // Replace with your recipient's email address
+
+                    // Build the email body with stock order details
+                    var emailBody = "<h3>Stock Order Details</h3>";
+                    emailBody += "<table border='1'><tr><th>Medication Name</th><th>Dosage Form</th><th>Schedule</th><th>Stock on Hand</th><th>Reorder Level</th><th>Quantity Ordered</th></tr>";
+
+                    foreach (var order in stockOrder)
+                    {
+                        emailBody += $"<tr><td>{order.MedicationName}</td><td>{order.MedicationForm}</td><td>{order.Schedule}</td><td>{order.StockonHand}</td><td>{order.ReorderLevel}</td><td>{order.qtyOrdered}</td></tr>";
+                    }
+
+                    emailBody += "</table>";
+                    emailBody += "<p>This is an automated email. Please do not reply.</p>";
+
+                    // Set the email body
+                    mailMessage.Body = emailBody;
+
+                    // Send email asynchronously
+                    await smtpClient.SendMailAsync(mailMessage);
+                }
+                TempData["PopupMessage"] = "Medication Ordered and Email Sent";
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions related to email sending
+                // For example, log the error (you can implement a logger in your application)
+                Console.WriteLine($"Error sending email: {ex.Message}");
+                TempData["PopupMessage"] = "An error occurred while sending the email.";
+
+            }
 
 
 
 
-            //// Generate image
-            //using (var bitmap = new Bitmap(800, 600))
-            //using (var graphics = Graphics.FromImage(bitmap))
-            //{
-            //    graphics.Clear(Color.White);
-            //    using (var font = new Font("Arial", 12))
-            //    {
-            //        int y = 10;
-            //        graphics.DrawString("Stock Order Details", new Font("Arial", 16, FontStyle.Bold), Brushes.Black, 10, y);
-            //        y += 30;
-
-            //        foreach (var item in medicationsToReorder)
-            //        {
-            //            graphics.DrawString($"Medication: {item.MedicationName}", font, Brushes.Black, 10, y);
-            //            y += 20;
-            //            graphics.DrawString($"Form: {item.MedicationForm}", font, Brushes.Black, 10, y);
-            //            y += 20;
-            //            graphics.DrawString($"Schedule: {item.Schedule}", font, Brushes.Black, 10, y);
-            //            y += 20;
-            //            graphics.DrawString($"Stock on Hand: {item.StockonHand}", font, Brushes.Black, 10, y);
-            //            y += 20;
-            //            graphics.DrawString($"Reorder Level: {item.ReorderLevel}", font, Brushes.Black, 10, y);
-            //            y += 30;
-            //        }
-
-            //        graphics.DrawString($"Notes: {notes}", font, Brushes.Black, 10, y);
-            //        y += 30;
-            //        graphics.DrawString($"Kind Regards,", font, Brushes.Black, 10, y);
-            //        y += 20;
-            //        graphics.DrawString($"{PharmacistName} {PharmacistSurname}", font, Brushes.Black, 10, y);
-            //    }
-
-            //    // Save image to memory stream
-            //    using (var ms = new MemoryStream())
-            //    {
-            //        bitmap.Save(ms, ImageFormat.Png);
-            //        ms.Position = 0;
-
-            //        // Create email message
-            //        var emailMessage = new MimeMessage();
-            //        emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
-            //        emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "nmostert@nmmu.ac.za"));
-            //        emailMessage.Subject = $"Stock Order Request {bitmap}";
-
-            //        var builder = new BodyBuilder();
-            //        builder.Attachments.Add("StockOrder.png", ms.ToArray());
-            //        emailMessage.Body = builder.ToMessageBody();
-
-            //        // Send email
-            //        try
-            //        {
-            //            using (var client = new MailKit.Net.Smtp.SmtpClient())
-            //            {
-            //                await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-            //                await client.AuthenticateAsync("nmostert@nmmu.ac.za", "xqqx kiox hcgm xvmr");
-            //                await client.SendAsync(emailMessage);
-            //                await client.DisconnectAsync(true);
-            //            }
-
-            //            return Ok("Email sent successfully");
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            return BadRequest($"Error sending email: {ex.Message}");
-            //        }
-            //    }
 
 
-            return View("StockOrderPage");
+
+           
+            return RedirectToAction ("ViewAllOrders");
         }
 
 
