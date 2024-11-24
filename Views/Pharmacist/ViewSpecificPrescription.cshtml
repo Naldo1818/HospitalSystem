@@ -207,11 +207,13 @@
 
 
     <form asp-action="ViewSpecificPrescriptionDispense" method="post">
-
+        @Html.AntiForgeryToken()
        
         <!-- Medical History -->
 
-        
+        <input type="hidden" asp-for="PrescriptionID"  />
+        <input type="hidden"  asp-for="pharmacistID"  />
+
 
             <center><h1>Medical History</h1></center>
 
@@ -453,9 +455,7 @@
 
 
 
-        <input type="hidden" name="PrescriptionID" value="@Model.PrescriptionID" />
-        <input type="hidden" name="pharmacistID" value="ViewBag.UserAccountID" />
-
+        
 
         <button type="submit"
             
@@ -470,36 +470,75 @@
     </form>
 
 
-    <form asp-action="ViewSpecificPrescriptionReject" method="post">
+    <form id="rejectForm" method="post" asp-action="ViewSpecificPrescriptionReject">
 
-        <button type="submit"
-                
+       @*  <button type="submit"
+
                 class="btn btn-danger">
             Reject
+        </button> *@
+
+
+
+        <input type="hidden" name="PrescriptionID" value="@Model.PrescriptionID" />
+
+        <!-- Reject Button -->
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">
+            Reject Prescription
         </button>
 
-</form>
+        <!-- Confirmation Modal -->
+        <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to reject this prescription? This action cannot be undone.
 
-    <!-- Reject Confirmation Modal -->
-    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to reject this prescription? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-danger" id="confirmReject">Yes, Reject</button>
+                        <!-- Message input field for rejection reason -->
+                        <div class="form-group mt-3">
+                            <label for="rejectMessage">Please enter a reason for rejection (optional):</label>
+                            <textarea id="rejectMessage" name="RejectMessage" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="confirmReject">Yes, Reject</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+
+
+        <script>
+            // When the "Yes, Reject" button is clicked
+            document.getElementById('confirmReject').addEventListener('click', function () {
+                // Get the rejection message entered by the user
+                var rejectMessage = document.getElementById('rejectMessage').value;
+
+                // Store the message in the hidden input field (if necessary)
+                var hiddenMessageInput = document.createElement('input');
+                hiddenMessageInput.type = 'hidden';
+                hiddenMessageInput.name = 'RejectMessage'; // The name you want to use in the controller
+                hiddenMessageInput.value = rejectMessage;
+
+                // Append the hidden input to the form
+                document.getElementById('rejectForm').appendChild(hiddenMessageInput);
+
+                // Submit the form
+                document.getElementById('rejectForm').submit();
+            });
+        </script>
+
+</form>
+
+   
 
 
 

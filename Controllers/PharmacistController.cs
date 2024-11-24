@@ -150,7 +150,8 @@ namespace DEMO.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> StockOrderPage(string notes)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> StockOrderPage(PharmacistStockOrderViewModel model)
         {
             var PharmacistName = HttpContext.Session.GetString("UserName");
             var PharmacistSurname = HttpContext.Session.GetString("UserSurname");
@@ -174,7 +175,7 @@ namespace DEMO.Controllers
             ViewBag.LowLevelStock = lowlevelstock;
 
 
-            var medicationsToReorder = await (from pm in _dbContext.PharmacyMedication
+            var medicationsToReorder =  (from pm in _dbContext.PharmacyMedication
                                               join m in _dbContext.Medication
                                               on pm.MedicationID equals m.MedicationID
                                               where pm.StockonHand <= pm.ReorderLevel
@@ -188,81 +189,82 @@ namespace DEMO.Controllers
                                               })
                                               .ToListAsync();
 
-            if (!medicationsToReorder.Any())
-            {
-                return BadRequest("No medications need to be reordered.");
-            }
+            
 
 
 
 
-            // Generate image
-            using (var bitmap = new Bitmap(800, 600))
-            using (var graphics = Graphics.FromImage(bitmap))
-            {
-                graphics.Clear(Color.White);
-                using (var font = new Font("Arial", 12))
-                {
-                    int y = 10;
-                    graphics.DrawString("Stock Order Details", new Font("Arial", 16, FontStyle.Bold), Brushes.Black, 10, y);
-                    y += 30;
 
-                    foreach (var item in medicationsToReorder)
-                    {
-                        graphics.DrawString($"Medication: {item.MedicationName}", font, Brushes.Black, 10, y);
-                        y += 20;
-                        graphics.DrawString($"Form: {item.MedicationForm}", font, Brushes.Black, 10, y);
-                        y += 20;
-                        graphics.DrawString($"Schedule: {item.Schedule}", font, Brushes.Black, 10, y);
-                        y += 20;
-                        graphics.DrawString($"Stock on Hand: {item.StockonHand}", font, Brushes.Black, 10, y);
-                        y += 20;
-                        graphics.DrawString($"Reorder Level: {item.ReorderLevel}", font, Brushes.Black, 10, y);
-                        y += 30;
-                    }
 
-                    graphics.DrawString($"Notes: {notes}", font, Brushes.Black, 10, y);
-                    y += 30;
-                    graphics.DrawString($"Kind Regards,", font, Brushes.Black, 10, y);
-                    y += 20;
-                    graphics.DrawString($"{PharmacistName} {PharmacistSurname}", font, Brushes.Black, 10, y);
-                }
+            //// Generate image
+            //using (var bitmap = new Bitmap(800, 600))
+            //using (var graphics = Graphics.FromImage(bitmap))
+            //{
+            //    graphics.Clear(Color.White);
+            //    using (var font = new Font("Arial", 12))
+            //    {
+            //        int y = 10;
+            //        graphics.DrawString("Stock Order Details", new Font("Arial", 16, FontStyle.Bold), Brushes.Black, 10, y);
+            //        y += 30;
 
-                // Save image to memory stream
-                using (var ms = new MemoryStream())
-                {
-                    bitmap.Save(ms, ImageFormat.Png);
-                    ms.Position = 0;
+            //        foreach (var item in medicationsToReorder)
+            //        {
+            //            graphics.DrawString($"Medication: {item.MedicationName}", font, Brushes.Black, 10, y);
+            //            y += 20;
+            //            graphics.DrawString($"Form: {item.MedicationForm}", font, Brushes.Black, 10, y);
+            //            y += 20;
+            //            graphics.DrawString($"Schedule: {item.Schedule}", font, Brushes.Black, 10, y);
+            //            y += 20;
+            //            graphics.DrawString($"Stock on Hand: {item.StockonHand}", font, Brushes.Black, 10, y);
+            //            y += 20;
+            //            graphics.DrawString($"Reorder Level: {item.ReorderLevel}", font, Brushes.Black, 10, y);
+            //            y += 30;
+            //        }
 
-                    // Create email message
-                    var emailMessage = new MimeMessage();
-                    emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
-                    emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "nmostert@nmmu.ac.za"));
-                    emailMessage.Subject = $"Stock Order Request {bitmap}";
+            //        graphics.DrawString($"Notes: {notes}", font, Brushes.Black, 10, y);
+            //        y += 30;
+            //        graphics.DrawString($"Kind Regards,", font, Brushes.Black, 10, y);
+            //        y += 20;
+            //        graphics.DrawString($"{PharmacistName} {PharmacistSurname}", font, Brushes.Black, 10, y);
+            //    }
 
-                    var builder = new BodyBuilder();
-                    builder.Attachments.Add("StockOrder.png", ms.ToArray());
-                    emailMessage.Body = builder.ToMessageBody();
+            //    // Save image to memory stream
+            //    using (var ms = new MemoryStream())
+            //    {
+            //        bitmap.Save(ms, ImageFormat.Png);
+            //        ms.Position = 0;
 
-                    // Send email
-                    try
-                    {
-                        using (var client = new MailKit.Net.Smtp.SmtpClient())
-                        {
-                            await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
-                            await client.AuthenticateAsync("nmostert@nmmu.ac.za", "xqqx kiox hcgm xvmr");
-                            await client.SendAsync(emailMessage);
-                            await client.DisconnectAsync(true);
-                        }
+            //        // Create email message
+            //        var emailMessage = new MimeMessage();
+            //        emailMessage.From.Add(new MailboxAddress("Day Hospital - Apollo+(Group 9 - 4Year)", PharmacistEmail));
+            //        emailMessage.To.Add(new MailboxAddress("Purchasing Manager", "nmostert@nmmu.ac.za"));
+            //        emailMessage.Subject = $"Stock Order Request {bitmap}";
 
-                        return Ok("Email sent successfully");
-                    }
-                    catch (Exception ex)
-                    {
-                        return BadRequest($"Error sending email: {ex.Message}");
-                    }
-                }
-            }
+            //        var builder = new BodyBuilder();
+            //        builder.Attachments.Add("StockOrder.png", ms.ToArray());
+            //        emailMessage.Body = builder.ToMessageBody();
+
+            //        // Send email
+            //        try
+            //        {
+            //            using (var client = new MailKit.Net.Smtp.SmtpClient())
+            //            {
+            //                await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+            //                await client.AuthenticateAsync("nmostert@nmmu.ac.za", "xqqx kiox hcgm xvmr");
+            //                await client.SendAsync(emailMessage);
+            //                await client.DisconnectAsync(true);
+            //            }
+
+            //            return Ok("Email sent successfully");
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            return BadRequest($"Error sending email: {ex.Message}");
+            //        }
+            //    }
+
+
+            return RedirectToAction("ViewAllOrders");
         }
 
 
@@ -1105,12 +1107,15 @@ namespace DEMO.Controllers
 
 
 
-            int dpid = 4047;
+            // int dpid = 4047;
 
 
-           int pharmid = 1013;
+            //int pharmid = 1013;
+
+            int dpid = model.PrescriptionID;
 
 
+            int pharmid = model.pharmacistID;
 
 
             var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== dpid);
@@ -1125,7 +1130,7 @@ namespace DEMO.Controllers
                 DispensedScriptsModel infotoadd = new DispensedScriptsModel
                 {
 
-                    PrescriptionID = dpid,
+                    PrescriptionID = model.PrescriptionID,
                     AccountID = pharmid,
 
 
@@ -1133,6 +1138,8 @@ namespace DEMO.Controllers
                 };
 
                 _dbContext.DispensedScriptsModel.Add(infotoadd);
+            
+
                 prescription.Status = "Dispensed";
                 _dbContext.SaveChanges();
             
@@ -1150,14 +1157,14 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ViewSpecificPrescriptionReject(PharmacistViewScriptModel model)
+        public IActionResult ViewSpecificPrescriptionReject(string RejectMessage,PharmacistViewScriptModel model)
 
 
         {
 
 
 
-            int dpid = 4047;
+            int rpid = 4047;
 
 
             int pharmid = 1013;
@@ -1165,7 +1172,7 @@ namespace DEMO.Controllers
 
 
 
-            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == dpid);
+            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == rpid);
 
             if (prescription == null)
             {
@@ -1177,9 +1184,10 @@ namespace DEMO.Controllers
             RejectedScriptsModel infotoadd = new RejectedScriptsModel
             {
 
-                PrescriptionID = dpid,
+                PrescriptionID = rpid,
                 AccountID = pharmid,
-                
+                RejectionReason = RejectMessage
+
 
 
 
