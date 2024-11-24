@@ -73,6 +73,34 @@ namespace DEMO.Controllers
 
         public IActionResult StockOrderPage()
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                       ).Count();
+
+            ViewBag.Count = count;
+
             // Query to get the medications that need to be reordered
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
@@ -116,6 +144,14 @@ namespace DEMO.Controllers
             var PharmacistSurname = HttpContext.Session.GetString("UserSurname");
             var PharmacistEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                       ).Count();
+
+            ViewBag.Count = count;
 
             var medicationsToReorder = await (from pm in _dbContext.PharmacyMedication
                                               join m in _dbContext.Medication
@@ -213,7 +249,33 @@ namespace DEMO.Controllers
 
         public IActionResult ViewAllPrescriptions()
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
 
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                       ).Count();
+
+            ViewBag.Count = count;
 
             var combinedData = (from prescription in _dbContext.Prescription
 
@@ -282,6 +344,34 @@ namespace DEMO.Controllers
 
         public IActionResult AddMedication()
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                        ).Count();
+
+            ViewBag.Count = count;
+
             var combinedData = (from m in _dbContext.Medication
                                 join pm in _dbContext.PharmacyMedication
                                 on m.MedicationID equals pm.MedicationID
@@ -399,6 +489,33 @@ namespace DEMO.Controllers
         [HttpPost]
         public IActionResult AddMedicationAction(PharmacyMedicationViewModel model)
         {
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                       ).Count();
+
+            ViewBag.Count = count;
+
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             // Check if the model state is valid
             if (ModelState.IsValid)
             {
@@ -483,6 +600,26 @@ namespace DEMO.Controllers
 
         public IActionResult ViewAddedMedication()
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             var combinedData = (from m in _dbContext.Medication
                                 join pm in _dbContext.PharmacyMedication
                                 on m.MedicationID equals pm.MedicationID
@@ -616,6 +753,27 @@ namespace DEMO.Controllers
 
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
             // Retrieve the specific prescription using the provided id
             var prescription = await _dbContext.Prescription.FindAsync(pid);
 
@@ -982,6 +1140,26 @@ namespace DEMO.Controllers
 
         public ActionResult ViewAllOrders()
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
 
             // Query to get the medications that need to be reordered
             var combinedData = (from pm in _dbContext.PharmacyMedication
@@ -1080,6 +1258,20 @@ namespace DEMO.Controllers
                 // Handle the case where accountID is not available or is invalid
                 accountID = 0; // Or handle as required
             }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
 
             var combinedData = (from prescription in _dbContext.Prescription
 
