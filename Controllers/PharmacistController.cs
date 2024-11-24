@@ -101,6 +101,18 @@ namespace DEMO.Controllers
 
             ViewBag.Count = count;
 
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
+
+            //var lowstockcount = (from stock in _dbContext.)
+
             // Query to get the medications that need to be reordered
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
@@ -114,7 +126,7 @@ namespace DEMO.Controllers
                                     Schedule = m.Schedule,
                                     StockonHand = pm.StockonHand,
                                     ReorderLevel = pm.ReorderLevel
-                                    
+
                                 }).ToList();
 
             var viewModel = new PharmacistStockOrderViewModel
@@ -153,6 +165,15 @@ namespace DEMO.Controllers
 
             ViewBag.Count = count;
 
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
+
             var medicationsToReorder = await (from pm in _dbContext.PharmacyMedication
                                               join m in _dbContext.Medication
                                               on pm.MedicationID equals m.MedicationID
@@ -171,6 +192,9 @@ namespace DEMO.Controllers
             {
                 return BadRequest("No medications need to be reordered.");
             }
+
+
+
 
             // Generate image
             using (var bitmap = new Bitmap(800, 600))
@@ -277,6 +301,14 @@ namespace DEMO.Controllers
 
             ViewBag.Count = count;
 
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             var combinedData = (from prescription in _dbContext.Prescription
 
                                 join ap in _dbContext.AdmittedPatients
@@ -318,7 +350,7 @@ namespace DEMO.Controllers
 
 
                                 })
-                                
+
 
                                 .Distinct()
                                                              .ToList();
@@ -340,7 +372,7 @@ namespace DEMO.Controllers
 
 
 
-       
+
 
         public IActionResult AddMedication()
         {
@@ -372,10 +404,19 @@ namespace DEMO.Controllers
 
             ViewBag.Count = count;
 
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             var combinedData = (from m in _dbContext.Medication
                                 join pm in _dbContext.PharmacyMedication
                                 on m.MedicationID equals pm.MedicationID
-                              
+
 
 
 
@@ -484,7 +525,7 @@ namespace DEMO.Controllers
 
 
 
-        
+
 
         [HttpPost]
         public IActionResult AddMedicationAction(PharmacyMedicationViewModel model)
@@ -517,6 +558,18 @@ namespace DEMO.Controllers
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
             // Check if the model state is valid
+
+
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
+
             if (ModelState.IsValid)
             {
                 // Reload the dropdown data if the model is invalid
@@ -527,9 +580,9 @@ namespace DEMO.Controllers
             else
             {
                 // Create a new Medication entity from the view model
-                Medication  med = new Medication
+                Medication med = new Medication
                 {
-                   
+
                     MedicationName = model.MedicationName,
                     MedicationForm = model.MedicationForm,  // Ensure this has the selected value
                     Schedule = model.Schedule,                // Ensure this has the selected value
@@ -556,7 +609,7 @@ namespace DEMO.Controllers
                 // Set a success message in TempData and redirect to AddMedication action
                 TempData["Success"] = "Medication added successfully!";
                 return RedirectToAction("ViewAllActivePrescriptionsPage");
-                
+
 
             }
             //catch (Exception ex)
@@ -620,6 +673,23 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                      ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             var combinedData = (from m in _dbContext.Medication
                                 join pm in _dbContext.PharmacyMedication
                                 on m.MedicationID equals pm.MedicationID
@@ -730,6 +800,24 @@ namespace DEMO.Controllers
             ViewBag.UserName = pharmacist.Name;
             ViewBag.UserSurname = pharmacist.Surname;
             ViewBag.UserEmail = pharmacist.Email;
+
+
+
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                      ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
             //}
 
             return View();
@@ -749,7 +837,7 @@ namespace DEMO.Controllers
 
 
 
-        
+
 
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
@@ -774,6 +862,22 @@ namespace DEMO.Controllers
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
 
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                      ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             // Retrieve the specific prescription using the provided id
             var prescription = await _dbContext.Prescription.FindAsync(pid);
 
@@ -789,9 +893,9 @@ namespace DEMO.Controllers
                                       join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
                                       join pa in _dbContext.PatientAllergy on pi.PatientID equals pa.PatientID
                                       join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-                                      
-                                      where p.PrescriptionID==  pid 
-                           select ai.ActiveIngredientName)
+
+                                      where p.PrescriptionID == pid
+                                      select ai.ActiveIngredientName)
                             .Distinct()
                             .OrderBy(name => name) // Sort in ascending order
                             .ToListAsync();
@@ -805,7 +909,7 @@ namespace DEMO.Controllers
                                            join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
 
                                            where p.PrescriptionID == pid
-                  select c.ConditionName)
+                                           select c.ConditionName)
     .Distinct()
     .OrderBy(name => name) // Sort in ascending order
     .ToListAsync();
@@ -819,7 +923,7 @@ namespace DEMO.Controllers
                                      join pm in _dbContext.patientMedication on pi.PatientID equals pm.PatientID
                                      join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
                                      where p.PrescriptionID == pid
-            select m.MedicationName)
+                                     select m.MedicationName)
                 .Distinct()
                 .OrderBy(name => name) // Sort in ascending order
                 .ToListAsync();
@@ -827,15 +931,15 @@ namespace DEMO.Controllers
 
             // Get the specific prescription data along with related patient information
             var allprescribedmeds = await (from p in _dbContext.Prescription
-                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                                 join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
-                                 join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+                                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
 
-                                 join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
-                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                                           join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                           join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
 
-                                 where p.PrescriptionID == pid // Filter by prescription ID
+                                           where p.PrescriptionID == pid // Filter by prescription ID
                                            select m.MedicationName)
                 .Distinct()
                 .OrderBy(name => name) // Sort in ascending order
@@ -846,22 +950,6 @@ namespace DEMO.Controllers
 
 
             var allqty = await (from p in _dbContext.Prescription
-                                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
-                                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
-
-                                           join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
-                                           join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
-
-                                           where p.PrescriptionID == pid // Filter by prescription ID
-                                           select mi.Quantity)
-               .Distinct()
-               .OrderBy(name => name) // Sort in ascending order
-               .ToListAsync();
-
-
-            var allinstructions = await (from p in _dbContext.Prescription
                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
                                 join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
@@ -872,6 +960,22 @@ namespace DEMO.Controllers
 
                                 where p.PrescriptionID == pid // Filter by prescription ID
                                 select mi.Quantity)
+               .Distinct()
+               .OrderBy(name => name) // Sort in ascending order
+               .ToListAsync();
+
+
+            var allinstructions = await (from p in _dbContext.Prescription
+                                         join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                         join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                         join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                         join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+
+                                         join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                         join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+                                         where p.PrescriptionID == pid // Filter by prescription ID
+                                         select mi.Quantity)
              .Distinct()
              .OrderBy(name => name) // Sort in ascending order
              .ToListAsync();
@@ -879,19 +983,19 @@ namespace DEMO.Controllers
 
 
             var allmedicationdata = await (from p in _dbContext.Prescription
-                                 join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
-                                 join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                                 join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
-                                 join account in _dbContext.Accounts on p.AccountID equals account.AccountID
-                                 join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
-                                 join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+                                           join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                           join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
 
-                                 where p.PrescriptionID == pid // Filter by prescription ID
-                                 orderby m.MedicationName
+                                           where p.PrescriptionID == pid // Filter by prescription ID
+                                           orderby m.MedicationName
 
                                            select new PharmacistViewScriptModel
                                            {
-                                               
+
                                                qty = mi.Quantity,
                                                Instructions = mi.Instructions,
                                                medication = m.MedicationName,
@@ -915,9 +1019,9 @@ namespace DEMO.Controllers
                                  join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
 
                                  where p.PrescriptionID == pid // Filter by prescription ID
-                                orderby pv.time
-                                
-                               
+                                 orderby pv.time
+
+
                                  select new PharmacistViewScriptModel
                                  {
                                      Urgency = p.Urgency,
@@ -941,15 +1045,15 @@ namespace DEMO.Controllers
                                      qty = mi.Quantity,
                                      Instructions = mi.Instructions,
                                      medication = m.MedicationName,
-                                     
-                                     Date=p.DateGiven,
-                                 })
-                        
-                       .GroupBy(m=>m.Time)
-                       .Select(x=>x.FirstOrDefault())
 
-                     
-                      
+                                     Date = p.DateGiven,
+                                 })
+
+                       .GroupBy(m => m.Time)
+                       .Select(x => x.FirstOrDefault())
+
+
+
                        .ToListAsync();
 
 
@@ -961,16 +1065,16 @@ namespace DEMO.Controllers
 
             var viewModel = new PharmacistViewScriptModel
             {
-                combinedData = alldata, 
-                allmedicationinfo= allmedicationdata,
+                combinedData = alldata,
+                allmedicationinfo = allmedicationdata,
                 Allallergy = allAllergies,
                 AllConditions = patientConditions,
                 AllCurrentMed = currentMeds,
-                allpresribedmeds=allprescribedmeds
+                allpresribedmeds = allprescribedmeds
             }
-            
+
             ;
-            
+
 
             return View(viewModel);
         }
@@ -988,77 +1092,99 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public  async Task<IActionResult>ViewSpecificPrescriptionDispense(int pid, PharmacistViewScriptModel model)
+        public IActionResult ViewSpecificPrescriptionDispense(PharmacistViewScriptModel model)
 
 
         {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
 
-            if (!int.TryParse(accountIDString, out int accountID))
+
+
+
+           int dpid = 4047;
+
+
+           int pharmid = 1013;
+
+
+
+
+            var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== dpid);
+
+            if (prescription == null) 
             {
-                //Handle the case where accountID is not available or is invalid
-
-               accountID = 0; // Or handle as required
-                }
-
-
-
-
-
-            // Retrieve the specific prescription using the provided id
-            var prescription = await _dbContext.Prescription.FindAsync(pid);
-
-            //var dispensedscripts = _dbContext.DispensedScriptsModel;
-
-            if (prescription == null)
-            {
-                return NotFound();
+                return NotFound("Prescription not found");
             }
 
-            if (ModelState.IsValid)
+
+
+            DispensedScriptsModel infotoadd = new DispensedScriptsModel
             {
+
+                PrescriptionID=model.PrescriptionID,
+                AccountID = pharmid,
+
+
+
+            };
+
+            _dbContext.DispensedScriptsModel.Add(infotoadd);
+            prescription.Status = "Dispensed";
+            _dbContext.SaveChanges();
+
         
 
 
-                DispensedScriptsModel infotoadd = new DispensedScriptsModel
-                {
+            return RedirectToAction("ViewAllPrescriptions", "Pharmacist");
 
-                    PrescriptionID = model.PrescriptionID ,
-                    AccountID = model.pharmacistID,
-                    
-
-
-                };
-
-                await _dbContext.DispensedScriptsModel.AddAsync(infotoadd);
-
-                prescription.Status = "Dispensed";
-
-                _dbContext.Prescription.Update(prescription);
+        }
 
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ViewSpecificPrescriptionReject(PharmacistViewScriptModel model)
 
-                await _dbContext.SaveChangesAsync();
 
+        {
+
+
+
+            int dpid = 4047;
+
+
+            int pharmid = 1013;
 
 
 
 
+            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == dpid);
 
-                return RedirectToAction("ViewAllActivePrescriptionsPage","Pharmacist"); // Redirect to the list of prescriptions
-
-
-            }
-
-            else
+            if (prescription == null)
             {
-                // Handle error: Medication retrieval failed
-                ModelState.AddModelError("", "Error dispensing script.");
+                return NotFound("Prescription not found");
             }
 
 
-            return RedirectToAction("ViewAllActivePrescriptionsPage", "Pharmacist");
+
+            RejectedScriptsModel infotoadd = new RejectedScriptsModel
+            {
+
+                PrescriptionID = dpid,
+                AccountID = pharmid,
+                
+
+
+
+            };
+
+            _dbContext.RejectScriptModel.Add(infotoadd);
+            prescription.Status = "Rejected";
+            _dbContext.SaveChanges();
+
+
+
+
+            return RedirectToAction("ViewAllPrescriptions", "Pharmacist");
 
         }
 
@@ -1161,11 +1287,27 @@ namespace DEMO.Controllers
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
 
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                         ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             // Query to get the medications that need to be reordered
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
                                 on pm.MedicationID equals m.MedicationID
-                                
+
                                 select new PharmacistStockOrderViewModel
                                 {
                                     MedicationID = m.MedicationID,
@@ -1194,20 +1336,63 @@ namespace DEMO.Controllers
         }
 
 
-        public ActionResult IncomingStockPage()
+        public IActionResult IncomingStockPage()
         {
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                       ).Count();
+
+            ViewBag.Count = count;
             return View();
+
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
         }
 
 
         public ActionResult NewCurrentLevelPage()
         {
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                      ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
             return View();
         }
 
 
         public ActionResult CurrentLevelUpdatedPage()
         {
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                      ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
             return View();
         }
 
@@ -1273,6 +1458,23 @@ namespace DEMO.Controllers
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
 
+            ViewBag.Today = today;
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                                  ).Count();
+
+            ViewBag.Count = count;
+
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             var combinedData = (from prescription in _dbContext.Prescription
 
 
@@ -1321,7 +1523,7 @@ namespace DEMO.Controllers
                                     Name = pi.Name,
                                     Surname = pi.Surname,
 
-                                   
+
 
 
 
@@ -1332,40 +1534,13 @@ namespace DEMO.Controllers
 
 
                                 .ToList();
-
-
-
-            //var allthemedsprescribed = (from prescription in _dbContext.Prescription
-
-
-            //                            join ap in _dbContext.AdmittedPatients
-            //                            on prescription.AdmittedPatientID equals ap.AdmittedPatientID// Assuming AccountID is linked to PatientID
-
-            //                            join pi in _dbContext.PatientInfo
-
-            //                            on ap.PatientID equals pi.PatientID
+        
 
 
 
 
-            //                            join account in _dbContext.Accounts
-            //                            on prescription.AccountID equals account.AccountID
 
-            //                            join mi in _dbContext.MedicationInstructions on prescription.PrescriptionID equals mi.PrescriptionID
-            //                            join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
-
-
-            //                            where prescription.Status == "Prescribed"
-
-            //                            select new ViewActivePrescriptionsModel
-            //                            {
-            //                                allmeds=m.MedicationName;
-
-            //                            }
-            //                            .T;
-
-
-                    var viewModel = new ViewActivePrescriptionsModel
+            var viewModel = new ViewActivePrescriptionsModel
             {
                 combinedData = combinedData,
             };
@@ -1375,7 +1550,9 @@ namespace DEMO.Controllers
 
 
         }
+    
 
+    
 
 
 
@@ -1447,6 +1624,21 @@ namespace DEMO.Controllers
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                                  ).Count();
+
+            ViewBag.Count = count;
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
             var surgeryCount = _dbContext.BookSurgery
                 .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
                 .Count();
@@ -1484,6 +1676,7 @@ namespace DEMO.Controllers
 
     }
 }
+
 
 
 

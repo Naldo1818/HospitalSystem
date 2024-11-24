@@ -211,7 +211,7 @@
        
         <!-- Medical History -->
 
-        <form class="medical-history-form">
+        
 
             <center><h1>Medical History</h1></center>
 
@@ -294,8 +294,7 @@
 
 
 
-        </form>
-
+       
 
         <!-- Vitals History -->
 
@@ -454,16 +453,58 @@
 
 
 
+        <input type="hidden" name="PrescriptionID" value="@Model.PrescriptionID" />
+        <input type="hidden" name="pharmacistID" value="ViewBag.UserAccountID" />
 
-        <button type="submit" class="btn btn-primary">Dispense Prescription</button>
+
+        <button type="submit"
+            
+               asp-action="ViewSpecificPrescriptionDispense"
+            asp-route-pid="@Model.PrescriptionID"
+            class="btn btn-primary">Dispense
+        </button>
+
 
 
 
     </form>
 
 
+    <form asp-action="ViewSpecificPrescriptionReject" method="post">
+
+        <button type="submit"
+                
+                class="btn btn-danger">
+            Reject
+        </button>
+
+</form>
+
+    <!-- Reject Confirmation Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to reject this prescription? This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmReject">Yes, Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
+
+    @* <button style="background-color:red" onclick="confirmReject()">Reject</button> *@
+    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
     
 
@@ -475,25 +516,6 @@
 
 
 
-   <!-- Trigger/Open The Modal -->
-@* <button id="myBtn">Dispense</button>
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="modal-header">
-            <span class="close">&times;</span>
-            <h2>Prescription Dispensed</h2>
-        </div>
-        <div class="modal-body">
-            <p>The prescription has been successfully dispensed and the stock quantity has been reduced</p>
-        </div>
-        <div class="modal-footer">
-            <button id="okayBtn" class="btn">Okay</button>
-        </div>
-    </div>
-</div> *@
 
 
 
@@ -509,8 +531,7 @@
 
 
 
-
-    <!--Script for modal-->
+    @* <!--Script for modal-->
     <script>
         // Get the modal
         var modal = document.getElementById("myModal");
@@ -575,10 +596,8 @@
         });
     </script>
 
-
-     <button style="background-color:red" onclick="confirmReject()">Reject</button> 
-    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
-
+ *@
+   
 
 
 
