@@ -1193,10 +1193,9 @@ namespace DEMO.Controllers
                                                    (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole") &&
                                                   (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Cardura 8mg")
 
-
-
-
                                              )
+
+
                                        select new PharmacistViewScriptModel
                                        {
                                            PrescriptionID = p.PrescriptionID,
