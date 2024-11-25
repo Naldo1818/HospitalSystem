@@ -1376,7 +1376,7 @@ namespace DEMO.Controllers
 
 
 
-            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == pid);
+            var prescription = _dbContext.Prescription.Find(pid);
 
             if (prescription == null)
             {
@@ -1389,7 +1389,7 @@ namespace DEMO.Controllers
 
         //    int pharmid = 1013;
 
-
+            
 
 
             //var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == rpid);
