@@ -140,7 +140,44 @@ namespace DEMO.Controllers
         }
 
 
+        //[HttpGet]
+        //public JsonResult GetAllMedicationsForPrescription(int prescriptionId)
+        //{
+        //    // Fetch the prescribed medications for a given PrescriptionID
+        //    var medications = (from pr in _dbContext.Prescription
+        //                       join mis in _dbContext.MedicationInstructions
+        //                       on pr.PrescriptionID equals mis.PrescriptionID
+        //                       join meds in _dbContext.Medication
+        //                       on mis.MedicationID equals meds.MedicationID
+        //                       where pr.PrescriptionID == prescriptionId
+        //                       select new
+        //                       {
+        //                           medicationID = meds.MedicationID,
+        //                           medicationName = meds.MedicationName,
+        //                           prescribedQuantity = mis.Quantity // Handling null if Quantity is nullable
+        //                       }).ToList();
 
+        //    // Return as JSON for front-end consumption
+        //    return Json(medications);
+        //}
+        [HttpGet]
+        public JsonResult GetAllMedicationsForPrescription(int prescriptionId)
+        {
+            var medications = (from pr in _dbContext.Prescription
+                               join mis in _dbContext.MedicationInstructions
+                               on pr.PrescriptionID equals mis.PrescriptionID
+                               join meds in _dbContext.Medication
+                               on mis.MedicationID equals meds.MedicationID
+                               where pr.PrescriptionID == prescriptionId
+                               select new
+                               {
+                                   medicationID = meds.MedicationID,
+                                   medicationName = meds.MedicationName
+
+                               }).ToList();
+
+            return Json(medications);
+        }
 
 
         #endregion

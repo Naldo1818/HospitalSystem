@@ -18,6 +18,7 @@
         .container {
             padding-top: 50px;
         }
+
         .active-tab {
             background-color: teal;
             color: white;
@@ -174,7 +175,7 @@
                         <div class="header-labels">
                             <label>Name: @ViewBag.PatientName</label>
                             <label>Surname: @ViewBag.PatientSurname </label>
-                            
+
                         </div>
                         <div class="header-labels">
                             <label>Ward: @ViewBag.patientWard </label>
@@ -183,85 +184,81 @@
                     </div>
                     <hr></hr>
                     <div class="col-md-12 mx-0">
-                        <form id="msform" method="post" asp-action="CollectMedication" asp-controller="Nurse" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@ViewBag.AdmittedPatientID" asp-route-name="@ViewBag.Name" asp-route-Surname="@ViewBag.Surname" asp-route-Ward="@ViewBag.WardName" asp-route-Bed="@ViewBag.BedNumber" asp-route-prescriptionID="@Model.PrescriptionID">
-                            <fieldset id="f-2">
-                                <div class="form-card">
-                                    <div class="form-group">
-                                        <h4>Collection Information</h4>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col">
-                                                <div class="p-3 mt-5 border" style="background-color: white;">
-                                                    <h2>Prescription Dispensed</h2>
-                                                    <table id="acceptedTable" class="display" style="width:100%">
-                                                        <thead>
+                        
+                        
+                        <fieldset id="f-2">
+                            <div class="form-card">
+                                <div class="form-group">
+                                    <h4>Collection Information</h4>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="p-3 mt-5 border" style="background-color: white;">
+                                                <h2>Prescriptions Collected</h2>
+                                                <table id="acceptedTable" class="display" style="width:100%">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Surname</th>
+                                                            <th>Prescription Date</th>
+                                                            <th>Urgency</th>
+                                                            <th>Status</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var Data in Model.AllPrescribedDispensed)
+                                                        {
                                                             <tr>
-                                                                <th>Name</th>
-                                                                <th>Surname</th>
-                                                                <th>Prescription Date</th>
-                                                                <th>Urgency</th>
-                                                                <th>Status</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach (var Data in Model.AllPrescribedDispensed)
-                                                            {
-                                                                <tr class="@(Data.Urgency == "Yes" ? "table-danger" : "")">
-                                                                    <td>@Data.PatientName</td>
-                                                                    <td>@Data.PatientSurname</td>
-                                                                    <td>@Data.DateGiven.ToString("MM/dd/yyyy")</td>
-                                                                    <td>@Data.Urgency</td>
-                                                                    <td>@Data.Status</td>
-                                                                    <td>
-
+                                                                <td>@Data.PatientName</td>
+                                                                <td>@Data.PatientSurname</td>
+                                                                <td>@Data.DateGiven.ToString("MM/dd/yyyy")</td>
+                                                                <td>@Data.Urgency</td>
+                                                                <td>@Data.Status</td>
+                                                                <td>
+                                                                    <form method="post" asp-action="CollectedMedication" asp-controller="Nurse">
+                                                                        <!-- Hidden fields to pass required data -->
                                                                         <input type="hidden" name="prescriptionId" value="@Data.PrescriptionID" />
                                                                         <input type="hidden" name="admittedPatientId" value="@ViewBag.AdmittedPatientID" />
                                                                         <input type="hidden" name="accountID" value="@ViewBag.AccountID" />
-
-                                                                        <!-- Add other fields if necessary -->
                                                                         <input type="hidden" name="ward" value="@ViewBag.PatientWard" />
                                                                         <input type="hidden" name="bed" value="@ViewBag.PatientBed" />
                                                                         <input type="hidden" name="name" value="@ViewBag.PatientName" />
                                                                         <input type="hidden" name="surname" value="@ViewBag.PatientSurname" />
-                                                                        <button type="submit" class="btn btn-primary">Collect Prescription</button>
-                                                                    
-                                                                    </td>
-                                                                </tr>
-                                                            }
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                                        <!-- Submit button -->
+                                                                        <button type="submit" class="btn btn-primary">Administer Medication</button>
+                                                                    </form>
+
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
-                                        <div class="row-two-columns">
-                                            <div class="vital-group">
-                                                <label for="Nurse">Nurse:</label>
-                                                <input type="text" value="@ViewBag.UserName @ViewBag.UserSurname" id="Nurse" disabled />
-                                            </div>
-                                        </div>
-                                        <div class="row-two-columns">
-                                            <div class="vital-group">
-                                                
-                                                <input type="time" name="Time" id="Time" value="" hidden>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <a input type="button" name="previous" class="previous action-button-previous" value="Back" asp-action="AdmittedPatients" asp-controller="Nurse" />
-                                        
                                     </div>
+                                    <div class="row-two-columns">
+                                        <div class="vital-group">
+
+                                            <input type="time" name="Time" id="Time" value="" hidden>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <a input type="button" name="previous" class="previous action-button-previous" value="Back" asp-action="AdmittedPatients" asp-controller="Nurse" />
+
                                 </div>
-                            </fieldset>
-                        </form>
+                            </div>
+                        </fieldset>
+                    
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>
     </div>
     <script>
-        
+
 
         $(document).ready(function () {
             // Initialize DataTable for accepted prescriptions
@@ -290,7 +287,7 @@
             });
         });
 
-        
+
 
     </script>
 </body>

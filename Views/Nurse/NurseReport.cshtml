@@ -1,4 +1,4 @@
-﻿@* @{
+﻿@{
     ViewData["Title"] = "Surgery List";
     Layout = "_Layout2";
 }
@@ -77,7 +77,7 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-6 border" style="background-color: white;">
-                        <h2>Reports of @ViewBag.UserName @ViewBag.UserSurname:</h2>
+                        <h2>Reports of @* @ViewBag.UserName @ViewBag.UserSurname *@:</h2>
                         <h2>Report Generated:<span id="todayDate"></span></h2>
                         <h2>Date Range: <span id="selectedDateRange"></span></h2>
 
@@ -91,7 +91,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var Data in Model.AllcombinedData)
+                                @* @foreach (var Data in Model.AllcombinedData)
                                 {
                                     <tr>
                                         <td>@Data.Date</td>
@@ -99,7 +99,7 @@
                                         <td>@Data.MedicationName</td>
                                         <td>@Data.AdministeredMedication</td>
                                     </tr>
-                                }
+                                } *@
                             </tbody>
                         </table>
                         <div class="totals">
@@ -242,4 +242,3 @@
     </script>
 </body>
 </html>
- *@

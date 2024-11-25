@@ -1569,7 +1569,7 @@ namespace DEMO.Controllers
 
             var Prescribed = (from p in _dbContext.PatientInfo
                               join ap in _dbContext.AdmittedPatients
-            on p.PatientID equals ap.PatientID
+                              on p.PatientID equals ap.PatientID
                               join pr in _dbContext.Prescription
                               on ap.AdmittedPatientID equals pr.AdmittedPatientID
                               where pr.Status == "Prescribed" && pr.AccountID == accountID
