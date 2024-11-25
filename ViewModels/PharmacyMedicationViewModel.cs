@@ -1,14 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DEMO.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
+using static DEMO.Controllers.PharmacistController;
 
 namespace DEMO.ViewModels
 {
     public class PharmacyMedicationViewModel
     {
-        [Key]
-        public int PharmacyMedicationID { get; set; }
+        
 
 
-        [Required]
         public int MedicationID { get; set; }
 
         [Required(ErrorMessage = "Stock on Hand amount is required.")]
@@ -31,25 +32,30 @@ namespace DEMO.ViewModels
         public string MedicationName { get; set; }
 
 
-        //public string activeingredient { get; set; }
 
-
+        [Required]
         public string MedicationForm { get; set; }
 
         [Required]
         public int Schedule { get; set; }
 
+        public string aiName { get; set; }
+        public int aiID { get; set; }
 
-        public List<int> Schedules { get; set; }    
+        public int aiStrength { get; set; }
 
 
+        public List<int> Schedules { get; set; }   
         public List<string> DosageForms { get; set; }
-
         public List<string> ActiveIngredientsDropdown { get; set; }
-
         public List<PharmacyMedicationViewModel> combinedinfo { get; set; }
 
+        
 
-  
+        public List<MedicationActiveIngredient> activeandstrengthslist { get; set; }
+
+        public List<Ingredient> Ingredients { get; set; } // List of ingredients added by the user
+
+
     }
 }

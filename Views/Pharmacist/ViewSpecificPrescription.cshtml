@@ -3,7 +3,8 @@
     Layout = "_LayoutPharmacist";
 }
 
- @model DEMO.ViewModels.PharmacistViewScriptModel
+
+@model DEMO.ViewModels.PharmacistViewScriptModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription View</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true">
 
     <script>
         function filterTable(inputId, tableId) {
@@ -34,44 +36,7 @@
                 rows[i].style.display = rowContainsText ? '' : 'none';
             }
         }
-
-        async function confirmReject() {
-            const confirmation = confirm("Are you sure you want to reject this script?");
-            if (confirmation) {
-                const reason = prompt("Please provide a reason for rejection:");
-                if (reason) {
-                    try {
-                        const response = await fetch('/Pharmacist/ViewSpecificPrescription', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ reason })
-                        });
-
-                        if (response.ok) {
-                            alert("Rejection reason submitted to the Surgeon: " + reason);
-                            window.location.href = '/ViewAllPrescriptions';
-                        } else {
-                            alert("Failed to submit the rejection reason.");
-                        }
-                    } catch (error) {
-                        alert("Error submitting rejection reason: " + error.message);
-                    }
-                } else {
-                    alert("Rejection cancelled: No reason provided.");
-                }
-            } else {
-                alert("Rejection cancelled.");
-            }
-        }
-
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.style.display = modal.style.display === "block" ? "none" : "block";
-        }
     </script>
-
-   
-
 
     <style>
         body {
@@ -111,191 +76,112 @@
                 text-decoration: none;
                 cursor: pointer;
             }
-    </style>
 
-    <style>
         .medical-history-form {
-            border: 2px solid #000; /* Black border */
-            padding: 20px; /* Space inside the border */
-            border-radius: 8px; /* Optional: rounded corners */
-            margin: 20px; /* Optional: space outside the border */
-        }
-    </style>
-
-
-
-    <style>
-        /* The Modal (background) */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-        /* Modal Content/Box */
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto; /* 15% from the top and centered */
+            border: 2px solid #000;
             padding: 20px;
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-        }
-
-        /* The Close Button */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-            .close:hover,
-            .close:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
-            }
-
-        /* Modal Header */
-        .modal-header {
-            padding: 2px 16px;
-            background-color: #5cb85c;
-            color: white;
-        }
-
-        /* Modal Body */
-        .modal-body {
-            padding: 2px 16px;
-        }
-
-        /* Modal Footer */
-        .modal-footer {
-            padding: 2px 16px;
-            background-color: #5cb85c;
-            color: white;
+            border-radius: 8px;
+            margin: 20px;
         }
     </style>
 
-    <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")">
+    <link rel="stylesheet" href="@Url.Content("~/Content/Styles/bootstrap.min.css")" asp-append-version="true">
     <script src="@Url.Content("~/Scripts/bootstrap.min.js")"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
 
 </head>
 
-
-
 <body>
-
+    <div class="container mt-5">
+        @if (ViewBag.MedicationInteractionAlert != null)
+        {
+            <div class="alert alert-warning">
+                @ViewBag.MedicationInteractionAlert
+            </div>
+        }
+        <!-- Other content goes here -->
+    </div>
+    
     <center>
         <h1>Prescription for</h1>
     </center>
 
-    
+    <center>
+        <h2>@Model.combinedData.First().patientname @Model.combinedData.First().patientsurname</h2>
+    </center>
 
-  
-        <center>
-            <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
-        </center>
+    <form method="post" action="@Url.Action("ViewSpecificPrescription", "Pharmacist")">
 
+        @Html.AntiForgeryToken()
 
-
-        <form asp-action="ViewSpecificPrescription" method="post">
-
-       
         <!-- Medical History -->
 
-        <form class="medical-history-form">
+        <center><h1>Medical History</h1></center>
 
-            <center><h1>Medical History</h1></center>
-
-
-
-
-
-            <div class="form-group row">
-                <div class="col-md-4">
-                    <table id="conditionsTable" class="table display" style="width:100%">
-                        <thead>
+        <div class="form-group row">
+            <div class="col-md-4">
+                <table id="conditionsTable" class="table display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Conditions
+                                <input type="text" id="searchc" onkeyup="filterTable('searchc', 'conditionsTable')" placeholder="Search condition" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.AllConditions)
+                        {
                             <tr>
-                                <th scope="col">
-                                    Conditions
-                                    <input type="text" id="searchc" onkeyup="filterTable('searchc', 'conditionsTable')" placeholder="Search condition" />
-                                </th>
+                                <td>@item</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.AllConditions)
-                            {
-                                <tr>
-                                    <td>@item</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-md-4">
-                    <table id="medicationsTable" class="table display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Current Medications
-                                    <input type="text" id="searchm" onkeyup="filterTable('searchm', 'medicationsTable')" placeholder="Search medication" />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.AllCurrentMed)
-                            {
-                                <tr>
-                                    <td>@item</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="col-md-4">
-                    <table id="allergiesTable" class="table display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th scope="col">
-                                    Allergies
-                                    <input type="text" id="searcha" onkeyup="filterTable('searcha', 'allergiesTable')" placeholder="Search allergy" />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Allallergy)
-                            {
-                                <tr>
-                                    <td>@item</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                        }
+                    </tbody>
+                </table>
             </div>
 
+            <div class="col-md-4">
+                <table id="medicationsTable" class="table display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Current Medications
+                                <input type="text" id="searchm" onkeyup="filterTable('searchm', 'medicationsTable')" placeholder="Search medication" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.AllCurrentMed)
+                        {
+                            <tr>
+                                <td>@item</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-
-
-
-
-
-
-
-
-
-        </form>
-
+            <div class="col-md-4">
+                <table id="allergiesTable" class="table display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                Allergies
+                                <input type="text" id="searcha" onkeyup="filterTable('searcha', 'allergiesTable')" placeholder="Search allergy" />
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Allallergy)
+                        {
+                            <tr>
+                                <td>@item</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
         <!-- Vitals History -->
 
@@ -303,38 +189,28 @@
             <main role="main" class="pb-5">
                 <div class="row" style="width:auto">
                     <div class="col">
-
                         <div class="p-3 mt-5 border">
                             <h2><center>Vitals</center></h2>
-
                             <center><input type="text" id="searchv" onkeyup="filterTable('searchv', 'myTable')" placeholder="Search vital" /></center>
-                            <center>
-                            </center>
                             <table id="myTable" class="table display" style="width:100%">
                                 <thead>
                                     <tr>
-
-
                                         <th scope="col">Height(cm)</th>
                                         <th scope="col">Weight(kg)</th>
                                         <th scope="col">Systolic Blood Pressure (mmHg)</th>
-                                        <th scope="col">Distolic Blood Pressure (mmHg)</th>
+                                        <th scope="col">Diastolic Blood Pressure (mmHg)</th>
                                         <th scope="col">Heart Rate (bpm)</th>
                                         <th scope="col">Blood Oxygen %</th>
                                         <th scope="col">Respiration Rate (bpm)</th>
                                         <th scope="col">Blood Glucose Level (mg/dL)</th>
                                         <th scope="col">Temperature °C</th>
                                         <th scope="col">Time Taken</th>
-
                                     </tr>
                                 </thead>
                                 <tbody>
-
                                     @foreach (var item in Model.combinedData)
                                     {
-
                                         <tr>
-                                            <!-- Assuming TimeTaken is a property in your model -->
                                             <td>@item.Height</td>
                                             <td>@item.Weight</td>
                                             <td>@item.SystolicBloodPressure</td>
@@ -345,87 +221,41 @@
                                             <td>@item.BloodGlucoseLevel</td>
                                             <td>@item.Temperature</td>
                                             <td>@item.Time</td>
-
-
-
                                         </tr>
-
-
-
-                                        
                                     }
-
-
                                 </tbody>
                             </table>
-
                         </div>
-
                     </div>
                 </div>
             </main>
         </div>
 
-
         <div class="container-left">
             <main role="main" class="pb-5">
                 <div class="row" style="width:auto">
                     <div class="col">
-
                         <div class="p-3 mt-5 border">
                             <h2><center>Prescription</center></h2>
-                            <center>
-                            </center>
                             <table id="myTable" class="table display" style="width:100%">
                                 <thead>
                                     <tr>
-
-
                                         <th scope="col">Patient</th>
                                         <th scope="col">Surgeon</th>
                                         <th scope="col">Date given</th>
-
-
-
                                     </tr>
                                 </thead>
                                 <tbody>
-
-
-
-
-
                                     <tr>
-
                                         <td>@Model.combinedData.First().patientname @Model.combinedData.First().patientsurname</td>
                                         <td>@Model.combinedData.First().SurgeonName @Model.combinedData.First().SurgeonSurname</td>
-
-
-
                                         <td>@Model.combinedData.First().Date</td>
-
-
-
-
-
-
-
                                     </tr>
-
-
                                     <tr>
-
-
                                         <th scope="col">Medications</th>
                                         <th scope="col">Quantities</th>
                                         <th scope="col">Instructions</th>
-
-
-
-
                                     </tr>
-
-
                                     @foreach (var item in Model.allmedicationinfo)
                                     {
                                         <tr>
@@ -434,162 +264,51 @@
                                             <td>@item.Instructions</td>
                                         </tr>
                                     }
-
-
-
-
-
-
-
-
                                 </tbody>
                             </table>
-
                         </div>
-
                     </div>
                 </div>
             </main>
         </div>
 
+        <input type="hidden" name="pid" asp-for="PrescriptionID" value="@ViewBag.ScriptID" />
+        <input type="hidden" name="pharmid2" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
 
-
-
-        <button type="submit" class="btn btn-primary">Dispense Prescription</button>
-
-
+        <button type="submit" class="btn btn-primary">
+            Dispense
+        </button>
 
     </form>
 
+    <center>
+        <button type="button" onclick="showTextArea()">Reject Prescription</button>
 
+        <!-- Text Area and Save Button (Initially hidden) -->
+        <div id="textAreaContainer" style="display:none;">
+            
 
-
-
-    
-
-
- 
-
-
-
-
-
-
-   <!-- Trigger/Open The Modal -->
-@* <button id="myBtn">Dispense</button>
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-        <div class="modal-header">
-            <span class="close">&times;</span>
-            <h2>Prescription Dispensed</h2>
+            <form method="post" asp-action="ViewSpecificPrescriptionReject">
+                <input type="hidden" name="pid" asp-for="PrescriptionID" value="@ViewBag.ScriptID" />
+                <input type="hidden" name="pharmid2" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
+                <input type="text" placeholder="Enter reason here..." name="rejectionMessage" asp-for="rejectscriptreason"><br>
+                <button type="submit" class="btn btn-danger">Reject</button>
+            </form>
+            
         </div>
-        <div class="modal-body">
-            <p>The prescription has been successfully dispensed and the stock quantity has been reduced</p>
-        </div>
-        <div class="modal-footer">
-            <button id="okayBtn" class="btn">Okay</button>
-        </div>
-    </div>
-</div> *@
 
+       
+    </center>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <!--Script for modal-->
     <script>
-        // Get the modal
-        var modal = document.getElementById("myModal");
-
-        // Get the button that opens the modal
-        var btn = document.getElementById("myBtn");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks on the button, open the modal
-        btn.onclick = function () {
-            modal.style.display = "block";
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+        // Function to show the textarea and save button
+        function showTextArea() {
+            document.getElementById("textAreaContainer").style.display = "block";
         }
     </script>
 
-
-    <script>
-            const rejectModal = document.getElementById('rejectModal');
-        const rejectButton = document.getElementById('rejectButton');
-        const closeButton = document.getElementsByClassName("close")[0];
-        let rejectionReason = '';
-
-        // Open the modal when the reject button is clicked
-        rejectButton.onclick = function() {
-          rejectModal.style.display = "block";
-        };
-
-        // Capture rejection reason on input change
-        document.getElementById('rejectionReason').addEventListener('input', function(event) {
-          rejectionReason = event.target.value; // Store the current input value
-        });
-
-        // Close the modal when the close button is clicked or outside the modal is clicked
-        closeButton.onclick = function() {
-          rejectModal.style.display = "none";
-        };
-
-        window.onclick = function(event) {
-          if (event.target == rejectModal) {
-            rejectModal.style.display = "none";
-          }
-        };
-
-        // Handle form submission (e.g., send rejection reason to server)
-        rejectButton.addEventListener('click', function() {
-          // Your code to send the rejection reason to the server goes here
-          console.log(rejectionReason); // For demonstration, log it to console
-          rejectModal.style.display = "none";
-        });
-    </script>
-
-
-     <button style="background-color:red" onclick="confirmReject()">Reject</button> 
     <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
+
 </html>

@@ -54,12 +54,20 @@
 
                         <br>
                         <p class="card-text text-center">Active prescriptions</p>
-
+                        <center>
+                            <p>@ViewBag.Count</p>
+                        </center>
+                        
 
 
                         <br>
 
-                        <p class="card-text text-center">Received stock</p>
+                        <p class="card-text text-center">Stock to be ordered</p>
+                        <center>
+                            <p>@ViewBag.LowLevelStock</p>
+
+                        </center>
+
 
 
 
@@ -101,6 +109,8 @@
                     </strong>
 
                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="AddMedication">Add Medication</a>
+                    <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAddedMedication">View Added Medication</a>
+
 @*                     <a class="nav-link active" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAddedMedication">View Added Medication</a>
  *@
 

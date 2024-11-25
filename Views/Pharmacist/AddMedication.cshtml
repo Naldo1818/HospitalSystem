@@ -37,7 +37,7 @@
                 <div class="col">
                     <div class="p-3 mt-5 border" style="background-color: white;">
 
-                        <form asp-controller="Pharmacist" asp-action="AddMedication" method="post">
+                        <form asp-action="AddMedicationAction" method="post">
                             <div class="form-group row">
                                 <div class="col-12">
                                     <center><h1>Add Medication</h1></center>
@@ -53,30 +53,72 @@
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="MedicationName" class="form-label">Medication Name</label>
+
+
                                     <input type="text" class="form-control" id="MedicationName" name="MedicationName" asp-for="MedicationName" value="@Model.MedicationName" style="width:300px">
                                     <span asp-validation-for="MedicationName" class="text-danger"></span>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label for="DosageForm" class="form-label">Dosage Form</label>
-                                    <select class="form-control" name="DosageForms" id="DosageForms" asp-for="MedicationForm" style="width:300px">
-                                        @foreach (var item in Model.DosageForms)
-                                        {
-                                                    <option value="@item">@item</option>
-                                        }
-                                    </select>
-                                </div>
+                               
 
-                                <div class="col-md-4">
-                                    <label for="Schedule" class="form-label">Schedule</label>
-                                    <select class="form-control" name="Schedules" id="Schedules" asp-for="Schedule" style="width:300px">
-                                        @foreach (var item in Model.Schedules)
-                                        {
-                                                    <option value="@item">@item</option>
-                                        }
-                                    </select>
-                                    <span asp-validation-for="Schedule" class="text-danger"></span>
-                                </div>
+                               
+<div class="col-md-4">
+    <label for="DosageForm" class="form-label">Dosage Form</label>                                 
+    <select class="form-control" name="MedicationForm" id="DosageForms" style="width:300px">
+        @if (Model.DosageForms != null)
+        {
+            @foreach (var item in Model.DosageForms)
+            {
+                if (item == Model.MedicationForm)
+                {
+                    <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                    <option value="@item">@item</option>
+                }
+            }
+        }
+    </select>
+    <span asp-validation-for="MedicationForm" class="text-danger"></span>
+</div>
+
+<div class="col-md-4">
+    <label for="Schedule" class="form-label">Schedule</label>                                 
+    <select class="form-control" name="Schedule" id="Schedules" style="width:300px">
+        @if (Model.Schedules != null)
+        {
+            @foreach (var item in Model.Schedules)
+            {
+                if (item == Model.Schedule)
+                {
+                    <option value="@item" selected>@item</option>
+                }
+                else
+                {
+                    <option value="@item">@item</option>
+                }
+            }
+        }
+    </select>
+    <span asp-validation-for="Schedule" class="text-danger"></span>
+</div>
+
+
+                                 <script>
+    $(document).ready(function() {
+        $('#DosageForms').change(function() {
+            var selectedForm = $(this).val();
+            console.log('Selected Dosage Form:', selectedForm);
+        });
+
+        $('#Schedules').change(function() {
+            var selectedSchedule = $(this).val();
+            console.log('Selected Schedule:', selectedSchedule);
+        });
+    });
+</script>
+
 
                                 <div class="col-md-4">
                                     <label for="StockonHand" class="form-label">Stock on Hand</label>
@@ -93,24 +135,23 @@
                             <br />
 
 
-                            <!--Active ingredient section-->
-                                                                <h2>Active Ingredient Section</h2>
+                            <!-- Active ingredient section -->
+                            <h2>Active Ingredient Section</h2>
 
                             <div class="form-group row">
                                 <div class="col-md-4">
                                     <label for="ActiveIngredient" class="form-label">Active Ingredient</label>
-                                     <select class="form-control" id="ActiveIngredient" style="width:300px">
-            
-            @foreach (var ingredient in Model.ActiveIngredientsDropdown)
-            {
-                <option value="@ingredient">@ingredient</option>
-            }
-        </select>
+                                    <select class="form-control" id="ActiveIngredient" name="Ingredients[0].Name" style="width:300px">
+                                        @foreach (var ingredient in Model.ActiveIngredientsDropdown)
+                                        {
+                                            <option value="@ingredient">@ingredient</option>
+                                        }
+                                    </select>
                                 </div>
 
                                 <div class="col-md-4">
                                     <label for="Strength" class="form-label">Strength</label>
-                                    <input type="text" class="form-control" id="Strength" placeholder="Strength" style="width:300px">
+                                    <input type="text" class="form-control" id="Strength" name="Ingredients[0].Strength" placeholder="Strength" style="width:300px">
                                 </div>
 
                                 <div class="col-md-4">
@@ -130,6 +171,14 @@
                                 </tbody>
                             </table>
 
+
+                            <div id="ingredientRowTemplate" style="display: none;">
+                                <tr>
+                                    <td><input type="text" name="Ingredients[0].Name" class="ingredient-name" asp-for="aiName" value="@Model.aiName"/></td>
+                                    <td><input type="text" name="Ingredients[0].Strength" class="ingredient-strength" asp-for="aiStrength"  value="@Model.aiStrength" /></td>
+                                </tr>
+                            </div>
+
                             <div class="form-group row">
                                 <div class="col-12 text-center">
                                     <button type="submit" class="btn btn-primary">Add Medication</button>
@@ -144,19 +193,30 @@
         </main>
     </div>
 
+    
+
     <script>
         $(document).ready(function () {
+            let ingredientCount = 0;
+
             $('#addIngredient').click(function () {
                 const ingredient = $('#ActiveIngredient').val();
                 const strength = $('#Strength').val();
 
                 if (ingredient && strength) {
-                    $('#ingredientTable tbody').append(`
-                        <tr>
-                            <td>${ingredient}</td>
-                            <td>${strength}</td>
-                        </tr>
-                    `);
+                    // Increment the ingredient count for unique naming
+                    ingredientCount++;
+
+                    // Create a new row with the ingredient and strength fields dynamically
+                    const row = `
+                            <tr>
+                                <td><input type="text" name="Ingredients[${ingredientCount}].Name" value="${ingredient}" class="ingredient-name" readonly /></td>
+                                        <td><input type="text" name="Ingredients[${ingredientCount}].Strength" value="${strength}" class="ingredient-strength" readonly /></td>
+                            </tr>
+                        `;
+                    $('#ingredientTable tbody').append(row);
+
+                    // Clear the input fields after adding the ingredient
                     $('#ActiveIngredient').val('');
                     $('#Strength').val('');
                 } else {
@@ -165,6 +225,7 @@
             });
         });
     </script>
+
 
 
 
