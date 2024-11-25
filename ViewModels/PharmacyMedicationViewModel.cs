@@ -39,7 +39,7 @@ namespace DEMO.ViewModels
         [Required]
         public int Schedule { get; set; }
 
-
+        public string aiName { get; set; }
         public int aiID { get; set; }
 
         public int aiStrength { get; set; }

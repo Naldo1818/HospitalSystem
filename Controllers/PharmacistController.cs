@@ -593,6 +593,10 @@ namespace DEMO.Controllers
 
             if (ModelState.IsValid)
             {
+               
+
+                PrepareDropDownLists(model);
+
                 Models.MedicationActiveIngredient activeandstrengthtoadd = new Models.MedicationActiveIngredient
                 {
 
@@ -605,10 +609,6 @@ namespace DEMO.Controllers
 
                 _dbContext.MedicationActiveIngredient.Add(activeandstrengthtoadd);
                 _dbContext.SaveChanges();
-
-                PrepareDropDownLists(model);
-
-               
 
                 return View("AddMedication", model);
             }
@@ -650,8 +650,8 @@ namespace DEMO.Controllers
 
 
 
+               
 
-             
 
 
 
@@ -663,11 +663,11 @@ namespace DEMO.Controllers
 
                 //return Json(new { success = true, message = "Medication added successfully." });
 
-                
 
 
-        // Set a success message in TempData and redirect to AddMedication action
-        TempData["Success"] = "Medication added successfully!";
+
+                // Set a success message in TempData and redirect to AddMedication action
+                TempData["Success"] = "Medication added successfully!";
                 return RedirectToAction("ViewAddedMedication");
 
 
