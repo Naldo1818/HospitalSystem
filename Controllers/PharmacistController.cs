@@ -898,7 +898,7 @@ namespace DEMO.Controllers
 
 
 
-
+        [HttpGet]
         public async Task<IActionResult> ViewSpecificPrescription(int pid)
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
@@ -921,6 +921,9 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
+
+            ViewBag.ScriptID = pid;
 
 
             var count = (from item in _dbContext.Prescription
@@ -1207,16 +1210,15 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ViewSpecificPrescriptionDispense(PharmacistViewScriptModel model)
+        public async Task<IActionResult>ViewSpecificPrescription(int pid, int accountID, PharmacistViewScriptModel model)
 
 
         {
+           
 
 
 
-          
-
-
+            ViewBag.ScriptID=pid; 
 
             ViewBag.UserAccountID = accountID;
 

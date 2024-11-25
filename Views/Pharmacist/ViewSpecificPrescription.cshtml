@@ -209,10 +209,12 @@
             <h2>@Model.combinedData.First().patientname     @Model.combinedData.First().patientsurname </h2>
         </center>
 
+
+    <input type="hidden" name="pid" value="@Model.PrescriptionID"/>
     <input type="hidden" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
 
 
-    <form asp-action="ViewSpecificPrescriptionDispense" method="post">
+    <form asp-action="ViewSpecificPrescription" method="post">
 
 
       
@@ -224,8 +226,6 @@
        
         <!-- Medical History -->
 
-        <input type="hidden" asp-for="PrescriptionID"  />
-        <input type="hidden"  asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
 
 
             <center><h1>Medical History</h1></center>
@@ -469,12 +469,10 @@
 
 
         
-
         <button type="submit"
-            
-               asp-action="ViewSpecificPrescriptionDispense"
-            asp-route-pid="@Model.PrescriptionID"
-            class="btn btn-primary">Dispense
+
+               
+                class="btn btn-primary">Dispense
         </button>
 
 
