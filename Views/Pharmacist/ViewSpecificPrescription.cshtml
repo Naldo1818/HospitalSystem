@@ -210,11 +210,10 @@
         </center>
 
 
-    <input type="hidden" name="pid" value="@Model.PrescriptionID"/>
-    <input type="hidden" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
+   
 
 
-    <form asp-action="ViewSpecificPrescription" method="post">
+    <form method="post" action="@Url.Action("ViewSpecificPrescription","Pharmacist")" >
 
 
       
@@ -467,7 +466,8 @@
         </div>
 
 
-
+        <input type="text" name="pid" asp-for="PrescriptionID" value="@ViewBag.ScriptID" />
+        <input type="text" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
         
         <button type="submit"
 

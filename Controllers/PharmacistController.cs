@@ -1210,15 +1210,29 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult>ViewSpecificPrescription(int pid, int accountID, PharmacistViewScriptModel model)
+        public async Task<IActionResult>ViewSpecificPrescription(int pid, int pharmid, int pharmid2, PharmacistViewScriptModel model)
 
 
         {
            
 
+            model.PrescriptionID = pid;
+            model.pharmacistID = pharmid2;
+
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
 
 
-            ViewBag.ScriptID=pid; 
+
+
+
+            ViewBag.UserAccountID = accountID;
+
 
             ViewBag.UserAccountID = accountID;
 
@@ -1227,7 +1241,7 @@ namespace DEMO.Controllers
             int dpid = 4047;
 
 
-            int pharmid = 1013;
+             pharmid = 1013;
 
             int mybulenid = 1002;
 
@@ -1237,6 +1251,8 @@ namespace DEMO.Controllers
             //int pharmid = model.pharmacistID;
 
 
+
+
             var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== dpid);
 
             if (prescription == null) 
@@ -1244,28 +1260,89 @@ namespace DEMO.Controllers
                 return NotFound("Prescription not found");
             }
 
-            var medication = _dbContext.PharmacyMedication.FirstOrDefault(m => m.MedicationID == mybulenid);
+            //var medication = _dbContext.PharmacyMedication.FirstOrDefault(m => m.MedicationID == mybulenid);
 
-            if (medication == null)
-            {
-                return NotFound("Medication not found in stock");
-            }
+            //if (medication == null)
+            //{
+            //    return NotFound("Medication not found in stock");
+            //}
 
-            if (medication.StockonHand >= 20)
-            {
-                medication.StockonHand -= 20; // Subtract 20 from the stock
-            }
-            else
-            {
-                // Handle the case where there is insufficient stock
-                return BadRequest("Insufficient stock to dispense the medication");
-            }
+            //if (medication.StockonHand >= 20)
+            //{
+            //    medication.StockonHand -= 20; // Subtract 20 from the stock
+            //}
+            //else
+            //{
+            //    // Handle the case where there is insufficient stock
+            //    return BadRequest("Insufficient stock to dispense the medication");
+            //}
 
+
+
+
+            var allmedicationdata = await (from p in _dbContext.Prescription
+                                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+                                           join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                           join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+
+                                          where p.PrescriptionID == pid /// Filter by prescription ID
+                                           orderby m.MedicationName
+
+                                           select new PharmacistViewScriptModel
+                                           {
+
+                                               qty = mi.Quantity,
+                                               Instructions = mi.Instructions,
+                                               medication = m.MedicationName,
+                                               medicationid = m.MedicationID,
+                                           })
+
+                       .GroupBy(m => m.medication)
+                       .Select(x => x.FirstOrDefault())
+
+
+
+                       .ToListAsync();
+
+
+            var medicationIds = allmedicationdata.Select(m => m.medicationid).ToList();
+
+            // Fetch the stock for the medications in a single query
+            var stockList = await _dbContext.PharmacyMedication
+                                             .Where(pm => medicationIds.Contains(pm.MedicationID))
+                                             .ToListAsync();
+
+            // Loop through the medications and adjust the stock
+            foreach (var meds in allmedicationdata)
+            {
+                // Find the stock record matching the current medication
+                var stock = stockList.FirstOrDefault(pm => pm.MedicationID == meds.medicationid);
+
+                if (stock != null)
+                {
+                    // Subtract the prescribed quantity from the stock
+                    stock.StockonHand -= meds.qty;
+
+                    // Ensure that the stock doesn't go negative
+                    if (stock.StockonHand < 0)
+                    {
+                        stock.StockonHand = 0; // Optional: Handle as you prefer (e.g., throw an exception, log a warning)
+                    }
+
+                    // Update the stock record in the database
+                    _dbContext.PharmacyMedication.Update(stock);
+                    await _dbContext.SaveChangesAsync();
+
+                }
+            }
 
             DispensedScriptsModel infotoadd = new DispensedScriptsModel
                 {
 
-                    PrescriptionID = dpid,
+                    PrescriptionID = pid,
                     AccountID = pharmid,
 
 
