@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DEMO.Models;
+using DEMO.Models.PharmacistModels;
 
 namespace DEMO.Models
 {

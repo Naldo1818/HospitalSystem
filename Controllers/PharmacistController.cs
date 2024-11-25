@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
+
 using MimeKit;
 
 using Newtonsoft.Json;
@@ -120,7 +122,10 @@ namespace DEMO.Controllers
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
                                 on pm.MedicationID equals m.MedicationID
+                                join stock in _dbContext.PharmacyStock
+                                on pm.StockonHand equals stock.StockonHand
                                 where pm.StockonHand <= pm.ReorderLevel
+
                                 select new PharmacistStockOrderViewModel
                                 {
                                     MedicationID = m.MedicationID,
@@ -129,6 +134,8 @@ namespace DEMO.Controllers
                                     Schedule = m.Schedule,
                                     StockonHand = pm.StockonHand,
                                     ReorderLevel = pm.ReorderLevel
+
+
 
                                 }).ToList();
 
@@ -213,11 +220,14 @@ namespace DEMO.Controllers
             _dbContext.SaveChanges();
 
 
+            //email still not working
+
             try
             {
                 // Set up SMTP client
-                using (var smtpClient = new SmtpClient("smtp.gmail.com"))
+                using (var smtpClient = new SmtpClient())
                 {
+                    
                     smtpClient.Port = 587;
                     smtpClient.Credentials = new NetworkCredential("sam12mensah@gmail.com", "churchposters1!");
                     smtpClient.EnableSsl = true;
@@ -231,7 +241,7 @@ namespace DEMO.Controllers
                     };
 
                     // Add recipient(s)
-                    mailMessage.To.Add("sam12mensah@gmail.com");  // Replace with your recipient's email address
+                    mailMessage.To.Add("s223130680@mandela.ac.za");  // Replace with your recipient's email address
 
                     // Build the email body with stock order details
                     var emailBody = "<h3>Stock Order Details</h3>";
@@ -268,7 +278,9 @@ namespace DEMO.Controllers
 
 
 
-           
+
+
+
             return RedirectToAction ("ViewAllOrders");
         }
 
@@ -535,8 +547,10 @@ namespace DEMO.Controllers
 
 
         [HttpPost]
-        public IActionResult AddMedicationAction(PharmacyMedicationViewModel model)
+        public IActionResult AddMedicationAction(int medicationid,PharmacyMedicationViewModel model)
         {
+          
+
             var count = (from item in _dbContext.Prescription
                          where item.Status == "Prescribed"
                          select item
@@ -579,10 +593,28 @@ namespace DEMO.Controllers
 
             if (ModelState.IsValid)
             {
-                // Reload the dropdown data if the model is invalid
+                Models.MedicationActiveIngredient activeandstrengthtoadd = new Models.MedicationActiveIngredient
+                {
+
+                    MedicationID = model.MedicationID,
+                    ActiveingredientID = model.aiID,
+                    ActiveIngredientStrength = model.aiStrength
+
+
+                };
+
+                _dbContext.MedicationActiveIngredient.Add(activeandstrengthtoadd);
+                _dbContext.SaveChanges();
+
                 PrepareDropDownLists(model);
+
+               
+
                 return View("AddMedication", model);
             }
+
+           
+
 
             else
             {
@@ -609,12 +641,33 @@ namespace DEMO.Controllers
                     MedicationID = med.MedicationID
                 };
 
+
                 // Add the pharmacy medication to the database context
                 _dbContext.PharmacyMedication.Add(pharmMed);
+                
                 _dbContext.SaveChanges();
 
-                // Set a success message in TempData and redirect to AddMedication action
-                TempData["Success"] = "Medication added successfully!";
+
+
+
+
+             
+
+
+
+
+                //}
+
+                //// Save changes to the database
+
+
+                //return Json(new { success = true, message = "Medication added successfully." });
+
+                
+
+
+        // Set a success message in TempData and redirect to AddMedication action
+        TempData["Success"] = "Medication added successfully!";
                 return RedirectToAction("ViewAddedMedication");
 
 
@@ -623,6 +676,14 @@ namespace DEMO.Controllers
 
         }
 
+
+        public class Ingredient
+        {
+            public string Name { get; set; }
+
+            public int ID { get; set; }
+            public int Strength { get; set; }
+        }
 
 
         public void PrepareDropDownLists(PharmacyMedicationViewModel model)
@@ -1057,6 +1118,60 @@ namespace DEMO.Controllers
 
 
 
+            var medinteractionalert = (from p in _dbContext.Prescription
+                                       join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+                                       join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+                                       join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+                                       join pm in _dbContext.patientMedication on pi.PatientID equals pm.PatientID
+                                       join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+                                       join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+                                       join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                                       join cm in _dbContext.patientMedication on m.MedicationID equals cm.MedicationID
+
+                                       join medinteract in _dbContext.Medication on cm.MedicationID equals medinteract.MedicationID
+                                       join medinteract2 in _dbContext.patientMedication on medinteract.MedicationID equals medinteract2.MedicationID
+
+                                       where p.PrescriptionID == pid  // Make sure 'pid' is being passed correctly
+
+
+                           && (
+                               (
+                               m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID
+                               &&
+                               cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID)
+                               ||
+
+                               ((m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID
+                               &&
+                               cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID)
+                              )
+
+                           )
+
+                                       select new PharmacistViewScriptModel
+                                       {
+                                           PrescriptionID = p.PrescriptionID,
+                                           medicationname = m.MedicationName,
+                                           medicationid = cm.MedicationID,
+                                           // Add other fields you need from the joins
+                                           // You can also add any medication interaction checks you need here
+                                       })
+
+
+
+
+
+                             .Distinct()
+                             .OrderBy(name => name.medicationname) // Sort by MedicationName in ascending order
+                             .ToList();
+
+
+            
+
+            // Pass data to the view
+            ViewBag.MedInteractionAlert = medinteractionalert;
+
+            
 
 
 
@@ -1069,7 +1184,8 @@ namespace DEMO.Controllers
                 Allallergy = allAllergies,
                 AllConditions = patientConditions,
                 AllCurrentMed = currentMeds,
-                allpresribedmeds = allprescribedmeds
+                allpresribedmeds = allprescribedmeds,
+                medicationinteractionsalerts= medinteractionalert,
             }
 
             ;
@@ -1112,15 +1228,17 @@ namespace DEMO.Controllers
 
 
 
-            // int dpid = 4047;
+            int dpid = 4047;
 
 
-            //int pharmid = 1013;
+            int pharmid = 1013;
 
-            int dpid = model.PrescriptionID;
+            int mybulenid = 1002;
+
+            //int dpid = model.PrescriptionID;
 
 
-            int pharmid = model.pharmacistID;
+            //int pharmid = model.pharmacistID;
 
 
             var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== dpid);
@@ -1130,12 +1248,28 @@ namespace DEMO.Controllers
                 return NotFound("Prescription not found");
             }
 
+            var medication = _dbContext.PharmacyMedication.FirstOrDefault(m => m.MedicationID == mybulenid);
 
-            
-                DispensedScriptsModel infotoadd = new DispensedScriptsModel
+            if (medication == null)
+            {
+                return NotFound("Medication not found in stock");
+            }
+
+            if (medication.StockonHand >= 20)
+            {
+                medication.StockonHand -= 20; // Subtract 20 from the stock
+            }
+            else
+            {
+                // Handle the case where there is insufficient stock
+                return BadRequest("Insufficient stock to dispense the medication");
+            }
+
+
+            DispensedScriptsModel infotoadd = new DispensedScriptsModel
                 {
 
-                    PrescriptionID = model.PrescriptionID,
+                    PrescriptionID = dpid,
                     AccountID = pharmid,
 
 
@@ -1146,6 +1280,7 @@ namespace DEMO.Controllers
             
 
                 prescription.Status = "Dispensed";
+
                 _dbContext.SaveChanges();
             
 

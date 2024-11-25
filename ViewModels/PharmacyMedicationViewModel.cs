@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DEMO.Models;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
+using static DEMO.Controllers.PharmacistController;
 
 namespace DEMO.ViewModels
 {
@@ -37,12 +40,22 @@ namespace DEMO.ViewModels
         public int Schedule { get; set; }
 
 
+        public int aiID { get; set; }
+
+        public int aiStrength { get; set; }
+
+
         public List<int> Schedules { get; set; }   
         public List<string> DosageForms { get; set; }
         public List<string> ActiveIngredientsDropdown { get; set; }
         public List<PharmacyMedicationViewModel> combinedinfo { get; set; }
 
+        
 
-  
+        public List<MedicationActiveIngredient> activeandstrengthslist { get; set; }
+
+        public List<Ingredient> Ingredients { get; set; } // List of ingredients added by the user
+
+
     }
 }
