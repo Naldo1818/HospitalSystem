@@ -1211,12 +1211,6 @@ namespace DEMO.Controllers
 
 
         {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            if (!int.TryParse(accountIDString, out int accountID))
-            {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
-            }
 
 
 
