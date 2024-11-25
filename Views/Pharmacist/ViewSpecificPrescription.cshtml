@@ -1,8 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Individual Prescription";
     Layout = "_LayoutPharmacist";
-    var medicationInteractionAlert = ViewBag.MedicationInteractionAlert as string;
 }
+
 
 @model DEMO.ViewModels.PharmacistViewScriptModel
 
@@ -12,6 +12,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prescription View</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true">
 
     <script>
         function filterTable(inputId, tableId) {
@@ -91,7 +92,16 @@
 </head>
 
 <body>
-
+    <div class="container mt-5">
+        @if (ViewBag.MedicationInteractionAlert != null)
+        {
+            <div class="alert alert-warning">
+                @ViewBag.MedicationInteractionAlert
+            </div>
+        }
+        <!-- Other content goes here -->
+    </div>
+    
     <center>
         <h1>Prescription for</h1>
     </center>

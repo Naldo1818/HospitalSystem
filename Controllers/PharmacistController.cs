@@ -54,28 +54,29 @@ namespace DEMO.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult RejectScript(int id, string reason)
-        {
-            if (string.IsNullOrEmpty(reason))
-            {
-                return BadRequest("Reason is required.");
-            }
+        //[HttpPost]
+        //public ActionResult RejectScript(int id, string reason)
+        //{
+        //    if (string.IsNullOrEmpty(reason))
+        //    {
+        //        return BadRequest("Reason is required.");
+        //    }
 
-            // Your logic to save the rejection reason in the database
-            var prescription = _dbContext.RejectScriptModel.Find(id);
-            if (prescription != null)
-            {
-                prescription.RejectionReason = reason;
-                prescription.RejectionID = id;
-                _dbContext.SaveChanges();
-                return Json(new { success = true });
-            }
+        //    // Your logic to save the rejection reason in the database
+        //    var prescription = _dbContext.RejectScriptModel.Find(id);
+        //    if (prescription != null)
+        //    {
+        //        prescription.RejectionReason = reason;
+        //        prescription.RejectionID = id;
+        //        _dbContext.SaveChanges();
+        //        return Json(new { success = true });
+        //    }
 
-            return NotFound();
-        }
+        //    return NotFound();
+        //}
 
 
+        [HttpGet]
         public IActionResult StockOrderPage()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
@@ -138,6 +139,10 @@ namespace DEMO.Controllers
 
 
                                 }).ToList();
+            if ( combinedData.Count == 0 )
+            {
+                Console.WriteLine("No stock in need of ordering today");
+            }
 
             var viewModel = new PharmacistStockOrderViewModel
             {
@@ -147,21 +152,12 @@ namespace DEMO.Controllers
             // Pass the list of data to the view
             return View(viewModel);
         }
-        public class OrderItem
-        {
-            public int MedicationId { get; set; }
-            public int Quantity { get; set; }
-        }
 
-        public class OrderData
-        {
-            public List<OrderItem> Orders { get; set; }
-            public string Notes { get; set; }
-        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> StockOrderPage(PharmacistStockOrderViewModel model)
+        public async Task<IActionResult> StockOrderPageOrder(PharmacistStockOrderViewModel model)
         {
             var PharmacistName = HttpContext.Session.GetString("UserName");
             var PharmacistSurname = HttpContext.Session.GetString("UserSurname");
@@ -222,55 +218,55 @@ namespace DEMO.Controllers
 
             //email still not working
 
-            try
-            {
-                // Set up SMTP client
-                using (var smtpClient = new SmtpClient())
-                {
+            //try
+            //{
+            //    // Set up SMTP client
+            //    using (var smtpClient = new SmtpClient())
+            //    {
                     
-                    smtpClient.Port = 587;
-                    smtpClient.Credentials = new NetworkCredential("sam12mensah@gmail.com", "churchposters1!");
-                    smtpClient.EnableSsl = true;
+            //        smtpClient.Port = 587;
+            //        smtpClient.Credentials = new NetworkCredential("sam12mensah@gmail.com", "churchposters1!");
+            //        smtpClient.EnableSsl = true;
 
-                    // Create the email message
-                    var mailMessage = new MailMessage
-                    {
-                        From = new MailAddress("sam12mensah@gmail.com"),
-                        Subject = "Stock Order Notification",
-                        IsBodyHtml = true
-                    };
+            //        // Create the email message
+            //        var mailMessage = new MailMessage
+            //        {
+            //            From = new MailAddress("sam12mensah@gmail.com"),
+            //            Subject = "Stock Order Notification",
+            //            IsBodyHtml = true
+            //        };
 
-                    // Add recipient(s)
-                    mailMessage.To.Add("s223130680@mandela.ac.za");  // Replace with your recipient's email address
+            //        // Add recipient(s)
+            //        mailMessage.To.Add("s223130680@mandela.ac.za");  // Replace with your recipient's email address
 
-                    // Build the email body with stock order details
-                    var emailBody = "<h3>Stock Order Details</h3>";
-                    emailBody += "<table border='1'><tr><th>Medication Name</th><th>Dosage Form</th><th>Schedule</th><th>Stock on Hand</th><th>Reorder Level</th><th>Quantity Ordered</th></tr>";
+            //        // Build the email body with stock order details
+            //        var emailBody = "<h3>Stock Order Details</h3>";
+            //        emailBody += "<table border='1'><tr><th>Medication Name</th><th>Dosage Form</th><th>Schedule</th><th>Stock on Hand</th><th>Reorder Level</th><th>Quantity Ordered</th></tr>";
 
-                    foreach (var order in stockOrder)
-                    {
-                        emailBody += $"<tr><td>{order.MedicationName}</td><td>{order.MedicationForm}</td><td>{order.Schedule}</td><td>{order.StockonHand}</td><td>{order.ReorderLevel}</td><td>{order.qtyOrdered}</td></tr>";
-                    }
+            //        foreach (var order in stockOrder)
+            //        {
+            //            emailBody += $"<tr><td>{order.MedicationName}</td><td>{order.MedicationForm}</td><td>{order.Schedule}</td><td>{order.StockonHand}</td><td>{order.ReorderLevel}</td><td>{order.qtyOrdered}</td></tr>";
+            //        }
 
-                    emailBody += "</table>";
-                    emailBody += "<p>This is an automated email. Please do not reply.</p>";
+            //        emailBody += "</table>";
+            //        emailBody += "<p>This is an automated email. Please do not reply.</p>";
 
-                    // Set the email body
-                    mailMessage.Body = emailBody;
+            //        // Set the email body
+            //        mailMessage.Body = emailBody;
 
-                    // Send email asynchronously
-                    await smtpClient.SendMailAsync(mailMessage);
-                }
-                TempData["PopupMessage"] = "Medication Ordered and Email Sent";
-            }
-            catch (Exception ex)
-            {
-                // Handle any exceptions related to email sending
-                // For example, log the error (you can implement a logger in your application)
-                Console.WriteLine($"Error sending email: {ex.Message}");
-                TempData["PopupMessage"] = "An error occurred while sending the email.";
+            //        // Send email asynchronously
+            //        await smtpClient.SendMailAsync(mailMessage);
+            //    }
+            //    TempData["PopupMessage"] = "Medication Ordered and Email Sent";
+            //}
+            //catch (Exception ex)
+            //{
+            //    // Handle any exceptions related to email sending
+            //    // For example, log the error (you can implement a logger in your application)
+            //    Console.WriteLine($"Error sending email: {ex.Message}");
+            //    TempData["PopupMessage"] = "An error occurred while sending the email.";
 
-            }
+            //}
 
 
 
@@ -1121,60 +1117,142 @@ namespace DEMO.Controllers
 
 
 
+            //var medinteractionalert = (from p in _dbContext.Prescription
+            //                           join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
+            //                           join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
+            //                           join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
+            //                           join pm in _dbContext.patientMedication on pi.PatientID equals pm.PatientID
+            //                           join account in _dbContext.Accounts on p.AccountID equals account.AccountID
+            //                           join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
+            //                           join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+            //                           join cm in _dbContext.patientMedication on m.MedicationID equals cm.MedicationID
+
+            //                           join medinteract in _dbContext.Medication on cm.MedicationID equals medinteract.MedicationID
+            //                           join medinteract2 in _dbContext.patientMedication on medinteract.MedicationID equals medinteract2.MedicationID
+
+            //                           where p.PrescriptionID == pid  // Make sure 'pid' is being passed correctly
+
+
+            //               && (
+            //                   (
+            //                   m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID
+            //                   &&
+            //                   cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID)
+            //                   ||
+
+            //                   ((m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID
+            //                   &&
+            //                   cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID)
+            //                  )
+
+            //               )
+
+            //                           select new PharmacistViewScriptModel
+            //                           {
+            //                               PrescriptionID = p.PrescriptionID,
+            //                               medicationname = m.MedicationName,
+            //                               medicationid = cm.MedicationID,
+            //                               // Add other fields you need from the joins
+            //                               // You can also add any medication interaction checks you need here
+            //                           })
+
+
+
+
+
+            //                 .Distinct()
+            //                 .OrderBy(name => name.medicationname) // Sort by MedicationName in ascending order
+            //                 .ToList();
+
+
+
+
             var medinteractionalert = (from p in _dbContext.Prescription
                                        join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
                                        join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
-                                       join pv in _dbContext.PatientVitals on pi.PatientID equals pv.PatientID
                                        join pm in _dbContext.patientMedication on pi.PatientID equals pm.PatientID
                                        join account in _dbContext.Accounts on p.AccountID equals account.AccountID
                                        join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
                                        join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
-                                       join cm in _dbContext.patientMedication on m.MedicationID equals cm.MedicationID
-
+                                       join cm in _dbContext.patientMedication on pi.PatientID equals cm.PatientID
                                        join medinteract in _dbContext.Medication on cm.MedicationID equals medinteract.MedicationID
-                                       join medinteract2 in _dbContext.patientMedication on medinteract.MedicationID equals medinteract2.MedicationID
+                                       // Alias for MedicationName in patientMedication
+                                       let cmMedicationName = _dbContext.MedicationInstructions
+                                                                       .Where(med => med.MedicationID == cm.MedicationID && med.PrescriptionID == p.PrescriptionID && med.MedicationID== m.MedicationID)
+                                                                       .Select(med => m.MedicationName)
+                                                                       .FirstOrDefault()  // Get MedicationName of cm
+                                       where p.PrescriptionID == pid  // Ensure 'pid' is being passed correctly
+                                             && (
+                                                  // Checking for Neo-Mercazole and Cardura 8mg interaction
+                                                  (m.MedicationName == "Neo-Mercazole" && cmMedicationName == "Cardura 8mg") &&
+                                                  (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole")
 
-                                       where p.PrescriptionID == pid  // Make sure 'pid' is being passed correctly
 
 
-                           && (
-                               (
-                               m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID
-                               &&
-                               cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID)
-                               ||
+                                                  ||
+                                                   (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole") &&
+                                                  (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Cardura 8mg")
 
-                               ((m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID
-                               &&
-                               cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID)
-                              )
 
-                           )
 
+
+                                             )
                                        select new PharmacistViewScriptModel
                                        {
                                            PrescriptionID = p.PrescriptionID,
+                                           PatientID = pi.PatientID,
                                            medicationname = m.MedicationName,
-                                           medicationid = cm.MedicationID,
-                                           // Add other fields you need from the joins
-                                           // You can also add any medication interaction checks you need here
-                                       })
+                                          
+                                       }).ToList();
+
+
+
+
+            //&& (
+            //    (m.MedicationName == "Neo-Mercazole" && cmMedicationName == "Cardura 8mg") ||
+            //    (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole")
+            //)
+
+            //&&
+            // (m.MedicationID == _dbContext.Medication.FirstOrDefault(mia=>mia.MedicationName== "Neo-Mercazole").MedicationID
+
+            // && 
+
+            // cm.MedicationID ==_dbContext.Medication.FirstOrDefault(mia=>mia.MedicationName== "Cardura 8mg") .MedicationID)
+
+            // ||
+
+            //  (m.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Cardura 8mg").MedicationID
+
+            // &&
+
+            // cm.MedicationID == _dbContext.Medication.FirstOrDefault(mia => mia.MedicationName == "Neo-Mercazole").MedicationID) 
 
 
 
 
 
-                             .Distinct()
-                             .OrderBy(name => name.medicationname) // Sort by MedicationName in ascending order
-                             .ToList();
+            //select new PharmacistViewScriptModel
+            //{
+            //    PrescriptionID = p.PrescriptionID,
+            //    medicationname = m.MedicationName,
+            //    medicationid = cm.MedicationID
+            //})
+            // .Distinct()  // Remove duplicates
+            // .OrderBy(name => name.medicationname)  // Sort by MedicationName
+            // .ToList();
 
 
-            
+
 
             // Pass data to the view
-            ViewBag.MedInteractionAlert = medinteractionalert;
 
-            
+
+            if (medinteractionalert.Any())
+            {
+                // Set a message for the alert if any interactions were found
+                ViewBag.MedicationInteractionAlert = "Warning: Medication interactions detected! Carbimazole(Neo-Mercazole) interacts with Doxazosin(Cardura)";
+            }
 
 
 
@@ -1229,8 +1307,8 @@ namespace DEMO.Controllers
            
 
             model.PrescriptionID = pid;
-         
-          
+
+
 
 
             //int dpid = 4047;
@@ -1248,14 +1326,14 @@ namespace DEMO.Controllers
 
 
 
-            var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== pid);
+            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == pid);
 
-            if (prescription == null) 
+            if (prescription == null)
             {
                 return NotFound("Prescription not found");
             }
 
-            //var medication = _dbContext.PharmacyMedication.FirstOrDefault(m => m.MedicationID == mybulenid);
+            //var medication = _dbContext.PharmacyMedication.FirstOrDefault(m => m.MedicationID == 1002);
 
             //if (medication == null)
             //{
@@ -1275,7 +1353,7 @@ namespace DEMO.Controllers
 
 
 
-            
+
 
             DispensedScriptsModel infotoadd = new DispensedScriptsModel
                 {
@@ -1357,7 +1435,7 @@ namespace DEMO.Controllers
 
 
 
-            return RedirectToAction("ViewAllPrescriptions", "Pharmacist");
+            return RedirectToAction("ViewAllActivePrescriptionsPage", "Pharmacist");
 
         }
 
@@ -1421,7 +1499,7 @@ namespace DEMO.Controllers
 
 
 
-            return RedirectToAction("ViewAllPrescriptions", "Pharmacist");
+            return RedirectToAction("ViewAllActivePrescriptionsPage", "Pharmacist");
 
         }
 
