@@ -117,15 +117,16 @@ namespace DEMO.Controllers
             ViewBag.LowLevelStock = lowlevelstock;
 
 
-            //var lowstockcount = (from stock in _dbContext.)
+           
 
             // Query to get the medications that need to be reordered
             var combinedData = (from pm in _dbContext.PharmacyMedication
                                 join m in _dbContext.Medication
                                 on pm.MedicationID equals m.MedicationID
-                                join stock in _dbContext.PharmacyStock
-                                on pm.StockonHand equals stock.StockonHand
-                                where pm.StockonHand <= pm.ReorderLevel
+
+                                
+
+                                where pm.StockonHand <= pm.ReorderLevel 
 
                                 select new PharmacistStockOrderViewModel
                                 {
@@ -140,10 +141,7 @@ namespace DEMO.Controllers
 
                                 }).ToList();
 
-            if ( combinedData.Count == 0 )
-            {
-                Console.WriteLine("No stock in need of ordering today");
-            }
+           
 
             return View(new PharmacistStockOrderViewModel
             {
@@ -1578,7 +1576,7 @@ namespace DEMO.Controllers
             return View();
         }
 
-        public ActionResult ViewAllOrders()
+        public IActionResult ViewAllOrders()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
             if (!int.TryParse(accountIDString, out int accountID))
@@ -1661,7 +1659,8 @@ namespace DEMO.Controllers
                        ).Count();
 
             ViewBag.Count = count;
-            return View();
+
+            
 
 
             var lowlevelstock = (from pm in _dbContext.PharmacyMedication
@@ -1671,7 +1670,134 @@ namespace DEMO.Controllers
                                  select pm).Count();
 
             ViewBag.LowLevelStock = lowlevelstock;
+
+           
+
+
+
+
+
+
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+
+
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+
+           
+
+            // Query to get the medications that need to be reordered
+            var combinedData = (from pm in _dbContext.PharmacyMedication
+                                join m in _dbContext.Medication
+                                on pm.MedicationID equals m.MedicationID
+
+                                select new PharmacistStockOrderViewModel
+                                {
+                                    MedicationID = m.MedicationID,
+                                    MedicationName = m.MedicationName,
+                                    MedicationForm = m.MedicationForm,
+                                    Schedule = m.Schedule,
+                                    StockonHand = pm.StockonHand,
+                                    ReorderLevel = pm.ReorderLevel
+
+                                }).ToList();
+
+
+            var stockordered = _dbContext.PharmacyStock.ToList();
+
+
+            var stockreceived= _dbContext.ReceivedStock.ToList();
+
+            
+                                   
+
+            var viewModel = new PharmacistStockOrderViewModel
+            {
+                StockOrder = stockordered,
+                ReceivedStock= stockreceived,
+
+            };
+
+            return View(viewModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult IncomingStockPageUpdate(PharmacistStockOrderViewModel model)
+        {
+
+            var PharmacistName = HttpContext.Session.GetString("UserName");
+            var PharmacistSurname = HttpContext.Session.GetString("UserSurname");
+            var PharmacistEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+            var count = (from item in _dbContext.Prescription
+                         where item.Status == "Prescribed"
+                         select item
+                       ).Count();
+
+            ViewBag.Count = count;
+
+            
+
+
+            var lowlevelstock = (from pm in _dbContext.PharmacyMedication
+                                 join m in _dbContext.Medication
+                                 on pm.MedicationID equals m.MedicationID
+                                 where pm.StockonHand <= pm.ReorderLevel
+                                 select pm).Count();
+
+            ViewBag.LowLevelStock = lowlevelstock;
+
+            var medicationsToupdate = (from rs in _dbContext.ReceivedStock
+                                             join m in _dbContext.Medication
+                                             on rs.MedicationID equals m.MedicationID
+                                             join pm in _dbContext.PharmacyMedication 
+                                             on m.MedicationID equals pm.MedicationID
+                                            
+
+                                             select new PharmacistStockOrderViewModel
+                                             {
+                                                 MedicationName = m.MedicationName,
+                                                 MedicationForm = m.MedicationForm,
+                                                 Schedule = m.Schedule,
+                                                 StockonHand = pm.StockonHand,
+                                                 ReorderLevel = pm.ReorderLevel,
+                                                 qty = model.qty,
+
+
+                                             })
+                                      .ToList();
+
+            var levelstoupdate = medicationsToupdate.Select(m => new PharmMedModel
+            {
+                
+                StockonHand= m.StockonHand+m.qty,
+               
+            }).ToList();
+
+            _dbContext.PharmacyMedication.AddRange(levelstoupdate);
+            _dbContext.SaveChanges();
+            return RedirectToAction("ViewAddedMedication");
+        }
+
 
 
         public ActionResult NewCurrentLevelPage()

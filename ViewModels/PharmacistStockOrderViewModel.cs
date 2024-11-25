@@ -47,6 +47,7 @@ namespace DEMO.ViewModels
 
         public List<PharmMedicationStockOrder> StockOrder { get; set; }
 
+        public List<ReceivedStockModel> ReceivedStock { get; set; }
 
 
 

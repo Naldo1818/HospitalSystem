@@ -146,96 +146,121 @@
 
 
 
+   
+
+        <!--Stock that needs to be ordered. Auto order-->
+        <div class="p-3 mt-5 border">
+            <!-- Your table content here -->
+            <!--Stock Ordered-->
+            <table class="table">
+
+
+                <h1><center>Stock Ordered</center></h1>
+                <center>
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+
+                </center>
+
+                <thead>
+                    <tr>
+                        <th scope="col">Medication Name</th>
+                        <th scope="col">Dosage Form</th>
+                        <th scope="col">Stock on Hand</th>
+                        <th scope="col">Re-order level</th>
+                        <th scope="col">Quantity ordered</th>
 
 
 
-    <!--Stock that needs to be ordered. Auto order-->
-    <div class="p-3 mt-5 border">
-        <!-- Your table content here -->
-        <h1><center>Received stock</center></h1>
-        <center>
-            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
-
-        </center>
+                        <!-- More table headers can be added here -->
+                    </tr>
+                </thead>
+                <tbody>
 
 
+                    @foreach (var stock in Model.StockOrder)
+                    {
+                        <tr>
+                            <td>@stock.MedicationName</td>
+                            <td>@stock.MedicationForm</td>
+                            <td>@stock.StockonHand</td>
+                            <td>@stock.ReorderLevel</td>
+                            <td>@stock.qtyOrdered</td>
 
-        <table class="table">
-
-
-
-
-
-            <thead>
-                <tr>
-                    <th scope="col">Medication Name</th>
-                    <th scope="col">Dosage Form</th>
-                    <th scope="col">Schedule</th>
-                    <th scope="col">Stock on Hand</th>
-                    <th scope="col">Re-order level</th>
-                    <th scope="col">Amount received</th>
-
-
-
-                    <!-- More table headers can be added here -->
-                </tr>
-            </thead>
-            <tbody id="myTable">
-
-               
-
-
-
-
-            </tbody>
-
-
-
-
-        </table>
+                        </tr>
+                    }
+                </tbody>
 
 
 
 
+            </table>
+
+        <form method="post" asp-action="IncomingStockPageUpdate">
+            <!--Stock received-->
+
+            <table class="table">
+
+
+
+                <h1><center>Stock received</center></h1>
+                <center>
+                    <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+
+                </center>
+
+                <thead>
+                    <tr>
+                        <th scope="col">Medication Name</th>
+                        <th scope="col">Dosage Form</th>
+                        <th scope="col">Schedule</th>
+                        <th scope="col">Amount received</th>
+
+
+
+                        <!-- More table headers can be added here -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stock in Model.ReceivedStock)
+                    {
+                        <tr>
+                            <td>@stock.MedicationName</td>
+                            <td>@stock.MedicationForm</td>
+                            <td>@stock.Schedule</td>
+
+                            <td>
+                                <input type="text" name="qtyReceived" value="@stock.qtyReceived" style="width:50px" min="1" readonly>
+                            </td>
+
+                        </tr>
+                    }
 
 
 
 
-        <h1><center>Update Levels</center></h1>
-        <center>
-            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
-
-        </center>
 
 
-
-        <table class="table">
+                </tbody>
 
 
 
 
-
-            <thead>
-                <tr>
-                    <th scope="col">Medication Name</th>
-                    <th scope="col">Dosage Form</th>
-                    <th scope="col">Schedule</th>
-                    <th scope="col">Stock on Hand</th>
-                    <th scope="col">Re-order level</th>
-                    <th scope="col">Amount received</th>
+            </table>
 
 
 
-                    <!-- More table headers can be added here -->
-                </tr>
-            </thead>
-           
 
 
 
-        </table>
 
-        <button id="sendEmailBtn" class="btn btn-primary">Place Order and Send Email</button>
+
+
+            <button type="submit" class="btn btn-primary">Update Levels</button>
+
+    </form>
+
+
+
 
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>

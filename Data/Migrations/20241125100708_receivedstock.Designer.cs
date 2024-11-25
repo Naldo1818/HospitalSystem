@@ -4,6 +4,7 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241125100708_receivedstock")]
+    partial class receivedstock
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -789,9 +792,6 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("MedicationID")
-                        .HasColumnType("int");
-
                     b.Property<string>("MedicationName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -799,7 +799,7 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("Schedule")
                         .HasColumnType("int");
 
-                    b.Property<int>("qtyReceived")
+                    b.Property<int>("qtyOrdered")
                         .HasColumnType("int");
 
                     b.HasKey("ReceivedStockID");
