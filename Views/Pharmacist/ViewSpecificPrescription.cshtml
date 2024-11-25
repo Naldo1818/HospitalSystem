@@ -466,8 +466,8 @@
         </div>
 
 
-        <input type="text" name="pid" asp-for="PrescriptionID" value="@ViewBag.ScriptID" />
-        <input type="text" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
+        <input type="hidden" name="pid" asp-for="PrescriptionID" value="@ViewBag.ScriptID" />
+        <input type="hidden" name="pharmid2" asp-for="pharmacistID" value="@ViewBag.UserAccountID" />
         
         <button type="submit"
 

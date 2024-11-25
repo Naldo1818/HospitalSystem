@@ -1216,34 +1216,29 @@ namespace DEMO.Controllers
         {
            
 
+            
+
+            
+
+
+
+
+           
+
+
+           
+
             model.PrescriptionID = pid;
-            model.pharmacistID = pharmid2;
-
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-
-            if (!int.TryParse(accountIDString, out int accountID))
-            {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
-            }
+         
+          
 
 
+            //int dpid = 4047;
 
 
+            // pharmid = 1013;
 
-            ViewBag.UserAccountID = accountID;
-
-
-            ViewBag.UserAccountID = accountID;
-
-
-
-            int dpid = 4047;
-
-
-             pharmid = 1013;
-
-            int mybulenid = 1002;
+            //int mybulenid = 1002;
 
             //int dpid = model.PrescriptionID;
 
@@ -1253,7 +1248,7 @@ namespace DEMO.Controllers
 
 
 
-            var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== dpid);
+            var prescription = _dbContext.Prescription.FirstOrDefault(p=>p.PrescriptionID== pid);
 
             if (prescription == null) 
             {
@@ -1280,6 +1275,26 @@ namespace DEMO.Controllers
 
 
 
+            
+
+            DispensedScriptsModel infotoadd = new DispensedScriptsModel
+                {
+
+                    PrescriptionID = pid,
+                    AccountID = pharmid2,
+
+
+
+                };
+
+                _dbContext.DispensedScriptsModel.Add(infotoadd);
+            
+
+                prescription.Status = "Dispensed";
+
+                _dbContext.SaveChanges();
+
+
             var allmedicationdata = await (from p in _dbContext.Prescription
                                            join ap in _dbContext.AdmittedPatients on p.AdmittedPatientID equals ap.AdmittedPatientID
                                            join pi in _dbContext.PatientInfo on ap.PatientID equals pi.PatientID
@@ -1288,7 +1303,7 @@ namespace DEMO.Controllers
                                            join mi in _dbContext.MedicationInstructions on p.PrescriptionID equals mi.PrescriptionID
                                            join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
 
-                                          where p.PrescriptionID == pid /// Filter by prescription ID
+                                           where p.PrescriptionID == pid /// Filter by prescription ID
                                            orderby m.MedicationName
 
                                            select new PharmacistViewScriptModel
@@ -1300,12 +1315,12 @@ namespace DEMO.Controllers
                                                medicationid = m.MedicationID,
                                            })
 
-                       .GroupBy(m => m.medication)
-                       .Select(x => x.FirstOrDefault())
+                        .GroupBy(m => m.medication)
+                        .Select(x => x.FirstOrDefault())
 
 
 
-                       .ToListAsync();
+                        .ToListAsync();
 
 
             var medicationIds = allmedicationdata.Select(m => m.medicationid).ToList();
@@ -1339,27 +1354,7 @@ namespace DEMO.Controllers
                 }
             }
 
-            DispensedScriptsModel infotoadd = new DispensedScriptsModel
-                {
 
-                    PrescriptionID = pid,
-                    AccountID = pharmid,
-
-
-
-                };
-
-                _dbContext.DispensedScriptsModel.Add(infotoadd);
-            
-
-                prescription.Status = "Dispensed";
-
-                _dbContext.SaveChanges();
-            
-
-           
-
-        
 
 
             return RedirectToAction("ViewAllPrescriptions", "Pharmacist");
@@ -1370,7 +1365,7 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ViewSpecificPrescriptionReject(string RejectMessage,PharmacistViewScriptModel model)
+        public IActionResult ViewSpecificPrescriptionReject(int pid,string RejectMessage,PharmacistViewScriptModel model)
 
 
         {
