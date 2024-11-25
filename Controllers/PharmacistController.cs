@@ -139,18 +139,17 @@ namespace DEMO.Controllers
 
 
                                 }).ToList();
+
             if ( combinedData.Count == 0 )
             {
                 Console.WriteLine("No stock in need of ordering today");
             }
 
-            var viewModel = new PharmacistStockOrderViewModel
+            return View(new PharmacistStockOrderViewModel
             {
                 PharmacistStockOrders = combinedData
-            };
+            });
 
-            // Pass the list of data to the view
-            return View(viewModel);
         }
 
 
@@ -1184,13 +1183,14 @@ namespace DEMO.Controllers
                                        where p.PrescriptionID == pid  // Ensure 'pid' is being passed correctly
                                              && (
                                                   // Checking for Neo-Mercazole and Cardura 8mg interaction
-                                                  (m.MedicationName == "Neo-Mercazole" && cmMedicationName == "Cardura 8mg") &&
+                                                  (m.MedicationName == "Neo-Mercazole" && cmMedicationName == "Cardura 8mg") ||
                                                   (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole")
 
 
 
-                                                  ||
-                                                   (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole") &&
+                                                  &&
+
+                                                   (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Neo-Mercazole") ||
                                                   (m.MedicationName == "Cardura 8mg" && cmMedicationName == "Cardura 8mg")
 
                                              )
