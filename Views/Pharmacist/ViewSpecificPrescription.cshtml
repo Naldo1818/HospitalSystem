@@ -37,40 +37,7 @@
             }
         }
 
-        async function confirmReject() {
-            const confirmation = confirm("Are you sure you want to reject this script?");
-            if (confirmation) {
-                const reason = prompt("Please provide a reason for rejection:");
-                if (reason) {
-                    try {
-                        const response = await fetch('/Pharmacist/ViewSpecificPrescription', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ reason })
-                        });
-
-                        if (response.ok) {
-                            alert("Rejection reason submitted to the Surgeon: " + reason);
-                            window.location.href = '/ViewAllPrescriptions';
-                        } else {
-                            alert("Failed to submit the rejection reason.");
-                        }
-                    } catch (error) {
-                        alert("Error submitting rejection reason: " + error.message);
-                    }
-                } else {
-                    alert("Rejection cancelled: No reason provided.");
-                }
-            } else {
-                alert("Rejection cancelled.");
-            }
-        }
-
-        function toggleModal(modalId) {
-            const modal = document.getElementById(modalId);
-            modal.style.display = modal.style.display === "block" ? "none" : "block";
-        }
-    </script>
+       
 
    
 
@@ -480,185 +447,49 @@
 
     </form>
 
+    <center>
+        <button type="button" onclick="showTextArea()">Reject Prescription</button>
 
-    <form id="rejectForm" method="post" asp-action="ViewSpecificPrescriptionReject">
+        <!-- Text Area and Save Button (Initially hidden) -->
+        <div id="textAreaContainer" style="display:none;">
+            <input type="text" placeholder="Enter reason here..." 
+            name="rejectionMessage" asp-for="rejectscriptreason"></input><br>
 
-       @*  <button type="submit"
-
-                class="btn btn-danger">
-            Reject
-        </button> *@
-
-
-
-        <input type="hidden" name="PrescriptionID" value="@Model.PrescriptionID" />
-
-        <!-- Reject Button -->
-        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#rejectModal">
-            Reject Prescription
-        </button>
-
-        <!-- Confirmation Modal -->
-        <div class="modal fade" id="rejectModal" tabindex="-1" role="dialog" aria-labelledby="rejectModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="rejectModalLabel">Confirm Rejection</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to reject this prescription? This action cannot be undone.
-
-                        <!-- Message input field for rejection reason -->
-                        <div class="form-group mt-3">
-                            <label for="rejectMessage">Please enter a reason for rejection (optional):</label>
-                            <textarea id="rejectMessage" name="RejectMessage" class="form-control" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn btn-danger" id="confirmReject">Yes, Reject</button>
-                    </div>
-                </div>
-            </div>
+            <button  id="RejectScriptButton" type="submit" ">Reject</button>
         </div>
 
 
-
-        <script>
-            // When the "Yes, Reject" button is clicked
-            document.getElementById('confirmReject').addEventListener('click', function () {
-                // Get the rejection message entered by the user
-                var rejectMessage = document.getElementById('rejectMessage').value;
-
-                // Store the message in the hidden input field (if necessary)
-                var hiddenMessageInput = document.createElement('input');
-                hiddenMessageInput.type = 'hidden';
-                hiddenMessageInput.name = 'RejectMessage'; // The name you want to use in the controller
-                hiddenMessageInput.value = rejectMessage;
-
-                // Append the hidden input to the form
-                document.getElementById('rejectForm').appendChild(hiddenMessageInput);
-
-                // Submit the form
-                document.getElementById('rejectForm').submit();
-            });
-        </script>
-
-</form>
-
-   
+        <form id="infoForm" method="POST" action="@Url.Action("ViewSpecificPrescriptionReject","Pharmacist")">
 
 
+            <input type="hidden" name="info" id="infoInput" />
+        </form>
+    </center>
+    
 
-    @* <button style="background-color:red" onclick="confirmReject()">Reject</button> *@
-    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
+    <script>
+        // Function to show the textarea and save button
+        function showTextArea() {
+            document.getElementById("textAreaContainer").style.display = "block";
+           
+        }
+
+        
+
+        
+    </script>
+
+
+  
+
+
 
     
 
 
- 
 
+    <a class="btn btn-primary" aria-hidden="true" asp-controller="Pharmacist" asp-action="ViewAllActivePrescriptionsPage">Back</a>
 
+    </body>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @* <!--Script for modal-->
-    <script>
-        // Get the modal
-        var modal = document.getElementById("myModal");
-
-        // Get the button that opens the modal
-        var btn = document.getElementById("myBtn");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-
-        // When the user clicks on the button, open the modal
-        btn.onclick = function () {
-            modal.style.display = "block";
-        }
-
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function () {
-            modal.style.display = "none";
-        }
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function (event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
-
-
-    <script>
-            const rejectModal = document.getElementById('rejectModal');
-        const rejectButton = document.getElementById('rejectButton');
-        const closeButton = document.getElementsByClassName("close")[0];
-        let rejectionReason = '';
-
-        // Open the modal when the reject button is clicked
-        rejectButton.onclick = function() {
-          rejectModal.style.display = "block";
-        };
-
-        // Capture rejection reason on input change
-        document.getElementById('rejectionReason').addEventListener('input', function(event) {
-          rejectionReason = event.target.value; // Store the current input value
-        });
-
-        // Close the modal when the close button is clicked or outside the modal is clicked
-        closeButton.onclick = function() {
-          rejectModal.style.display = "none";
-        };
-
-        window.onclick = function(event) {
-          if (event.target == rejectModal) {
-            rejectModal.style.display = "none";
-          }
-        };
-
-        // Handle form submission (e.g., send rejection reason to server)
-        rejectButton.addEventListener('click', function() {
-          // Your code to send the rejection reason to the server goes here
-          console.log(rejectionReason); // For demonstration, log it to console
-          rejectModal.style.display = "none";
-        });
-    </script>
-
- *@
-   
-
-
-
-
-
-
-
-
-
-
-
-
-</body>
 </html>

@@ -18,6 +18,9 @@ namespace DEMO.ViewModels
         //prescription
         public int  medicationid {  get; set; }
 
+
+        public string rejectscriptreason { get; set; }
+
         public string medicationname { get; set; }
         public int PatientID { get; set; }
 

@@ -1365,22 +1365,18 @@ namespace DEMO.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult ViewSpecificPrescriptionReject(int pid,string RejectMessage,PharmacistViewScriptModel model)
+        public IActionResult ViewSpecificPrescriptionReject(int pid, int pharmid, int pharmid2, string rejectionMessage,PharmacistViewScriptModel model)
 
 
         {
-
-
-
-            int rpid = 4047;
-
-
-            int pharmid = 1013;
+            model.PrescriptionID= pid;
+         
+         
 
 
 
 
-            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == rpid);
+            var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == pid);
 
             if (prescription == null)
             {
@@ -1388,13 +1384,30 @@ namespace DEMO.Controllers
             }
 
 
+        //int rpid = 4047;
+
+
+        //    int pharmid = 1013;
+
+
+
+
+            //var prescription = _dbContext.Prescription.FirstOrDefault(p => p.PrescriptionID == rpid);
+
+            //if (prescription == null)
+            //{
+            //    return NotFound("Prescription not found");
+            //}
+
+
 
             RejectedScriptsModel infotoadd = new RejectedScriptsModel
             {
 
-                PrescriptionID = rpid,
-                AccountID = pharmid,
-                RejectionReason = RejectMessage
+                PrescriptionID = pid,
+                AccountID = pharmid2,
+                RejectionReason= rejectionMessage,
+
 
 
 
