@@ -178,6 +178,21 @@ namespace DEMO.Controllers
 
             return Json(medications);
         }
+        [HttpGet]
+        public IActionResult GetAdministeredQuantities(int prescriptionId, int admittedPatientID)
+        {
+            var administeredQuantities = _dbContext.AdministerMedication
+                .Where(a => a.PrescriptionID == prescriptionId && a.AdmittedPatientID == admittedPatientID)
+                .GroupBy(a => a.MedicationID)
+                .Select(g => new
+                {
+                    MedicationID = g.Key,
+                    TotalAdministered = g.Sum(a => a.AdministerQuantity)
+                })
+                .ToList();
+
+            return Json(administeredQuantities);
+        }
 
 
         #endregion

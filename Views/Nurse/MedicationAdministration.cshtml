@@ -1,4 +1,8 @@
-﻿@{
+﻿View : saving the data
+
+View :
+
+@{
     ViewData["Title"] = "Medication Administration";
     Layout = "_LayoutNurse";
 }
@@ -202,6 +206,11 @@
                                             </div>
 
                                             <button type="button" class="previous action-button-previous" onclick="window.location.href='@Url.Action("MedicationCollected", "Nurse", new { prescriptionID = ViewBag.PrescriptionID, name = ViewBag.PatientName, surname = ViewBag.PatientSurname, ward = ViewBag.PatientWard, bed = ViewBag.PatientBed, admittedPatientId = ViewBag.AdmittedPatientID, accountID = ViewBag.AccountID })'">Back</button>
+                                            <input type="hidden" id="MedicationsData" name="MedicationsData" />
+                                            <!-- Hidden Fields for PrescriptionID, AdmittedPatientID, and AccountID -->
+                                            <input type="hidden" name="prescriptionID" value="@Model.PrescriptionID" />
+                                            <input type="hidden" name="admittedPatientID" value="@ViewBag.AdmittedPatientID" />
+                                            <input type="hidden" name="accountID" value="@ViewBag.AccountID" />
 
                                             <button name="submit" class="next action-button" type="submit">Submit</button>
                                         </div>
@@ -245,14 +254,38 @@
                 return prescribedQuantity;
             }
 
-            // Function to add medication to the DataTable
-            $('#addMedicationButton').on('click', function () {
-                const medicineID = $('#MedicineSelect').val();
-                const medicine = $('#MedicineSelect option:selected').text();
-                const quantity = parseInt($('#QuantityInput').val(), 10);
+            function fetchAdministeredQuantity(admittedPatientId, medicationId) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: "/lookup/GetAdministeredQuantities",
+                        type: "GET",
+                        data: {
+                            prescriptionId: @Model.PrescriptionID,
+                            admittedPatientID: admittedPatientId
+                        },
+                        success: function (data) {
+                            const match = data.find(item => item.medicationID === parseInt(medicationId, 10));
+                            // Store the totalAdministered in medicationTrack
+                            const totalAdministered = match ? match.totalAdministered : 0;
+                            medicationTrack[medicationId] = { totalAdministered: totalAdministered, addedQuantity: 0 };
+                            resolve(totalAdministered);
+                        },
+                        error: function (error) {
+                            console.error("Error fetching administered quantity:", error);
+                            reject(0);
+                        }
+                    });
+                });
+            }
 
-                if (medicine && quantity && !isNaN(quantity)) {
-                    // Get prescribed quantity from the prescription table
+            $('#addMedicationButton').on('click', async function () {
+                const medicineID = $('#MedicineSelect').val(); // Get the Medication ID
+                const medicine = $('#MedicineSelect option:selected').text(); // Get the Medication Name
+                const quantity = parseInt($('#QuantityInput').val(), 10); // Administered quantity
+                const admittedPatientId = @ViewBag.AdmittedPatientID; // Admitted patient ID
+
+                if (medicine && quantity && !isNaN(quantity) && medicineID) {
+                    // Fetch prescribed quantity
                     const prescribedQuantity = getPrescribedQuantity(medicine);
 
                     if (prescribedQuantity === 0) {
@@ -260,30 +293,61 @@
                         return;
                     }
 
-                    // Calculate total administered quantity
-                    const totalAdministered = medicationTrack[medicine] || 0;
+                    try {
+                        // Fetch the already administered quantity from the database
+                        await fetchAdministeredQuantity(admittedPatientId, medicineID);
 
-                    if ((totalAdministered + quantity) > prescribedQuantity) {
-                        alert(`Error: You cannot administer more than ${prescribedQuantity} units of ${medicine}. Already administered: ${totalAdministered}.`);
-                        return;
+                        // Fetch the totalAdministered from medicationTrack
+                        const totalAdministered = medicationTrack[medicineID].totalAdministered;
+
+                        // Add the quantities from the PreMedTable (already administered in the session)
+                        let currentTotalAdministered = totalAdministered;
+
+                        // Add quantities that are already in the PreMedTable for this medication
+                        $('#PreMedTable tbody tr').each(function () {
+                            const rowMedicine = $(this).find('td:first').text().trim();
+                            const rowQuantity = parseInt($(this).find('td:eq(1)').text().trim(), 10);
+
+                            // If the medication in the row matches the selected medicine, add to the currentTotalAdministered
+                            if (rowMedicine === medicine) {
+                                currentTotalAdministered += rowQuantity;
+                            }
+                        });
+
+                        // Ensure the total administered does not exceed the prescribed quantity
+                        if ((currentTotalAdministered + quantity) > prescribedQuantity) {
+                            alert(`Error: You cannot administer more than ${prescribedQuantity} units of ${medicine}. Already administered: ${currentTotalAdministered}.`);
+                            return;
+                        }
+
+                        // Add the medication to the tracking object
+                        medicationTrack[medicineID].addedQuantity += quantity;
+
+                        // Add row to the DataTable
+                        table.row.add([
+                            medicine,
+                            quantity,
+                            `<button onclick="removeRow(this)">Remove</button>`
+                        ]).draw(false);
+
+                        // Store medicationID in row data
+                        const lastRow = table.row(':last').node();
+                        $(lastRow).data('medication-id', medicineID);
+
+                        // Clear inputs
+                        $('#MedicineSelect').val(null).trigger('change');
+                        $('#QuantityInput').val('');
+                    } catch (error) {
+                        // Handle the error case
+                        alert('Error fetching administered quantity.');
                     }
-
-                    // Update the tracking and add a row to the DataTable
-                    medicationTrack[medicine] = totalAdministered + quantity;
-
-                    table.row.add([
-                        medicine,
-                        quantity,
-                        `<button onclick="removeRow(this)">Remove</button>`
-                    ]).draw(false);
-
-                    // Clear the inputs
-                    $('#MedicineSelect').val(null).trigger('change');
-                    $('#QuantityInput').val('');
                 } else {
                     alert('Please select both medicine and enter a valid quantity.');
                 }
             });
+
+
+
 
             // Function to remove a row from the DataTable
             window.removeRow = function (button) {
@@ -303,7 +367,7 @@
             const prescriptionId = @Model.PrescriptionID;
 
             $.ajax({
-                url: "/lookup/GetAllMedicationsForPrescription", // Controller action route
+                url: "/lookup/GetAllMedicationsForPrescription",
                 type: "GET",
                 data: { prescriptionId: prescriptionId },
                 success: function (data) {
@@ -318,8 +382,35 @@
                     console.error("Error fetching medications:", error);
                 }
             });
+
+            // Modify the submit button to collect table data
+            $('button[name="submit"]').on('click', function () {
+                // Collect table data and serialize it into an array of objects
+                var medications = [];
+                $('#PreMedTable tbody tr').each(function () {
+                    var medicationName = $(this).find('td:eq(0)').text();
+                    var administeredQuantity = parseInt($(this).find('td:eq(1)').text(), 10);
+                    var medicationID = $(this).data('medication-id'); // Retrieve MedicationID from the row data
+
+                    medications.push({
+                        MedicationName: medicationName,
+                        AdministeredQuantity: administeredQuantity,
+                        MedicationID: medicationID
+                    });
+                });
+
+                // Convert the medications array to JSON and set it in the hidden input field
+                $('#MedicationsData').val(JSON.stringify(medications));
+
+                // Submit the form
+                $('#msform').submit();
+            });
         });
 
+
+
+
     </script>
+
 </body>
 </html>

@@ -13,6 +13,7 @@ using Microsoft.Identity.Client;
 using MimeKit;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 
 
@@ -65,7 +66,7 @@ namespace DEMO.Controllers
         }
 
         [HttpGet]
-        public IActionResult Vitals(int admittedPatientID, string name, string Surname, string Ward, int Bed)
+        public IActionResult Vitals(int admittedPatientID, string name, string Surname, string Ward, int Bed, int accountID)
         {
             // Fetch the admitted patient details
             var admittedPatient = _dbContext.AdmittedPatients
@@ -82,7 +83,7 @@ namespace DEMO.Controllers
                 AdmittedPatientID = admittedPatientID,
                 PatientID = admittedPatient.PatientID // Get PatientID from AdmittedPatientsModel
             };
-
+            ViewBag.AccountID = accountID;
             ViewBag.PatientSurname = Surname;
             ViewBag.PatientName = name;
             ViewBag.patientWard = Ward;
@@ -94,7 +95,7 @@ namespace DEMO.Controllers
         }
 
         [HttpPost]
-        public IActionResult Vitals(ViewVitals model)
+        public IActionResult Vitals(ViewVitals model, int accountID)
         {
 
             if (ModelState.IsValid)
@@ -122,7 +123,7 @@ namespace DEMO.Controllers
                 // Redirect to another action, e.g., the list of admitted patients
                 return RedirectToAction("AdmittedPatients", "Nurse"); // Adjust as necessary
             }
-            
+            ViewBag.AccountID = accountID;
             return View(model);
         }
 
@@ -145,7 +146,7 @@ namespace DEMO.Controllers
                     _dbContext.SaveChanges();
                 }
 
-                return RedirectToAction("patientAddmision");
+                return RedirectToAction("AdmittedPatients");
             }
 
             return View(model);
@@ -171,7 +172,7 @@ namespace DEMO.Controllers
             //                    }).OrderBy(a => a.AccountName).ToList();
             return View();
         }
-        public IActionResult ViewSurgeryBooking()
+        public IActionResult ViewSurgeryBooking(int accountID)
         {
             var combinedData = (from bs in _dbContext.BookSurgery
                                 join a in _dbContext.Accounts
@@ -196,6 +197,7 @@ namespace DEMO.Controllers
                 AllcombinedData = combinedData,
 
             };
+            ViewBag.AccountID = accountID;
             return View(viewModel);
             //return RedirectToAction("AdmissionPage", new { id = viewModel.BookingID});
 
@@ -485,7 +487,7 @@ namespace DEMO.Controllers
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
-
+            ViewBag.AccountID = accountID;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -495,7 +497,7 @@ namespace DEMO.Controllers
             return View("AdmittedPatients", viewModel);
         }
 
-        public IActionResult AdmissionPage(int bookingID)
+        public IActionResult AdmissionPage(int bookingID, int accountID)
         {
             TempData["BookingId"] = bookingID;
 
@@ -521,7 +523,7 @@ namespace DEMO.Controllers
             // Set the ViewBag properties for the view
             ViewBag.PatientName = $"{booking.Name} {booking.Surname}";
             ViewBag.SurgeryDate = booking.Date.ToString("yyyy-MM-dd"); // Format the date as needed
-
+            ViewBag.AccountID = accountID;
 
             ViewBag.UserName = booking.Name;
             ViewBag.UserSurname = booking.Surname;
@@ -654,11 +656,12 @@ namespace DEMO.Controllers
                 ward = ward,
                 bed = bed,
                 admittedPatientId = admittedPatientId,
+                accountID = accountID,
                 date = DateOnly.FromDateTime(DateTime.Now) // Pass the current date or any relevant value
-            });
+            }); 
         }
 
-        public IActionResult MedicationAdministration(int prescriptionID, string name, string surname, string ward, int bed, int admittedPatientId, DateOnly date)
+        public IActionResult MedicationAdministration(int prescriptionID, string name, string surname, string ward, int bed, int admittedPatientId, int accountID, DateOnly date)
         {
             // Fetch the collected prescriptions along with patient and medication details
             var combinedData = (from p in _dbContext.PatientInfo
@@ -680,16 +683,27 @@ namespace DEMO.Controllers
                                     Status = pr.Status,
                                     MedicationName = meds.MedicationName,
                                     Instructions = mis.Instructions,
-                                    Quantity = mis.Quantity
-                                    // Add other fields as necessary
+                                    Quantity = mis.Quantity,
+                                    MedicationID = meds.MedicationID
                                 }).ToList();
+
+            // Fetch already administered quantities for the specific patient and prescription
+            var administeredQuantities = (from am in _dbContext.AdministerMedication
+                                          where am.AdmittedPatientID == admittedPatientId && am.PrescriptionID == prescriptionID
+                                          group am by am.MedicationID into g
+                                          select new
+                                          {
+                                              MedicationID = g.Key,
+                                              TotalAdministered = g.Sum(x => x.AdministerQuantity)
+                                          }).ToList();
+
+
 
             // Retrieve user information from the session
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
 
-            // Populate ViewBag with necessary information
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
@@ -698,6 +712,8 @@ namespace DEMO.Controllers
             ViewBag.PatientWard = ward;
             ViewBag.PatientBed = bed;
             ViewBag.Date = date;
+            ViewBag.AdmittedPatientID = admittedPatientId;
+            ViewBag.AccountID = accountID;
 
             // Create a ViewModel instance and pass the data to the view
             var viewModel = new PrescriptionListViewModal
@@ -705,7 +721,7 @@ namespace DEMO.Controllers
                 AllPrescribedDispensed = combinedData // Populate collected prescriptions
             };
 
-            if (prescriptionID > 0 )
+            if (prescriptionID > 0)
             {
                 viewModel.PrescriptionID = prescriptionID;
             }
@@ -713,77 +729,52 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
 
+
         [HttpPost]
-        public IActionResult AdministerMedication(List<AdministeredMedicationViewModel> administeredMedications, int admittedPatientId, string name, string surname, string ward, int bed, int accountID)
+        public IActionResult AdministerMedication(int prescriptionID, int admittedPatientID, int accountID, string medicationsData)
         {
-            foreach (var medication in administeredMedications)
+            // Deserialize the medications data
+            var medications = Newtonsoft.Json.JsonConvert.DeserializeObject<List<AdministeredMedicationViewModel>>(medicationsData);
+
+            if (medications == null || !medications.Any())
             {
-                // Fetch the prescription for validation
-                var prescription = _dbContext.Prescription
-                    .FirstOrDefault(p => p.PrescriptionID == medication.PrescriptionID && p.AdmittedPatientID == admittedPatientId);
-
-                // Fetch the medication instructions (prescribed quantity) for validation
-                var medInstruction = _dbContext.MedicationInstructions
-                    .FirstOrDefault(m => m.PrescriptionID == medication.PrescriptionID && m.MedicationID == medication.MedicationID);
-
-                if (prescription != null && medInstruction != null)
-                {
-                    // Calculate the total administered quantity for the medication
-                    var totalAdministered = _dbContext.AdministerMedication
-                        .Where(am => am.PrescriptionID == medication.PrescriptionID && am.MedicationID == medication.MedicationID)
-                        .Sum(am => am.AdministerQuantity) + medication.QuantityAdministered;
-
-                    // Check if the total administered exceeds the prescribed quantity
-                    if (totalAdministered > medInstruction.Quantity)
-                    {
-                        // Add model error for exceeding prescribed quantity
-                        ModelState.AddModelError("Quantity", $"Total administered quantity for {medication.MedicationName} cannot exceed the prescribed quantity of {medInstruction.Quantity}.");
-                        return View(); // Return with errors
-                    }
-
-                    // Create an entry for the administered medication
-                    var administeredMedication = new AdministerMedication
-                    {
-                        PrescriptionID = medication.PrescriptionID,
-                        MedicationID = medication.MedicationID,
-                        AdministerQuantity = medication.QuantityAdministered,
-                        Date = DateOnly.FromDateTime(DateTime.Now),
-                        Time = TimeOnly.FromDateTime(DateTime.Now),
-                        AdmittedPatientID = admittedPatientId,
-                        AccountID = accountID // This should be dynamically set if needed
-                    };
-
-                    // Save to the database
-                    _dbContext.AdministerMedication.Add(administeredMedication);
-
-                    // Check if all medications have been administered
-                    var totalAdministeredForMedication = _dbContext.AdministerMedication
-                        .Where(am => am.PrescriptionID == medication.PrescriptionID && am.MedicationID == medication.MedicationID)
-                        .Sum(am => am.AdministerQuantity);
-
-                    if (totalAdministeredForMedication == medInstruction.Quantity)
-                    {
-                        // Update prescription status to "Administered"
-                        prescription.Status = "Administered";
-                    }
-                }
-                else
-                {
-                    // Add a model error if the prescription or medication instruction is not found
-                    ModelState.AddModelError("Prescription", "Prescription or medication instruction not found.");
-                    return View(); // Return with errors
-                }
+                return RedirectToAction("Error", "Home"); // Handle empty data case
             }
 
-            // Save changes to the database
+            // Loop through each medication and save it to the database
+            foreach (var medication in medications)
+            {
+                var adminMedication = new AdministerMedication
+                {
+                    AdmittedPatientID = admittedPatientID,
+                    PrescriptionID = prescriptionID,
+                    AccountID = accountID,
+                    MedicationID = medication.MedicationID,
+                    AdministerQuantity = medication.AdministeredQuantity,
+                    Time = TimeOnly.FromDateTime(DateTime.Now), // Capture the current time
+                    Date = DateOnly.FromDateTime(DateTime.Now)  // Capture the current date
+                };
+
+                _dbContext.AdministerMedication.Add(adminMedication);
+            }
+
+            // Commit the changes to the database
             _dbContext.SaveChanges();
 
-            // Redirect as needed
-            return RedirectToAction("MedicationAdministration", new { admittedPatientId });
+            return RedirectToAction("MedicationCollected", new
+            {
+                prescriptionID,
+                name = ViewBag.PatientName,
+                surname = ViewBag.PatientSurname,
+                ward = ViewBag.PatientWard,
+                bed = ViewBag.PatientBed,
+                admittedPatientId = ViewBag.AdmittedPatientID,
+                accountID = ViewBag.AccountID
+            });
         }
 
 
-        public IActionResult PatientRecords(int AdmittedPatientID, string name, string surname)
+        public IActionResult PatientRecords(int AdmittedPatientID, string name, string surname, int accountID)
         {
             var comboData = (from a in _dbContext.Accounts
                                 join b in _dbContext.BookSurgery on a.AccountID equals b.AccountID
@@ -825,7 +816,7 @@ namespace DEMO.Controllers
             var today = DateOnly.FromDateTime(DateTime.Today);
 
 
-
+            ViewBag.AccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
@@ -834,7 +825,7 @@ namespace DEMO.Controllers
 
             return View(viewModel);
         }
-        public IActionResult PatientVitals(int AdmittedPatientID, string name, string surname)
+        public IActionResult PatientVitals(int AdmittedPatientID, string name, string surname, int accountID)
         {
             var patientVitals = (from pv in _dbContext.PatientVitals
                                  join ap in _dbContext.AdmittedPatients
@@ -905,7 +896,7 @@ namespace DEMO.Controllers
                 AllConditions = conditions,
                 AllCurrentMed = currentMed
             };
-
+            ViewBag.AccountID = accountID;
             ViewBag.PatientName = name;
             ViewBag.PatientSurname = surname;
 
@@ -926,7 +917,7 @@ namespace DEMO.Controllers
 
 
 
-        public async Task<IActionResult> EmailVitals(int AdmittedPatientID)
+        public async Task<IActionResult> EmailVitals(int AdmittedPatientID, int accountID)
         {
             var combinedData = await (from pv in _dbContext.PatientVitals
                                       join ad in _dbContext.AdmittedPatients on pv.PatientID equals ad.PatientID
@@ -982,11 +973,12 @@ namespace DEMO.Controllers
                 SurgeonEmail = combinedData.SurgeonEmail,
                 SurgeonRole = combinedData.SurgeonRole
             };
+            ViewBag.AccountID = accountID;
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EmailVitals(string notes, int AdmittedPatientID)
+        public async Task<IActionResult> EmailVitals(string notes, int AdmittedPatientID,int accountID)
         {
             var nurseEmail = HttpContext.Session.GetString("UserEmail");
 
@@ -1086,89 +1078,87 @@ namespace DEMO.Controllers
 
         public IActionResult NurseReport()
         {
-            //var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            //if (!int.TryParse(accountIDString, out int accountID))
-            //{
-            //    // Handle the case where accountID is not available or is invalid
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
 
 
-            //    accountID = 0; // Or handle as required
-            //}
+                accountID = 0; // Or handle as required
+            }
 
-            //var combinedData = (from p in _dbContext.PatientInfo
-            //                    join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
-            //                    join ap in _dbContext.AdmittedPatients on bs.PatientID equals ap.PatientID
-            //                    join ac in _dbContext.Accounts on ap.AccountID equals ac.AccountID
-            //                    join dp in _dbContext.DispensedScriptsModel on ac.AccountID equals dp.AccountID
-            //                    join pr in _dbContext.Prescription on dp.PrescriptionID equals pr.PrescriptionID
-            //                    join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
-            //                    join ma in _dbContext.PharmacyMedication on dp.PrescriptionID equals ma.MedicationID
-            //                    join am in _dbContext.AdministerMedication on mi.MedicationID equals am.MedicationID
-            //                    join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
-            //                    where ap.AccountID == accountID && pr.Status == "Complete"
-            //                    orderby p.Name
-            //                    select new NurseReportViewModel
-            //                    {
-            //                        MedicationName = m.MedicationName,
-            //                        Quantity = mi.Quantity,
-            //                        PatientName = p.Name,
-            //                        PatientSurname = p.Surname,
-            //                        AdministeredQuantity = am.AdministerQuantity,
-            //                        Date = am.Date,
-            //                        Time = TimeOnly.FromDateTime(DateTime.Now),
+            var combinedData = (from p in _dbContext.PatientInfo
+                                join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
+                                join ap in _dbContext.AdmittedPatients on bs.PatientID equals ap.PatientID
+                                join ac in _dbContext.Accounts on ap.AccountID equals ac.AccountID
+                                join dp in _dbContext.DispensedScriptsModel on ac.AccountID equals dp.AccountID
+                                join pr in _dbContext.Prescription on dp.PrescriptionID equals pr.PrescriptionID
+                                join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
+                                join ma in _dbContext.PharmacyMedication on dp.PrescriptionID equals ma.MedicationID
+                                join am in _dbContext.AdministerMedication on mi.MedicationID equals am.MedicationID
+                                join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
+                                where ap.AccountID == accountID && pr.Status == "Administered"
+                                orderby p.Name
+                                select new NurseReportViewModel
+                                {
+                                    Date = am.Date,
+                                    MedicationName = m.MedicationName,
+                                    Quantity = am.AdministerQuantity,
+                                    Patient = p.Name + " " + p.Surname,
 
-            //                    }).ToList();
+                                    Time = TimeOnly.FromDateTime(DateTime.Now),
 
-            //var viewModel = new NurseReportViewModel
-            //{
-            //    AllcombinedData = combinedData,
+                                }).ToList();
+            var SummaryData = (from p in _dbContext.PatientInfo
+                                join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
+                                join ap in _dbContext.AdmittedPatients on bs.PatientID equals ap.PatientID
+                                join ac in _dbContext.Accounts on ap.AccountID equals ac.AccountID
+                                join dp in _dbContext.DispensedScriptsModel on ac.AccountID equals dp.AccountID
+                                join pr in _dbContext.Prescription on dp.PrescriptionID equals pr.PrescriptionID
+                                join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
+                                join ma in _dbContext.PharmacyMedication on dp.PrescriptionID equals ma.MedicationID
+                                join am in _dbContext.AdministerMedication on mi.MedicationID equals am.MedicationID
+                                join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
+                                where ap.AccountID == accountID && pr.Status == "Administered"
+                                orderby p.Name
+                                select new NurseReportViewModel
+                                {
+                                    Date = am.Date,
+                                    MedicationName = m.MedicationName,
+                                    Quantity = am.AdministerQuantity,
+                                    Patient = p.Name + " " + p.Surname,
 
-            //};
+                                    Time = TimeOnly.FromDateTime(DateTime.Now),
 
-            //var userName = HttpContext.Session.GetString("UserName");
-            //var userSurname = HttpContext.Session.GetString("UserSurname");
-            //var userEmail = HttpContext.Session.GetString("UserEmail");
-            //var today = DateOnly.FromDateTime(DateTime.Today);
-
-            //var surgeryCount = _dbContext.BookSurgery
-            //    .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
-            //    .Count();
+                                }).ToList();
 
 
-            //var prescribedCount = (from p in _dbContext.PatientInfo
-            //                       join ap in _dbContext.AdmittedPatients
-            //                       on p.PatientID equals ap.PatientID
-            //                       join pr in _dbContext.Prescription
-            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
-            //                       where pr.Status == "Prescribed" && pr.AccountID == accountID
-            //                       select pr).Count();
+            var viewModel = new NurseReportViewModel
+            {
+                AllcombinedData = combinedData,
 
-            //var dispensedCount = (from p in _dbContext.PatientInfo
-            //                      join ap in _dbContext.AdmittedPatients
-            //                      on p.PatientID equals ap.PatientID
-            //                      join pr in _dbContext.Prescription
-            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
-            //                      where pr.Status == "Dispensed" && pr.AccountID == accountID
-            //                      select pr).Count();
+            };
 
-            //var rejectedCount = (from p in _dbContext.PatientInfo
-            //                     join ap in _dbContext.AdmittedPatients
-            //                     on p.PatientID equals ap.PatientID
-            //                     join pr in _dbContext.Prescription
-            //                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
-            //                     where pr.Status == "Rejected" && pr.AccountID == accountID
-            //                     select pr).Count();
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
-            //// Pass the prescribed count to the view
-            //ViewBag.SurgeryCount = surgeryCount;
-            //ViewBag.PrescribedCount = prescribedCount;
-            //ViewBag.DispensedCount = dispensedCount;
-            //ViewBag.RejectedCount = rejectedCount;
-            //ViewBag.UserAccountID = accountID;
-            //ViewBag.UserName = userName;
-            //ViewBag.UserSurname = userSurname;
-            //ViewBag.UserEmail = userEmail;
-            return View(/*viewModel*/);
+            var AdministeredMedicationCount = _dbContext.AdministerMedication
+                .Where(bs => bs.AccountID == accountID && bs.Date == today)
+                .Count();
+
+
+
+
+            // Pass the prescribed count to the view
+            ViewBag.AdministeredMedicationCount = AdministeredMedicationCount;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            ViewBag.AccountID = accountID;
+            return View(viewModel);
         }
 
 

@@ -77,40 +77,42 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-6 border" style="background-color: white;">
-                        <h2>Reports of @* @ViewBag.UserName @ViewBag.UserSurname *@:</h2>
-                        <h2>Report Generated:<span id="todayDate"></span></h2>
+                        <h2>Reports of  @ViewBag.UserName @ViewBag.UserSurname:</h2>
+                        <h2>Report Generated: <span id="todayDate"></span></h2>
                         <h2>Date Range: <span id="selectedDateRange"></span></h2>
 
-                        <table id="Prescriptions" class="table" style="width:100%">
+                        <table id="Medications" class="table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Patient</th>
-                                    <th scope="col">Medication Name</th>
-                                    <th scope="col">Quantity</th>
+                                    <th scope="col">DATE</th>
+                                    <th scope="col">PATIENT</th>
+                                    <th scope="col">MEDICATION</th>
+                                    <th scope="col">QTY</th>
+                                    <th scope="col">TIME</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @* @foreach (var Data in Model.AllcombinedData)
+                                @foreach (var Data in Model.AllcombinedData)
                                 {
                                     <tr>
                                         <td>@Data.Date</td>
-                                        <td>@Data.PatientName</td>
+                                        <td>@Data.Patient</td>
                                         <td>@Data.MedicationName</td>
-                                        <td>@Data.AdministeredMedication</td>
+                                        <td>@Data.AdministeredQuantity</td>
+                                        <td>@Data.Time</td>
                                     </tr>
-                                } *@
+                                }
                             </tbody>
                         </table>
                         <div class="totals">
-                            Total Patients: <span id="totalPatients">0</span>
+                            TOTAL PATIENTS: <span id="totalPatients"></span>
                         </div>
-                        <h3>Summary Administered Medication:</h3>
+                        <h3>SUMMARY PER MEDICINE:</h3>
                         <table id="Summary" class="table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Medication </th>
-                                    <th scope="col">Quantity</th>
+                                    <th scope="col">MEDICINE </th>
+                                    <th scope="col">QTY ADMINISTERED</th>
                                    
                                 </tr>
                             </thead>
@@ -136,7 +138,7 @@
                 document.getElementById('summaryBody').innerHTML = '';
                 var totalPatients = 0;
 
-                var rows = document.querySelectorAll('#Surgeries tbody tr');
+                var rows = document.querySelectorAll('#Medications tbody tr');
                 rows.forEach(function (row) {
                     var rowDate = row.cells[0].textContent;
                     var formattedRowDate = new Date(rowDate).toISOString().split('T')[0];
@@ -148,20 +150,20 @@
                         row.style.display = ''; // Show row
                         uniquePatients.add(patientName);
 
-                        var treatmentName = row.cells[2].textContent;
-                        var treatmentCode = row.cells[3].textContent;
+                        var MedicationName = row.cells[2].textContent;
+                        var Quantity = row.cells[3].textContent;
 
-                        updateSummary(treatmentName, treatmentCode);
+                        updateSummary(MedicationName, Quantity);
                     }
                 });
 
                 document.getElementById('totalPatients').textContent = uniquePatients.size;
             }
 
-            function updateSummary(treatmentName, treatmentCode) {
+            function updateSummary(MedicationName, Quantity) {
                 var summaryBody = document.getElementById('summaryBody');
                 var existingRow = Array.from(summaryBody.querySelectorAll('tr')).find(function (row) {
-                    return row.dataset.treatmentCode === treatmentCode;
+                    return row.dataset.Quantity === Quantity;
                 });
 
                 if (existingRow) {
@@ -169,11 +171,11 @@
                     countCell.textContent = parseInt(countCell.textContent) + 1;
                 } else {
                     var newRow = document.createElement('tr');
-                    newRow.dataset.treatmentCode = treatmentCode;
+                    newRow.dataset.Quantity = Quantity;
 
                     newRow.innerHTML = `
-                                        <td>${treatmentName}</td>
-                                        <td>${treatmentCode}</td>
+                                                <td>${MedicationName}</td>
+                                                <td>${Quantity}</td>
                                         <td>1</td>
                                     `;
                     summaryBody.appendChild(newRow);

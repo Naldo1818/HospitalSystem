@@ -58,5 +58,6 @@ namespace DEMO.ViewModels
         public string? MedicationName { get;  set; }
         public string? Instructions { get;  set; }
         public int Quantity { get;  set; }
+        public int MedicationID { get; set; }
     }
 }
