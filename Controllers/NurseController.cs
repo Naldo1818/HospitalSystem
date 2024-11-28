@@ -480,8 +480,6 @@ namespace DEMO.Controllers
             var combinedData = (from p in _dbContext.PatientInfo
                                 join ap in _dbContext.AdmittedPatients on p.PatientID equals ap.PatientID
                                 join pr in _dbContext.Prescription on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                join mis in _dbContext.MedicationInstructions on pr.PrescriptionID equals mis.PrescriptionID
-                                join meds in _dbContext.Medication on mis.MedicationID equals meds.MedicationID
                                 where pr.Status == "Dispensed" && pr.AdmittedPatientID == admittedPatientId
                                 orderby pr.Urgency == "Yes" descending, p.Name
                                 select new PrescriptionListViewModal
@@ -506,6 +504,7 @@ namespace DEMO.Controllers
             ViewBag.PatientName = name;
             ViewBag.PatientWard = ward;
             ViewBag.PatientBed = bed;
+            ViewBag.AdmittedPatientID = admittedPatientId;
             ViewBag.Time = TimeOnly.FromDateTime(DateTime.Now);
 
             // Create a ViewModel instance and pass the data to the view
@@ -533,10 +532,34 @@ namespace DEMO.Controllers
             prescription.Status = "Collected";
             _dbContext.SaveChanges();
 
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+
+            ViewBag.AccountID = accountID;
+            ViewBag.AdmittedPatientID = admittedPatientId;
+            ViewBag.PrescriptionID = prescriptionId;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.PatientSurname = surname;
+            ViewBag.PatientName = name;
+            ViewBag.PatientWard = ward;
+            ViewBag.PatientBed = bed;
+            ViewBag.Time = TimeOnly.FromDateTime(DateTime.Now);
+
             // Redirect to the Medication Administration page
-            return RedirectToAction("MedicationCollected");
+
+            return RedirectToAction("MedicationCollected", new
+            {
+                prescriptionID = prescriptionId,
+                name = name,
+                surname = surname,
+                ward = ward,
+                bed = bed,
+                admittedPatientId = admittedPatientId,
+                accountID = accountID
+            });
         }
-       
+
         public IActionResult MedicationCollected(int prescriptionID,string name, string surname, string ward, int bed, int admittedPatientId, int accountID)
         {
             // Fetch dispensed prescriptions along with patient information
@@ -599,9 +622,8 @@ namespace DEMO.Controllers
                 ward = ward,
                 bed = bed,
                 admittedPatientId = admittedPatientId,
-                accountID = accountID,
-                date = DateOnly.FromDateTime(DateTime.Now) // Pass the current date or any relevant value
-            }); 
+                accountID = accountID
+            });
         }
 
         public IActionResult MedicationAdministration(int prescriptionID, string name, string surname, string ward, int bed, int admittedPatientId, int accountID, DateOnly date)
@@ -877,6 +899,7 @@ namespace DEMO.Controllers
                                   join ap in _dbContext.AdmittedPatients on ad.AdmittedPatientID equals ap.AdmittedPatientID
                                   join pt in _dbContext.PatientInfo on ap.PatientID equals pt.PatientID
                                   join cm in _dbContext.Medication on ad.MedicationID equals cm.MedicationID
+                                  where ap.AdmittedPatientID == AdmittedPatientID && ap.AccountID == accountID
                                   select new PatientAllergyViewModel
                                   {
                                       MedicationName = cm.MedicationName,
