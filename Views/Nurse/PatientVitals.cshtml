@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Patient Records";
+    ViewData["Title"] = "Medical History";
     Layout = "_LayoutNurse";
 }
 @model DEMO.ViewModels.PatientAllergyViewModel
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Records</title>
+    <title>Medical History</title>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -119,6 +119,7 @@
                                     <th scope="col">Respiration Rate (Breaths/min)</th>
                                     <th scope="col">Blood Glucose Level (mg/dL)</th>
                                     <th scope="col">Temperature (°C)</th>
+                                    <th scope="col">Time Taken</th>
                                     
                                 </tr>
                             </thead>
@@ -135,6 +136,7 @@
                                         <td>@Data.Respiration</td>
                                         <td>@Data.BloodGlucoseLevel</td>
                                         <td>@Data.Temperature</td>
+                                        <td>@Data.Time</td>
                                     </tr>
 
                                 }
@@ -173,7 +175,7 @@
                             <thead>
                                 <tr>
 
-                                    <th scope="col">Name</th>
+                                    <th scope="col">Condition</th>
                                     
 
                                 </tr>
@@ -207,9 +209,37 @@
                                 @foreach (var Data in Model.AllCurrentMed)
                                 {
                                     <tr>
-                                        <td>@Data.Name</td>
+                                        <td>@Data.MedicationName</td>
                                     </tr>
 
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div><div class="row" style="width:1200px">
+                <div class="col">
+                    
+                    <div class="p-3 mt-5 border">
+                        <table id="AdministeredMedication" class="display" style="width:100%">
+                            <h4>Administered Medication</h4>
+                            <thead>
+                                <tr>
+
+
+                                    <th scope="col">Medication</th>
+                                    <th scope="col">Quantity</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.AllAdministeredMedication)
+                                {
+                                    <tr>
+                                        <td>@Data.MedicationName</td>
+                                        <td>@Data.Quantity</td>
+                                    </tr>
+                                    
                                 }
                             </tbody>
                         </table>

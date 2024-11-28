@@ -16,7 +16,20 @@
         .container {
             padding-top: 50px;
         }
-        
+
+        table.dataTable {
+            width: 100%;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 5px;
+            padding: 6px 12px;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            width: auto;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -25,29 +38,16 @@
             <div class="row" style="width:1200px">
                 <div class="col">
                     <div class="p-3 mt-2 border">
-
-                        <form>
-                            <h2>Admissions List</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <label for="searchInput" class="form-label">Name or Surname</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
-                                </div>
-                                <div class="col-4 align-self-end">
-                                    <button type="submit" asp-action="AdmittedPatients" asp-controller="Nurse" class="btn btn-primary" style="width:70px">Search</button>
-                                </div>
-                            </div>
-                        </form>
+                        <h2>Admissions List</h2>
                     </div>
                 </div>
             </div>
             <div class="row" style="width:1200px">
                 <div class="col">
                     <div class="p-3 mt-5 border">
-                        <table id="example" class="display" style="width:100%">
+                        <table id="example" class="display" cellspacing="0">
                             <thead>
                                 <tr>
-
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Surgeon Name</th>
@@ -58,6 +58,7 @@
                                     <th scope="col">Bed Number</th>
                                     <th scope="col">Admitted Time</th>
                                     <th scope="col">Actions</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -77,63 +78,67 @@
                                             <td>@Data.Time</td>
                                             <td>
                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Patient Information</a>
-                                            </td>
-                                            <td>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Retake Vitals</a>
                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollected" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Collected Medication List</a>
+                                                
                                             </td>
                                             <td>
                                                 <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Retake Vitals</a>
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-accountID="@ViewBag.AccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber" asp-route-accountID="@ViewBag.UserAccountID">Prescription List</a>
+                                                <form method="post" asp-controller="Nurse" asp-action="Discharge">
+                                                    <input type="hidden" name="admittedPatientID" value="@Data.AdmittedPatientID" />
+                                                    <input type="hidden" name="accountID" value="@ViewBag.AccountID" />
+                                                    <input type="hidden" name="userAccountID" value="@ViewBag.UserAccountID" />
+                                                    <input type="hidden" name="name" value="@Data.Name" />
+                                                    <input type="hidden" name="surname" value="@Data.Surname" />
+                                                    <input type="hidden" name="ward" value="@Data.WardName" />
+                                                    <input type="hidden" name="bed" value="@Data.BedNumber" />
+                                                    <button type="submit" class="btn btn-primary">
+                                                        Discharge Patient
+                                                    </button>
+                                                </form>
                                             </td>
-                                            <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-accountID="@ViewBag.AccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber" asp-route-accountID="@ViewBag.UserAccountID">Collect Medication</a>
-                                            </td>
-                                            <td>
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="DischargeList" asp-route-accountID="@ViewBag.AccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber" asp-route-accountID="@ViewBag.UserAccountID">Discharge</a>
-                                            </td>
+                                         
                                         </tr>
                                     }
                                 }
-                                
                             </tbody>
                         </table>
-                                    
-                                    
-                               
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
+
     <script>
         $(document).ready(function () {
+            // Initialize DataTable
             var table = $('#example').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
                 "language": {
                     "zeroRecords": "No matching records found"
                 }
             });
 
-            
-            function filterTable() {
-                var searchText = $('#searchInput').val().trim();
-                var dateText = $('#dateInput').val();
-
-                // Apply date filter on column 3 and general search
-                table.column(3).search(dateText ? dateText : '', true, false);
-                table.search(searchText).draw();
-
-                // Hide or show the table based on the input
-                if (searchText === '' && dateText === '') {
-                    $('#example').hide();
-                } else {
-                    $('#example').show();
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
+            // Apply custom search functionality (e.g., by name or surname) if needed
+            $('#searchInput').on('keyup', function () {
+                var searchText = this.value.trim().toLowerCase();
+                table.rows().every(function () {
+                    var data = this.data();
+                    var name = data[0].toLowerCase();
+                    var surname = data[1].toLowerCase();
+                    if (name.includes(searchText) || surname.includes(searchText)) {
+                        $(this.node()).show();
+                    } else {
+                        $(this.node()).hide();
                     }
-                }
-            }
-            $('#searchInput, #dateInput').on('keyup change', filterTable);
+                });
+            });
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

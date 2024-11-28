@@ -9,9 +9,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surgery Bookings</title>
-    @* <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script> *@
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <style>
         .container {
             padding-top: 50px;
@@ -116,28 +116,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach( var Data in Model.AllcombinedData){
-                                    
+                                @foreach (var Data in Model.AllcombinedData)
+                                {
                                     <tr>
-                                    <td>@Data.PatientName</td>
-                                    <td>@Data.PatientSurname</td>
-                                    <td>@Data.AccountName @Data.AccountSurname</td>
-                                    <td>@Data.SurgeryDate</td>
-                                    <td>@Data.SurgeryTime</td>
-                                    <td>@Data.Theater</td>
-                                    
-                                    <td>
-                                            <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionPage" asp-route-BookingID="@Data.BookingID" asp-route-accountID="@ViewBag.AccountID">Admit Patient</a>
-                                    </td>
+                                        <td>@Data.PatientName</td>
+                                        <td>@Data.PatientSurname</td>
+                                        <td>@Data.AccountName @Data.AccountSurname</td>
+                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.SurgeryTime</td>
+                                        <td>@Data.Theater</td>
+                                        <td>
+                                            @if (Data.IsAdmitted)
+                                            {
+                                                <span class="badge badge-success">@Data.AdmissionStatus</span>
+                                                <button class="btn btn-primary" disabled>Admitted</button>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmissionPage" asp-route-BookingID="@Data.BookingID" asp-route-accountID="@ViewBag.AccountID">Admit Patient</a>
+                                            }
+                                        </td>
                                     </tr>
-
                                 }
-                            
                             </tbody>
-
-
-                                
-
                                 
                         </table>
                     </div>

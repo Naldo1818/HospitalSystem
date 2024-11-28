@@ -15,6 +15,7 @@ namespace DEMO.Models.NurseModels
         public DateOnly SurgeryDate { get; set; }
         public string Theater { get; set; }
         public List<ViewBookings> AllcombinedData { get; set; }
-        
+        public string? AdmissionStatus { get;  set; }
+        public bool IsAdmitted { get;  set; }
     }
 }

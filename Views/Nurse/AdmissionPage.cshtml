@@ -56,7 +56,9 @@
                 url: "/lookup/GetAllAllergies",
                 type: "Get",
                 success: function (data) {
-
+                    data.sort(function (a, b) {
+                        return a.activeIngredientName.localeCompare(b.activeIngredientName);
+                    });
                     for (var i = 0; i < data.length; i++) {
                         var opt = new Option(data[i].activeIngredientName, data[i].activeingredientID);
                         $('#Allergies').append(opt).val(data.activeingredientID).html(data.activeIngredientName);
@@ -72,7 +74,9 @@
                 url: "/lookup/GetAllMedications",
                 type: "Get",
                 success: function (data) {
-
+                    data.sort(function (a, b) {
+                        return a.medicationName.localeCompare(b.medicationName);
+                    });
                     for (var i = 0; i < data.length; i++) {
                         var opt = new Option(data[i].medicationName, data[i].medicationID);
                         $('#Medication').append(opt).val(data.medicationID).html(data.medicationName);
@@ -88,6 +92,10 @@
                 url: "/lookup/GetAllConditions",
                 type: "Get",
                 success: function (data) {
+                    data.sort(function (a, b) {
+                        return a.conditionName.localeCompare(b.conditionName);
+                    });
+
 
                     for (var i = 0; i < data.length; i++) {
                         var opt = new Option(data[i].conditionName, data[i].conditionID);
@@ -486,11 +494,11 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Height">Height (cm)</label>
-                                                    <input type="number" name="Height" min="100" max="250" value="">
+                                                    <input type="number" name="Height" min="100" max="250" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="Weight">Weight (kg)</label>
-                                                    <input type="number" name="Weight" min="20" max="250" value="">
+                                                    <input type="number" name="Weight" min="20" max="250" required>
 
                                                     <input type="time" name="time" id="time" value="" hidden>
                                                 </div>
@@ -498,38 +506,38 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="SystolicBP">Systolic BP (mmHg)</label>
-                                                    <input type="number" name="Vitals.SystolicBloodPressure" min="80" max="150" value="">
+                                                    <input type="number" name="Vitals.SystolicBloodPressure" min="60" max="230" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="DiastolicBP">Diastolic BP (mmHg)</label>
-                                                    <input type="number" name="Vitals.DiastolicBloodPressure" min="40" max="100" value="">
+                                                    <input type="number" name="Vitals.DiastolicBloodPressure" min="40" max="120" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Pulse">Pulse (bpm)</label>
-                                                    <input type="number" name="Vitals.HeartRate" min="50" max="100" value="">
+                                                    <input type="number" name="Vitals.HeartRate" min="40" max="170" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BloodOxygen">Blood Oxygen (%)</label>
-                                                    <input type="number" name="Vitals.BloodOxygen" min="90" max="100" value="" step="0.1">
+                                                    <input type="number" name="Vitals.BloodOxygen" min="94" max="105" step="0.1" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Respiration">Respiration Rate (Breaths/min)</label>
-                                                    <input type="number" name="Vitals.Respiration" min="10" max="30" value="">
+                                                    <input type="number" name="Vitals.Respiration" min="8" max="30" required">
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BGL">Blood Glucose Level (mg/dL)</label>
-                                                    <input type="number" name="Vitals.BloodGlucoseLevel" min="50" max="170" value="">
+                                                    <input type="number" name="Vitals.BloodGlucoseLevel" min="50" max="220" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 
                                                 <div class="vital-group">
                                                     <label for="Temperature">Temperature (°C)</label>
-                                                    <input type="number" name="Vitals.Temperature" min="30.0" max="40.0" value="" step="0.1">
+                                                    <input type="number" name="Vitals.Temperature" min="33.0" max="38.0" step="0.1" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
