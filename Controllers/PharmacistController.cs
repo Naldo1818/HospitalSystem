@@ -1,7 +1,6 @@
 ﻿using DEMO.Data;
 using DEMO.Models;
 using DEMO.ViewModels;
-using DEMO.Data.Migrations;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;

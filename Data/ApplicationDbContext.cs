@@ -31,34 +31,19 @@ namespace DEMO.Data
         public DbSet<PatientAllergy> PatientAllergy { get; set; }
         public DbSet<RejectedScriptsModel> RejectScriptModel { get; set; }
         public DbSet<DispensedScriptsModel> DispensedScriptsModel { get; set; }
-
-        
-        
         public DbSet<AdmittedPatientsModel> AdmittedPatients { get; set; }
-        
         public DbSet<Condition> Condition { get; set; }
         public DbSet<PatientConditions> PatientConditions { get; set; }
         public DbSet<PharmMedModel> PharmacyMedication { get; set; }
-
         public DbSet<PatientMedication> patientMedication{ get; set; }
         public DbSet<CurrentMedication> CurrentMedication { get; set; }
-
         public DbSet<AdmissionStatus> AdmissionStatus { get; set; }
-        
         public DbSet<PatientVitals> PatientVitals { get; set; }
         public DbSet<ConditionActiveIngredient> ConditionActiveIngredient { get; set; }
-
-
         public DbSet<PharmacyMedicationModel> PharmacyMedicationModel { get; set; }
-
         public DbSet<OrderStockModel> StockOrderedTable { get; set; }
         public DbSet<AdministerMedication> AdministerMedication { get; set; }
-
-
-
         public DbSet<PharmMedicationStockOrder> PharmacyStock { get; set; }
-
-
         public DbSet<ReceivedStockModel> ReceivedStock { get; set; }
         
     }

@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using DEMO.Data.Migrations;
 using DEMO.Models;
 using DEMO.ViewModels;
 

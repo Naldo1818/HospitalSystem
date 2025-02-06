@@ -4,19 +4,16 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DEMO.Data.Migrations
+namespace DEMO.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241019034719_hmm")]
-    partial class hmm
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,6 +256,40 @@ namespace DEMO.Data.Migrations
                     b.ToTable("Address");
                 });
 
+            modelBuilder.Entity("DEMO.Models.NurseModels.AdministerMedication", b =>
+                {
+                    b.Property<int>("AdministerMedicationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdministerMedicationID"));
+
+                    b.Property<int>("AccountID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdministerQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdmittedPatientID")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int>("MedicationID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrescriptionID")
+                        .HasColumnType("int");
+
+                    b.Property<TimeOnly>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("AdministerMedicationID");
+
+                    b.ToTable("AdministerMedication");
+                });
+
             modelBuilder.Entity("DEMO.Models.NurseModels.AdmittedPatientsModel", b =>
                 {
                     b.Property<int>("AdmittedPatientID")
@@ -285,6 +316,9 @@ namespace DEMO.Data.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
+
                     b.Property<int>("PatientID")
                         .HasColumnType("int");
 
@@ -292,6 +326,9 @@ namespace DEMO.Data.Migrations
                         .HasColumnType("time");
 
                     b.Property<int>("WardID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Weight")
                         .HasColumnType("int");
 
                     b.HasKey("AdmittedPatientID");
@@ -462,16 +499,13 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("BloodGlucoseLevel")
                         .HasColumnType("int");
 
-                    b.Property<int>("BloodOxygen")
-                        .HasColumnType("int");
+                    b.Property<double>("BloodOxygen")
+                        .HasColumnType("float");
 
                     b.Property<int>("DiastolicBloodPressure")
                         .HasColumnType("int");
 
                     b.Property<int>("HeartRate")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Height")
                         .HasColumnType("int");
 
                     b.Property<int>("PatientID")
@@ -483,11 +517,8 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("SystolicBloodPressure")
                         .HasColumnType("int");
 
-                    b.Property<int>("Temperature")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Weight")
-                        .HasColumnType("int");
+                    b.Property<double>("Temperature")
+                        .HasColumnType("float");
 
                     b.Property<TimeOnly>("time")
                         .HasColumnType("time");
@@ -557,6 +588,87 @@ namespace DEMO.Data.Migrations
                     b.ToTable("Ward");
                 });
 
+            modelBuilder.Entity("DEMO.Models.PharmMedicationStockOrder", b =>
+                {
+                    b.Property<int>("MedicationReorderID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicationReorderID"));
+
+                    b.Property<string>("MedicationForm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ReorderLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Schedule")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StockonHand")
+                        .HasColumnType("int");
+
+                    b.Property<int>("qtyOrdered")
+                        .HasColumnType("int");
+
+                    b.HasKey("MedicationReorderID");
+
+                    b.ToTable("PharmacyStock");
+                });
+
+            modelBuilder.Entity("DEMO.Models.PharmacistModels.OrderStockModel", b =>
+                {
+                    b.Property<int>("OrderedStockID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderedStockID"));
+
+                    b.Property<string>("DosageForm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PharmacistName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PharmacistSurname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PharmacyMedicationID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReorderLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Schedule")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockonHand")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderedStockID");
+
+                    b.ToTable("StockOrderedTable");
+                });
+
             modelBuilder.Entity("DEMO.Models.PharmacistModels.PharmMedModel", b =>
                 {
                     b.Property<int>("PharmacyMedicationlID")
@@ -565,7 +677,29 @@ namespace DEMO.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PharmacyMedicationlID"));
 
-                    b.Property<string>("DosageForm")
+                    b.Property<int>("MedicationID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReorderLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockonHand")
+                        .HasColumnType("int");
+
+                    b.HasKey("PharmacyMedicationlID");
+
+                    b.ToTable("PharmacyMedication");
+                });
+
+            modelBuilder.Entity("DEMO.Models.PharmacistModels.PharmacyMedicationModel", b =>
+                {
+                    b.Property<int>("PharmacyMedicationID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PharmacyMedicationID"));
+
+                    b.Property<string>("MedicationForm")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -585,47 +719,9 @@ namespace DEMO.Data.Migrations
                     b.Property<int>("StockonHand")
                         .HasColumnType("int");
 
-                    b.HasKey("PharmacyMedicationlID");
-
-                    b.ToTable("PharmacyMedication");
-                });
-
-            modelBuilder.Entity("DEMO.Models.PharmacistModels.PharmacyMedicationModel", b =>
-                {
-                    b.Property<int>("PharmacyMedicationID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PharmacyMedicationID"));
-
-                    b.Property<string>("DosageForm")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MedicationName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PharmMedDF")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PharmMedSchedule")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ReorderLevel")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Schedule")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockonHand")
-                        .HasColumnType("int");
-
                     b.HasKey("PharmacyMedicationID");
 
-                    b.ToTable("DayHospitalPharmacyMedication");
+                    b.ToTable("PharmacyMedicationModel");
                 });
 
             modelBuilder.Entity("DEMO.Models.PharmacistModels.RejectedScriptsModel", b =>
@@ -672,11 +768,6 @@ namespace DEMO.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Take")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<string>("Urgency")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -684,6 +775,36 @@ namespace DEMO.Data.Migrations
                     b.HasKey("PrescriptionID");
 
                     b.ToTable("Prescription");
+                });
+
+            modelBuilder.Entity("DEMO.Models.ReceivedStockModel", b =>
+                {
+                    b.Property<int>("ReceivedStockID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceivedStockID"));
+
+                    b.Property<string>("MedicationForm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MedicationID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MedicationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Schedule")
+                        .HasColumnType("int");
+
+                    b.Property<int>("qtyReceived")
+                        .HasColumnType("int");
+
+                    b.HasKey("ReceivedStockID");
+
+                    b.ToTable("ReceivedStock");
                 });
 
             modelBuilder.Entity("DEMO.Models.SurgeryTreatmentCode", b =>
