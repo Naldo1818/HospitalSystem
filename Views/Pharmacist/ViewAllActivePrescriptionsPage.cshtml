@@ -69,10 +69,10 @@
                         <table id="myTable" class="table display" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Patient Name</th>
-                                    <th scope="col">Patient Surname</th>
-                                    <th scope="col">Surgeon Name</th>
-                                    <th scope="col">Surgeon Surname</th>
+                                    <th scope="col">Patient</th>
+                                   
+                                    <th scope="col">Surgeon</th>
+                                   
                                     <th scope="col">Date Given</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Urgent</th>
@@ -86,11 +86,12 @@
                                 {
 
                                     <tr>
-                                        <td>@item.Name</td>
-                                        <td>@item.Surname</td>
-                                        <td>@item.SurgeonName</td>
-                                        <td>@item.SurgeonSurname</td>
+                                        <td>@item.Name @item.Surname</td>
+                                      
+                                        <td>@item.SurgeonName @item.SurgeonSurname</td>
+                                        
                                         <td>@item.DateGiven</td>
+                                        
                                         <td>@item.Status</td>
 
                                         <td style="@(item.Urgency == "Yes" ? "background-color: red;" : "")">
@@ -110,6 +111,8 @@
 
 
                                         </td>
+
+                                       
 
 
 

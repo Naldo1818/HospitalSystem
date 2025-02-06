@@ -6,6 +6,9 @@
 
 
 @model DEMO.ViewModels.PharmacistStockOrderViewModel
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -183,18 +186,19 @@
             </thead>
             <tbody id="myTable">
 
-                @foreach (var stock in Model.PharmacistStockOrders)
+                 @foreach (var stock in Model.StockOrder)
                 {
                     <tr>
                         <td>@stock.MedicationName</td>
                         <td>@stock.MedicationForm</td>
                         <td>@stock.StockonHand</td>
                         <td>@stock.ReorderLevel</td>
-                        <td>@stock.qty</td>
+                        <td>@stock.qtyOrdered</td>
+                        <td>@stock.Status</td>
                         
                     </tr>
                 }
-
+ 
 
 
 

@@ -55,5 +55,9 @@ namespace DEMO.ViewModels
         public List<PrescriptionListViewModal> AllPrescribedRejected { get; set; }
         public List<PrescriptionListViewModal> AllPrescribedDispensed { get; set; }
         public List<PrescriptionListViewModal> AllPrescribed { get; set; }
+        public string? MedicationName { get;  set; }
+        public string? Instructions { get;  set; }
+        public int Quantity { get;  set; }
+        public int MedicationID { get; set; }
     }
 }

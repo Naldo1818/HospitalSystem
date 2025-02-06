@@ -1,33 +1,27 @@
 ﻿@{
     ViewData["Title"] = "OrderStock";
     Layout = "_LayoutPharmacist";
-
 }
 
-
 @model DEMO.ViewModels.PharmacistStockOrderViewModel
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
-    <!-- DataTables JS -->
+    <!-- DataTables CSS and JS (if needed) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css" asp-append-version="true">
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
     <style>
         .active-tab {
             background-color: teal;
@@ -58,16 +52,16 @@
             gap: 15px;
         }
 
-            .row-two-columns .email-group {
-                flex: 1 1 48%;
-            }
-
-        .email-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
+        .email-group {
+            flex: 1 1 48%;
         }
+
+            .email-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
 
         .email-group {
             text-align: left;
@@ -139,122 +133,63 @@
                 rows[i].style.display = rowContainsText ? '' : 'none';
             }
         }
+
     </script>
+
 </head>
 
 <body>
 
-
-
-
-
-
     <!--Stock that needs to be ordered. Auto order-->
-    <div class="p-3 mt-5 border">
-        <!-- Your table content here -->
-        <h1><center>Quick order</center></h1>
-        <p>Please enter the amount of each medication you want to order and click place order. The order will be placed and email will be sent to purchasing manager</p>
-        <center>
-            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+    <form method="post" asp-action="StockOrderPageOrder">
+        <div class="p-3 mt-5 border">
+            <h1><center>Quick order</center></h1>
+            <p>Please enter the amount of each medication you want to order and click place order. The order will be placed and email will be sent to purchasing manager</p>
+            <center>
+                <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search" />
+            </center>
 
-        </center>
-
-
-
-        <table class="table">
-
-
-
-
-
-            <thead>
-                <tr>
-                    <th scope="col">Medication Name</th>
-                    <th scope="col">Dosage Form</th>
-                    <th scope="col">Schedule</th>
-                    <th scope="col">Stock on Hand</th>
-                    <th scope="col">Re-order level</th>
-                    <th scope="col">Quantity required</th>
-
-
-
-                    <!-- More table headers can be added here -->
-                </tr>
-            </thead>
-            <tbody id="myTable">
-
-                @foreach (var stock in Model.PharmacistStockOrders)
-                {
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>@stock.MedicationName</td>
-                        <td>@stock.MedicationForm</td>
-                        <td>@stock.Schedule</td>
-
-                        <td>@stock.StockonHand</td>
-                        <td>@stock.ReorderLevel</td>
-                        <td>
-                            <input type="text" asp-for="qty" style="width:50px">
-
-                        </td>
+                        <th scope="col">Medication Name</th>
+                        <th scope="col">Dosage Form</th>
+                        <th scope="col">Stock on Hand</th>
+                        <th scope="col">Re-order level</th>
+                        <th scope="col">Quantity required</th>
                     </tr>
-                }
-
-
-
-
-            </tbody>
-
-
-
-
-        </table>
-
-        <button id="sendEmailBtn" class="btn btn-primary">Place Order and Send Email</button>
-
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $("#sendEmailBtn").click(function() {
-                    var orderData = [];
-                    $(".quantity-input").each(function() {
-                        var qty = $(this).val();
-                        var medId = $(this).data("medication-id");
-                        if (qty > 0) {
-                            orderData.push({ medicationId: medId, quantity: qty });
+                </thead>
+                <tbody id="myTable">
+                    @if (Model.PharmacistStockOrders != null && Model.PharmacistStockOrders.Any())
+                    {
+                        @foreach (var stock in Model.PharmacistStockOrders)
+                        {
+                            <tr>
+                                <td>@stock.MedicationName</td>
+                                <td>@stock.MedicationForm</td>
+                                <td>@stock.StockonHand</td>
+                                <td>@stock.ReorderLevel</td>
+                                <td>
+                                    <input type="number" name="qty" value="@stock.qty" style="width:50px" min="0">
+                                </td>
+                            </tr>
                         }
-                    });
+                    }
+                    else
+                    {
+                        <tr><td colspan="5">No stock orders available.</td></tr>
+                    }
 
-                    $.ajax({
-                        url: '@Url.Action("ViewAllOrders", "Pharmacist")',
-                        type: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ orders: orderData, notes: "Additional notes here" }),
-                        success: function(result) {
-                            alert("Email sent successfully!");
-                        },
-                        error: function(error) {
-                            alert("Error sending email: " + error.responseText);
-                        }
-                    });
-                });
-            });
-        </script>
+                </tbody>
+            </table>
 
+            <!-- Regular submit button (form submission) -->
+            <button type="submit">Place Order and Send Email</button>
 
-        
+            <!-- AJAX Submit Button (Optional) -->
 
-
-
-
-    </div>
-
-
-
-
-
-
-
-
+        </div>
+    </form>
 
 </body>
 </html>

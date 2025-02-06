@@ -53,6 +53,13 @@ namespace DEMO.Data
 
         public DbSet<OrderStockModel> StockOrderedTable { get; set; }
         public DbSet<AdministerMedication> AdministerMedication { get; set; }
+
+
+
+        public DbSet<PharmMedicationStockOrder> PharmacyStock { get; set; }
+
+
+        public DbSet<ReceivedStockModel> ReceivedStock { get; set; }
         
     }
 }

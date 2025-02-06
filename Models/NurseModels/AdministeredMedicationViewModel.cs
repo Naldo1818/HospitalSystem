@@ -2,9 +2,9 @@
 {
     public class AdministeredMedicationViewModel
     {
-    
-        public int PrescriptionID { get; set; }
-        public int QuantityAdministered { get; set; }
-        
+        public string MedicationName { get; set; }
+        public int AdministeredQuantity { get; set; }
+        public int MedicationID { get; set; }
+
     }
 }

@@ -149,37 +149,37 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="SystolicBP">Systolic BP (mmHg)</label>
-                                                    <input type="number" name="SystolicBloodPressure" min="80" max="200" required>
+                                                    <input type="number" name="SystolicBloodPressure" min="60" max="230" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="DiastolicBP">Diastolic BP (mmHg)</label>
-                                                    <input type="number" name="DiastolicBloodPressure" min="50" max="100" required>
+                                                    <input type="number" name="DiastolicBloodPressure" min="40" max="120" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Pulse">Pulse (bpm)</label>
-                                                    <input type="number" name="HeartRate" min="50" max="120" required>
+                                                    <input type="number" name="HeartRate" min="40" max="170" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BloodOxygen">Blood Oxygen (%)</label>
-                                                    <input type="number" name="BloodOxygen" min="94" max="100" required>
+                                                    <input type="number" name="BloodOxygen" min="94" max="105" step="0.1" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Respiration">Respiration Rate (Breaths/min)</label>
-                                                    <input type="number" name="Respiration" min="10" max="25" required>
+                                                    <input type="number" name="Respiration" min="8" max="30" required>
                                                 </div>
                                                 <div class="vital-group">
                                                     <label for="BGL">Blood Glucose Level (mg/dL)</label>
-                                                    <input type="number" name="BloodGlucoseLevel" min="60" max="200" required>
+                                                    <input type="number" name="BloodGlucoseLevel" min="50" max="220" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <label for="Temperature">Temperature (°C)</label>
-                                                    <input type="number" name="Temperature" min="36.0" max="38.0" step="0.1" required>
+                                                    <input type="number" name="Temperature" min="33.0" max="38.0" step="0.1" required>
                                                 </div>
                                             </div>
                                             <div class="row-two-columns">
@@ -191,6 +191,7 @@
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
                                                     <input type="hidden" name="AdmittedPatientID" id="AdmittedPatientID" value="@Model.AdmittedPatientID" />
+                                                    <input type="hidden" name="accountID" id="accountID" value="@ViewBag.AccountID" />
                                                     <input type="hidden" id="notesInput" name="notes" />
                                                 </div>
                                             </div>
@@ -231,6 +232,7 @@
         $(document).ready(function () {
             const height = parseFloat($('#patientHeight').text());
             const weight = parseFloat($('#patientWeight').text());
+        
 
             // Calculate BMI if height and weight are valid
             if (!isNaN(height) && !isNaN(weight) && height > 0 && weight > 0) {
@@ -243,12 +245,12 @@
             $('#Date').val(currentDate.toISOString().split('T')[0]); // yyyy-mm-dd
             $('#time').val(currentDate.toTimeString().split(' ')[0].slice(0, 5)); // HH:mm
 
-            // Validation on form submit
             $('#vitalForm').on('submit', function (e) {
                 $('#alerts').empty(); // Clear previous alerts
-                let hasErrors = false;
+                $('#modalAlerts').empty(); // Clear modal alerts
+                let alertMessages = [];
 
-                // Validate each vital sign and create alerts
+                // Collect vital sign inputs
                 const systolicBP = $('input[name="SystolicBloodPressure"]').val();
                 const diastolicBP = $('input[name="DiastolicBloodPressure"]').val();
                 const heartRate = $('input[name="HeartRate"]').val();
@@ -257,66 +259,58 @@
                 const bloodGlucoseLevel = $('input[name="BloodGlucoseLevel"]').val();
                 const temperature = $('input[name="Temperature"]').val();
 
-                if (systolicBP < 80 || systolicBP > 200) {
-                    $('#alerts').append('<div class="alert alert-warning">Systolic BP must be between 80 and 200 mmHg.</div>');
-                    hasErrors = true;
-                }
+                // Perform validation checks and create alerts
+                if (systolicBP < 80) alertMessages.push("Systolic BP is lower than 80 mmHg.");
+                if (systolicBP > 200) alertMessages.push("Systolic BP is higher than 200 mmHg.");
+                if (diastolicBP < 50) alertMessages.push("Diastolic BP is lower than 50 mmHg.");
+                if (diastolicBP > 100) alertMessages.push("Diastolic BP is higher than 100 mmHg.");
+                if (heartRate < 50) alertMessages.push("Heart Rate is lower than 50 bpm.");
+                if (heartRate > 120) alertMessages.push("Heart Rate is higher than 120 bpm.");
+                if (bloodOxygen < 95) alertMessages.push("Blood Oxygen is lower than 95%.");
+                if (respiration < 10) alertMessages.push("Respiration Rate is lower than 10 Breaths/min.");
+                if (bloodGlucoseLevel < 60) alertMessages.push("Blood Glucose Level is lower than 60 mg/dL.");
+                if (temperature < 34.0) alertMessages.push("Temperature is lower than 34.0°C.");
 
-                if (diastolicBP < 50 || diastolicBP > 100) {
-                    $('#alerts').append('<div class="alert alert-warning">Diastolic BP must be between 50 and 100 mmHg.</div>');
-                    hasErrors = true;
-                }
+                // If there are validation issues, prevent submission and show modal
+                if (alertMessages.length > 0) {
+                    e.preventDefault(); // Prevent form submission
 
-                if (heartRate < 50 || heartRate > 120) {
-                    $('#alerts').append('<div class="alert alert-warning">Heart Rate must be between 50 and 120 bpm.</div>');
-                    hasErrors = true;
-                }
+                    alertMessages.forEach(msg => {
+                        $('#modalAlerts').append(`<div class="alert alert-warning">${msg}</div>`);
+                    });
 
-                if (bloodOxygen < 94 || bloodOxygen > 100) {
-                    $('#alerts').append('<div class="alert alert-warning">Blood Oxygen must be between 94% and 100%.</div>');
-                    hasErrors = true;
-                }
-
-                if (respiration < 10 || respiration > 25) {
-                    $('#alerts').append('<div class="alert alert-warning">Respiration Rate must be between 10 and 25 Breaths/min.</div>');
-                    hasErrors = true;
-                }
-
-                if (bloodGlucoseLevel < 60 || bloodGlucoseLevel > 200) {
-                    $('#alerts').append('<div class="alert alert-warning">Blood Glucose Level must be between 60 and 200 mg/dL.</div>');
-                    hasErrors = true;
-                }
-
-                if (temperature < 36.0 || temperature > 38.0) {
-                    $('#alerts').append('<div class="alert alert-warning">Temperature must be between 36.0 and 38.0 °C.</div>');
-                    hasErrors = true;
-                }
-
-                // If there are errors, prevent form submission
-                if (hasErrors) {
-                    e.preventDefault();
+                    $('#alertModal').modal('show');
+                } else {
+                    // If no validation errors, proceed with form submission
+                    // You can optionally add logic here to perform other checks or pre-submit actions
+                    return true; // Form will be submitted normally
                 }
             });
 
-            // Handle Send Email button action
+            // Validation on modal confirmation (Submit after confirming alerts)
             $('#emailVitalsButton').on('click', function () {
-                // Change the action parameter to 'SendEmail' for the AJAX request
-                const formData = $('#vitalForm').serialize() + '&action=SendEmail';
-
-                // Submit the form via AJAX
-                $.ajax({
-                    type: 'POST',
-                    url: $('#vitalForm').attr('action'),
-                    data: formData,
-                    success: function () {
-                        // Redirect to the Email Vitals page
-                        window.location.href = '@Url.Action("EmailVitals", "Nurse")';
-                    },
-                    error: function () {
-                        alert('An error occurred while saving the vitals.');
+                // Check if alerts exist in the modal
+                if ($('#modalAlerts').children().length > 0) {
+                    // Confirmation message for sending with warnings
+                    if (!confirm('There are alerts. Do you want to proceed anyway?')) {
+                        return; // Exit if user cancels
                     }
+                }
+
+                // Add notes to hidden input from modal
+                const alertMessages = [];
+                $('#modalAlerts .alert').each(function () {
+                    alertMessages.push($(this).text());
                 });
+                $('#notesInput').val(alertMessages.join('; '));
+
+                // Close the modal
+                $('#alertModal').modal('hide');
+
+                // Submit the form after closing the modal
+                $('#vitalForm')[0].submit();  // Submit the form programmatically after confirmation
             });
+
         });
 
     </script>

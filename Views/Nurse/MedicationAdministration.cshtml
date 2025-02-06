@@ -1,4 +1,8 @@
-﻿@{
+﻿View : saving the data
+
+View :
+
+@{
     ViewData["Title"] = "Medication Administration";
     Layout = "_LayoutNurse";
 }
@@ -19,6 +23,7 @@
         .container {
             padding-top: 50px;
         }
+
         .active-tab {
             background-color: teal;
             color: white;
@@ -122,81 +127,50 @@
                         <div class="header-labels">
                             <label>Name: @ViewBag.PatientName</label>
                             <label>Surname: @ViewBag.PatientSurname</label>
-                            
                         </div>
                         <div class="header-labels">
-                            <label>Ward: @ViewBag.patientWard </label>
-                            <label>Bed: @ViewBag.patientBed</label>
+                            <label>Ward: @ViewBag.PatientWard </label>
+                            <label>Bed: @ViewBag.PatientBed</label>
                         </div>
                     </div>
                     <hr />
                     <div class="row">
                         <div class="col-md-12 mx-0">
-                            <form id="msform">
+                            <form id="msform" method="post" asp-action="AdministerMedication" asp-controller="Nurse">
                                 <fieldset id="f-2">
                                     <div class="form-card">
                                         <h2 class="fs-title">View Prescription</h2>
-                                        <div class="row" style="width:auto ;display:none" id="rejectedRow">
-                                            <div class="col">
-                                                <div class="p-3 mt-5 border" style="background-color: white;">
-                                                    <h2>Patient Prescription</h2>
-                                                    <table id="PatientPrescript" class="display" style="width:100%">
-                                                        <thead>
-                                                            <tr>
-
-                                                                <th scope="col">Name</th>
-                                                                <th scope="col">Surname</th>
-                                                                <th scope="col">Prescription Date</th>
-                                                                <th scope="col">Pharmacist Name</th>
-                                                                <th scope="col">Pharmacist Surname</th>
-                                                                <th scope="col">Urgency</th>
-                                                                <th scope="col">Take</th>
-                                                                <th scope="col">Status</th>
-                                                                <th scope="col">Rejected Reason</th>
-                                                                <th scope="col">Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @* @foreach (var Data in Model.AllPrescribedRejected)
-                                                            {
-                                                                <tr>
-
-                                                                    <td>@Data.PatientName</td>
-                                                                    <td>@Data.PatientSurname</td>
-                                                                    <td>@Data.DateGiven</td>
-                                                                    <td>@Data.AccountName</td>
-                                                                    <td>@Data.AccountSurname</td>
-                                                                    <td>@Data.Urgency</td>
-                                                                    <td>@Data.Take</td>
-                                                                    <td>@Data.Status</td>
-                                                                    <td>@Data.RejectionReason</td>
-
-                                                                    <td>
-                                                                        <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
-                                                                            Check Prescription
-                                                                        </button>
-                                                                    </td>
-
-                                                                </tr>
-                                                            } *@
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+                                        <div class="table-responsive">
+                                            <table id="PreMedicationTable" class="display" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Medicine</th>
+                                                        <th>Prescribed Quantity</th>
+                                                        <th>Instructions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var medication in Model.AllPrescribedDispensed)
+                                                    {
+                                                        <tr>
+                                                            <td>@medication.MedicationName</td>
+                                                            <td>@medication.Quantity</td>
+                                                            <td>@medication.Instructions</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
                                         </div>
+
                                         <div class="form-group">
                                             <hr />
                                             <h4>Administer Medication</h4>
                                             <hr />
                                             <div class="row-two-columns">
                                                 <div class="vital-group">
-                                                    <label for="Medicine">Choose Medicine</label>
-                                                    <select class="select2" id="MedicineSelect">
+                                                    <label for="MedicineSelect">Choose Medicine</label>
+                                                    <select class="select2" id="MedicineSelect" class="form-control">
                                                         <option value="" disabled selected>Choose Medicine</option>
-                                                        <option value="Aspirin">Aspirin</option>
-                                                        <option value="Ibuprofen">Ibuprofen</option>
-                                                        <option value="Acetaminophen">Acetaminophen</option>
-                                                        <!-- Add more options as needed -->
                                                     </select>
                                                 </div>
                                             </div>
@@ -216,7 +190,7 @@
 
                                                 <!-- DataTable to display prescribed medications -->
                                                 <div class="table-responsive">
-                                                    <table id="PreMedicationTable" class="display" style="width:100%">
+                                                    <table id="PreMedTable" class="display" style="width:100%">
                                                         <thead>
                                                             <tr>
                                                                 <th>Medicine</th>
@@ -230,8 +204,22 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                            <input type="button" name="previous" class="previous action-button-previous" value="Back" />
-                                            <input type="button" name="next" class="next action-button" value="Save" />
+
+                                            <button type="button" class="previous action-button-previous" onclick="window.location.href='@Url.Action("MedicationCollected", "Nurse", new { prescriptionID = ViewBag.PrescriptionID, name = ViewBag.PatientName, surname = ViewBag.PatientSurname, ward = ViewBag.PatientWard, bed = ViewBag.PatientBed, admittedPatientId = ViewBag.AdmittedPatientID, accountID = ViewBag.AccountID })'">Back</button>
+                                            <input type="hidden" id="MedicationsData" name="MedicationsData" />
+                                            <!-- Hidden Fields for PrescriptionID, AdmittedPatientID, and AccountID -->
+                                            <input type="hidden" name="prescriptionID" value="@Model.PrescriptionID" />
+                                            <input type="hidden" name="admittedPatientID" value="@ViewBag.AdmittedPatientID" />
+                                            <input type="hidden" name="accountID" value="@ViewBag.AccountID" />
+                                            <input type="hidden" name="prescriptionID" value="@Model.PrescriptionID" />
+                                            <input type="hidden" name="name" value="@Model.PatientName" />
+                                            <input type="hidden" name="surname" value="@Model.PatientSurname" />
+                                            <input type="hidden" name="ward" value="@ViewBag.PatientWard" />
+                                            <input type="hidden" name="bed" value="@ViewBag.PatientBed" />
+                                            <input type="hidden" name="admittedPatientId" value="@ViewBag.AdmittedPatientID" />
+                                            <input type="hidden" name="accountID" value="@ViewBag.AccountID" />
+
+                                            <button name="submit" class="next action-button" type="submit">Submit</button>
                                         </div>
 
                                     </div>
@@ -251,38 +239,185 @@
                 allowClear: true
             });
 
-            // Initialize DataTable
-            var table = $('#PreMedicationTable').DataTable();
+            // Initialize DataTable for displaying administered medications
+            var table = $('#PreMedTable').DataTable();
 
-            // Function to add medication to the DataTable
-            $('#addMedicationButton').on('click', function () {
-                // Retrieve the selected values
-                const medicine = $('#MedicineSelect').val();
-                const quantity = $('#QuantityInput').val();
+            // Medication tracking object (medicationName -> administeredQuantity)
+            var medicationTrack = {};
 
-                // Check if both fields are selected
-                if (medicine && quantity) {
-                    // Add a new row to the DataTable
-                    table.row.add([
-                        medicine,
-                        quantity,
-                        `<button onclick="removeRow(this)">Remove</button>`
-                    ]).draw(false);
+            // Function to get prescribed quantity from the #PreMedicationTable
+            function getPrescribedQuantity(medicine) {
+                let prescribedQuantity = 0;
 
-                    // Clear the select input and quantity input
-                    $('#MedicineSelect').val(null).trigger('change');
-                    $('#QuantityInput').val('');
+                // Search for the medicine in the prescription table
+                $('#PreMedicationTable tbody tr').each(function () {
+                    const rowMedicine = $(this).find('td:first').text().trim();
+                    if (rowMedicine === medicine) {
+                        prescribedQuantity = parseInt($(this).find('td:eq(1)').text().trim(), 10) || 0;
+                        return false; // Exit the loop
+                    }
+                });
+
+                return prescribedQuantity;
+            }
+
+            function fetchAdministeredQuantity(admittedPatientId, medicationId) {
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: "/lookup/GetAdministeredQuantities",
+                        type: "GET",
+                        data: {
+                            prescriptionId: @Model.PrescriptionID,
+                            admittedPatientID: admittedPatientId
+                        },
+                        success: function (data) {
+                            const match = data.find(item => item.medicationID === parseInt(medicationId, 10));
+                            // Store the totalAdministered in medicationTrack
+                            const totalAdministered = match ? match.totalAdministered : 0;
+                            medicationTrack[medicationId] = { totalAdministered: totalAdministered, addedQuantity: 0 };
+                            resolve(totalAdministered);
+                        },
+                        error: function (error) {
+                            console.error("Error fetching administered quantity:", error);
+                            reject(0);
+                        }
+                    });
+                });
+            }
+
+            $('#addMedicationButton').on('click', async function () {
+                const medicineID = $('#MedicineSelect').val(); // Get the Medication ID
+                const medicine = $('#MedicineSelect option:selected').text(); // Get the Medication Name
+                const quantity = parseInt($('#QuantityInput').val(), 10); // Administered quantity
+                const admittedPatientId = @ViewBag.AdmittedPatientID; // Admitted patient ID
+
+                if (medicine && quantity && !isNaN(quantity) && medicineID) {
+                    // Fetch prescribed quantity
+                    const prescribedQuantity = getPrescribedQuantity(medicine);
+
+                    if (prescribedQuantity === 0) {
+                        alert("Error: Unable to determine prescribed quantity for the selected medication.");
+                        return;
+                    }
+
+                    try {
+                        // Fetch the already administered quantity from the database
+                        await fetchAdministeredQuantity(admittedPatientId, medicineID);
+
+                        // Fetch the totalAdministered from medicationTrack
+                        const totalAdministered = medicationTrack[medicineID].totalAdministered;
+
+                        // Add the quantities from the PreMedTable (already administered in the session)
+                        let currentTotalAdministered = totalAdministered;
+
+                        // Add quantities that are already in the PreMedTable for this medication
+                        $('#PreMedTable tbody tr').each(function () {
+                            const rowMedicine = $(this).find('td:first').text().trim();
+                            const rowQuantity = parseInt($(this).find('td:eq(1)').text().trim(), 10);
+
+                            // If the medication in the row matches the selected medicine, add to the currentTotalAdministered
+                            if (rowMedicine === medicine) {
+                                currentTotalAdministered += rowQuantity;
+                            }
+                        });
+
+                        // Ensure the total administered does not exceed the prescribed quantity
+                        if ((currentTotalAdministered + quantity) > prescribedQuantity) {
+                            alert(`Error: You cannot administer more than ${prescribedQuantity} units of ${medicine}. Already administered: ${currentTotalAdministered}.`);
+                            return;
+                        }
+
+                        // Add the medication to the tracking object
+                        medicationTrack[medicineID].addedQuantity += quantity;
+
+                        // Add row to the DataTable
+                        table.row.add([
+                            medicine,
+                            quantity,
+                            `<button onclick="removeRow(this)">Remove</button>`
+                        ]).draw(false);
+
+                        // Store medicationID in row data
+                        const lastRow = table.row(':last').node();
+                        $(lastRow).data('medication-id', medicineID);
+
+                        // Clear inputs
+                        $('#MedicineSelect').val(null).trigger('change');
+                        $('#QuantityInput').val('');
+                    } catch (error) {
+                        // Handle the error case
+                        alert('Error fetching administered quantity.');
+                    }
                 } else {
-                    alert('Please select both medicine and enter quantity.');
+                    alert('Please select both medicine and enter a valid quantity.');
                 }
+            });
+
+
+
+
+            // Function to remove a row from the DataTable
+            window.removeRow = function (button) {
+                const row = $(button).parents('tr');
+                const medicineName = row.find('td:first').text();
+                const quantity = parseInt(row.find('td:eq(1)').text(), 10);
+
+                // Decrease the administered quantity for the medication
+                if (medicationTrack[medicineName]) {
+                    medicationTrack[medicineName] -= quantity;
+                }
+
+                table.row(row).remove().draw();
+            };
+
+            // Fetch medications for the prescription
+            const prescriptionId = @Model.PrescriptionID;
+
+            $.ajax({
+                url: "/lookup/GetAllMedicationsForPrescription",
+                type: "GET",
+                data: { prescriptionId: prescriptionId },
+                success: function (data) {
+                    $('#MedicineSelect').empty().append('<option value="" disabled selected>Choose Medicine</option>');
+
+                    data.forEach(function (item) {
+                        const opt = new Option(item.medicationName, item.medicationID);
+                        $('#MedicineSelect').append(opt);
+                    });
+                },
+                error: function (error) {
+                    console.error("Error fetching medications:", error);
+                }
+            });
+
+            // Modify the submit button to collect table data
+            $('button[name="submit"]').on('click', function () {
+                // Collect table data and serialize it into an array of objects
+                var medications = [];
+                $('#PreMedTable tbody tr').each(function () {
+                    var medicationName = $(this).find('td:eq(0)').text();
+                    var administeredQuantity = parseInt($(this).find('td:eq(1)').text(), 10);
+                    var medicationID = $(this).data('medication-id'); // Retrieve MedicationID from the row data
+
+                    medications.push({
+                        MedicationName: medicationName,
+                        AdministeredQuantity: administeredQuantity,
+                        MedicationID: medicationID
+                    });
+                });
+
+                // Convert the medications array to JSON and set it in the hidden input field
+                $('#MedicationsData').val(JSON.stringify(medications));
+
+                // Submit the form
+                $('#msform').submit();
             });
         });
 
-        // Function to remove a row from the DataTable
-        function removeRow(button) {
-            var table = $('#PreMedicationTable').DataTable();
-            table.row($(button).parents('tr')).remove().draw();
-        }
+
+
+
     </script>
+
 </body>
 </html>

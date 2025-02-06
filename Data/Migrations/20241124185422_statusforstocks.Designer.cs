@@ -4,6 +4,7 @@ using DEMO.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DEMO.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241124185422_statusforstocks")]
+    partial class statusforstocks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -775,36 +778,6 @@ namespace DEMO.Data.Migrations
                     b.HasKey("PrescriptionID");
 
                     b.ToTable("Prescription");
-                });
-
-            modelBuilder.Entity("DEMO.Models.ReceivedStockModel", b =>
-                {
-                    b.Property<int>("ReceivedStockID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReceivedStockID"));
-
-                    b.Property<string>("MedicationForm")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MedicationID")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MedicationName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Schedule")
-                        .HasColumnType("int");
-
-                    b.Property<int>("qtyReceived")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReceivedStockID");
-
-                    b.ToTable("ReceivedStock");
                 });
 
             modelBuilder.Entity("DEMO.Models.SurgeryTreatmentCode", b =>

@@ -27,5 +27,7 @@ namespace DEMO.ViewModels
         public List<PatientAllergyViewModel> Allallergy { get; set; }
         public List<PatientAllergyViewModel> AllCurrentMed { get; set; }
         public List<PatientAllergyViewModel> AllConditions { get; set; }
+        public List<PatientAllergyViewModel> AllAdministeredMedication { get; set; }
+        public int Quantity { get; internal set; }
     }
 }

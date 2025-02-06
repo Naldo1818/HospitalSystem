@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DEMO.Models;
 
 namespace DEMO.ViewModels
 {
@@ -40,10 +41,15 @@ namespace DEMO.ViewModels
         public List<PharmacistStockOrderViewModel> PharmacistStockOrders { get; set; }
 
 
+
+
         public int qty { get; set; }
 
+        public List<PharmMedicationStockOrder> StockOrder { get; set; }
 
-        //public List<PharmacyMedicationViewModel> combinedinfo { get; set; }
+        public List<ReceivedStockModel> ReceivedStock { get; set; }
+
+
 
     }
 }

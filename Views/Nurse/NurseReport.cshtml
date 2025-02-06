@@ -1,6 +1,6 @@
-﻿@* @{
-    ViewData["Title"] = "Surgery List";
-    Layout = "_Layout2";
+﻿@{
+    ViewData["Title"] = "Nurse Report";
+    Layout = "_LayoutNurse";
 }
 @model DEMO.Models.NurseModels.NurseReportViewModel
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookings Page</title>
+    <title>Nurse Report</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
@@ -77,17 +77,18 @@
             <div class="row" style="width:auto">
                 <div class="col">
                     <div class="p-3 mt-6 border" style="background-color: white;">
-                        <h2>Reports of @ViewBag.UserName @ViewBag.UserSurname:</h2>
-                        <h2>Report Generated:<span id="todayDate"></span></h2>
+                        <h2>Reports of:  @ViewBag.UserName @ViewBag.UserSurname</h2>
+                        <h2>Report Generated: <span id="todayDate"></span></h2>
                         <h2>Date Range: <span id="selectedDateRange"></span></h2>
 
-                        <table id="Prescriptions" class="table" style="width:100%">
+                        <table id="Medications" class="table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Patient</th>
-                                    <th scope="col">Medication Name</th>
-                                    <th scope="col">Quantity</th>
+                                    <th scope="col">DATE</th>
+                                    <th scope="col">PATIENT</th>
+                                    <th scope="col">MEDICATION</th>
+                                    <th scope="col">QTY</th>
+                                    <th scope="col">TIME</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,22 +96,23 @@
                                 {
                                     <tr>
                                         <td>@Data.Date</td>
-                                        <td>@Data.PatientName</td>
+                                        <td>@Data.Patient</td>
                                         <td>@Data.MedicationName</td>
-                                        <td>@Data.AdministeredMedication</td>
+                                        <td>@Data.Quantity</td>
+                                        <td>@Data.Time</td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                         <div class="totals">
-                            Total Patients: <span id="totalPatients">0</span>
+                            TOTAL PATIENTS: <span id="totalPatients"></span>
                         </div>
-                        <h3>Summary Administered Medication:</h3>
+                        <h3>SUMMARY PER MEDICINE:</h3>
                         <table id="Summary" class="table" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Medication </th>
-                                    <th scope="col">Quantity</th>
+                                    <th scope="col">MEDICINE </th>
+                                    <th scope="col">QTY ADMINISTERED</th>
                                    
                                 </tr>
                             </thead>
@@ -128,80 +130,115 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Function to filter rows based on the selected date range
             function filterByDate() {
                 var startDate = document.getElementById('StartDateInput').value;
                 var endDate = document.getElementById('EndDateInput').value;
                 var uniquePatients = new Set();
 
+                // Reset the summary table and total patients count
                 document.getElementById('summaryBody').innerHTML = '';
                 var totalPatients = 0;
 
-                var rows = document.querySelectorAll('#Surgeries tbody tr');
+                // Get all rows of the Medications table
+                var rows = document.querySelectorAll('#Medications tbody tr');
+
+                // Loop through each row and filter based on date
                 rows.forEach(function (row) {
-                    var rowDate = row.cells[0].textContent;
-                    var formattedRowDate = new Date(rowDate).toISOString().split('T')[0];
-                    var patientName = row.cells[1].textContent;
+                    var rowDate = row.cells[0].textContent; // Get the date from the first column
+                    var rowDateObj = new Date(rowDate); // Convert the date string to a Date object
 
-                    if ((startDate && formattedRowDate < startDate) || (endDate && formattedRowDate > endDate)) {
-                        row.style.display = 'none';
-                    } else {
+                    // Convert startDate and endDate to Date objects
+                    var startDateObj = startDate ? new Date(startDate) : null;
+                    var endDateObj = endDate ? new Date(endDate) : null;
+
+                    // Flag to determine if the row should be shown
+                    var isWithinDateRange = true;
+
+                    // Compare the row date with the selected start and end dates
+                    if (startDateObj && rowDateObj < startDateObj) {
+                        isWithinDateRange = false; // Row is before the start date
+                    }
+                    if (endDateObj && rowDateObj > endDateObj) {
+                        isWithinDateRange = false; // Row is after the end date
+                    }
+
+                    // Show or hide the row based on date range
+                    if (isWithinDateRange) {
                         row.style.display = ''; // Show row
-                        uniquePatients.add(patientName);
-
-                        var treatmentName = row.cells[2].textContent;
-                        var treatmentCode = row.cells[3].textContent;
-
-                        updateSummary(treatmentName, treatmentCode);
+                        uniquePatients.add(row.cells[1].textContent); // Add unique patient names to the set
+                        var MedicationName = row.cells[2].textContent;
+                        var Quantity = row.cells[3].textContent;
+                        updateSummary(MedicationName, Quantity); // Update the summary table
+                    } else {
+                        row.style.display = 'none'; // Hide row
                     }
                 });
 
+                // Update total patient count
                 document.getElementById('totalPatients').textContent = uniquePatients.size;
             }
 
-            function updateSummary(treatmentName, treatmentCode) {
+            // Function to update the summary table for medication quantities
+            function updateSummary(MedicationName, Quantity) {
                 var summaryBody = document.getElementById('summaryBody');
+
+                // Check if the summary already has a row for this medication
                 var existingRow = Array.from(summaryBody.querySelectorAll('tr')).find(function (row) {
-                    return row.dataset.treatmentCode === treatmentCode;
+                    return row.dataset.medicationName === MedicationName;
                 });
 
                 if (existingRow) {
-                    var countCell = existingRow.querySelector('td:last-child');
-                    countCell.textContent = parseInt(countCell.textContent) + 1;
+                    // If the row exists, update the quantity
+                    var quantityCell = existingRow.querySelector('td:last-child');
+                    quantityCell.textContent = parseInt(quantityCell.textContent) + parseInt(Quantity);
                 } else {
+                    // If no row exists for this medication, create a new row
                     var newRow = document.createElement('tr');
-                    newRow.dataset.treatmentCode = treatmentCode;
+                    newRow.dataset.medicationName = MedicationName;
 
+                    // Add the medication name and quantity to the row
                     newRow.innerHTML = `
-                                        <td>${treatmentName}</td>
-                                        <td>${treatmentCode}</td>
-                                        <td>1</td>
-                                    `;
+                        <td>${MedicationName}</td>
+                        <td>${Quantity}</td>
+                    `;
+
+                    // Append the new row to the summary table body
                     summaryBody.appendChild(newRow);
                 }
             }
 
+            // Function to display the selected date range
             function displaySelectedDates() {
                 var startDate = document.getElementById('StartDateInput').value;
                 var endDate = document.getElementById('EndDateInput').value;
                 var today = new Date().toLocaleDateString();
 
+                // Format the selected start and end dates for display
+                var formattedStartDate = startDate ? new Date(startDate).toLocaleDateString() : 'Not selected';
+                var formattedEndDate = endDate ? new Date(endDate).toLocaleDateString() : 'Not selected';
+
+                // Update the displayed date range
                 document.getElementById('todayDate').textContent = today;
-                document.getElementById('selectedDateRange').textContent = startDate + ' to ' + endDate;
+                document.getElementById('selectedDateRange').textContent = formattedStartDate + ' to ' + formattedEndDate;
             }
 
+            // Event listeners for the Start Date and End Date input fields
             document.getElementById('StartDateInput').addEventListener('change', function () {
-                filterByDate();
-                displaySelectedDates();
+                filterByDate(); // Apply date filter
+                displaySelectedDates(); // Display the selected date range
             });
 
             document.getElementById('EndDateInput').addEventListener('change', function () {
-                filterByDate();
-                displaySelectedDates();
+                filterByDate(); // Apply date filter
+                displaySelectedDates(); // Display the selected date range
             });
 
+            // Initial filter and display of selected dates
             filterByDate();
             displaySelectedDates();
         });
+
     </script>
 
     <script>
@@ -242,4 +279,3 @@
     </script>
 </body>
 </html>
- *@

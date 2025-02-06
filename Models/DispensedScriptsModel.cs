@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations;
+
 
 namespace DEMO.Models
 {
@@ -10,10 +10,10 @@ namespace DEMO.Models
         [Key]
         public int DispensedScriptsID { get; set; }
        
-        [Required]
+        
         public int PrescriptionID {  get; set; }
 
-        [Required]
+       
         public int AccountID { get; set; }
 
 

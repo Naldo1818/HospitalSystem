@@ -16,10 +16,17 @@ namespace DEMO.ViewModels
 
 
         //prescription
+        public int  medicationid {  get; set; }
 
+
+        public string rejectscriptreason { get; set; }
+
+        public string medicationname { get; set; }
         public int PatientID { get; set; }
 
         public int AdmittedPatientID { get; set; }
+
+        public int pharmacistID { get; set; }
 
         public int PrescriptionID { get; set; }
 
@@ -86,6 +93,9 @@ namespace DEMO.ViewModels
 
         public List<PharmacistViewScriptModel> combinedData { get; set; }
 
+        public List<PharmacistViewScriptModel> allmedicationinfo { get; set; }
+
+
         public List<string> Allallergy { get; set; }
 
         public List<string> AllCurrentMed { get; set; }
@@ -102,6 +112,11 @@ namespace DEMO.ViewModels
 
         public List<string> allpresribedmeds { get; set; }
 
+
+        public List<PharmacistViewScriptModel> medicationinteractionsalerts { get; set; }
+        public List<PharmacistViewScriptModel> allallergyalerts { get; set; }
+
+        public List<PharmacistViewScriptModel> allcontraindicationalerts { get; set; }
 
 
         //public List<PharmacistViewScriptModel> PrescriptionDetails {  get; set; }

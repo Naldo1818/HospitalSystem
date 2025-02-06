@@ -13,7 +13,6 @@
         public TimeOnly Time { get; set; }
 
         public List<NurseReportViewModel> AllcombinedData { get; set; }
-
-
+        public string Patient { get; set; }
     }
 }
