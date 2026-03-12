@@ -163,7 +163,6 @@ namespace DEMO.Controllers
             }
             return View(login);
         }
-       
         public IActionResult Privacy()
         {
             return View();
@@ -174,43 +173,93 @@ namespace DEMO.Controllers
         }
         public IActionResult SurgeonHome()
         {
-           
-            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+
             var today = DateOnly.FromDateTime(DateTime.Today);
 
             var surgeryCount = _dbContext.BookSurgery
-                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
                 .Count();
-
 
             var prescribedCount = (from p in _dbContext.PatientInfo
                                    join ap in _dbContext.AdmittedPatients
                                    on p.PatientID equals ap.PatientID
                                    join pr in _dbContext.Prescription
                                    on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
-                                 join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
-                                 join pr in _dbContext.Prescription
+                                  join ap in _dbContext.AdmittedPatients
+                                  on p.PatientID equals ap.PatientID
+                                  join pr in _dbContext.Prescription
                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
-                                 select pr).Count();
-            
+                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                  select pr).Count();
+
             var rejectedCount = (from p in _dbContext.PatientInfo
                                  join ap in _dbContext.AdmittedPatients
                                  on p.PatientID equals ap.PatientID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                 on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected" && pr.AccountID == accountID
                                  select pr).Count();
 
-            // Pass the prescribed count to the view
+            var AdmissionsData = (from b in _dbContext.BookSurgery
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
+                                join bed in _dbContext.Bed on ap.BedId equals bed.BedId
+                                join w in _dbContext.Ward on bed.WardID equals w.WardId
+                                join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
+                                where b.AccountID == accountID
+                                && ap.AdmissionStatusID == 1
+                                && bed.Active == true
+                                && w.Active == true
+                                select new HomeViewModel
+                                {
+                                    PatientID = p.PatientID,
+                                    AdmittedPatientID = ap.AdmittedPatientID,
+                                    BookingID = b.BookingID,
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater,
+                                    WardName = w.WardName,
+                                    BedNumber = bed.Number,
+                                    AdmissionStatusDescription = status.Description,
+                                    Time = ap.Time
+                                })
+                                .OrderBy(a => a.Name)
+                                .ToList();
+
+            var SurgeryData = (from b in _dbContext.BookSurgery
+                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                where b.AccountID == accountID
+                                select new HomeViewModel
+                                {
+                                    BookingID = b.BookingID,
+                                    PatientID = b.PatientID,
+                                    AccountID = b.AccountID,
+                                    Name = p.Name,
+                                    Surname = p.Surname,
+                                    SurgeryDate = b.SurgeryDate,
+                                    SurgeryTime = b.SurgeryTime,
+                                    Theater = b.Theater
+                                }).OrderBy(a => a.Name).ToList();
+
+            
+            var viewModel = new HomeViewModel
+            {
+                AllSurgeryData = SurgeryData,
+                AllAdmissionsData = AdmissionsData
+            };
+
             ViewBag.SurgeryCount = surgeryCount;
             ViewBag.PrescribedCount = prescribedCount;
             ViewBag.DispensedCount = dispensedCount;
@@ -219,8 +268,8 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-            return View();
-      
+
+            return View(viewModel);
         }
         public IActionResult PatientList(string idNumber)
         {
@@ -524,7 +573,6 @@ namespace DEMO.Controllers
             // Redirect back to the CheckTreatmentCode view with the patient name and surname
             return RedirectToAction("SurgeryTreatmentCodes", new { bookingId = bookingID, name = patient.Name, surname = patient.Surname });
         }
-
         public IActionResult CheckTreatmentCode(int bookingId, string name, string surname)
         {
             var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
@@ -694,6 +742,7 @@ namespace DEMO.Controllers
                                 })
                      .OrderBy(a => a.Name)
                      .ToList();
+
             var viewModel = new AdmissionsListViewModel
             {
                 AllcombinedData = combinedData,

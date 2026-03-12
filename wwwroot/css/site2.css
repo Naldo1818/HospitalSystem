@@ -85,3 +85,22 @@ body {
     align-items: center;
     min-height: calc(100% - 1.75rem);
 }
+.card img {
+    object-fit: cover;
+    height: 180px;
+}
+
+.card {
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+h1 {
+    font-weight: 600;
+    color: #2c3e50;
+}

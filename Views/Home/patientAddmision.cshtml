@@ -1,8 +1,9 @@
-﻿@{
+﻿@using DEMO.ViewModels
+@{
     ViewData["Title"] = "Admissions List";
     Layout = "_Layout2";
 }
-@model DEMO.ViewModels.AdmissionsListViewModel
+@model AdmissionsListViewModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -231,8 +232,6 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- Add Prescription Modal -->
             <div class="modal fade" id="addPrescriptionModal" role="dialog" tabindex="-1" aria-labelledby="addPrescriptionModal" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
