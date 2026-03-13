@@ -3,6 +3,7 @@
     Layout = "_Layout2";
 }
 @model DEMO.ViewModels.PatientListViewModal
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,93 +19,156 @@
 
     <!-- jQuery -->
     <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- DataTables JS -->
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 
     <style>
-        #example_wrapper {
-            display: none;
+        /* --- Page Styling --- */
+        body {
+            background: #f4f6fb;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .modal-lg-custom {
-            max-width: 90% !important; /* Adjust as necessary */
-            width: 1000px; /* Fixed width, or adjust as needed */
-            
+        /* Page Cards */
+        .page-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+            padding: 25px;
         }
 
-
-        .modal-dialog-centered {
-            display: flex;
-            align-items: center;
-            min-height: calc(100% - 60px); /* Adjust based on header/footer height */
-            height: 80vh;
+        /* Page Title */
+        h2 {
+            font-weight: 600;
+            color: #2c3e50;
         }
 
+        /* Buttons */
+        .btn-primary {
+            background: #4e73df;
+            border: none;
+            border-radius: 6px;
+        }
+
+            .btn-primary:hover {
+                background: #2e59d9;
+            }
+
+        .btn-secondary {
+            border-radius: 6px;
+        }
+
+        /* Table Styling */
+        table.dataTable {
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+            table.dataTable thead {
+                background: #4e73df;
+                color: white;
+            }
+
+            table.dataTable tbody tr:hover {
+                background: #f1f4ff;
+            }
+
+        /* DataTable search bar */
+        .dataTables_filter input {
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+        }
+
+        /* Inputs */
+        .form-control {
+            border-radius: 6px;
+        }
+
+            .form-control:focus {
+                border-color: #4e73df;
+                box-shadow: 0 0 4px rgba(78,115,223,0.3);
+            }
+
+        /* Modal styling */
         .modal-content {
-            flex: 1;
-           
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
         }
 
-        .modal-content-custom{
-            position: relative;
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-direction: column;
-            flex-direction: column;
-            width: 105%;
-            pointer-events: auto;
-            background-color: #f0f0f0;
-            background-clip: padding-box;
-            border: 1px solid rgba(0, 0, 0, .2);
-            border-radius: .3rem;
-            outline: 0;
-            height: 61vh;
-        }
-           
-       
-
-        .modal-body {
-            overflow-y: auto; /* Enables scrolling if content overflows */
-            flex: 1 1 auto;
+        .modal-header {
+            background: #4e73df;
+            color: white;
+            border-bottom: none;
         }
 
-        .row {
-            display: -ms-flexbox;
-            display: flex;
-            -ms-flex-wrap: wrap;
-            flex-wrap: wrap;
-            margin-right: -2px;
-            margin-left: 0px;
+        .modal-title {
+            font-weight: 600;
         }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Radio containers */
+        #SurgeryTime,
+        #Theater,
+        #gender {
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #fafafa;
+            padding: 5px;
+        }
+
+        /* Add patient modal spacing */
+        .modal-body .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Input validation */
+        .is-valid {
+            border-color: #28a745;
+        }
+
+        .is-invalid {
+            border-color: #dc3545;
+        }
+
+        .text-danger {
+            font-size: 12px;
+        }
+
+        /* Hover effect for buttons in table */
+        .btn-group .btn {
+            transition: 0.2s;
+        }
+
+            .btn-group .btn:hover {
+                transform: scale(1.05);
+            }
     </style>
 </head>
-<body style="background-color: #f0f0f0;">
-    <!-- Main list-->
+
+<body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
+
+            <!-- Search & Add Patient -->
+            <div class="row">
                 <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="searchForm" >
+                    <div class="page-card mt-4">
+                        <form id="searchForm">
                             <h2>Patient List</h2>
                             <div class="form-group row">
                                 <div class="col-4">
-                                    <br>
-                                    <label for="exampleFormControlInput1" class="form-label">ID number</label>
-                                    <div class="input-container">
-                                        <input type="text" class="form-control" id="idNumber" placeholder="ID number"
-                                               pattern="^\d{13}$" required title="ID number must be exactly 13 digits." />
-                                        <span id="idNumberError" class="text-danger"></span> <!-- Error message displayed here -->
-                                      
-                                    </div>
+                                    <label for="idNumber" class="form-label">ID number</label>
+                                    <input type="text" class="form-control" id="idNumber" placeholder="ID number" pattern="^\d{13}$" required title="ID number must be exactly 13 digits." />
+                                    <span id="idNumberError" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
+                                <div class="col-4 mt-2">
                                     <button type="button" class="btn btn-primary" style="width:160px;" data-toggle="modal" data-target="#addPatientModal">Add New Patient</button>
                                 </div>
                             </div>
@@ -113,32 +177,32 @@
                 </div>
             </div>
 
-            <div class="row" style="width:auto">
+            <!-- Patient Table -->
+            <div class="row">
                 <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-
+                    <div class="page-card mt-4">
                         <table id="example" class="table display">
                             <thead>
                                 <tr>
-                                    <th scope="col">ID number</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Contact Number</th>
-                                    <th scope="col">E-Mail</th>
-                                    <th scope="col">Action</th>
+                                    <th>ID number</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Gender</th>
+                                    <th>Contact Number</th>
+                                    <th>E-Mail</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var Patient in Model.AllPatients)
                                 {
                                     <tr>
-                                        <td width="15%">@Patient.IDNumber</td>
-                                        <td width="15%">@Patient.Name</td>
-                                        <td width="15%">@Patient.Surname</td>
-                                        <td width="15%">@Patient.Gender</td>
-                                        <td width="15%">@Patient.ContactNumber</td>
-                                        <td width="15%">@Patient.Email</td>
+                                        <td>@Patient.IDNumber</td>
+                                        <td>@Patient.Name</td>
+                                        <td>@Patient.Surname</td>
+                                        <td>@Patient.Gender</td>
+                                        <td>@Patient.ContactNumber</td>
+                                        <td>@Patient.Email</td>
                                         <td>
                                             <div class="w-100 btn-group" role="group">
                                                 <a class="btn btn-primary"
@@ -151,7 +215,6 @@
                                         </td>
                                     </tr>
                                 }
-
                             </tbody>
                         </table>
                     </div>
@@ -160,74 +223,62 @@
         </main>
     </div>
 
-    <!-- book Surgery Modal -->
-    <div class="modal fade" id="bookSurgeryModal" tabindex="-1" role="dialog" aria-labelledby="bookSurgeryModalLabel" aria-hidden="true">
+    <!-- Modals (Book Surgery + Add Patient) -->
+    <!-- Book Surgery Modal -->
+    <div class="modal fade" id="bookSurgeryModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="bookSurgeryModalLabel">Book Surgery</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title">Book Surgery</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
-                <div class="modal-body" id="f-1">
-                    <form id="bookingForm" method="post" asp-action="BookSurgery" asp-controller="Home" )">
-                       
+                <div class="modal-body">
+                    <form id="bookingForm" method="post" asp-action="BookSurgery" asp-controller="Home">
                         <div class="form-group row">
                             <div class="col-4">
-                                <br>
-                                <label for="nameInput" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="nameInput" name="Name" readonly style="width:250px">
+                                <label>Name</label>
+                                <input type="text" class="form-control" id="nameInput" name="Name" readonly>
                             </div>
                             <div class="col-4">
-                                <br>
-                                <label for="surnameInput" class="form-label">Surname</label>
-                                <input type="text" class="form-control" id="surnameInput" name="Surname" readonly style="width:250px">
+                                <label>Surname</label>
+                                <input type="text" class="form-control" id="surnameInput" name="Surname" readonly>
                             </div>
-
-                        </div>
-                        <div class="form-group row">
                             <div class="col-4">
-                                <br>
-                                <label for="surgeonName" class="form-label">Surgeon Name</label>
-                                <input type="text" class="form-control" id="surgeonName" name="SurgeonName" style="width:250px" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
+                                <label>Surgeon Name</label>
+                                <input type="text" class="form-control" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-4">
-                                <br>
-                                <label for="surgeryDate" class="form-label">Surgery Date</label>
-                                <input type="date" class="form-control" id="surgeryDate" name="SurgeryDate" style="width:250px">
-                            </div>
-                            <div class="col-4">
-                                <br>
-                                <label class="form-label">Surgery Time</label>
-                                <div id="SurgeryTime" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
-                                    <div class="form-check" style="margin: 0;">
-                                        <input class="form-check-input" type="radio" name="SurgeryTime" id="AM" value="AM">
-                                        <label class="form-check-label" for="AM">AM</label>
+                                <label>Theater</label> 
+                                <div id="Theater" class="form-control" style="width:250px; display: inline-table; justify-content: space-around; align-items: center;">
+                                    <div class="form-check"> 
+                                        <input class="form-check-input" type="radio" name="Theater" id="Dove Theatre" value="Dove Theatre">
+                                        <label class="form-check-label" for="Dove Theatre">Dove Theatre</label>
+                                    </div> 
+                                    <div class="form-check"> 
+                                        <input class="form-check-input" type="radio" name="Theater" id="Eagle Theatre" value="Eagle Theatre"> 
+                                        <label class="form-check-label" for="Eagle Theatre">Eagle Theatre</label> 
                                     </div>
-                                    <div class="form-check" style="margin: 0;">
-                                        <input class="form-check-input" type="radio" name="SurgeryTime" id="PM" value="PM">
-                                        <label class="form-check-label" for="PM">PM</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="Hadida Theatre" value="Hadida Theatre"> <label class="form-check-label" for="Hadida Theatre">Hadida Theatre</label>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-4">
-                                <br>
-                                <label for="Theater" class="form-label">Theater</label>
-                                <div id="Theater" class="form-control" style="width:250px; padding: 10px; display: inline-table; justify-content: space-around; align-items: center;">
+                                <label>Surgery Date</label>
+                                <input type="date" class="form-control" name="SurgeryDate">
+                            </div>
+                            <div class="col-4">
+                                <label>Surgery Time</label>
+                                <div id="SurgeryTime" class="form-control d-flex justify-content-around">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="Theater" id="Dove Theatre" value="Dove Theatre">
-                                        <label class="form-check-label" for="Dove Theatre">Dove Theatre</label>
+                                        <input class="form-check-input" type="radio" name="SurgeryTime" id="AM" value="AM">
+                                        <label class="form-check-label" for="AM">AM</label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="Theater" id="Eagle Theatre" value="Eagle Theatre">
-                                        <label class="form-check-label" for="Eagle Theatre">Eagle Theatre</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="Theater" id="Hadida Theatre" value="Hadida Theatre">
-                                        <label class="form-check-label" for="Hadida Theatre">Hadida Theatre</label>
+                                        <input class="form-check-input" type="radio" name="SurgeryTime" id="PM" value="PM">
+                                        <label class="form-check-label" for="PM">PM</label>
                                     </div>
                                 </div>
                             </div>
@@ -238,248 +289,142 @@
                             <button type="button" id="confirmBookSurgeryButton" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
-                        
                     </form>
                 </div>
-              </div>
+            </div>
         </div>
     </div>
-   
-   
 
-    <!-- ModalAddPatient -->
-    <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <!-- Add Patient Modal -->
+    <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addPatientModalLabel">Add Patient</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <h5 class="modal-title">Add Patient</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                 </div>
                 <div class="modal-body">
                     <form id="addPatientForm" method="post" asp-action="RegisterPatient" asp-controller="Home">
-                        @Html.AntiForgeryToken() <!-- Ensure you include the anti-forgery token -->
+                        @Html.AntiForgeryToken()
                         <div class="form-group row">
                             <div class="col-4">
-                                <label for="nameInput" class="form-label">Name</label>
-                                <input type="text" class="form-control" name="Name" placeholder="Enter Name" required maxlength="100">
+                                <label>Name</label>
+                                <input type="text" class="form-control" name="Name" required maxlength="100">
                                 <span class="text-danger" id="nameError"></span>
                             </div>
                             <div class="col-4">
-                                <label for="surnameInput" class="form-label">Surname</label>
-                                <input type="text" class="form-control" name="Surname" placeholder="Enter Surname" required maxlength="100">
+                                <label>Surname</label>
+                                <input type="text" class="form-control" name="Surname" required maxlength="100">
                                 <span class="text-danger" id="surnameError"></span>
                             </div>
                             <div class="col-4">
-                                <label for="idNumberInput" class="form-label">ID Number</label>
-                                <input type="number" class="form-control" name="IdNumber" placeholder="Enter ID Number" pattern="^\d{13}$" required title="ID Number must be exactly 13 digits." maxlength="13">
+                                <label>ID Number</label>
+                                <input type="number" class="form-control" name="IdNumber" required pattern="^\d{13}$" maxlength="13">
                                 <span class="text-danger" id="idNumberError"></span>
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-4">
-                                <label for="gender" class="form-label">Gender</label>
-                                <div id="gender" style="width:250px; padding: 10px;">
-                                    <div class="form-check" style="margin: 0;">
-                                        <input class="form-check-input" type="radio" name="Gender" value="Male" required checked>
+                                <label>Gender</label>
+                                <div id="gender">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Gender" value="Male" checked>
                                         <label class="form-check-label">Male</label>
                                     </div>
-                                    <div class="form-check" style="margin: 0;">
-                                        <input class="form-check-input" type="radio" name="Gender" value="Female" required>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Gender" value="Female">
                                         <label class="form-check-label">Female</label>
                                     </div>
                                 </div>
                                 <span class="text-danger" id="genderError"></span>
                             </div>
                             <div class="col-4">
-                                <label for="emailInput" class="form-label">Email</label>
-                                <input type="email" class="form-control" name="Email" placeholder="Enter Email" required>
+                                <label>Email</label>
+                                <input type="email" class="form-control" name="Email" required>
                                 <span class="text-danger" id="emailError"></span>
                             </div>
                             <div class="col-4">
-                                <label for="contactNumberInput" class="form-label">Contact Number</label>
-                                <input type="text" class="form-control" id="contactNumber" name="ContactNumber"
-                                       placeholder="Contact Number" required maxlength="10" minlength="10"
-                                       oninput="validateContactNumber()" />
+                                <label>Contact Number</label>
+                                <input type="text" class="form-control" id="contactNumber" name="ContactNumber" required maxlength="10">
                                 <span id="contactNumberError" class="text-danger"></span>
                             </div>
-
                         </div>
-                        <!-- Confirmation Modal -->
-                        <div class="modal fade" id="confirmSaveModal" tabindex="-1" role="dialog" aria-labelledby="confirmSaveModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmSaveModalLabel">Confirm Save</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure you want to save this patient?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" id="confirmSaveButton" class="btn btn-primary" data-dismiss="modal">Yes</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="modal-footer">
+                            <button type="button" id="mainSavePatientButton" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
-
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="mainSavePatientButton" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-
+    <!-- Scripts -->
     <script>
         $(document).ready(function () {
-            // Initialize DataTable
-            var table = $('#example').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
+            var table = $('#example').DataTable({"language":{"zeroRecords":"No matching records found"}});
+
+            $('#mainSavePatientButton').on('click', function () {
+                if($('#addPatientForm')[0].checkValidity()){
+                    $('#addPatientForm').submit();
                 }
             });
-
-          
-            // Show confirmation modal on clicking the Save button
-            $('#mainSavePatientButton').on('click', function (e) {
-                e.preventDefault(); // Prevent the default form submission
-                if (validateForm()) {
-                    $('#confirmSaveModal').modal('show'); // Show confirmation modal if the form is valid
-                }
-            });
-            // Handle the "Yes" button click in the confirmation modal
-            $('#confirmSaveButton').on('click', function () {
-                $('#addPatientForm').submit(); // Submit the form
-            });
-            // Handle the "Yes" button click in the confirmation modal
-            $('#confirmBookSurgeryButton').on('click', function () {
-                // Optional: Enable the fields if they need to be included in the form submission
-                $('#nameInput, #surnameInput').prop('disabled', false); // Enable fields before submitting
-                $('#bookingForm').submit(); // Submit the booking form
-              
-            });
-
-            // Close confirmation modal on 'No' button click
-            $('#cancelSaveButton').on('click', function () {
-                $('#confirmSaveModal').modal('hide');
-            });
-
-            // Submit the form when the user confirms
-            $('#savePatientButton').on('click', function () {
-                $('#addPatientForm').submit(); // Directly submit the form
-            });
-           
 
             $('#bookSurgeryModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget); // Button that triggered the modal
-                var patientID = button.data('patient-id'); // Extract the PatientID from data-* attributes
+                var button = $(event.relatedTarget);
                 var name = button.data('name');
                 var surname = button.data('surname');
+                var patientID = button.data('patient-id');
 
-                // Update the modal's content
-                var modal = $(this);
-                modal.find('#nameInput').val(name);
-                modal.find('#surnameInput').val(surname);
-                modal.find('#PatientID').val(patientID); // Ensure this remains intact
+                $(this).find('#nameInput').val(name);
+                $(this).find('#surnameInput').val(surname);
+                $(this).find('#PatientID').val(patientID);
             });
 
-            // Validate the form before submission
-            function validateForm() {
-                let isValid = true;
-                $('.text-danger').text(''); // Clear previous error messages
+            $('#confirmBookSurgeryButton').on('click', function () {
+                $('#bookingForm').submit();
+            });
 
-                $('#addPatientForm input, #addPatientForm select').each(function () {
-                    if (!this.checkValidity()) {
-                        isValid = false;
-                        const errorMessage = this.validationMessage || 'This field is required.';
-                        $(this).siblings('.text-danger').text(errorMessage); // Display error message
-                    }
-                });
-                return isValid; // Return validation status
-            }
+            // --- ID Number Validation & Table Filter ---
+            $('#idNumber').on('input', function () {
+                // Only numbers
+                this.value = this.value.replace(/\D/g, '');
 
-            // Display server-side errors
-            function displayErrors(errors) {
-                for (const key in errors) {
-                    if (errors.hasOwnProperty(key)) {
-                        const errorMessage = errors[key].join(', '); // Join error messages if there are multiple
-                        $('[name="' + key + '"]').siblings('.text-danger').text(errorMessage);
-                    }
-                }
-            }
+                var val = $(this).val();
 
-            // ID Number Validation
-            const idNumberInput = $('#idNumber');
-            const idNumberError = $('#idNumberError');
-
-            idNumberInput.on('input', function () {
-                const isValid = this.checkValidity();
-                if (isValid) {
-                    this.classList.add('is-valid');
-                    this.classList.remove('is-invalid');
-                    idNumberError.hide(); // Hide error message when valid
+                if(val === ""){
+                    // Hide all rows if empty
+                    table.rows().nodes().to$().hide();
+                    $(this).removeClass('is-valid is-invalid');
+                    $('#idNumberError').text('');
                 } else {
-                    this.classList.add('is-invalid');
-                    this.classList.remove('is-valid');
-                    idNumberError.show(); // Show error message when invalid
+                    // Show table and filter
+                    table.rows().nodes().to$().show();
+                    table.search(val).draw();
 
-                    if (this.value.length !== 13) {
-                        idNumberError.text("ID number must be exactly 13 digits."); // Custom error message
+                    if(/^\d{13}$/.test(val)){
+                        $(this).removeClass('is-invalid').addClass('is-valid');
+                        $('#idNumberError').text('');
                     } else {
-                        idNumberError.text("ID number must be numeric."); // Additional check for numeric input
+                        $(this).removeClass('is-valid').addClass('is-invalid');
+                        $('#idNumberError').text('ID number must be exactly 13 digits.');
                     }
                 }
             });
 
-            // Custom search function for the search input
-            $('#idNumber').on('keyup', function () {
-                var searchText = this.value.trim(); // Trim whitespace
-                if (searchText === '') {
-                    $('#example_wrapper').hide(); // Hide table if search input is empty
+            // Contact number validation
+            $('#contactNumber').on('input', function () {
+                $(this).val($(this).val().replace(/\D/g,''));
+                if($(this).val().length !== 10){
+                    $('#contactNumberError').text("Contact number must be exactly 10 digits.");
                 } else {
-                    $('#example_wrapper').show(); // Show table if search input is not empty
-                    table.search(searchText).draw();
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example_wrapper').hide();
-                    }
+                    $('#contactNumberError').text("");
                 }
             });
 
-            // Toggle functions for multi-step forms
-            function Next1() {
-                $('#f-1, #f-2').toggle('slow', 'swing');
-            }
-            function Next2() {
-                $('#f-2, #f-1').toggle('slow', 'swing');
-            }
+            // Hide all rows on load
+            table.rows().nodes().to$().hide();
         });
     </script>
-
-    <script>
-        function validateContactNumber() {
-            var contactNumberInput = document.getElementById('contactNumber');
-            var contactNumberError = document.getElementById('contactNumberError');
-
-            // Remove any non-digit characters
-            contactNumberInput.value = contactNumberInput.value.replace(/\D/g, '');
-
-            // Check if the length is exactly 10 digits
-            if (contactNumberInput.value.length !== 10) {
-                contactNumberError.textContent = "Contact number must be exactly 10 digits.";
-            } else {
-                contactNumberError.textContent = ""; // Clear error message if valid
-            }
-        }
-    </script>
-
 </body>
 </html>
