@@ -1050,7 +1050,7 @@ namespace DEMO.Controllers
                     _dbContext.SaveChanges();
                 }
 
-                return RedirectToAction("SurgeonHome");
+                return RedirectToAction("ListSurgery");
             }
 
             return View(model);
