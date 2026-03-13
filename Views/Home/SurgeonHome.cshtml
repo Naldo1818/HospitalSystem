@@ -1,73 +1,90 @@
-﻿@{
-    ViewData["Title"] = "Surgeon";
+﻿@model DEMO.ViewModels.HomeViewModel
+@{
+    ViewData["Title"] = "Surgeon Home";
     Layout = "_Layout2";
 }
-@model DEMO.ViewModels.HomeViewModel
-<div class="container mt-5">
 
-    <!-- Top Cards -->
-    <div class="row g-4 justify-content-center">
+<div class="container mt-4">
 
-        <!-- Patients -->
+    <!-- Top Cards Section -->
+    <div class="row g-3">
+        <!-- Patients Card -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm text-white top-card" style="background: linear-gradient(135deg, #4e73df, #1cc88a); transform: scale(0.95); transition: transform 0.3s;">
                 <img src="~/css/DnP.jpeg" class="card-img-top" alt="Doctor Patient">
                 <div class="card-body text-center">
                     <h5 class="card-title">Patients</h5>
-                    <p class="card-text">
-                        View a list of patients and book surgeries for those in need.
-                    </p>
-                    <a class="btn btn-primary w-100" asp-controller="Home" asp-action="PatientList">View Patients</a>
+                    <p class="card-text">View patients & book surgeries.</p>
+                    <a class="btn btn-light w-100 mt-2" asp-controller="Home" asp-action="PatientList">View Patients</a>
                 </div>
             </div>
         </div>
 
-        <!-- Prescriptions -->
+        <!-- Prescriptions Card -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm text-white top-card" style="background: linear-gradient(135deg, #36b9cc, #f6c23e); transform: scale(0.95); transition: transform 0.3s;">
                 <img src="~/css/DP.jpeg" class="card-img-top" alt="Doctor Prescription">
                 <div class="card-body text-center">
                     <h5 class="card-title">Prescriptions</h5>
-                    <p class="card-text">
-                        Check prescriptions linked to your name and track their approval status.
-                    </p>
-                    <a class="btn btn-primary w-100" asp-controller="Home" asp-action="PrescriptionList">View Prescriptions</a>
+                    <p class="card-text">Track your prescriptions.</p>
+                    <a class="btn btn-light w-100 mt-2" asp-controller="Home" asp-action="PrescriptionList">View Prescriptions</a>
                 </div>
             </div>
         </div>
 
-        <!-- Admissions -->
+        <!-- Admissions Card -->
         <div class="col-md-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm text-white top-card" style="background: linear-gradient(135deg, #e74a3b, #858796); transform: scale(0.95); transition: transform 0.3s;">
                 <img src="~/css/HB.jpeg" class="card-img-top" alt="Hospital Bed">
                 <div class="card-body text-center">
                     <h5 class="card-title">Admissions</h5>
-                    <p class="card-text">
-                        View all current patient admissions, search patients, and check nurse-recorded vitals.
-                    </p>
-                    <a class="btn btn-primary w-100" asp-controller="Home" asp-action="patientAddmision">View Admissions</a>
+                    <p class="card-text">Current admissions & vitals.</p>
+                    <a class="btn btn-light w-100 mt-2" asp-controller="Home" asp-action="patientAddmision">View Admissions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="row mt-4">
+        <!-- Pie Chart -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 text-center">
+                <h5>Prescription Status</h5>
+                <div style="width: 250px; height: 250px; margin: 0 auto;">
+                    <canvas id="prescriptionChart"></canvas>
                 </div>
             </div>
         </div>
 
+        <!-- Bar Chart -->
+        <div class="col-md-6">
+            <div class="card shadow-sm p-3 text-center">
+                <h5>Today’s Surgeries</h5>
+                <div style="width: 300px; height: 250px; margin: 0 auto;">
+                    <canvas id="surgeryChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Table Section -->
-    <div class="row mt-5">
-        <div class="col-12">        
-            <div class="p-3 border bg-white shadow-sm">
-                <h3 class="mb-3 text-center">Admissions List</h3>
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+    <!-- Admissions Table -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="table-responsive p-3 border bg-white shadow-sm">
+                <h3 class="section-title text-center">Admissions List</h3>
+                <input class="form-control mb-2" id="searchAdmissions" placeholder="Search..." />
+                <table class="table table-striped table-hover table-bordered" id="admissionsTable">
                     <thead class="table-dark">
                         <tr>
                             <th>Name</th>
                             <th>Surname</th>
-                            <th>Surgeon Name</th>
-                            <th>Surgery Date</th>
-                            <th>Surgery Time</th>
+                            <th>Surgeon</th>
+                            <th>Date</th>
+                            <th>Time</th>
                             <th>Theatre</th>
-                            <th>Ward Name</th>
-                            <th>Bed Number</th>
+                            <th>Ward</th>
+                            <th>Bed</th>
                             <th>Admitted Time</th>
                         </tr>
                     </thead>
@@ -78,7 +95,7 @@
                                 <td>@Data.Name</td>
                                 <td>@Data.Surname</td>
                                 <td>@ViewBag.UserName @ViewBag.UserSurname</td>
-                                <td>@Data.SurgeryDate</td>
+                                <td>@Data.SurgeryDate.ToShortDateString()</td>
                                 <td>@Data.SurgeryTime</td>
                                 <td>@Data.Theater</td>
                                 <td>@Data.WardName</td>
@@ -88,26 +105,25 @@
                         }
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
 
-
-    <div class="row mt-5">
+    <!-- Surgery Table -->
+    <div class="row mt-4">
         <div class="col-12">
-            <div class="p-3 border bg-white shadow-sm">
-                <h3 class="mb-3 text-center">Surgery List</h3>
-                <table id="example" class="table table-striped table-bordered" style="width:100%">
+            <div class="table-responsive p-3 border bg-white shadow-sm">
+                <h3 class="section-title text-center">Surgery List</h3>
+                <input class="form-control mb-2" id="searchSurgery" placeholder="Search..." />
+                <table class="table table-striped table-hover table-bordered" id="surgeryTable">
                     <thead class="table-dark">
                         <tr>
-
-                            <th scope="col">Name</th>
-                            <th scope="col">Surname</th>
-                            <th scope="col">Surgeon Name</th>
-                            <th scope="col">Surgery Date</th>
-                            <th scope="col">Surgery Time</th>
-                            <th scope="col">Theatre</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Surgeon</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Theatre</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,7 +133,7 @@
                                 <td>@Data.Name</td>
                                 <td>@Data.Surname</td>
                                 <td>@ViewBag.UserName @ViewBag.UserSurname</td>
-                                <td>@Data.SurgeryDate</td>
+                                <td>@Data.SurgeryDate.ToShortDateString()</td>
                                 <td>@Data.SurgeryTime</td>
                                 <td>@Data.Theater</td>
                             </tr>
@@ -127,4 +143,69 @@
             </div>
         </div>
     </div>
+
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Pie Chart - Prescription Status
+        const ctx1 = document.getElementById('prescriptionChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels: ['Prescribed', 'Dispensed', 'Rejected'],
+                datasets: [{
+                    data: [@ViewBag.prescribedCount, @ViewBag.dispensedCount, @ViewBag.rejectedCount],
+                    backgroundColor: ['#36b9cc', '#1cc88a', '#e74a3b']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Bar Chart - Surgeries
+        const ctx2 = document.getElementById('surgeryChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Morning', 'Afternoon', 'Evening'],
+                datasets: [{
+                    label: 'Surgeries',
+                    data: [@ViewBag.morningCount, @ViewBag.afternoonCount, @ViewBag.eveningCount],
+                    backgroundColor: '#4e73df'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Table Search Function
+        function filterTable(inputId, tableId) {
+            const input = document.getElementById(inputId);
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            const trs = table.getElementsByTagName('tr');
+            for (let i = 1; i < trs.length; i++) {
+                const tds = trs[i].getElementsByTagName('td');
+                let show = false;
+                for (let j = 0; j < tds.length; j++) {
+                    if (tds[j].textContent.toLowerCase().indexOf(filter) > -1) {
+                        show = true;
+                        break;
+                    }
+                }
+                trs[i].style.display = show ? '' : 'none';
+            }
+        }
+        document.getElementById('searchAdmissions').addEventListener('keyup', () => filterTable('searchAdmissions', 'admissionsTable'));
+        document.getElementById('searchSurgery').addEventListener('keyup', () => filterTable('searchSurgery', 'surgeryTable'));
+    </script>
+}
