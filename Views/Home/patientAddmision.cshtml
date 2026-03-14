@@ -14,9 +14,130 @@
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <style>
+
+        /* Page */
+        body {
+            background: #f5f7fb;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* Card containers */
+        .p-3.border {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Page title */
+        h2 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Inputs */
+        .form-control {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            width: 300px;
+        }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            }
+
+        /* Table */
         #example {
             display: none;
         }
+
+        table.dataTable {
+            border-collapse: collapse !important;
+            width: 100%;
+        }
+
+            table.dataTable thead {
+                background: #1f1f1f;
+                color: white;
+            }
+
+                table.dataTable thead th {
+                    padding: 12px;
+                    font-weight: 600;
+                }
+
+            table.dataTable tbody td {
+                padding: 10px;
+            }
+
+            table.dataTable tbody tr:hover {
+                background: #f1f5ff;
+            }
+
+        /* Buttons */
+        .btn-primary {
+            background: #0d6efd;
+            border: none;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #0b5ed7;
+                transform: scale(1.03);
+            }
+
+        /* Action buttons stack nicely */
+        .btn-group {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        /* Modals */
+        .modal-lg {
+            max-width: 50% !important;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: #1f1f1f;
+            color: white;
+            border-bottom: none;
+        }
+
+            .modal-header .btn-close {
+                filter: invert(1);
+            }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Radio boxes */
+        #SurgeryTime,
+        #Theater,
+        #Urgency {
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        /* Table container spacing */
+        .mt-5 {
+            margin-top: 30px !important;
+        }
+
     </style>
 </head>
 <body>
@@ -30,8 +151,8 @@
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="searchInput" class="form-label">Enter Name, Surname or Theatre</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
+                                    <label for="searchInput" class="form-label">Search</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
                                 </div>
                                 <div class="col-4">
                                     <br>
@@ -121,12 +242,12 @@
                                                 </a>
                                             </div>
                                             <div class="w-100 btn-group" role="group">
-                                                <form asp-action="Discharge" asp-controller="Home" method="post">
-                                                    <input type="hidden" name="AdmittedPatientID" value="@Data.AdmittedPatientID" />
-                                                    <button type="submit" class="btn btn-primary">
-                                                        Discharge Patient
-                                                    </button>
-                                                </form>
+                                                <button class="btn btn-danger discharge-btn"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#confirmDischargeModal"
+                                                        data-id="@Data.AdmittedPatientID">
+                                                    Discharge Patient
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -206,8 +327,8 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </div>
@@ -226,8 +347,8 @@
                             Are you sure you want to save this updated surgery?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="confirmEditBookingButton" class="btn btn-primary">Yes</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                            <button type="button" id="confirmEditBookingButton" class="btn btn-primary">Yes</button>
                         </div>
                     </div>
                 </div>
@@ -319,6 +440,33 @@
                             <button type="button" id="confirmAddPrescriptionButton" class="btn btn-primary">Yes</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Discharge Confirmation Modal -->
+            <div class="modal fade" id="confirmDischargeModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Discharge</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            Are you sure you want to discharge this patient?
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <form id="dischargeForm" asp-action="Discharge" asp-controller="Home" method="post">
+                                <input type="hidden" id="dischargePatientID" name="AdmittedPatientID" />
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                <button type="submit" class="btn btn-danger">Yes, Discharge</button>
+                            </form>
+
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -448,7 +596,17 @@
             $('#confirmAddPrescriptionButton').on('click', function () {
                 $('#addPrescriptionForm').submit(); // Submit the form
             });
-        });
+
+            // Discharge modal data
+            $('#confirmDischargeModal').on('show.bs.modal', function (event) {
+
+                var button = $(event.relatedTarget);
+                var patientID = button.data('id');
+
+                $('#dischargePatientID').val(patientID);
+
+            });
+            });
     </script>
 
 </body>
