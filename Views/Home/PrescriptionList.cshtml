@@ -26,16 +26,35 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Align items to the top */
-            min-height: 100vh;
-            background-color: #f0f0f0;
-            padding-top: 100px; /* Increased padding to push content down */
+            background: #f5f7fb;
+            font-family: "Segoe UI", Arial, sans-serif;
         }
+
+        /* Card containers */
+        .p-3.border {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Page title */
+        h2 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Inputs */
+        .form-control {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            width: 300px;
+        }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            }
 
         /* Center the modal vertically and horizontally */
         .modal-dialog-centered {
@@ -58,9 +77,90 @@
             align-items: center;
             justify-content: center;
         }
+        /* Table */
+        table.dataTable {
+            border-collapse: collapse !important;
+            width: 100%;
+        }
 
-        .custom-danger {
-            background-color: red; /* or your desired red color */
+            table.dataTable thead {
+                background: #1f1f1f;
+                color: white;
+            }
+
+                table.dataTable thead th {
+                    padding: 12px;
+                    font-weight: 600;
+                }
+
+            table.dataTable tbody td {
+                padding: 10px;
+            }
+
+            table.dataTable tbody tr:hover {
+                background: #f1f5ff;
+            }
+        /* Buttons */
+        .btn-primary {
+            background: #0d6efd;
+            border: none;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #0b5ed7;
+                transform: scale(1.03);
+            }
+
+        /* Action buttons stack nicely */
+        .btn-group {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        /* Modals */
+        .modal-lg {
+            max-width: 10% !important;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: #1f1f1f;
+            color: white;
+            border-bottom: none;
+        }
+
+            .modal-header .btn-close {
+                filter: invert(1);
+            }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Radio boxes */
+        #SurgeryTime,
+        #Theater,
+        #Urgency {
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        /* Table container spacing */
+        .mt-5 {
+            margin-top: 30px !important;
         }
 
     </style>
@@ -76,8 +176,8 @@
                             <div class="form-group row">
                                 <div class="col-4">
                                     <br>
-                                    <label for="searchInput" class="form-label">Enter Any Name or Surname Related to the data</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Name or Surname" style="width:300px">
+                                    <label for="searchInput" class="form-label">Search</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
                                 </div>
                             </div>
                             <div class="form-group row mt-3">
@@ -115,14 +215,13 @@
                             <tbody>
                                 @foreach (var Data in Model.AllPrescribedRejected)
                                 {
-                                    <tr class="@(Data.Urgency == "Yes" ? "table-danger" : "")">
-
+                                    <tr>
                                         <td>@Data.PatientName</td>
                                         <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
                                         <td>@Data.AccountName</td>
                                         <td>@Data.AccountSurname</td>
-                                        <td>@Data.Urgency</td>
+                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>@Data.RejectionReason</td>
                                         
@@ -132,7 +231,7 @@
                                             </button>
                                         </td>
 
-                                    </tr>
+                                   </tr>
                                 }
                             </tbody>
                         </table>
@@ -159,14 +258,14 @@
                             <tbody>
                                 @foreach (var Data in Model.AllPrescribedDispensed)
                                 {
-                                    <tr class="@(Data.Urgency == "Yes" ? "table-danger" : "")">
+                                    <tr >
 
                                         <td>@Data.PatientName</td>
                                         <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
                                         <td>@Data.AccountName</td>
                                         <td>@Data.AccountSurname</td>
-                                        <td>@Data.Urgency</td>
+                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
                                             <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#DmedicationModal">
@@ -199,12 +298,12 @@
                             <tbody>
                                  @foreach (var Data in Model.AllPrescribed)
                                 {
-                                    <tr class="@(Data.Urgency == "Yes" ? "table-danger" : "")">
+                                    <tr >
                                      
                                         <td>@Data.Name</td>
                                         <td>@Data.Surname</td>
                                         <td>@Data.DateGiven</td>
-                                        <td>@Data.Urgency</td>
+                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
                                              <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
