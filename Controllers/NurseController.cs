@@ -22,44 +22,29 @@ namespace DEMO.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private int _bookingId = 0;
-
+      
         public NurseController(ApplicationDbContext dbContext, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        public IActionResult MainPage(int accountID)
+        [HttpGet]
+        public IActionResult MainPage()
         {
 
-            var nurse = _dbContext.Accounts
-                .Where(a => a.AccountID == accountID && a.Role == "Nurse")
-                .Select(a => new NurseView
-                {
-                    AccountID = a.AccountID,
-                    Name = a.Name,
-                    Surname = a.Surname,
-                    Email = a.Email
-                })
-                .SingleOrDefault();
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
 
-            if (nurse == null)
-            {
-                return NotFound();
-            }
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
-            // Store critical user data in session
-            HttpContext.Session.SetString("UserAccountId", nurse.AccountID.ToString());
-            HttpContext.Session.SetString("UserName", nurse.Name);
-            HttpContext.Session.SetString("UserSurname", nurse.Surname);
-            HttpContext.Session.SetString("UserEmail", nurse.Email);
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
-            // Optionally, you can use ViewBag for non-critical or UI-specific data
-            ViewBag.AccountID = nurse.AccountID;
-            ViewBag.UserName = nurse.Name;
-            ViewBag.UserSurname = nurse.Surname;
-            ViewBag.Email = nurse.Email;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
 
             return View();
         }

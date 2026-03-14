@@ -153,7 +153,7 @@ namespace DEMO.Controllers
                         ViewBag.UserSurname = nurse.Surname;
                         ViewBag.Email = nurse.Email;
 
-                        return RedirectToAction("MainPage","Nurse", new { AccountID });
+                        return RedirectToAction("MainPage","Nurse");
                         
                     }
 
