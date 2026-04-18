@@ -152,24 +152,19 @@
                             <td>@Medication.StockonHand</td>
                             <td>@Medication.ReorderLevel</td>
                             <td>
-                                <a class="btn btn-primary btn-sm"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#activeIngredientModal"
-                                   data-medication-id="@Medication.MedicationID">
+                                <button class="btn btn-primary btn-sm view-ingredients-btn"
+                                        data-medication-id="@Medication.MedicationID"
+                                        data-medication-name="@Medication.MedicationName">
                                     View Active Ingredient
-                                </a>
-                                <a class="btn btn-primary btn-sm"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#activeIngredientModal"
-                                   data-medication-id="@Medication.MedicationID">
+                                </button>
+                                <button class="btn btn-warning btn-sm">
                                     Re-Stock Medication
-                                </a>
-                                <a class="btn btn-danger btn-sm"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#activeIngredientModal"
-                                   data-medication-id="@Medication.MedicationID">
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-medication-btn"
+                                        data-medication-id="@Medication.MedicationID"
+                                        data-medication-name="@Medication.MedicationName">
                                     Delete Medication
-                                </a>
+                                </button>
                             </td>
                         </tr>
                     }
@@ -198,18 +193,39 @@
             </div>
         </div>
     </div>
+    <!-- Delete Medication Modal -->
+    <div class="modal fade" id="deleteMedicationModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete <strong id="deleteMedName"></strong>?
+                    This action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button id="confirmDeleteBtn" class="btn btn-danger">Yes, Delete</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Active Ingredient Modal -->
     <div class="modal fade" id="activeIngredientModal">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Active Ingredients</h5>
+                    <h5 class="modal-title">Active Ingredients — <span id="modalMedName"></span></h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
-                    <table class="table table-bordered">
+                    <div id="ingredientLoadingMsg" class="text-center text-muted py-3" style="display:none;">
+                        Loading...
+                    </div>
+                    <table class="table table-bordered" id="ingredientModalTable">
                         <thead>
                             <tr>
                                 <th>Medication</th>
@@ -217,15 +233,7 @@
                                 <th>Strength</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach (var item in Model.AllMedicationActiveIngredients)
-                            {
-                                <tr>
-                                    <td>@item.MedicationName</td>
-                                    <td>@item.ActiveIngredientName</td>
-                                    <td>@item.ActiveIngredientStrength</td>
-                                </tr>
-                            }
+                        <tbody id="ingredientModalBody">
                         </tbody>
                     </table>
                 </div>
@@ -239,7 +247,90 @@
 
         $(document).ready(function () {
 
+                    // View Active Ingredients — fetch per medication click
+        $(document).on('click', '.view-ingredients-btn', function () {
+            let medId   = $(this).data('medication-id');
+            let medName = $(this).data('medication-name');
+
+            $('#modalMedName').text(medName);
+            $('#ingredientModalBody').empty();
+            $('#ingredientLoadingMsg').show();
+
+            $.ajax({
+                url: '/Pharmacist/GetMedicationIngredients',
+                type: 'GET',
+                data: { medicationId: medId },
+                success: function (data) {
+                    $('#ingredientLoadingMsg').hide();
+                    if (data.length === 0) {
+                        $('#ingredientModalBody').append(
+                            '<tr><td colspan="3" class="text-center text-muted">No ingredients found.</td></tr>'
+                        );
+                    } else {
+                        data.forEach(function (item) {
+                            $('#ingredientModalBody').append(`
+                                <tr>
+                                    <td>${item.medicationName}</td>
+                                    <td>${item.activeIngredientName}</td>
+                                    <td>${item.activeIngredientStrength}</td>
+                                </tr>
+                            `);
+                        });
+                    }
+                    var modal = new bootstrap.Modal(document.getElementById('activeIngredientModal'));
+                    modal.show();
+                },
+                error: function () {
+                    $('#ingredientLoadingMsg').hide();
+                    $('#ingredientModalBody').append(
+                        '<tr><td colspan="3" class="text-danger text-center">Failed to load ingredients.</td></tr>'
+                    );
+                    var modal = new bootstrap.Modal(document.getElementById('activeIngredientModal'));
+                    modal.show();
+                }
+            });
+        });
+
             $('#medicationTable').DataTable();
+
+                    let medicationToDeleteId = null;
+
+        // Open delete confirm modal
+        $(document).on('click', '.delete-medication-btn', function () {
+            medicationToDeleteId = $(this).data('medication-id');
+            let medName = $(this).data('medication-name');
+
+            $('#deleteMedName').text(medName);
+
+            var modal = new bootstrap.Modal(document.getElementById('deleteMedicationModal'));
+            modal.show();
+        });
+
+        // Confirm delete — call controller
+        $('#confirmDeleteBtn').click(function () {
+            if (!medicationToDeleteId) return;
+
+            $.ajax({
+                url: '/Pharmacist/DeleteMedication',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(medicationToDeleteId),
+                success: function (response) {
+                    if (response.success) {
+                        bootstrap.Modal.getInstance(
+                            document.getElementById('deleteMedicationModal')
+                        ).hide();
+                        alert('Medication deleted successfully.');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while deleting the medication.');
+                }
+            });
+        });
 
             $('#addRow').click(function () {
 
