@@ -73,50 +73,13 @@ namespace DEMO.Controllers
         //Add Medication with active ingredients
         //Restock Medication
         //Email notification to supplier
-        public IActionResult ListMedication(int medicationId)
-        {
-            // Fetch the combined data
-            //var medicationActiveIngredients = (from ma in _dbContext.MedicationActiveIngredient
-            //                                   join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
-            //                                   join a in _dbContext.Activeingredient on ma.ActiveingredientID equals a.ActiveingredientID
-            //                                   where ma.MedicationID == medicationId // Filter by the specified MedicationID
-            //                                   select new MedicationWithIngredientsViewModel
-            //                                   {
-            //                                       MedicationName = m.MedicationName,
-            //                                       ActiveIngredientName = a.ActiveIngredientName,
-            //                                       ActiveIngredientStrength = ma.ActiveIngredientStrength
-            //                                   }).ToList();
-
-            // Fetch additional lists if needed
-            var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
-            var activeIngredients = _dbContext.Activeingredient
-          .OrderBy(a => a.ActiveIngredientName)
-          .ToList();
-
-            // Create the view model
-            var viewModel = new MedicationWithIngredientsViewModel
-            {
-                //AllMedicationActiveIngredients = medicationActiveIngredients,
-                AllMedication = allMedication,
-                ActiveIngredients = activeIngredients
-            };
-
-            // Set ViewBag properties
-            ViewBag.UserAccountID = HttpContext.Session.GetString("UserAccountId");
-            ViewBag.UserName = HttpContext.Session.GetString("UserName");
-            ViewBag.UserSurname = HttpContext.Session.GetString("UserSurname");
-            ViewBag.UserEmail = HttpContext.Session.GetString("UserEmail");
-
-            return View(viewModel);
-        }
-
+        // ================= ADD MEDICATION =================
         [HttpPost]
         public IActionResult AddMedication([FromBody] MedicationWithIngredientsViewModel model)
         {
             if (model == null)
                 return BadRequest();
 
-            // 1. Save Medication
             var medication = new Medication
             {
                 MedicationName = model.MedicationName,
@@ -129,25 +92,57 @@ namespace DEMO.Controllers
             _dbContext.Medication.Add(medication);
             _dbContext.SaveChanges();
 
-            // 2. Save Active Ingredients
             if (model.Ingredients != null && model.Ingredients.Count > 0)
             {
                 foreach (var item in model.Ingredients)
                 {
-                    var medIngredient = new MedicationActiveIngredient
+                    _dbContext.MedicationActiveIngredient.Add(new MedicationActiveIngredient
                     {
                         MedicationID = medication.MedicationID,
                         ActiveingredientID = item.ActiveingredientID,
                         ActiveIngredientStrength = item.ActiveIngredientStrength
-                    };
-
-                    _dbContext.MedicationActiveIngredient.Add(medIngredient);
+                    });
                 }
 
                 _dbContext.SaveChanges();
             }
 
             return Ok();
+        }
+
+        // ================= LOAD PAGE =================
+        public IActionResult ListMedication()
+        {
+            var viewModel = new MedicationWithIngredientsViewModel
+            {
+                AllMedication = _dbContext.Medication
+                    .OrderBy(x => x.MedicationName)
+                    .ToList(),
+
+                ActiveIngredients = _dbContext.Activeingredient
+                    .OrderBy(x => x.ActiveIngredientName)
+                    .ToList()
+            };
+
+            return View(viewModel);
+        }
+
+        // ================= GET INGREDIENTS FOR MODAL =================
+        [HttpGet]
+        public IActionResult GetMedicationIngredients(int medicationId)
+        {
+            var data = (from ma in _dbContext.MedicationActiveIngredient
+                        join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
+                        join a in _dbContext.Activeingredient on ma.ActiveingredientID equals a.ActiveingredientID
+                        where ma.MedicationID == medicationId
+                        select new
+                        {
+                            medicationName = m.MedicationName,
+                            ingredientName = a.ActiveIngredientName,
+                            strength = ma.ActiveIngredientStrength
+                        }).ToList();
+
+            return Json(data);
         }
 
 

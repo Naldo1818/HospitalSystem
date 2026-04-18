@@ -218,14 +218,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @* @foreach (var item in Model.AllMedicationActiveIngredients)
+                            @foreach (var item in Model.AllMedicationActiveIngredients)
                             {
                                 <tr>
                                     <td>@item.MedicationName</td>
                                     <td>@item.ActiveIngredientName</td>
                                     <td>@item.ActiveIngredientStrength</td>
                                 </tr>
-                            } *@
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -235,81 +235,67 @@
 
     <!-- ================= SCRIPTS ================= -->
     <script>
-    let ingredientsList = [];
+        let ingredientsList = [];
 
-    $(document).ready(function () {
+        $(document).ready(function () {
 
-    $('#medicationTable').DataTable();
+            $('#medicationTable').DataTable();
 
-    // Add ingredient to list
-    $('#addRow').click(function () {
+            $('#addRow').click(function () {
 
-    let ingredientId = $('#activeIngredient').val();
-    let ingredientText = $('#activeIngredient option:selected').text();
+                let id = $('#activeIngredient').val();
+                let text = $('#activeIngredient option:selected').text();
 
-    if (ingredientId) {
+                if (id) {
 
-    ingredientsList.push({
-    ActiveingredientID: ingredientId,
-    ActiveIngredientStrength: 1 // default (since removed input)
-    });
+                    ingredientsList.push({
+                        ActiveingredientID: parseInt(id),
+                        ActiveIngredientStrength: 1
+                    });
 
-    $('#dynamicTable tbody').append(`
-    <tr>
-        <td>${ingredientText}</td>
-        <td>
-            <button class="btn btn-danger btn-sm deleteRow">Delete</button>
-        </td>
-    </tr>
-    `);
+                    $('#dynamicTable tbody').append(`
+                        <tr>
+                            <td>${text}</td>
+                            <td><button class="deleteRow btn btn-danger btn-sm">Delete</button></td>
+                        </tr>
+                    `);
+                }
+            });
 
-    $('#activeIngredient').val('');
-    }
-    else {
-    alert("Select an ingredient");
-    }
-    });
+            $('#dynamicTable').on('click', '.deleteRow', function () {
+                let index = $(this).closest('tr').index();
+                ingredientsList.splice(index, 1);
+                $(this).closest('tr').remove();
+            });
 
-    // Delete row + remove from array
-    $('#dynamicTable').on('click', '.deleteRow', function () {
-    let index = $(this).closest('tr').index();
-    ingredientsList.splice(index, 1);
-    $(this).closest('tr').remove();
-    });
+            $('#saveMedicationButton').click(function () {
 
-    // Open confirm modal
-    $('#openMedicationButton').click(function () {
-    $('#confirmMedicationModal').modal('show');
-    });
+                let data = {
+                    MedicationName: $('input[name="medicationName"]').val(),
+                    MedicationForm: $('select[name="medicationForm"]').val(),
+                    Schedule: parseInt($('select[name="schedule"]').val()),
+                    StockonHand: parseInt($('input[name="Stockonhand"]').val()),
+                    ReorderLevel: parseInt($('input[name="Re-orderlevel"]').val()),
+                    Ingredients: ingredientsList
+                };
 
-    // SAVE EVERYTHING
-    $('#saveMedicationButton').click(function () {
+                $.ajax({
+                    url: '/Pharmacist/AddMedication', // ✅ FIXED
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function () {
+                        alert("Saved!");
+                        location.reload();
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
 
-    let formData = {
-    MedicationName: $('input[name="medicationName"]').val(),
-    MedicationForm: $('select[name="medicationForm"]').val(),
-    Schedule: $('select[name="schedule"]').val(),
-    StockonHand: $('input[name="Stockonhand"]').val(),
-    ReorderLevel: $('input[name="Re-orderlevel"]').val(),
-    Ingredients: ingredientsList
-    };
+            });
 
-    $.ajax({
-    url: '@Url.Action("AddMedication", "Pharmacist")',
-    type: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify(formData),
-    success: function () {
-    location.reload();
-    },
-    error: function (err) {
-    console.log(err);
-    }
-    });
-
-    });
-
-    });
+        });
     </script>
 </body>
 </html>
