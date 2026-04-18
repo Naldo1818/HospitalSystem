@@ -1,40 +1,30 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DEMO.Models.NurseModels
+namespace DEMO.ViewModels
 {
-    public class PatientVitals
+    public class PatientVitalsViewModel
     {
-        [Key]
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public string ActiveIngredientName { get; set; }
+        public string ConditionName { get; set; }
+        public string MedicationName { get; set; }
         public int PatientVitalsID { get; set; }
-
-        [Required]
         public int PatientID { get; set; }
-        [Required]
         public int Height { get; set; }
-
-        [Required]
         public int Weight { get; set; }
-
-        [Required]
         public int SystolicBloodPressure { get; set; }
-        [Required]
-
         public int DiastolicBloodPressure { get; set; }
-        [Required]
         public int HeartRate { get; set; }
-
-        [Required]
         public double BloodOxygen { get; set; }
-        [Required]
         public int Respiration { get; set; }
-        [Required]
         public int BloodGlucoseLevel { get; set; }
-        [Required]
         public double Temperature { get; set; }
-        [Required]
         public TimeOnly Time { get; set; }
-        [Required]
         public DateOnly Date { get; set; }
 
+
+        public List<PatientVitalsViewModel> PatientVitals { get; set; }
+       
     }
 }

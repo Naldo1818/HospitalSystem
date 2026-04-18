@@ -28,12 +28,6 @@ namespace DEMO.ViewModels
         [StringLength(254, ErrorMessage = "Email cannot be longer than 254 characters.")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Contact number is required.")]
-        [Phone(ErrorMessage = "Invalid contact number.")]
-        [StringLength(10, ErrorMessage = "Contact number cannot be longer than 10 characters.")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Contact number must be exactly 10 digits and contain only numbers.")]
-        public string ContactNumber { get; set; }
-
 
         // BookSurgery
         [Required(ErrorMessage = "Account ID is required.")]
@@ -48,7 +42,7 @@ namespace DEMO.ViewModels
         [Required]
         public string Theater { get; set; }
 
-
+        public string Status { get; set; }
 
 
         //List

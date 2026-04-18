@@ -1,4 +1,4 @@
-﻿namespace DEMO.Models.NurseModels
+﻿namespace DEMO.ViewModels
 {
     public class ViewVitals
     {

@@ -1,0 +1,315 @@
+﻿@{
+    ViewData["Title"] = "Medication";
+    Layout = "_LayoutPharmacist";
+}
+@model DEMO.ViewModels.MedicationWithIngredientsViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+
+    <title>Medication Add</title>
+</head>
+
+<body>
+    <div class="container mt-4">
+
+        <!-- ================= ADD MEDICATION ================= -->
+        <div class="card shadow-sm p-4">
+            <form id="addMedicationForm" method="post" action="@Url.Action("AddMedication", "Admin")">
+
+                <h3 class="mb-4">Medication Page</h3>
+
+                <!-- Medication Section -->
+                <h5>Medication Details</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="medicationName" class="form-label">Medication Name</label>
+                        <input type="text" class="form-control" name="medicationName" placeholder="Enter Medication Name" style="width:300px">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Medication Form</label>
+                        <select class="form-control" name="medicationForm" style="width:300px">
+                            <option value="">Select Medication Form</option>
+                            <option>Capsules</option>
+                            <option>Drops</option>
+                            <option>Gel</option>
+                            <option>Injectable</option>
+                            <option>IV Drip</option>
+                            <option>Lotion</option>
+                            <option>Spray</option>
+                            <option>Suppository</option>
+                            <option>Suspension</option>
+                            <option>Syrup</option>
+                            <option>Tablets</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">Schedule</label>
+                        <select class="form-control" name="schedule" style="width:300px">
+                            <option value="">Select Schedule</option>
+                            <option value="0">Schedule 0</option>
+                            <option value="1">Schedule 1</option>
+                            <option value="2">Schedule 2</option>
+                            <option value="3">Schedule 3</option>
+                            <option value="4">Schedule 4</option>
+                            <option value="5">Schedule 5</option>
+                            <option value="6">Schedule 6</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label for="Re-orderlevel" class="form-label">Re-order level</label>
+                        <input type="text" class="form-control" name="Re-orderlevel" placeholder="Enter Re-order level" style="width:300px">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="Stockonhand" class="form-label"> Stock on hand</label>
+                        <input type="text" class="form-control" name="Stockonhand" placeholder="Enter Stock on hand" style="width:300px">
+                    </div>
+                </div>
+
+                <!-- Active Ingredient Section -->
+                <h5>Active Ingredient</h5>
+                <div class="row g-3 align-items-end mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Active Ingredient</label>
+                        <select class="form-control" id="activeIngredient" style="width:300px">
+                            <option value="">Select Active ingredient</option>
+                            @foreach (var ingredient in Model.ActiveIngredients)
+                            {
+                                <option value="@ingredient.ActiveingredientID">
+                                    @ingredient.ActiveIngredientName
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <button type="button" id="addRow" class="btn btn-primary w-100">
+                            Add Ingredient
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dynamic Table -->
+                <table class="table table-bordered" id="dynamicTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Active Ingredient</th>
+                            <th width="120">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <!-- Submit -->
+                <div class="text-center mt-4">
+                    <button type="button" id="openMedicationButton" class="btn btn-success px-5">
+                        Add Medication
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+        <!-- ================= MEDICATION LIST ================= -->
+        <div class="card shadow-sm p-4 mt-5">
+            <table id="medicationTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Medication Name</th>
+                        <th>Medication Form</th>
+                        <th>Schedule</th>
+                        <th>StockonHand</th>
+                        <th>ReorderLevel</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var Medication in Model.AllMedication)
+                    {
+                        <tr>
+                            <td>@Medication.MedicationName</td>
+                            <td>@Medication.MedicationForm</td>
+                            <td>@Medication.Schedule</td>
+                            <td>@Medication.StockonHand</td>
+                            <td>@Medication.ReorderLevel</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#activeIngredientModal"
+                                   data-medication-id="@Medication.MedicationID">
+                                    View Active Ingredient
+                                </a>
+                                <a class="btn btn-primary btn-sm"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#activeIngredientModal"
+                                   data-medication-id="@Medication.MedicationID">
+                                    Re-Stock Medication
+                                </a>
+                                <a class="btn btn-danger btn-sm"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#activeIngredientModal"
+                                   data-medication-id="@Medication.MedicationID">
+                                    Delete Medication
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <!-- ================= MODALS ================= -->
+    <!-- Confirm Medication -->
+    <div class="modal fade" id="confirmMedicationModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Confirm Save</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Add this medication?
+                </div>
+                <div class="modal-footer">
+                    <button id="saveMedicationButton" class="btn btn-primary">Yes</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Ingredient Modal -->
+    <div class="modal fade" id="activeIngredientModal">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Active Ingredients</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Medication</th>
+                                <th>Ingredient</th>
+                                <th>Strength</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @* @foreach (var item in Model.AllMedicationActiveIngredients)
+                            {
+                                <tr>
+                                    <td>@item.MedicationName</td>
+                                    <td>@item.ActiveIngredientName</td>
+                                    <td>@item.ActiveIngredientStrength</td>
+                                </tr>
+                            } *@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+    let ingredientsList = [];
+
+    $(document).ready(function () {
+
+    $('#medicationTable').DataTable();
+
+    // Add ingredient to list
+    $('#addRow').click(function () {
+
+    let ingredientId = $('#activeIngredient').val();
+    let ingredientText = $('#activeIngredient option:selected').text();
+
+    if (ingredientId) {
+
+    ingredientsList.push({
+    ActiveingredientID: ingredientId,
+    ActiveIngredientStrength: 1 // default (since removed input)
+    });
+
+    $('#dynamicTable tbody').append(`
+    <tr>
+        <td>${ingredientText}</td>
+        <td>
+            <button class="btn btn-danger btn-sm deleteRow">Delete</button>
+        </td>
+    </tr>
+    `);
+
+    $('#activeIngredient').val('');
+    }
+    else {
+    alert("Select an ingredient");
+    }
+    });
+
+    // Delete row + remove from array
+    $('#dynamicTable').on('click', '.deleteRow', function () {
+    let index = $(this).closest('tr').index();
+    ingredientsList.splice(index, 1);
+    $(this).closest('tr').remove();
+    });
+
+    // Open confirm modal
+    $('#openMedicationButton').click(function () {
+    $('#confirmMedicationModal').modal('show');
+    });
+
+    // SAVE EVERYTHING
+    $('#saveMedicationButton').click(function () {
+
+    let formData = {
+    MedicationName: $('input[name="medicationName"]').val(),
+    MedicationForm: $('select[name="medicationForm"]').val(),
+    Schedule: $('select[name="schedule"]').val(),
+    StockonHand: $('input[name="Stockonhand"]').val(),
+    ReorderLevel: $('input[name="Re-orderlevel"]').val(),
+    Ingredients: ingredientsList
+    };
+
+    $.ajax({
+    url: '@Url.Action("AddMedication", "Pharmacist")',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(formData),
+    success: function () {
+    location.reload();
+    },
+    error: function (err) {
+    console.log(err);
+    }
+    });
+
+    });
+
+    });
+    </script>
+</body>
+</html>

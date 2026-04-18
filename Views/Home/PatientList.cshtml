@@ -188,7 +188,6 @@
                                     <th>Name</th>
                                     <th>Surname</th>
                                     <th>Gender</th>
-                                    <th>Contact Number</th>
                                     <th>E-Mail</th>
                                     <th>Action</th>
                                 </tr>
@@ -201,7 +200,6 @@
                                         <td>@Patient.Name</td>
                                         <td>@Patient.Surname</td>
                                         <td>@Patient.Gender</td>
-                                        <td>@Patient.ContactNumber</td>
                                         <td>@Patient.Email</td>
                                         <td>
                                             <div class="w-100 btn-group" role="group">
@@ -282,6 +280,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <input type="hidden" name="Status" value="Booked">
                         </div>
                         <input type="hidden" id="PatientID" name="PatientID">
                         <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
@@ -342,11 +341,6 @@
                                 <label>Email</label>
                                 <input type="email" class="form-control" name="Email" required>
                                 <span class="text-danger" id="emailError"></span>
-                            </div>
-                            <div class="col-4">
-                                <label>Contact Number</label>
-                                <input type="text" class="form-control" id="contactNumber" name="ContactNumber" required maxlength="10">
-                                <span id="contactNumberError" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -409,16 +403,6 @@
                         $(this).removeClass('is-valid').addClass('is-invalid');
                         $('#idNumberError').text('ID number must be exactly 13 digits.');
                     }
-                }
-            });
-
-            // Contact number validation
-            $('#contactNumber').on('input', function () {
-                $(this).val($(this).val().replace(/\D/g,''));
-                if($(this).val().length !== 10){
-                    $('#contactNumberError').text("Contact number must be exactly 10 digits.");
-                } else {
-                    $('#contactNumberError').text("");
                 }
             });
 

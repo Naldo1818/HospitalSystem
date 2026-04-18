@@ -15,6 +15,9 @@ namespace DEMO.Models
         public string SurgeryTime { get; set; }
 
         [Required]
+        public string Status { get; set; }
+
+        [Required]
         public DateOnly SurgeryDate { get; set; }
 
         [Required]

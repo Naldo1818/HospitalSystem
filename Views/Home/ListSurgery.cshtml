@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Surgery List";
+    ViewData["Title"] = "Surgery Bookings";
     Layout = "_Layout2";
 }
 @model DEMO.ViewModels.SurgeryListViewModel
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookings Page</title>
+    <title>Surgery Bookings</title>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
@@ -225,7 +225,7 @@
                                                    asp-controller="Home"
                                                    asp-action="CheckTreatmentCode"
                                                    asp-route-bookingId="@Data.BookingID">
-                                                    Show Treatment Codes
+                                                    Edit Treatment Codes
                                                 </a>
                                             </div>
                                             <div class="w-100 btn-group" role="group">
@@ -262,7 +262,7 @@
                                         <input type="hidden" id="PatientID" name="PatientID" />
                                         <input type="hidden" id="BookingID" name="BookingID" />
                                         <input type="hidden" id="AccountID" name="AccountID" />
-
+                                        <input type="hidden" name="Status" value="Booked">
                                         <label for="nameInput" class="form-label">Name</label>
                                         <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" disabled style="width:250px">
 

@@ -10,8 +10,6 @@ namespace DEMO.Models.NurseModels
         public int AdmittedPatientID { get; set; }
 
         [Required]
-        public int PatientID { get; set; }
-
         public int AccountID { get; set; }
 
         [Required]
@@ -26,18 +24,9 @@ namespace DEMO.Models.NurseModels
 
         [Required]
         public DateOnly Date { get; set; }
-        [Required]
-        public int Height { get; set; }
-        [Required]
-        public int Weight { get; set; }
-
-        [Required]
-        public int AdmissionStatusID { get; set; }
 
         [Required]
         public TimeOnly Time { get; set; }
-
-        // Constructor to set default values
         public AdmittedPatientsModel()
         {
             Date = DateOnly.FromDateTime(DateTime.Now);

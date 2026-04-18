@@ -1,0 +1,267 @@
+﻿@{
+    ViewData["Title"] = "Edit Patient Allergies & Conditions";
+    Layout = "_LayoutNurse";
+}
+@model DEMO.ViewModels.PatientAllergiesConditionsViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Allergies & Conditions</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- DataTables CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <!-- Bootstrap CSS & JS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <h2>Patient Allergies & Conditions - @ViewBag.PatientName @ViewBag.PatientSurname</h2>
+
+                        <!-- Unified Add Form -->
+                        <form id="addAllergyConditionForm" method="post" asp-action="EditAllergyCondition" asp-controller="Nurse">
+                            <div class="form-group row">
+                                <!-- Allergy Search -->
+                                <div class="col-4">
+                                    <br>
+                                    <label for="searchAllergyInput" class="form-label">Search Allergy / Active Ingredient</label>
+                                    <input id="searchAllergyInput" class="form-control" type="search" placeholder="Search Active Ingredient"
+                                           onkeyup="filterAllergyNames()" style="width:300px">
+                                </div>
+
+                                <!-- Allergy Select -->
+                                <div class="col-4">
+                                    <br>
+                                    <label for="allergySelect" class="form-label">Active Ingredient</label>
+                                    <select class="form-control" id="allergySelect" name="ActiveingredientID" style="width:250px">
+                                        <option value="">Select an Active Ingredient</option>
+                                        @foreach (var ingredient in Model.AllActiveIngredients)
+                                        {
+                                            <option value="@ingredient.ActiveingredientID" data-search="@ingredient.ActiveIngredientName.ToLower()">
+                                                @ingredient.ActiveIngredientName
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <!-- Condition Search -->
+                                <div class="col-4">
+                                    <br>
+                                    <label for="searchConditionInput" class="form-label">Condition</label>
+                                    <input id="searchConditionInput" class="form-control" type="search" placeholder="Search Condition"
+                                           onkeyup="filterConditionNames()" style="width:300px">
+                                </div>
+
+                                <!-- Condition Select -->
+                                <div class="col-4">
+                                    <br>
+                                    <label for="conditionSelect" class="form-label">Condition</label>
+                                    <select class="form-control" id="conditionSelect" name="ConditionsID" style="width:250px">
+                                        <option value="">Select a Condition</option>
+                                        @foreach (var condition in Model.AllConditions)
+                                        {
+                                            <option value="@condition.ConditionID" data-search="@condition.ConditionName.ToLower()">
+                                                @condition.ConditionName
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <!-- Hidden Patient ID + Add Button -->
+                                <div class="col-4">
+                                    <br><br>
+                                    <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
+                                    <button type="button" id="openAddButton" class="btn btn-primary">Add</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Allergies Table -->
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="fs-4">Allergy</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.PatientAllergieslist)
+                                {
+                                    <tr>
+                                        <td>@item.Allergy</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger openRemoveAllergyModal" data-id="@item.patientAllergyID">Remove</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <!-- Conditions Table -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="fs-4">Condition</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.PatientConditionslist)
+                                {
+                                    <tr>
+                                        <td>@item.Condition</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger openRemoveConditionModal" data-id="@item.patientConditionsID">Remove</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="form-group row">
+                            <div class="col-4">
+                                <br>
+                                <a class="btn btn-primary" asp-controller="Home" asp-action="SurgeonHome">Save</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirm Add Modal -->
+            <div class="modal fade" id="confirmAddModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm Add</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to add the selected allergy and/or condition?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="saveAddButton" class="btn btn-primary">Yes</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remove Allergy Modal -->
+            <div class="modal fade" id="removeAllergyModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Remove Allergy</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">Are you sure you want to remove this allergy?</div>
+                        <div class="modal-footer">
+                            <form id="removeAllergyForm" method="post" asp-action="RemoveAllergy" asp-controller="Nurse">
+                                <input type="hidden" name="patientAllergyID" id="allergyIdToRemove" />
+                                <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
+                                <button type="submit" class="btn btn-danger">Yes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Remove Condition Modal -->
+            <div class="modal fade" id="removeConditionModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Remove Condition</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">Are you sure you want to remove this condition?</div>
+                        <div class="modal-footer">
+                            <form id="removeConditionForm" method="post" asp-action="RemoveConditions" asp-controller="Nurse">
+                                <input type="hidden" name="patientConditionsID" id="conditionIdToRemove" />
+                                <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
+                                <button type="submit" class="btn btn-danger">Yes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                // =========================
+                // Unified Add Button
+                // =========================
+                $('#openAddButton').click(function () {
+                    $('#confirmAddModal').modal('show');
+                });
+
+                $('#saveAddButton').click(function () {
+                    $.ajax({
+                        url: '@Url.Action("EditAllergyCondition", "Nurse")',
+                        type: 'POST',
+                        data: $('#addAllergyConditionForm').serialize(),
+                        success: function () { location.reload(); },
+                        error: function (xhr, status, error) { console.log("Add error:", error); }
+                    });
+                    $('#confirmAddModal').modal('hide');
+                });
+
+                // =========================
+                // Remove Modals
+                // =========================
+                $('.openRemoveAllergyModal').click(function () {
+                    $('#allergyIdToRemove').val($(this).data('id'));
+                    $('#removeAllergyModal').modal('show');
+                });
+
+                $('.openRemoveConditionModal').click(function () {
+                    $('#conditionIdToRemove').val($(this).data('id'));
+                    $('#removeConditionModal').modal('show');
+                });
+
+                // =========================
+                // Search/Filter Functions
+                // =========================
+                function filterAllergyNames() {
+                    var input = $('#searchAllergyInput').val().toLowerCase();
+                    $('#allergySelect option').each(function () {
+                        var text = $(this).data('search');
+                        if (!text) return;
+                        $(this).toggle(text.includes(input));
+                    });
+                }
+
+                function filterConditionNames() {
+                    var input = $('#searchConditionInput').val().toLowerCase();
+                    $('#conditionSelect option').each(function () {
+                        var text = $(this).data('search');
+                        if (!text) return;
+                        $(this).toggle(text.includes(input));
+                    });
+                }
+            </script>
+        </main>
+    </div>
+</body>
+</html>

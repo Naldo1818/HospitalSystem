@@ -1,4 +1,4 @@
-using DEMO.Data;
+﻿using DEMO.Data;
 using DEMO.Models;
 using DEMO.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -121,7 +121,6 @@ namespace DEMO.Controllers
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
                         return RedirectToAction("PharmacistHomePage","Pharmacist", new { AccountID });
                     }
-                   
                     else if (user.Role == "Nurse")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
@@ -186,57 +185,68 @@ namespace DEMO.Controllers
                 .Where(bs => bs.AccountID == accountID && bs.SurgeryDate == today)
                 .Count();
 
+            var surgeries = _dbContext.BookSurgery
+    .Where(s => s.Status == "Booked")
+    .ToList();
+
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                         && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                 on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID == accountID
                                  select pr).Count();
 
             var AdmissionsData = (from b in _dbContext.BookSurgery
-                                join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
-                                join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
-                                join bed in _dbContext.Bed on ap.BedId equals bed.BedId
-                                join w in _dbContext.Ward on bed.WardID equals w.WardId
-                                join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
-                                where b.AccountID == accountID
-                                && ap.AdmissionStatusID == 1
-                                && bed.Active == true
-                                && w.Active == true
-                                select new HomeViewModel
-                                {
-                                    PatientID = p.PatientID,
-                                    AdmittedPatientID = ap.AdmittedPatientID,
-                                    BookingID = b.BookingID,
-                                    Name = p.Name,
-                                    Surname = p.Surname,
-                                    SurgeryDate = b.SurgeryDate,
-                                    SurgeryTime = b.SurgeryTime,
-                                    Theater = b.Theater,
-                                    WardName = w.WardName,
-                                    BedNumber = bed.Number,
-                                    AdmissionStatusDescription = status.Description,
-                                    Time = ap.Time
-                                })
-                                .OrderBy(a => a.Name)
-                                .ToList();
+                                  join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
+                                  join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
+                                  join bed in _dbContext.Bed on ap.BedId equals bed.BedId
+                                  join w in _dbContext.Ward on bed.WardID equals w.WardId
+                                  where b.AccountID == accountID
+                                        && b.Status == "Admitted"
+                                        && bed.Active == false
+                                  select new HomeViewModel
+                                  {
+                                      PatientID = p.PatientID,
+                                      AdmittedPatientID = ap.AdmittedPatientID,
+                                      BookingID = b.BookingID,
+                                      Name = p.Name,
+                                      Surname = p.Surname,
+                                      SurgeryDate = b.SurgeryDate,
+                                      SurgeryTime = b.SurgeryTime,
+                                      Theater = b.Theater,
+                                      WardName = w.WardName,
+                                      BedNumber = bed.Number,
+                                      Time = ap.Time,
+                                      AdmitDate = ap.Date
+                                  })
+                     .OrderBy(a => a.Name)
+                     .ToList();
 
             var SurgeryData = (from b in _dbContext.BookSurgery
                                 join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
@@ -260,7 +270,8 @@ namespace DEMO.Controllers
                 AllAdmissionsData = AdmissionsData
             };
 
-            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.amCount = surgeries.Count(s => s.SurgeryTime == "AM");
+            ViewBag.pmCount = surgeries.Count(s => s.SurgeryTime == "PM");
             ViewBag.PrescribedCount = prescribedCount;
             ViewBag.DispensedCount = dispensedCount;
             ViewBag.RejectedCount = rejectedCount;
@@ -299,27 +310,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -346,7 +366,6 @@ namespace DEMO.Controllers
                     IDNumber = model.IDNumber,
                     Gender = model.Gender,
                     Email = model.Email,
-                    ContactNumber = model.ContactNumber
                 };
 
                 _dbContext.PatientInfo.Add(newPatient);
@@ -371,35 +390,35 @@ namespace DEMO.Controllers
                 .Count();
 
 
-            var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
-                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
-                                   select pr).Count();
+            //var prescribedCount = (from p in _dbContext.PatientInfo
+            //                       join ap in _dbContext.AdmittedPatients
+            //                       on p.PatientID equals ap.PatientID
+            //                       join pr in _dbContext.Prescription
+            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+            //                       where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+            //                       select pr).Count();
 
-            var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
-                                  join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
-                                  select pr).Count();
+            //var dispensedCount = (from p in _dbContext.PatientInfo
+            //                      join ap in _dbContext.AdmittedPatients
+            //                      on p.PatientID equals ap.PatientID
+            //                      join pr in _dbContext.Prescription
+            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+            //                      where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+            //                      select pr).Count();
 
-            var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
-                                 join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
-                                 select pr).Count();
+            //var rejectedCount = (from p in _dbContext.PatientInfo
+            //                     join ap in _dbContext.AdmittedPatients
+            //                     on p.PatientID equals ap.PatientID
+            //                     join pr in _dbContext.Prescription
+            //                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+            //                     where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+            //                     select pr).Count();
 
             // Pass the prescribed count to the view
             ViewBag.SurgeryCount = surgeryCount;
-            ViewBag.PrescribedCount = prescribedCount;
-            ViewBag.DispensedCount = dispensedCount;
-            ViewBag.RejectedCount = rejectedCount;
+            //ViewBag.PrescribedCount = prescribedCount;
+            //ViewBag.DispensedCount = dispensedCount;
+            //ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -420,7 +439,7 @@ namespace DEMO.Controllers
                     SurgeryTime = model.SurgeryTime,
                     SurgeryDate = model.SurgeryDate,
                     Theater = model.Theater,
-                  
+                    Status = model.Status,
                 };
 
                 _dbContext.BookSurgery.Add(booking);
@@ -487,27 +506,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -573,6 +601,7 @@ namespace DEMO.Controllers
             // Redirect back to the CheckTreatmentCode view with the patient name and surname
             return RedirectToAction("SurgeryTreatmentCodes", new { bookingId = bookingID, name = patient.Name, surname = patient.Surname });
         }
+
         public IActionResult CheckTreatmentCode(int bookingId, string name, string surname)
         {
             var allTreatmentCodes = _dbContext.TreatmentCodes.OrderBy(a => a.TreatmentName).ToList();
@@ -617,27 +646,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
             // Pass the prescribed count to the view
             ViewBag.SurgeryCount = surgeryCount;
@@ -654,6 +692,7 @@ namespace DEMO.Controllers
 
             return View(viewModel);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult EditTreatment(int bookingID, int treatmentCodeID)
@@ -721,13 +760,12 @@ namespace DEMO.Controllers
                                 join ap in _dbContext.AdmittedPatients on b.BookingID equals ap.BookingID
                                 join bed in _dbContext.Bed on ap.BedId equals bed.BedId
                                 join w in _dbContext.Ward on bed.WardID equals w.WardId
-                                join status in _dbContext.AdmissionStatus on ap.AdmissionStatusID equals status.AdmissionStatusId
                                 where b.AccountID == accountID
-                                && ap.AdmissionStatusID == 1
-                                && bed.Active == true
-                                && w.Active == true
+                                      && b.Status == "Admitted"
+                                      && bed.Active == false
                                 select new AdmissionsListViewModel
-                                {   PatientID=p.PatientID,
+                                {
+                                    PatientID = p.PatientID,
                                     AdmittedPatientID = ap.AdmittedPatientID,
                                     BookingID = b.BookingID,
                                     Name = p.Name,
@@ -737,8 +775,8 @@ namespace DEMO.Controllers
                                     Theater = b.Theater,
                                     WardName = w.WardName,
                                     BedNumber = bed.Number,
-                                    AdmissionStatusDescription = status.Description,
-                                    Time=ap.Time
+                                    Time = ap.Time,
+                                    AdmitDate = ap.Date
                                 })
                      .OrderBy(a => a.Name)
                      .ToList();
@@ -760,27 +798,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID == accountID
                                    select pr).Count();
 
-            var dispensedCount = (from p in _dbContext.PatientInfo
+            var dispensedCount = (from p in _dbContext.PatientInfo 
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -795,19 +842,33 @@ namespace DEMO.Controllers
             return View(viewModel);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Discharge(AdmittedPatientsModel model)
         {
             if (ModelState.IsValid)
             {
-                var admittedPatient = _dbContext.AdmittedPatients.FirstOrDefault(ap => ap.AdmittedPatientID == model.AdmittedPatientID);
+
+                var admittedPatient = _dbContext.BookSurgery.FirstOrDefault(ap => ap.BookingID == model.BookingID);
 
                 if (admittedPatient != null)
                 {
                     // Update the existing account with new values
-                    admittedPatient.AdmissionStatusID = 2;
+                    admittedPatient.Status = "Discharge";
                     _dbContext.SaveChanges();
                 }
+
+                // Assuming you have a DbContext and SurgeryBooking model
+                    //Discharged newDischarged = new Discharged
+                    //{
+
+                    //    BookingID = model.BookingID,
+                    //    Time = model.Time,
+                    //    Date = model.Date,
+                    //    Note = model.Note
+
+                    //};
+
+                    //_dbContext.Discharged.Add(newDischarged);
+                    _dbContext.SaveChanges();
 
                 return RedirectToAction("patientAddmision");
             }
@@ -826,16 +887,21 @@ namespace DEMO.Controllers
             var combinedData = (from b in _dbContext.BookSurgery
                                 join p in _dbContext.PatientInfo on b.PatientID equals p.PatientID
                                 where b.AccountID == accountID
+                                      && b.Status == "Booked"  
                                 select new SurgeryListViewModel
-                                {   BookingID=b.BookingID,
-                                    PatientID=b.PatientID,
-                                    AccountID=b.AccountID,
+                                {
+                                    BookingID = b.BookingID,
+                                    PatientID = b.PatientID,
+                                    AccountID = b.AccountID,
                                     Name = p.Name,
                                     Surname = p.Surname,
                                     SurgeryDate = b.SurgeryDate,
                                     SurgeryTime = b.SurgeryTime,
                                     Theater = b.Theater
-                                }).OrderBy(a => a.Name).ToList();
+                                })
+                    .OrderBy(a => a.Name)
+                    .ToList();
+
 
             var viewModel = new SurgeryListViewModel
             {
@@ -854,27 +920,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -886,6 +961,7 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
             return View(viewModel);
         }
         [HttpPost]
@@ -918,28 +994,28 @@ namespace DEMO.Controllers
         }
         public IActionResult VitalsAndHistory(int patientID, string name, string surname)
         {
+            // Fetch patient vitals with the latest admitted patient info
             var patientVitals = (from pv in _dbContext.PatientVitals
-                                 join ap in _dbContext.AdmittedPatients
-                                 on pv.PatientID equals ap.PatientID
+                                 join b in _dbContext.BookSurgery on pv.PatientID equals b.PatientID
+                                 join ad in _dbContext.AdmittedPatients on b.BookingID equals ad.BookingID
                                  where pv.PatientID == patientID
+                                 orderby ad.Date descending, pv.Time descending
                                  select new PatientAllergyViewModel
                                  {
-                                     Date = ap.Date,
-                                     Time = pv.time,
-                                     Height = ap.Height,
-                                     Weight = ap.Weight,
+                                     Date = ad.Date,
+                                     Time = pv.Time,
+                                     Height = pv.Height,
+                                     Weight = pv.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
-                                     DiastolicBloodPressure= pv.DiastolicBloodPressure,
-                                     HeartRate=  pv.HeartRate,
-                                     BloodOxygen=  pv.BloodOxygen,
-                                     Respiration= pv.Respiration,
-                                     BloodGlucoseLevel= pv.BloodGlucoseLevel,
-                                     Temperature =  pv.Temperature,
-                                    
-                                   
-                                 }).OrderByDescending(ap => ap.Date).ToList();
+                                     DiastolicBloodPressure = pv.DiastolicBloodPressure,
+                                     HeartRate = pv.HeartRate,
+                                     BloodOxygen = pv.BloodOxygen,
+                                     Respiration = pv.Respiration,
+                                     BloodGlucoseLevel = pv.BloodGlucoseLevel,
+                                     Temperature = pv.Temperature
+                                 }).ToList();
 
-
+            // Allergies
             var allergy = (from pa in _dbContext.PatientAllergy
                            join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
                            join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
@@ -950,10 +1026,10 @@ namespace DEMO.Controllers
                                Surname = p.Surname,
                                ActiveIngredientName = ai.ActiveIngredientName
                            })
-            .OrderBy(ai => ai.ActiveIngredientName)
-            .ToList();
+                          .OrderBy(a => a.ActiveIngredientName)
+                          .ToList();
 
-
+            // Conditions
             var conditions = (from pc in _dbContext.PatientConditions
                               join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
                               join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
@@ -962,69 +1038,51 @@ namespace DEMO.Controllers
                               {
                                   Name = pt.Name,
                                   Surname = pt.Surname,
-                                  ConditionName = c.ConditionName // Ensure this property exists in your view model
-                              }).OrderBy(c => c.ConditionName).ToList();
+                                  ConditionName = c.ConditionName
+                              })
+                             .OrderBy(c => c.ConditionName)
+                             .ToList();
+
 
             var currentMed = (from pm in _dbContext.patientMedication
-                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
-                              join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
+                              join cm in _dbContext.ChronicMedication on pm.CMedicationID equals cm.CMedicationID
+                              join p in _dbContext.PatientInfo on pm.PatientID equals p.PatientID
                               where pm.PatientID == patientID
                               select new PatientAllergyViewModel
                               {
-                                  Name = pi.Name,
-                                  Surname = pi.Surname,
-                                  MedicationName = cm.MedicationName // Ensure this property exists in your view model
-                              }).OrderBy(cm => cm.MedicationName).ToList();
-            // Create a view model that holds both lists
+                                  Name = p.Name,
+                                  Surname = p.Surname,
+                                  MedicationName = cm.CMedicationName,
+                                  CMedicationForm = cm.CMedicationForm,
+                                  Schedule = cm.Schedule
+                              })
+                   .OrderBy(m => m.MedicationName)
+                   .ToList();
+            // Compose the view model
             var viewModel = new PatientAllergyViewModel
-            {   Allvitals = patientVitals,
+            {
+                Allvitals = patientVitals,      // Make sure this property exists in your VM
                 Allallergy = allergy,
                 AllConditions = conditions,
                 AllCurrentMed = currentMed
             };
 
+            // Fetch current user/session info
             var accountID = HttpContext.Session.GetString("UserAccountId");
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
+            // Count today's surgeries for this user
             var surgeryCount = _dbContext.BookSurgery
                 .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
                 .Count();
 
-
-            var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
-                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
-                                   select pr).Count();
-
-            var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
-                                  join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
-                                  select pr).Count();
-
-            var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
-                                 join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
-                                 select pr).Count();
-
-            // Pass the prescribed count to the view
+            // Pass values to the view via ViewBag
             ViewBag.PatientName = name;
             ViewBag.PatientSurname = surname;
             ViewBag.SurgeryCount = surgeryCount;
-            ViewBag.PrescribedCount = prescribedCount;
-            ViewBag.DispensedCount = dispensedCount;
-            ViewBag.RejectedCount = rejectedCount;
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
@@ -1069,27 +1127,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -1103,315 +1170,169 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             return View();
         }
+
+        //Alerts
         public IActionResult PrescriptionMedication(int id)
         {
-          
-            var combinedData = (from pr in _dbContext.Prescription
-                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
-                                join p in _dbContext.PatientInfo on ap.PatientID equals p.PatientID
-                                join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
-                                join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
-                                where pr.PrescriptionID == id
-                                orderby p.Name
-                                select new PrescriptionMedicationViewModel
+            var patientID = (from pr in _dbContext.Prescription
+                             join ad in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ad.AdmittedPatientID
+                             join b in _dbContext.BookSurgery on ad.BookingID equals b.BookingID
+                             where pr.PrescriptionID == id
+                             select b.PatientID)
+                            .FirstOrDefault();
+
+            // ✅ Get restricted ingredients (Condition → ActiveIngredient)
+            var restrictedIngredients = (
+                from pc in _dbContext.PatientConditions
+                join cai in _dbContext.ConditionActiveIngredient
+                    on pc.ConditionsID equals cai.ConditionID
+                where pc.PatientID == patientID
+                select cai.ActiveingredientID
+            ).Distinct().ToList();
+
+            // ✅ SAFE medications
+            var allGoodMedications = _dbContext.Medication
+                                    .Where(m => !_dbContext.MedicationActiveIngredient
+                                        .Join(_dbContext.ConditionActiveIngredient,
+                                              mai => mai.ActiveingredientID,
+                                              cai => cai.ActiveingredientID,
+                                              (mai, cai) => new { mai, cai })
+                                        .Join(_dbContext.PatientConditions,
+                                              temp => temp.cai.ConditionID,
+                                              pc => pc.ConditionsID,
+                                              (temp, pc) => new { temp.mai, pc })
+                                        .Any(x => x.mai.MedicationID == m.MedicationID
+                                               && x.pc.PatientID == patientID))
+                                    .Select(m => new PrescriptionMedicationViewModel
+                                    {
+                                        MedicationID = m.MedicationID,
+                                        MedicationName = m.MedicationName,
+                                        MedicationForm = m.MedicationForm,
+                                        Schedule = m.Schedule
+                                    })
+                                    .Distinct()
+                                    .ToList();
+
+            // ✅ BAD medications (contraindicated)
+            var badMedications = _dbContext.Medication
+                                .Where(m => _dbContext.MedicationActiveIngredient
+                                    .Where(mai => mai.MedicationID == m.MedicationID)
+                                    .Any(mai => _dbContext.ConditionActiveIngredient
+                                        .Where(cai => cai.ActiveingredientID == mai.ActiveingredientID)
+                                        .Any(cai => _dbContext.PatientConditions
+                                            .Any(pc => pc.ConditionsID == cai.ConditionID
+                                                    && pc.PatientID == 4))))
+                                .Select(m => new PrescriptionMedicationViewModel
                                 {
-                                    Medid = mi.InstructionsID,
-                                    Name = p.Name,
-                                    Surname = p.Surname,
-                                    DateGiven = pr.DateGiven,
-                                    Status = pr.Status,
+                                    MedicationID = m.MedicationID,
                                     MedicationName = m.MedicationName,
-                                    Quantity = mi.Quantity,
                                     MedicationForm = m.MedicationForm,
-                                    Schedule = m.Schedule,
-                                    Instructions = mi.Instructions
-                                }).ToList();
+                                    Schedule = m.Schedule
+                                })
+                                .Distinct()
+                                .ToList();
 
-            
+            // ✅ Patient info
+            var patientInfo = (from p in _dbContext.PatientInfo
+                               where p.PatientID == patientID
+                               select new PatientListViewModal
+                               {
+                                   Name = p.Name,
+                                   Surname = p.Surname,
+                                   Gender = p.Gender
+                               }).FirstOrDefault();
 
-            var patientInfo = _dbContext.PatientInfo
-                                        .Where(p => _dbContext.AdmittedPatients
-                                                    .Any(ap => ap.PatientID == p.PatientID && _dbContext.Prescription
-                                                    .Any(pr => pr.AdmittedPatientID == ap.AdmittedPatientID && pr.PrescriptionID == id)))
-                                        .Select(p => new PatientListViewModal
-                                        {
-                                            Name = p.Name,
-                                            Surname = p.Surname,
-                                            Gender = p.Gender, // Adjust as necessary
-                                        }).FirstOrDefault();
+            // ✅ Current meds
+            var currentMed = (from pm in _dbContext.patientMedication
+                              join cm in _dbContext.ChronicMedication on pm.CMedicationID equals cm.CMedicationID
+                              where pm.PatientID == patientID
+                              select new PrescriptionMedicationViewModel
+                              {
+                                  MedicationName = cm.CMedicationName,
+                                  MedicationForm = cm.CMedicationForm,
+                                  Schedule = cm.Schedule
+                              }).ToList();
 
-            var patientID = _dbContext.Prescription
-                             .Where(pr => pr.PrescriptionID == id)
-                             .Join(_dbContext.AdmittedPatients, ap => ap.AdmittedPatientID, bs => bs.AdmittedPatientID, (pr, bs) => bs.PatientID)
-                             .FirstOrDefault();
+            // ✅ Allergies
+            var allergies = (from pa in _dbContext.PatientAllergy
+                             join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                             where pa.PatientID == patientID
+                             select new PrescriptionMedicationViewModel
+                             {
+                                 ActiveIngredientName = ai.ActiveIngredientName
+                             }).ToList();
 
+            // ✅ Conditions
+            var conditions = (from pc in _dbContext.PatientConditions
+                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
+                              where pc.PatientID == patientID
+                              select new PrescriptionMedicationViewModel
+                              {
+                                  ConditionName = c.ConditionName
+                              }).ToList();
+
+            // ✅ Vitals
             var patientVitals = (from pv in _dbContext.PatientVitals
-                                 join ap in _dbContext.AdmittedPatients
-                                 on pv.PatientID equals ap.PatientID
                                  where pv.PatientID == patientID
+                                 orderby pv.Date descending, pv.Time descending
                                  select new PrescriptionMedicationViewModel
                                  {
-                                     Date = ap.Date,
-                                     Time = pv.time,
-                                     Height = ap.Height,
-                                     Weight = ap.Weight,
+                                     Height = pv.Height,
+                                     Weight = pv.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,
                                      BloodOxygen = pv.BloodOxygen,
                                      Respiration = pv.Respiration,
                                      BloodGlucoseLevel = pv.BloodGlucoseLevel,
-                                     Temperature = pv.Temperature
-                                 }).OrderByDescending(ap => ap.Date).ToList();
+                                     Temperature = pv.Temperature,
+                                     Date = pv.Date,
+                                     Time = pv.Time
+                                 }).Take(1).ToList();
 
-            var allGoodMedications = _dbContext.PharmacyMedication
-                            .Where(pm => !_dbContext.MedicationActiveIngredient
-                                .Any(ma => ma.MedicationID == pm.MedicationID && (
-                                    _dbContext.PatientAllergy
-                                        .Any(pa => pa.PatientID == patientID && pa.ActiveingredientID == ma.ActiveingredientID) ||
-                                    _dbContext.PatientConditions
-                                        .Any(pc => pc.PatientID == patientID && _dbContext.ConditionActiveIngredient
-                                            .Any(ca => ca.ConditionID == pc.ConditionsID && ca.ActiveingredientID == ma.ActiveingredientID)
-                                        )
-                                ))
-                            )
-                            .Where(pm => !_dbContext.MedicationActiveIngredient
-                                .Any(ma1 => ma1.MedicationID == pm.MedicationID &&
-                                    (_dbContext.patientMedication
-                                        .Where(pm2 => pm2.PatientID == patientID)
-                                        .Join(_dbContext.MedicationActiveIngredient, pm2 => pm2.MedicationID, ma2 => ma2.MedicationID, (pm2, ma2) => new { ma2.ActiveingredientID })
-                                        .Any(pm2_ma2 => (
-                                            // Check for Carbimazole-Doxazosin interaction
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
-                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
-                                            // Check for Doxazosin-Doxylamine Succinate interaction
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
-                                             pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
-                                        ))
-                                    ||
-                                    _dbContext.MedicationInstructions
-                                        .Where(mi => mi.PrescriptionID == id) // Use your PrescriptionID condition
-                                        .Join(_dbContext.MedicationActiveIngredient, mi => mi.MedicationID, ma2 => ma2.MedicationID, (mi, ma2) => new { ma2.ActiveingredientID })
-                                        .Any(mi_ma2 => (
-                                            // Check for Carbimazole-Doxazosin interaction
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
-                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
-                                            // Check for Doxazosin-Doxylamine Succinate interaction
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
-                                            (ma1.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
-                                             mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
-                                        ))
-                                ))
-                            )
-                            .Join(_dbContext.Medication, pm => pm.MedicationID, m => m.MedicationID, (pm, m) => new { pm, m })
-                            .OrderBy(x => x.m.MedicationName)
-                            .Select(x => new PrescriptionMedicationViewModel
-                            {
-                                MedicationID = x.m.MedicationID,
-                                MedicationName = x.m.MedicationName
-                            })
-                            .Distinct()
-                            .ToList();
-
-            var allMedicationsWithInteractions =( from pm in _dbContext.PharmacyMedication
-                                                 join mai in _dbContext.MedicationActiveIngredient on pm.MedicationID equals mai.MedicationID
-                                                 join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-                                                 where _dbContext.patientMedication
-                                                     .Where(pm2 => pm2.PatientID == patientID)
-                                                     .Join(_dbContext.MedicationActiveIngredient,
-                                                           pm2 => pm2.MedicationID,
-                                                           mai2 => mai2.MedicationID,
-                                                           (pm2, mai2) => new { mai2.ActiveingredientID })
-                                                     .Any(pm2_ma2 =>
-                                                         // Check for Carbimazole-Doxazosin interaction
-                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
-                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
-                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
-                                                         // Check for Doxazosin-Doxylamine Succinate interaction
-                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
-                                                         (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
-                                                          pm2_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
-                                                     )
-                                                 select new PrescriptionMedicationViewModel
-                                                 {
-                                                     MedicationID = pm.MedicationID,
-                                                     MedicationName = m.MedicationName
-                                                 })
-                                                .Distinct()
-                                                .OrderBy(x => x.MedicationName)
-                                                .ToList();
-
-            var allMedicationsInteractionsPrescription = (from pm in _dbContext.PharmacyMedication
-                                                join mai in _dbContext.MedicationActiveIngredient on pm.MedicationID equals mai.MedicationID
-                                                join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-                                                where _dbContext.MedicationInstructions
-                                                    .Where(mi => mi.PrescriptionID == id) // Use the correct prescriptionID variable
-                                                    .Join(_dbContext.MedicationActiveIngredient,
-                                                          mi => mi.MedicationID,
-                                                          mai2 => mai2.MedicationID,
-                                                          (mi, mai2) => new { mai2.ActiveingredientID })
-                                                    .Any(mi_ma2 =>
-                                                        // Check for Carbimazole-Doxazosin interaction
-                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID &&
-                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID) ||
-                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Carbimazole").ActiveingredientID) ||
-                                                        // Check for Doxazosin-Doxylamine Succinate interaction
-                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID &&
-                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID) ||
-                                                        (mai.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxylamine Succinate").ActiveingredientID &&
-                                                         mi_ma2.ActiveingredientID == _dbContext.Activeingredient.FirstOrDefault(ai => ai.ActiveIngredientName == "Doxazosin").ActiveingredientID)
-                                                    )
-                                                select new PrescriptionMedicationViewModel
-                                                {
-                                                    MedicationID = pm.MedicationID,
-                                                    MedicationName = m.MedicationName
-                                                })
-                                                .Distinct()
-                                                .OrderBy(x => x.MedicationName)
-                                                .ToList();
-
-
-
-            var allMedication = (from pa in _dbContext.PatientAllergy
-                                 join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
-                                 join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-                                 join ma in _dbContext.MedicationActiveIngredient on ai.ActiveingredientID equals ma.ActiveingredientID
-                                 join pm in _dbContext.PharmacyMedication on ma.MedicationID equals pm.MedicationID 
-                                 join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-                                 where pa.PatientID == patientID
-                                 orderby m.MedicationName
-                                 select new PrescriptionMedicationViewModel
+            // ✅ Prescription table data
+            var combinedData = _dbContext.PatientInfo
+                                 .Join(_dbContext.BookSurgery, p => p.PatientID, bs => bs.PatientID, (p, bs) => new { p, bs })
+                                 .Join(_dbContext.AdmittedPatients, x => x.bs.BookingID, ap => ap.BookingID, (x, ap) => new { x.p, x.bs, ap })
+                                 .Join(_dbContext.Prescription, x => x.ap.AdmittedPatientID, pr => pr.AdmittedPatientID, (x, pr) => new { x.p, x.bs, x.ap, pr })
+                                 .Join(_dbContext.MedicationInstructions, x => x.pr.PrescriptionID, mi => mi.PrescriptionID, (x, mi) => new { x.p, x.bs, x.ap, x.pr, mi })
+                                 .Join(_dbContext.Medication, x => x.mi.MedicationID, m => m.MedicationID, (x, m) => new { x.p, x.bs, x.ap, x.pr, x.mi, m })
+                                 .Where(x => x.pr.PrescriptionID == id)
+                                 .Select(x => new PrescriptionMedicationViewModel
                                  {
-                                     ActiveIngredientName = ai.ActiveIngredientName,
-                                     MedicationID = m.MedicationID,
-                                     MedicationName = m.MedicationName
-                                 }).Distinct() // Ensure distinct results
-              .OrderBy(m => m.MedicationName) // Order by MedicationName
-              .ToList();
+                                     PatientID = x.p.PatientID,
+                                     Name = x.p.Name,
+                                     Surname = x.p.Surname,
+                                     BookingID = x.bs.BookingID,
+                                     SurgeryDate = x.bs.SurgeryDate,
+                                     AdmittedPatientID = x.ap.AdmittedPatientID,
+                                     WardID = x.ap.WardID,
+                                     BedId = x.ap.BedId,
+                                     PrescriptionID = x.pr.PrescriptionID,
+                                     Urgency = x.pr.Urgency,
+                                     Instructions = x.mi.Instructions,
+                                     Quantity = x.mi.Quantity,
+                                     MedicationName = x.m.MedicationName,
+                                     MedicationForm = x.m.MedicationForm,
+                                     Schedule = x.m.Schedule
+                                 })
+                                 .ToList();
 
-            var allConditionMedication = (from p in _dbContext.PatientInfo
-                          join pc in _dbContext.PatientConditions on p.PatientID equals pc.PatientID
-                          join ca in _dbContext.ConditionActiveIngredient on pc.ConditionsID equals ca.ConditionID
-                          join ma in _dbContext.MedicationActiveIngredient on ca.ActiveingredientID equals ma.ActiveingredientID
-                          join pm in _dbContext.PharmacyMedication on ma.MedicationID equals pm.MedicationID
-                          join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-                          join ai in _dbContext.Activeingredient on ca.ActiveingredientID equals ai.ActiveingredientID
-                          where p.PatientID == patientID
-                          select new PrescriptionMedicationViewModel
-                          {
-                              ActiveIngredientName = ai.ActiveIngredientName,
-                              MedicationID = m.MedicationID,
-                              MedicationName = m.MedicationName,
-                          })
-              .Distinct() // Ensure distinct results
-              .OrderBy(m => m.MedicationName) // Order by MedicationName
-              .ToList(); // Execute the query and retrieve the results
-
-
-
-            var allergies = (from pa in _dbContext.PatientAllergy
-                             join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
-                             join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-                             where pa.PatientID == patientID
-                             select new PatientAllergyViewModel
-                             {
-                                 Name = p.Name,
-                                 Surname = p.Surname,
-                                 ActiveIngredientName = ai.ActiveIngredientName
-                             }).OrderBy(ai => ai.ActiveIngredientName).ToList();
-
-
-            var currentMed = (from pm in _dbContext.patientMedication
-                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
-                              join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
-                              where pm.PatientID == patientID
-                              select new PatientAllergyViewModel
-                              {
-                                  Name = pi.Name,
-                                  Surname = pi.Surname,
-                                  MedicationName = cm.MedicationName // Ensure this property exists in your view model
-                              }).OrderBy(cm => cm.MedicationName).ToList();
-
-            var conditions = (from pc in _dbContext.PatientConditions
-                              join pt in _dbContext.PatientInfo on pc.PatientID equals pt.PatientID
-                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
-                              where pc.PatientID == patientID
-                              select new PatientAllergyViewModel
-                              {
-                                  Name = pt.Name,
-                                  Surname = pt.Surname,
-                                  ConditionName = c.ConditionName // Ensure this property exists in your view model
-                              }).OrderBy(c => c.ConditionName).ToList();
-
+            // ✅ FINAL VIEWMODEL (NULL SAFE)
             var viewModel = new PrescriptionMedicationViewModel
             {
-                AllMedicationsInteractionsPrescription = allMedicationsInteractionsPrescription,
-                AllMedicationsWithInteractions = allMedicationsWithInteractions,
-                AllConditionMedication = allConditionMedication,
-                Allvitals = patientVitals,
-                CombinedData = combinedData,
-                AllGoodMedications = allGoodMedications,
-                AllMedication = allMedication,
+                AllGoodMedications = allGoodMedications ?? new List<PrescriptionMedicationViewModel>(),
+                AllMedication = badMedications ?? new List<PrescriptionMedicationViewModel>(),
+                CombinedData = combinedData ?? new List<PrescriptionMedicationViewModel>(),
                 PatientInfo = patientInfo ?? new PatientListViewModal(),
-                Allergies = allergies,
-                CurrentMedications = currentMed,
-                Conditions = conditions// Add this property to your view model
+                CurrentMedications = currentMed ?? new List<PrescriptionMedicationViewModel>(),
+                Allergies = allergies ?? new List<PrescriptionMedicationViewModel>(),
+                Conditions = conditions ?? new List<PrescriptionMedicationViewModel>(),
+                Allvitals = patientVitals ?? new List<PrescriptionMedicationViewModel>()
             };
-         
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
 
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var surgeryCount = _dbContext.BookSurgery
-                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
-                .Count();
-
-
-            var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
-                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
-                                   select pr).Count();
-
-            var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
-                                  join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
-                                  select pr).Count();
-
-            var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
-                                 join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
-                                 select pr).Count();
-
-            // Pass the prescribed count to the view
-            ViewBag.SurgeryCount = surgeryCount;
-            ViewBag.PrescribedCount = prescribedCount;
-            ViewBag.DispensedCount = dispensedCount;
-            ViewBag.RejectedCount = rejectedCount;
             ViewBag.PrescriptionID = id;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
+
             return View(viewModel);
         }
         [HttpPost]
@@ -1477,7 +1398,7 @@ namespace DEMO.Controllers
                                           Name = p.Name,
                                           Surname = p.Surname,
                                           Theater = b.Theater,
-                                          ContactNumber = p.ContactNumber,
+                                       //   ContactNumber = p.ContactNumber,
                                           Email = p.Email,
                                           FullName = p.Name + " " + p.Surname,
                                           TreatmentName = t.TreatmentName,
@@ -1539,7 +1460,7 @@ namespace DEMO.Controllers
                                           Name = p.Name,
                                           Surname = p.Surname,
                                           Theater = b.Theater,
-                                          ContactNumber = p.ContactNumber,
+                                         // ContactNumber = p.ContactNumber,
                                           Email = p.Email,
                                           FullName = p.Name + " " + p.Surname,
                                           TreatmentName = t.TreatmentName,
@@ -1616,32 +1537,38 @@ namespace DEMO.Controllers
             }
 
             var Prescribed = (from p in _dbContext.PatientInfo
+                              join bs in _dbContext.BookSurgery
+                                  on p.PatientID equals bs.PatientID
                               join ap in _dbContext.AdmittedPatients
-                              on p.PatientID equals ap.PatientID
+                                  on bs.BookingID equals ap.BookingID
                               join pr in _dbContext.Prescription
-                              on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                              where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                              where pr.Status == "Prescribed"
+                                    && pr.AccountID == accountID
                               orderby pr.Urgency == "Yes" descending
                               select new PrescriptionListViewModal
-
-                              {   PrescriptionID = pr.PrescriptionID,
+                              {
+                                  PrescriptionID = pr.PrescriptionID,
                                   Name = p.Name,
-                                  Surname=p.Surname,
+                                  Surname = p.Surname,
                                   DateGiven = pr.DateGiven,
                                   Urgency = pr.Urgency,
                                   Status = pr.Status
                               }).ToList();
 
             var PrescribedDispensed = (from p in _dbContext.PatientInfo
+                                       join bs in _dbContext.BookSurgery
+                                           on p.PatientID equals bs.PatientID
                                        join ap in _dbContext.AdmittedPatients
-                                       on p.PatientID equals ap.PatientID
+                                           on bs.BookingID equals ap.BookingID
                                        join pr in _dbContext.Prescription
-                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                           on ap.AdmittedPatientID equals pr.AdmittedPatientID
                                        join rs in _dbContext.DispensedScriptsModel
-                                       on pr.PrescriptionID equals rs.PrescriptionID
+                                           on pr.PrescriptionID equals rs.PrescriptionID
                                        join a in _dbContext.Accounts
-                                       on rs.AccountID equals a.AccountID
-                                       where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                           on rs.AccountID equals a.AccountID
+                                       where pr.Status == "Dispensed"
+                                             && pr.AccountID == accountID
                                        orderby pr.Urgency == "Yes" descending, p.Name
                                        select new PrescriptionListViewModal
                                        {
@@ -1656,15 +1583,18 @@ namespace DEMO.Controllers
                                        }).ToList();
 
             var PrescribedRejected = (from p in _dbContext.PatientInfo
+                                      join bs in _dbContext.BookSurgery
+                                          on p.PatientID equals bs.PatientID
                                       join ap in _dbContext.AdmittedPatients
-                                      on p.PatientID equals ap.PatientID
+                                          on bs.BookingID equals ap.BookingID
                                       join pr in _dbContext.Prescription
-                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                      join rs in _dbContext.RejectScriptModel
-                                      on pr.PrescriptionID equals rs.PrescriptionID
+                                          on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                      join rs in _dbContext.DispensedScriptsModel
+                                          on pr.PrescriptionID equals rs.PrescriptionID
                                       join a in _dbContext.Accounts
-                                      on rs.AccountID equals a.AccountID
-                                      where pr.Status == "Rejected" && pr.AccountID == accountID
+                                          on rs.AccountID equals a.AccountID
+                                      where pr.Status == "Rejected"
+                                            && pr.AccountID == accountID
                                       orderby pr.Urgency == "Yes" descending, p.Name
                                       select new PrescriptionListViewModal
                                       {
@@ -1674,7 +1604,6 @@ namespace DEMO.Controllers
                                           DateGiven = pr.DateGiven,
                                           Urgency = pr.Urgency,
                                           Status = pr.Status,
-                                          RejectionReason = rs.RejectionReason,
                                           AccountName = a.Name,
                                           AccountSurname = a.Surname
                                       }).ToList();
@@ -1696,27 +1625,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                         && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -1734,27 +1672,39 @@ namespace DEMO.Controllers
         public IActionResult PrescriptionDetails(int id)
         {
             var prescriptionDetails = (from pr in _dbContext.Prescription
-                                       join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
-                                       join p in _dbContext.PatientInfo on ap.PatientID equals p.PatientID
-                                       join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
-                                       join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
+                                       join ap in _dbContext.AdmittedPatients
+                                           on pr.AdmittedPatientID equals ap.AdmittedPatientID
+                                       join bs in _dbContext.BookSurgery
+                                           on ap.BookingID equals bs.BookingID
+                                       join p in _dbContext.PatientInfo
+                                           on bs.PatientID equals p.PatientID
+                                       join mi in _dbContext.MedicationInstructions
+                                           on pr.PrescriptionID equals mi.PrescriptionID
+                                       join m in _dbContext.Medication
+                                           on mi.MedicationID equals m.MedicationID
                                        where pr.PrescriptionID == id
                                        orderby p.Name
                                        select new PrescriptionMedicationViewModel
                                        {
-                                           Medid = mi.InstructionsID,
+                                           PatientID = p.PatientID,
                                            Name = p.Name,
                                            Surname = p.Surname,
                                            DateGiven = pr.DateGiven,
                                            Status = pr.Status,
+
                                            MedicationName = m.MedicationName,
                                            Quantity = mi.Quantity,
                                            MedicationForm = m.MedicationForm,
                                            Schedule = m.Schedule,
-                                           Instructions = mi.Instructions
+                                           Instructions = mi.Instructions,
+
+                                           PrescriptionID = pr.PrescriptionID,
+                                           AdmittedPatientID = ap.AdmittedPatientID,
+                                           BookingID = bs.BookingID,
+                                           MedicationID = m.MedicationID
                                        }).ToList();
 
-            return Json(prescriptionDetails);  // Return data as JSON
+            return Json(prescriptionDetails);
         }
 
         public IActionResult MedicationInteraction()
@@ -1771,27 +1721,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -1819,27 +1778,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -1857,94 +1825,111 @@ namespace DEMO.Controllers
         public IActionResult ChangeMedication(int id)
         {
 
-            var combinedData = (from pr in _dbContext.Prescription
-                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
-                                join p in _dbContext.PatientInfo on ap.PatientID equals p.PatientID
-                                join mi in _dbContext.MedicationInstructions on pr.PrescriptionID equals mi.PrescriptionID
-                                join m in _dbContext.Medication on mi.MedicationID equals m.MedicationID
-                                where pr.PrescriptionID == id
-                                orderby p.Name
-                                select new PrescriptionMedicationViewModel
-                                {
-                                    Medid = mi.InstructionsID,
-                                    Name = p.Name,
-                                    Surname = p.Surname,
-                                    DateGiven = pr.DateGiven,
-                                    Status = pr.Status,
-                                    MedicationName = m.MedicationName,
-                                    Quantity = mi.Quantity,
-                                    MedicationForm = m.MedicationForm,
-                                    Schedule = m.Schedule,
-                                    Instructions = mi.Instructions
-                                }).ToList();
+            var combinedData = _dbContext.PatientInfo
+                                 .Join(_dbContext.BookSurgery, p => p.PatientID, bs => bs.PatientID, (p, bs) => new { p, bs })
+                                 .Join(_dbContext.AdmittedPatients, x => x.bs.BookingID, ap => ap.BookingID, (x, ap) => new { x.p, x.bs, ap })
+                                 .Join(_dbContext.Prescription, x => x.ap.AdmittedPatientID, pr => pr.AdmittedPatientID, (x, pr) => new { x.p, x.bs, x.ap, pr })
+                                 .Join(_dbContext.MedicationInstructions, x => x.pr.PrescriptionID, mi => mi.PrescriptionID, (x, mi) => new { x.p, x.bs, x.ap, x.pr, mi })
+                                 .Join(_dbContext.Medication, x => x.mi.MedicationID, m => m.MedicationID, (x, m) => new { x.p, x.bs, x.ap, x.pr, x.mi, m })
+                                 .Where(x => x.pr.PrescriptionID == id)
+                                 .Select(x => new PrescriptionMedicationViewModel
+                                 {
+                                     PatientID = x.p.PatientID,
+                                     Name = x.p.Name,
+                                     Surname = x.p.Surname,
+                                     BookingID = x.bs.BookingID,
+                                     SurgeryDate = x.bs.SurgeryDate,
+                                     AdmittedPatientID = x.ap.AdmittedPatientID,
+                                     WardID = x.ap.WardID,
+                                     BedId = x.ap.BedId,
+                                     PrescriptionID = x.pr.PrescriptionID,
+                                     Urgency = x.pr.Urgency,
+                                     Instructions = x.mi.Instructions,
+                                     Quantity = x.mi.Quantity,
+                                     MedicationName = x.m.MedicationName,
+                                     MedicationForm = x.m.MedicationForm,
+                                     Schedule = x.m.Schedule
+                                 })
+                                 .ToList();
 
 
 
             var patientInfo = _dbContext.PatientInfo
-                                        .Where(p => _dbContext.AdmittedPatients
-                                                    .Any(ap => ap.PatientID == p.PatientID && _dbContext.Prescription
-                                                    .Any(pr => pr.AdmittedPatientID == ap.AdmittedPatientID && pr.PrescriptionID == id)))
-                                        .Select(p => new PatientListViewModal
-                                        {
-                                            Name = p.Name,
-                                            Surname = p.Surname,
-                                            Gender = p.Gender, // Adjust as necessary
-                                        }).FirstOrDefault();
-
-            var patientID = _dbContext.Prescription
-                             .Where(pr => pr.PrescriptionID == id)
-                             .Join(_dbContext.AdmittedPatients, ap => ap.AdmittedPatientID, bs => bs.AdmittedPatientID, (pr, bs) => bs.PatientID)
+                             .Where(p => _dbContext.BookSurgery
+                                 .Any(bs => bs.PatientID == p.PatientID &&
+                                     _dbContext.AdmittedPatients
+                                         .Any(ap => ap.BookingID == bs.BookingID &&
+                                             _dbContext.Prescription
+                                                 .Any(pr => pr.AdmittedPatientID == ap.AdmittedPatientID
+                                                            && pr.PrescriptionID == id))))
+                             .Select(p => new PatientListViewModal
+                             {
+                                 Name = p.Name,
+                                 Surname = p.Surname,
+                                 Gender = p.Gender
+                             })
                              .FirstOrDefault();
 
+            var patientID = _dbContext.Prescription
+                            .Where(pr => pr.PrescriptionID == id)
+                            .Join(_dbContext.AdmittedPatients,
+                                pr => pr.AdmittedPatientID,
+                                ap => ap.AdmittedPatientID,
+                                (pr, ap) => ap)
+                            .Join(_dbContext.BookSurgery,
+                                ap => ap.BookingID,
+                                bs => bs.BookingID,
+                                (ap, bs) => bs.PatientID)
+                            .FirstOrDefault();
+
             var patientVitals = (from pv in _dbContext.PatientVitals
-                                 join ap in _dbContext.AdmittedPatients
-                                 on pv.PatientID equals ap.PatientID
                                  where pv.PatientID == patientID
+                                 orderby pv.Date descending, pv.Time descending
                                  select new PrescriptionMedicationViewModel
                                  {
-                                     Date = ap.Date,
-                                     Time = pv.time,
-                                     Height = ap.Height,
-                                     Weight = ap.Weight,
+                                     Height = pv.Height,
+                                     Weight = pv.Weight,
                                      SystolicBloodPressure = pv.SystolicBloodPressure,
                                      DiastolicBloodPressure = pv.DiastolicBloodPressure,
                                      HeartRate = pv.HeartRate,
                                      BloodOxygen = pv.BloodOxygen,
                                      Respiration = pv.Respiration,
                                      BloodGlucoseLevel = pv.BloodGlucoseLevel,
-                                     Temperature = pv.Temperature
-                                 }).OrderBy(ap => ap.Date).ToList();
+                                     Temperature = pv.Temperature,
+                                     Date = pv.Date,
+                                     Time = pv.Time
+                                 }).Take(1).ToList();
 
-            var allGoodMedications = _dbContext.PharmacyMedication
-     .Where(pm => !_dbContext.MedicationActiveIngredient
-         .Any(ma => ma.MedicationID == pm.MedicationID && _dbContext.PatientAllergy
-         .Any(pa => pa.PatientID == patientID && pa.ActiveingredientID == ma.ActiveingredientID)))
-     .Join(_dbContext.Medication, pm => pm.MedicationID, m => m.MedicationID, (pm, m) => new { pm, m }) // Join with Medication to get MedicationName
-     .OrderBy(x => x.m.MedicationName)  // Order by MedicationName
-     .Select(x => new PrescriptionMedicationViewModel
-     {
-         MedicationID = x.m.MedicationID,
-         MedicationName = x.m.MedicationName  // Use MedicationName from Medication table
-     })
-     .Distinct()
-     .ToList();
+            //var allGoodMedications = _dbContext.PharmacyMedication
+            //                         .Where(pm => !_dbContext.MedicationActiveIngredient
+            //                             .Any(ma => ma.MedicationID == pm.MedicationID && _dbContext.PatientAllergy
+            //                             .Any(pa => pa.PatientID == patientID && pa.ActiveingredientID == ma.ActiveingredientID)))
+            //                         .Join(_dbContext.Medication, pm => pm.MedicationID, m => m.MedicationID, (pm, m) => new { pm, m }) // Join with Medication to get MedicationName
+            //                         .OrderBy(x => x.m.MedicationName)  // Order by MedicationName
+            //                         .Select(x => new PrescriptionMedicationViewModel
+            //                         {
+            //                             MedicationID = x.m.MedicationID,
+            //                             MedicationName = x.m.MedicationName  // Use MedicationName from Medication table
+            //                         })
+            //                         .Distinct()
+            //                         .ToList();
 
 
 
-            var allMedication = (from pa in _dbContext.PatientAllergy
-                                 join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
-                                 join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-                                 join ma in _dbContext.MedicationActiveIngredient on ai.ActiveingredientID equals ma.ActiveingredientID
-                                 join pm in _dbContext.PharmacyMedication on ma.MedicationID equals pm.MedicationID // Adjusted join
-                                 join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-                                 where pa.PatientID == patientID
-                                 orderby m.MedicationName
-                                 select new PrescriptionMedicationViewModel
-                                 {
-                                     ActiveIngredientName = ai.ActiveIngredientName,
-                                     MedicationID = m.MedicationID,
-                                     MedicationName = m.MedicationName
-                                 }).ToList();
+            //var allMedication = (from pa in _dbContext.PatientAllergy
+            //                     join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+            //                     join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+            //                     join ma in _dbContext.MedicationActiveIngredient on ai.ActiveingredientID equals ma.ActiveingredientID
+            //                     join pm in _dbContext.PharmacyMedication on ma.MedicationID equals pm.MedicationID // Adjusted join
+            //                     join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+            //                     where pa.PatientID == patientID
+            //                     orderby m.MedicationName
+            //                     select new PrescriptionMedicationViewModel
+            //                     {
+            //                         ActiveIngredientName = ai.ActiveIngredientName,
+            //                         MedicationID = m.MedicationID,
+            //                         MedicationName = m.MedicationName
+            //                     }).ToList();
 
             var allergies = (from pa in _dbContext.PatientAllergy
                              join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
@@ -1959,14 +1944,14 @@ namespace DEMO.Controllers
 
 
             var currentMed = (from pm in _dbContext.patientMedication
-                              join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
+                                  //join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
                               join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
                               where pm.PatientID == patientID
                               select new PatientAllergyViewModel
                               {
                                   Name = pi.Name,
                                   Surname = pi.Surname,
-                                  MedicationName = cm.MedicationName // Ensure this property exists in your view model
+                                  //MedicationName = cm.MedicationName // Ensure this property exists in your view model
                               }).OrderBy(cm => cm.MedicationName).ToList();
 
             var conditions = (from pc in _dbContext.PatientConditions
@@ -1984,12 +1969,9 @@ namespace DEMO.Controllers
             {
                 Allvitals = patientVitals,
                 CombinedData = combinedData,
-                AllGoodMedications = allGoodMedications,
-                AllMedication = allMedication,
+                //AllGoodMedications = allGoodMedications,
+                //AllMedication = allMedication,
                 PatientInfo = patientInfo ?? new PatientListViewModal(),
-                Allergies = allergies,
-                CurrentMedications = currentMed,
-                Conditions = conditions// Add this property to your view model
             };
             var today = DateOnly.FromDateTime(DateTime.Today);
             var accountID = HttpContext.Session.GetString("UserAccountId");
@@ -1999,27 +1981,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view
@@ -2071,27 +2062,36 @@ namespace DEMO.Controllers
 
 
             var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
                                    join ap in _dbContext.AdmittedPatients
-                                   on p.PatientID equals ap.PatientID
+                                       on bs.BookingID equals ap.BookingID
                                    join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed" && pr.AccountID == accountID
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID == accountID
                                    select pr).Count();
 
             var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
                                   join ap in _dbContext.AdmittedPatients
-                                  on p.PatientID equals ap.PatientID
+                                      on bs.BookingID equals ap.BookingID
                                   join pr in _dbContext.Prescription
-                                   on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed" && pr.AccountID == accountID
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID == accountID
                                   select pr).Count();
 
             var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
                                  join ap in _dbContext.AdmittedPatients
-                                 on p.PatientID equals ap.PatientID
+                                     on bs.BookingID equals ap.BookingID
                                  join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected" && pr.AccountID == accountID
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID == accountID
                                  select pr).Count();
 
             // Pass the prescribed count to the view

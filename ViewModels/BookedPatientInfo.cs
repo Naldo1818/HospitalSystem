@@ -8,7 +8,7 @@ namespace DEMO.ViewModels
     {
         [Key]
         public int BookedPatientInfoID { get; set; }
-
+        public bool HasVitals { get; set; }
         //[Required(ErrorMessage = "Name is required.")]
         //[StringLength(100, ErrorMessage = "Name cannot be longer than 100 characters.")]
         //[RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "Name can only contain letters and spaces.")]
@@ -42,6 +42,7 @@ namespace DEMO.ViewModels
         public string SurgeryTime { get; set; }
         public DateOnly SurgeryDate { get; set; }
         public TimeOnly Time { get; set; }
+        public DateOnly AdmitDate { get; set; }
         public string SurgeonName { get; set; }
         public string SurgeonSurname { get; set; }
         public string Gender { get; set; }

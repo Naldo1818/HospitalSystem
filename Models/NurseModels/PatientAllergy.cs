@@ -10,9 +10,6 @@ namespace DEMO.Models.NurseModels
         [Required]
         public int PatientID { get; set; }
 
-       
-
-        
         public int ActiveingredientID { get; set;}
 
     }

@@ -77,15 +77,16 @@
                 <table class="table table-striped table-hover table-bordered" id="admissionsTable">
                     <thead class="table-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Surname</th>
-                            <th>Surgeon</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Theatre</th>
-                            <th>Ward</th>
-                            <th>Bed</th>
-                            <th>Admitted Time</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Surname</th>
+                            <th scope="col">Surgeon Name</th>
+                            <th scope="col">Surgery Date</th>
+                            <th scope="col">Surgery Time</th>
+                            <th scope="col">Theatre</th>
+                            <th scope="col">Ward Name</th>
+                            <th scope="col">Bed Number</th>
+                            <th scope="col">Admitted Date</th>
+                            <th scope="col">Admitted Time</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,6 +101,7 @@
                                 <td>@Data.Theater</td>
                                 <td>@Data.WardName</td>
                                 <td>@Data.BedNumber</td>
+                                <td>@Data.AdmitDate</td>
                                 <td>@Data.Time</td>
                             </tr>
                         }
@@ -167,15 +169,15 @@
         });
 
         // Bar Chart - Surgeries
-        const ctx2 = document.getElementById('surgeryChart').getContext('2d');
+            const ctx2 = document.getElementById('surgeryChart').getContext('2d');
         new Chart(ctx2, {
             type: 'bar',
             data: {
-                labels: ['Morning', 'Afternoon', 'Evening'],
+                labels: ['AM', 'PM'], // Split into 2
                 datasets: [{
                     label: 'Surgeries',
-                    data: [@ViewBag.morningCount, @ViewBag.afternoonCount, @ViewBag.eveningCount],
-                    backgroundColor: '#4e73df'
+                    data: [@ViewBag.amCount, @ViewBag.pmCount], // Use AM and PM counts
+                    backgroundColor: ['#4e73df', '#1cc88a'] // optional: different colors
                 }]
             },
             options: {

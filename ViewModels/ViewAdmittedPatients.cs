@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DEMO.Models.NurseModels
+namespace DEMO.ViewModels
 {
     public class ViewAdmittedPatients
     {

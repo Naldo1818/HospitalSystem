@@ -11,8 +11,6 @@ namespace DEMO.ViewModels
 
        
 
-        public PharmacyMedicationModel testMeds { get; set; } = new PharmacyMedicationModel();
-
         public List<string> PharmacyMedications { get; set; } // Assuming these are strings
        
 

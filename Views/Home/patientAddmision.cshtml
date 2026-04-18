@@ -179,6 +179,7 @@
                                     <th scope="col">Theatre</th>
                                     <th scope="col">Ward Name</th>
                                     <th scope="col">Bed Number</th>
+                                    <th scope="col">Admitted Date</th>
                                     <th scope="col">Admitted Time</th>
                                     <th scope="col">Actions</th>
                                 </tr>
@@ -190,11 +191,12 @@
                                         <td>@Data.Name</td>
                                         <td>@Data.Surname</td>
                                         <td>@ViewBag.UserName @ViewBag.UserSurname</td>
-                                        <td>@Data.SurgeryDate</td>
+                                        <td>@Data.SurgeryDate.ToShortDateString()</td>
                                         <td>@Data.SurgeryTime</td>
                                         <td>@Data.Theater</td>
                                         <td>@Data.WardName</td>
                                         <td>@Data.BedNumber</td>
+                                        <td>@Data.AdmitDate</td>
                                         <td>@Data.Time</td>
                                         <td>
                                             <div class="w-100 btn-group" role="group">
@@ -245,7 +247,7 @@
                                                 <button class="btn btn-danger discharge-btn"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#confirmDischargeModal"
-                                                        data-id="@Data.AdmittedPatientID">
+                                                        data-id="@Data.BookingID">
                                                     Discharge Patient
                                                 </button>
                                             </div>

@@ -9,184 +9,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <title>Send Vitals</title>
     <style>
-        .active-tab {
-            background-color: teal;
-            color: white;
-        }
-
-        .container {
-            padding-top: 50px;
+        body {
+            background-color: #f4f7fa;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         .form-card {
             max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 50px auto;
+            padding: 30px 40px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        .form-group {
-            margin-bottom: 30px;
-        }
-
-        .row-two-columns {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-            .row-two-columns .email-group {
-                flex: 1 1 48%;
-            }
-
-        .email-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .email-group {
-            text-align: left;
-        }
-
-            .email-group input,
-            .email-group textarea,
-            .email-group select {
-                padding: 10px;
-                padding-left: 20px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                font-size: 14px;
-                color: #333;
-                width: 100%;
-                max-width: 400px;
-                box-sizing: border-box;
-                height: 40px;
-                margin: 0;
-            }
-
-            .email-group textarea {
-                height: auto;
-                min-height: 40px;
-                resize: vertical;
-            }
-
-        .header-labels {
-            text-align: left;
+        h3, h4 {
+            color: #0d6efd;
             margin-bottom: 20px;
-            padding-left: 50px;
         }
 
-            .header-labels label {
-                display: block;
-                margin-bottom: 10px;
-                font-size: 18px;
-                color: #333;
+        .form-label {
+            font-weight: 600;
+        }
+
+        input[readonly], textarea[readonly] {
+            background-color: #e9ecef;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #0b5ed7;
             }
 
-        .form-card hr {
-            margin: 20px 0;
+        .section-divider {
+            border-top: 2px solid #dee2e6;
+            margin: 25px 0;
         }
+
+       
     </style>
 </head>
 <body>
-    <div class="container-fluid" id="grad1">
-        <div class="row justify-content-center mt-0" style="width: contain;">
-            <div class="text-center p-0 mt-3 mb-2">
-                <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
-                    <form method="post" action="@Url.Action("EmailVitals", "Nurse")">
-                        <h3>Email Vitals</h3>
-                        <hr />
+    <div class="container">
+        <div class="form-card">
+            <h3 class="text-center">Send Patient Vitals</h3>
+            <hr class="section-divider" />
 
-                        <div class="email-group">
-                            <label for="FullName">Patient Name:</label>
-                            <input type="text" id="FullName" name="FullName" value="@Model.FullName" readonly />
-                        </div>
+            <form method="post" action="@Url.Action("EmailVitals", "Nurse")">
+                <!-- Hidden Patient ID -->
+                <input type="hidden" name="AdmittedPatientID" value="@Model.AdmittedPatientID" />
 
-                        <div class="email-group">
-                            <label for="WardName">Ward Name:</label>
-                            <input type="text" id="WardName" name="WardName" value="@Model.WardName" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="Bed">Bed Number:</label>
-                            <input type="text" id="Bed" name="Bed" value="@Model.Bed" readonly />
-                        </div>
-
-                        <h4>Latest Vitals</h4>
-                        <div class="email-group">
-                            <label for="Height">Height (cm):</label>
-                            <input type="text" id="Height" name="Height" value="@Model.Height" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="Weight">Weight (kg):</label>
-                            <input type="text" id="Weight" name="Weight" value="@Model.Weight" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="BloodPressure">Blood Pressure (mmHg):</label>
-                            <input type="text" id="BloodPressure" name="BloodPressure" value="@Model.SystolicBloodPressure/@Model.DiastolicBloodPressure" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="HeartRate">Heart Rate (bpm):</label>
-                            <input type="text" id="HeartRate" name="HeartRate" value="@Model.HeartRate" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="BloodOxygen">Blood Oxygen (%):</label>
-                            <input type="text" id="BloodOxygen" name="BloodOxygen" value="@Model.BloodOxygen" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="Respiration">Respiration (bpm):</label>
-                            <input type="text" id="Respiration" name="Respiration" value="@Model.Respiration" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="BloodGlucoseLevel">Blood Glucose Level (mg/dL):</label>
-                            <input type="text" id="BloodGlucoseLevel" name="BloodGlucoseLevel" value="@Model.BloodGlucoseLevel" readonly />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="Temperature">Temperature (°C):</label>
-                            <input type="text" id="Temperature" name="Temperature" value="@Model.Temperature" readonly />
-                            <input type="text" id="AdmittedPatientID" name="AdmittedPatientID" value="@Model.AdmittedPatientID" hidden />
-                        </div>
-
-                        <div class="email-group">
-                            <label for="Notes">Notes:</label>
-                            <textarea id="Notes" name="notes" rows="4" cols="50">@Model.Notes</textarea>
-                        </div>
-
-                        <div class="email-group">
-                            <button type="submit" class="btn btn-primary">Send Email</button>
-                        </div>
-                    </form>
+                <div class="row mb-3">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="FullName">Patient Name</label>
+                        <input type="text" class="form-control" id="FullName" name="FullName" value="@Model.FullName" readonly />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label" for="WardName">Ward</label>
+                        <input type="text" class="form-control" id="WardName" name="WardName" value="@Model.WardName" readonly />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label" for="Bed">Bed</label>
+                        <input type="text" class="form-control" id="Bed" name="Bed" value="@Model.Bed" readonly />
+                    </div>
                 </div>
-            </div>
+
+                <h4>Latest Vitals</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="Height">Height (cm)</label>
+                        <input type="text" class="form-control" id="Height" name="Height" value="@Model.Height" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="Weight">Weight (kg)</label>
+                        <input type="text" class="form-control" id="Weight" name="Weight" value="@Model.Weight" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="BloodPressure">Blood Pressure (mmHg)</label>
+                        <input type="text" class="form-control" id="BloodPressure" name="BloodPressure" value="@Model.SystolicBloodPressure/@Model.DiastolicBloodPressure" readonly />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="HeartRate">Heart Rate (bpm)</label>
+                        <input type="text" class="form-control" id="HeartRate" name="HeartRate" value="@Model.HeartRate" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="BloodOxygen">Blood Oxygen (%)</label>
+                        <input type="text" class="form-control" id="BloodOxygen" name="BloodOxygen" value="@Model.BloodOxygen" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="Respiration">Respiration (bpm)</label>
+                        <input type="text" class="form-control" id="Respiration" name="Respiration" value="@Model.Respiration" readonly />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="BloodGlucoseLevel">Blood Glucose (mg/dL)</label>
+                        <input type="text" class="form-control" id="BloodGlucoseLevel" name="BloodGlucoseLevel" value="@Model.BloodGlucoseLevel" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="Temperature">Temperature (°C)</label>
+                        <input type="text" class="form-control" id="Temperature" name="Temperature" value="@Model.Temperature" readonly />
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label" for="Notes">Notes</label>
+                        <textarea class="form-control" id="Notes" name="notes" rows="3">@Model.Notes</textarea>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Send Email</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>

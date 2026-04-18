@@ -1,7 +1,7 @@
 ﻿using DEMO.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.Contracts;
-using static DEMO.Controllers.PharmacistController;
+//using System.Diagnostics.Contracts;
+//using static DEMO.Controllers.PharmacistController;
 
 namespace DEMO.ViewModels
 {
@@ -54,7 +54,7 @@ namespace DEMO.ViewModels
 
         public List<MedicationActiveIngredient> activeandstrengthslist { get; set; }
 
-        public List<Ingredient> Ingredients { get; set; } // List of ingredients added by the user
+        //public List<Ingredient> Ingredients { get; set; } // List of ingredients added by the user
 
 
     }

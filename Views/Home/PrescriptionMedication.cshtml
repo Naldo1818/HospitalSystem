@@ -181,27 +181,20 @@
                                     <label for="medicationSelect" class="form-label">Medication</label>
                                     <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required onchange="checkForAllergy()">
                                         <option disabled selected>Select a Description</option>
-                                        @foreach (var medication in Model.AllGoodMedications)
+                                        @foreach (var medication in Model.AllGoodMedications ?? new List<DEMO.ViewModels.PrescriptionMedicationViewModel>())
                                         {
-                                            <option value="@medication.MedicationID" data-allergic="false">@medication.MedicationName</option>
+                                            <option value="@medication.MedicationID" data-allergic="false">
+                                                @medication.MedicationName
+                                            </option>
                                         }
 
-                                        @foreach (var medication in Model.AllMedication)
+                                        @foreach (var medication in Model.AllMedication ?? new List<DEMO.ViewModels.PrescriptionMedicationViewModel>())
                                         {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Allergy</option>
+                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">
+                                                @medication.MedicationName - Contraindicated
+                                            </option>
                                         }
-                                        @foreach (var medication in Model.AllConditionMedication)
-                                        {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Medical Condition</option>
-                                        }
-                                        @foreach (var medication in Model.AllMedicationsWithInteractions)
-                                        {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Medication Interaction</option>
-                                        }
-                                        @foreach (var medication in Model.AllMedicationsInteractionsPrescription)
-                                        {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">@medication.MedicationName - Medication Interaction in Prescription</option>
-                                        }
+                                       
                                     </select>
                                 </div>
                                 <div class="form-group row">
@@ -281,7 +274,7 @@
                                     <tr class="@((hasAllergicMedication) ? "table-danger" : "")">
                                         <td>@patientName</td>
                                         <td>@patientSurname</td>
-                                        <td>@patientDateGiven</td>
+                                        <td>@patientGroup.First().SurgeryDate</td>
 
                                         <!-- Display the first medication details in the same row -->
                                         <td>@patientGroup.First().MedicationName</td>
@@ -292,7 +285,8 @@
                                         <td>@patientGroup.First().Status</td>
                                         <td>
                                             <form asp-action="DeleteMedication" method="post">
-                                                <input type="hidden" name="Medid" value="@patientGroup.First().Medid" />
+                                               
+                                                <input type="hidden" name="MedicationID" value="@patientGroup.First().MedicationID" />
                                                 <input type="hidden" name="prescriptionId" value="@ViewBag.PrescriptionID" />
                                                 <button type="submit" class="btn btn-danger">Remove</button>
                                             </form>
@@ -312,7 +306,7 @@
                                             <td>@item.Status</td>
                                             <td>
                                                 <form asp-action="DeleteMedication" method="post">
-                                                    <input type="hidden" name="Medid" value="@item.Medid" />
+                                                    <input type="hidden" name="MedicationID" value="@item.MedicationID" />
                                                     <input type="hidden" name="prescriptionId" value="@ViewBag.PrescriptionID" />
                                                     <button type="submit" class="btn btn-danger">Remove</button>
                                                 </form>

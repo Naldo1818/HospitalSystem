@@ -22,10 +22,6 @@ public class PatientInfo
     public string Gender { get; set; }
 
     [Required]
-    [Phone(ErrorMessage = "Invalid phone number format.")]
-    public string ContactNumber { get; set; }
-
-    [Required]
     [EmailAddress(ErrorMessage = "Invalid email address format.")]
     public string Email { get; set; }
 

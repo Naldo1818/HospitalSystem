@@ -1,7 +1,8 @@
-﻿using DEMO.ViewModels;
+﻿using DEMO.Models;
+using DEMO.Models.NurseModels;
 using System.ComponentModel.DataAnnotations;
 
-namespace DEMO.Models.NurseModels
+namespace DEMO.ViewModels
 {
     public class ViewPatientInfo
     {

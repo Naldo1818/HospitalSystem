@@ -20,6 +20,7 @@ namespace DEMO.ViewModels
         public string SurgeryTime { get; set; }
         public DateOnly SurgeryDate { get; set; }
         public TimeOnly Time { get; set; }
+        public DateOnly AdmitDate { get; set; }
         public string SurgeonName {  get; set; }
         public string SurgeonSurname { get; set; }
         public string Gender { get; set; }

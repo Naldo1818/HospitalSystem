@@ -9,6 +9,8 @@ namespace DEMO.ViewModels
         public string ActiveIngredientName { get; set; }
         public string ConditionName { get; set; }
         public string MedicationName { get; set; }
+        public string CMedicationForm { get; set; }
+        public int Schedule { get; set; }
 
         public int Height { get; set; }
         public int Weight { get; set; }

@@ -41,6 +41,7 @@
                                     <th scope="col">Time</th>
                                     <th scope="col">Height cm</th>
                                     <th scope="col">Weight kg</th>
+                                    <th scope="col">BMI</th>
                                     <th scope="col">Systolic Blood Pressure mmHg</th>
                                     <th scope="col">Distolic Blood Pressure mmHg</th>
                                     <th scope="col">Heart Rate bpm</th>
@@ -48,7 +49,6 @@
                                     <th scope="col">Respiration Rate bpm</th>
                                     <th scope="col">Blood Glucose Level mg/dL</th>
                                     <th scope="col">Temperature °C</th>
-                                    <th scope="col">BMI</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,6 +59,12 @@
                                         <td>@item.Time</td>
                                         <td>@item.Height</td>
                                         <td>@item.Weight</td>
+                                        @{
+                                            // Calculate BMI
+                                            double heightInMeters = item.Height / 100.0; // Convert height to meters
+                                            double bmi = item.Weight / (heightInMeters * heightInMeters); // BMI formula
+                                        }
+                                        <td>@Math.Round(bmi, 2)</td> <!-- Display BMI rounded to 2 decimal places -->
                                         <td>@item.SystolicBloodPressure</td>
                                         <td>@item.DiastolicBloodPressure</td>
                                         <td>@item.HeartRate</td>
@@ -66,12 +72,7 @@
                                         <td>@item.Respiration</td>
                                         <td>@item.BloodGlucoseLevel</td>
                                         <td>@item.Temperature</td>
-                                        @{
-                                            // Calculate BMI
-                                            double heightInMeters = item.Height / 100.0; // Convert height to meters
-                                            double bmi = item.Weight / (heightInMeters * heightInMeters); // BMI formula
-                                        }
-                                        <td>@Math.Round(bmi, 2)</td> <!-- Display BMI rounded to 2 decimal places -->
+                                       
                                     </tr>
                                 }
                             </tbody>
