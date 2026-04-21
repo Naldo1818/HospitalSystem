@@ -1589,7 +1589,7 @@ namespace DEMO.Controllers
                                           on bs.BookingID equals ap.BookingID
                                       join pr in _dbContext.Prescription
                                           on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                      join rs in _dbContext.DispensedScriptsModel
+                                      join rs in _dbContext.RejectScriptModel
                                           on pr.PrescriptionID equals rs.PrescriptionID
                                       join a in _dbContext.Accounts
                                           on rs.AccountID equals a.AccountID
@@ -1605,7 +1605,8 @@ namespace DEMO.Controllers
                                           Urgency = pr.Urgency,
                                           Status = pr.Status,
                                           AccountName = a.Name,
-                                          AccountSurname = a.Surname
+                                          AccountSurname = a.Surname,
+                                          RejectionReason = rs.RejectionReason
                                       }).ToList();
 
             var viewModel = new PrescriptionListViewModal
