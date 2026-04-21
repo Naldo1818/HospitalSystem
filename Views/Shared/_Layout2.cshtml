@@ -1,165 +1,240 @@
 ﻿@using Microsoft.AspNetCore.Http
 @{
     var userName = Context.Session.GetString("UserName");
-    var userSurname = Context.Session.GetString("UserSurname");
-    var userEmail = Context.Session.GetString("UserEmail");
 }
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apollo+</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="~/css/site2.css" rel="stylesheet">
     <style>
-        .custom-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 15px; /* Reduced margin-top to move the card higher */
+        body {
+            background: #f4f6fb;
         }
 
-            .custom-card img {
-                width: 100px;
-                height: 100px;
+        .app-navbar {
+            background: #0f172a;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+        }
+
+            .app-navbar .brand {
+                color: #7c3aed;
+                font-size: 20px;
+                font-weight: 600;
+                text-decoration: none;
             }
 
-        .card-body {
+            .app-navbar .welcome {
+                color: #94a3b8;
+                font-size: 13px;
+            }
+
+        .app-sidebar {
+            width: 220px;
+            background: #0f172a;
+            position: fixed;
+            top: 56px;
+            bottom: 0;
+            left: 0;
+            padding: 20px 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+            .app-sidebar .nav-section-label {
+                padding: 0 16px;
+                font-size: 10px;
+                font-weight: 500;
+                color: #475569;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-bottom: 6px;
+                display: block;
+            }
+
+            .app-sidebar .nav-link {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 9px 16px;
+                color: #94a3b8;
+                font-size: 13px;
+                border-left: 2px solid transparent;
+                transition: all 0.15s;
+            }
+
+                .app-sidebar .nav-link:hover {
+                    color: #e2e8f0;
+                    background: rgba(255,255,255,0.05);
+                }
+
+                .app-sidebar .nav-link.active {
+                    color: #a78bfa;
+                    border-left-color: #7c3aed;
+                    background: rgba(124,58,237,0.1);
+                }
+
+            .app-sidebar .nav-divider {
+                height: 0.5px;
+                background: #1e293b;
+                margin: 12px 16px;
+            }
+
+        .app-main {
+            margin-left: 220px;
+            margin-top: 56px;
+            padding: 28px 24px;
+            min-height: calc(100vh - 56px);
+        }
+
+        .profile-sidebar-card {
+            background: white;
+            border-radius: 14px;
+            border: 0.5px solid #e2e8f0;
+            overflow: hidden;
+            width: 200px;
+            flex-shrink: 0;
+        }
+
+            .profile-sidebar-card .p-header {
+                background: linear-gradient(135deg, #7c3aed, #06b6d4);
+                padding: 18px 16px;
+                text-align: center;
+            }
+
+            .profile-sidebar-card .p-avatar {
+                width: 52px;
+                height: 52px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.25);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 16px;
+                font-weight: 600;
+                color: white;
+                margin: 0 auto 8px;
+                border: 2px solid rgba(255,255,255,0.4);
+            }
+
+            .profile-sidebar-card .p-name {
+                color: white;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .profile-sidebar-card .p-email {
+                color: rgba(255,255,255,0.7);
+                font-size: 11px;
+                margin-top: 2px;
+            }
+
+            .profile-sidebar-card .p-body {
+                padding: 14px 16px;
+            }
+
+            .profile-sidebar-card .p-section {
+                font-size: 10px;
+                font-weight: 500;
+                color: #64748b;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                margin-bottom: 8px;
+            }
+
+        .p-stat {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 7px;
+            font-size: 12px;
+            color: #475569;
         }
 
-        .card-text {
-            margin: 5px 0;
+        .p-divider {
+            height: 0.5px;
+            background: #f1f5f9;
+            margin: 10px 0;
         }
 
-        .btn-primary {
-            margin-top: 0px;
+        .btn-logout {
+            display: block;
+            margin: 0 16px 14px;
+            padding: 7px;
+            text-align: center;
+            border: 0.5px solid #fca5a5;
+            color: #dc2626;
+            border-radius: 8px;
+            font-size: 12px;
+            background: none;
+            text-decoration: none;
         }
 
-        .sideBar {
-            margin-top: -1rem;
-        }
+            .btn-logout:hover {
+                background: #fee2e2;
+                color: #dc2626;
+            }
     </style>
 </head>
-
 <body>
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container-fluid d-flex align-items-center">
-            <!-- Toggle button and welcome text aligned -->
-            <div class="d-flex align-items-center me-3">
-                <button class="navbar-toggler me-2" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <span class="navbar-text text-white fw-bold">Welcome, Surgeon</span>
-            </div>
 
-            <!-- Brand aligned to right -->
-            <a class="navbar-brand ms-auto" href="#">Apollo+</a>
+    <nav class="app-navbar">
+        <div class="d-flex align-items-center gap-3">
+            <span class="welcome">Welcome, <strong style="color:#e2e8f0;">Dr. @ViewBag.UserName @ViewBag.UserSurname</strong></span>
         </div>
+        <a class="brand" href="#">Apollo+</a>
     </nav>
 
-    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-        <div class="offcanvas-header">
-            <h3 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Main Menu</h3>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                    <a class="nav-link active" asp-controller="Home" asp-action="SurgeonHome" style="font-size: 1.3rem;">Home</a>
-                    <a class="nav-link active" asp-controller="Home" asp-action="PatientList" style="font-size: 1.3rem;">Patient</a>
-                    <a class="nav-link active" asp-controller="Home" asp-action="ListSurgery" style="font-size: 1.3rem;">Surgery Bookings</a>
-                    <a class="nav-link active" asp-controller="Home" asp-action="patientAddmision" style="font-size: 1.3rem;">Admissions</a>
-                    <a class="nav-link active" asp-controller="Home" asp-action="PrescriptionList" style="font-size: 1.3rem;">Prescription</a>
-                    <a class="nav-link active" asp-controller="Home" asp-action="InfoSurgeon" style="font-size: 1.3rem;">Info</a>
-                    <a class="nav-link active" asp-controller="Home" asp-action="Reports" style="font-size: 1.3rem;">Reports</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <aside class="app-sidebar">
+        <span class="nav-section-label">Navigation</span>
+        <a class="nav-link" asp-controller="Home" asp-action="SurgeonHome"><i class="bi bi-house-door"></i> Home</a>
+        <a class="nav-link" asp-controller="Home" asp-action="PatientList"><i class="bi bi-people"></i> Patients</a>
+        <a class="nav-link" asp-controller="Home" asp-action="ListSurgery"><i class="bi bi-scissors"></i> Surgery</a>
+        <a class="nav-link" asp-controller="Home" asp-action="patientAddmision"><i class="bi bi-hospital"></i> Admissions</a>
+        <a class="nav-link" asp-controller="Home" asp-action="PrescriptionList"><i class="bi bi-capsule"></i> Prescriptions</a>
+        <div class="nav-divider"></div>
+        <a class="nav-link" asp-controller="Home" asp-action="InfoSurgeon"><i class="bi bi-info-circle"></i> Info</a>
+        <a class="nav-link" asp-controller="Home" asp-action="Reports"><i class="bi bi-bar-chart"></i> Reports</a>
+    </aside>
 
-    <div class="container-fluid">
-        <main role="main">
-            <div class="row">
-                <!-- Main content -->
-                <div class="col-md-9">
-                    @RenderBody()
-                </div>
-
-                <!-- Sidebar -->
-                <div id="sideBar" class="d-flex justify-content-end align-self-start"
-                     style="width:270px; min-width:270px; max-width:270px; flex-shrink:0;margin-top:30px;">
-
-                    <div class="card shadow-sm text-center"
-                         style="width:400px; border-radius:15px; overflow:hidden; height:auto;">
-
-                        <!-- User Header -->
-                        <div style="background: linear-gradient(135deg, #4e73df, #1cc88a); color:white; padding:20px;">
-                            <img src="~/css/user.png" class="rounded-circle mb-2"
-                                 style="width:80px; height:80px; border:3px solid white;">
-                            <h5 class="mb-0">@ViewBag.UserName @ViewBag.UserSurname</h5>
-                            <small>@ViewBag.UserEmail</small>
-                        </div>
-
-                        <div class="card-body">
-                            <!-- your stats here -->
-
-                                            <h6 class="text-uppercase text-muted mb-3">Prescriptions</h6>
-
-                                                <div class="d-flex flex-column align-items-center mb-2">
-                                                    <div><i class="bi bi-journal-medical"></i> Prescribed</div>
-                                                    <span class="badge bg-primary rounded-pill mt-1">@ViewBag.prescribedCount</span>
-                                                </div>
-
-                                                <div class="d-flex flex-column align-items-center mb-2">
-                                                    <div><i class="bi bi-check2-circle"></i> Dispensed</div>
-                                                    <span class="badge bg-success rounded-pill mt-1">@ViewBag.dispensedCount</span>
-                                                </div>
-
-                                                <div class="d-flex flex-column align-items-center mb-2">
-                                                    <div><i class="bi bi-x-circle"></i> Rejected</div>
-                                                    <span class="badge bg-danger rounded-pill mt-1">@ViewBag.rejectedCount</span>
-                                                </div>
-
-                                            <hr>
-
-                                            <h6 class="text-uppercase text-muted mb-2">Surgeries Today</h6>
-
-                                            <div class="d-flex flex-column align-items-center mb-2">
-                                                <div><i class="bi bi-hospital"></i> Surgeries</div>
-                                                <span class="badge bg-warning rounded-pill mt-1">@ViewBag.surgeryCount</span>
-                                            </div>
-
-                                            <a class="btn btn-outline-danger w-100"
-                                               asp-controller="Home"
-                                               asp-action="Index">Log Out</a>
-
-                                        </div>
-       
-
-                    </div>
-                </div>
-
-
-
-                <!-- Include Bootstrap Icons CDN in <head> if not already -->
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <main class="app-main">
+        <div class="d-flex gap-4 align-items-start">
+            <div style="flex: 1; min-width: 0;">
+                @RenderBody()
             </div>
-        </main>
-    </div>
+            <div class="profile-sidebar-card">
+                <div class="p-header">
+                    <div class="p-avatar">@ViewBag.UserName?.Substring(0, 1)@ViewBag.UserSurname?.Substring(0, 1)</div>
+                    <div class="p-name">@ViewBag.UserName @ViewBag.UserSurname</div>
+                    <div class="p-email">@ViewBag.UserEmail</div>
+                </div>
+                <div class="p-body">
+                    <div class="p-section">Prescriptions</div>
+                    <div class="p-stat"><span>Prescribed</span><span class="badge" style="background:#dbeafe;color:#1d4ed8;">@ViewBag.prescribedCount</span></div>
+                    <div class="p-stat"><span>Dispensed</span><span class="badge" style="background:#d1fae5;color:#065f46;">@ViewBag.dispensedCount</span></div>
+                    <div class="p-stat"><span>Rejected</span><span class="badge" style="background:#fee2e2;color:#991b1b;">@ViewBag.rejectedCount</span></div>
+                    <div class="p-divider"></div>
+                    <div class="p-section">Today</div>
+                    <div class="p-stat"><span>Surgeries</span><span class="badge" style="background:#fef3c7;color:#92400e;">@ViewBag.surgeryCount</span></div>
+                </div>
+                <a class="btn-logout" asp-controller="Home" asp-action="Index">Log Out</a>
+            </div>
+        </div>
+    </main>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>

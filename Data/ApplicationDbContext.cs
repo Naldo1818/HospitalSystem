@@ -21,7 +21,7 @@ namespace DEMO.Data
         public DbSet<MedicationActiveIngredient> MedicationActiveIngredient { get; set; }
         public DbSet<RejectedScriptsModel> RejectScriptModel { get; set; }
         public DbSet<DispensedScriptsModel> DispensedScriptsModel { get; set; }
-        public DbSet<OrderStockModel> StockOrderedTable { get; set; }
+        public DbSet<OrderStockModel> OrderStockModel { get; set; }
 
 
 

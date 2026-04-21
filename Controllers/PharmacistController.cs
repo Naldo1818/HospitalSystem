@@ -1,8 +1,9 @@
 ﻿using DEMO.Data;
 using DEMO.Models;
+using DEMO.Models.PharmacistModels;
 using DEMO.ViewModels;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -180,7 +181,180 @@ namespace DEMO.Controllers
 
             return Json(new { success = true });
         }
+
+        [HttpPost]
+        public IActionResult OrderStock([FromBody] OrderStockModel model)
+        {
+            if (model == null || model.Amount <= 0)
+                return Json(new { success = false, message = "Invalid data" });
+
+            var medication = _dbContext.Medication
+                .FirstOrDefault(m => m.MedicationID == model.MedicationID);
+
+            if (medication == null)
+                return Json(new { success = false, message = "Medication not found" });
+
+            // Save order
+            _dbContext.OrderStockModel.Add(model);
+
+            // Update stock
+            medication.StockonHand += model.Amount;
+
+            _dbContext.SaveChanges();
+
+            // ✅ Redirect to Email page with MedicationID
+            return Json(new
+            {
+                success = true,
+                redirectUrl = Url.Action("EmailMedication", "Pharmacist", new { MedicationID = model.MedicationID })
+            });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EmailMedication(int MedicationID)
+        {
+            var orderData = await (from o in _dbContext.OrderStockModel
+                                   join m in _dbContext.Medication on o.MedicationID equals m.MedicationID
+                                   where o.MedicationID == MedicationID
+                                   orderby o.OrderDate descending
+                                   select new EmailMedicationViewModel
+                                   {
+                                       MedicationID = m.MedicationID,
+                                       MedicationName = m.MedicationName,
+                                       Amount = o.Amount,
+                                       OrderDate = o.OrderDate
+                                   }).FirstOrDefaultAsync();
+
+            if (orderData == null)
+            {
+                TempData["ErrorMessage"] = "No medication order found.";
+                return RedirectToAction("ListMedication", "Pharmacist");
+            }
+
+            return View(orderData);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EmailMedication(string notes, int MedicationID)
+        {
+            var pharmacistEmail = HttpContext.Session.GetString("UserEmail");
+
+            if (string.IsNullOrEmpty(pharmacistEmail))
+            {
+                TempData["ErrorMessage"] = "Pharmacist email not found.";
+                return RedirectToAction("ListMedication", "Pharmacist");
+            }
+
+            var orderData = await (from o in _dbContext.OrderStockModel
+                                   join m in _dbContext.Medication on o.MedicationID equals m.MedicationID
+                                   where o.MedicationID == MedicationID
+                                   orderby o.OrderDate descending
+                                   select new
+                                   {
+                                       MedicationName = m.MedicationName,
+                                       Amount = o.Amount,
+                                       OrderDate = o.OrderDate,
+                                       Stock = m.StockonHand
+                                   }).FirstOrDefaultAsync();
+
+            if (orderData == null)
+            {
+                TempData["ErrorMessage"] = "No medication order found.";
+                return RedirectToAction("ListMedication", "Pharmacist");
+            }
+
+            try
+            {
+                var emailMessage = new MimeKit.MimeMessage();
+
+                emailMessage.From.Add(new MimeKit.MailboxAddress("Pharmacy System", pharmacistEmail));
+
+                // 🔥 CHANGE RECEIVER EMAIL
+                emailMessage.To.Add(new MimeKit.MailboxAddress("Doctor", "receiver@email.com"));
+
+                emailMessage.Subject = $"Medication Order: {orderData.MedicationName}";
+
+                emailMessage.Body = new MimeKit.BodyBuilder
+                {
+                    HtmlBody = $@"
+            <h2>Medication Order</h2>
+
+            <p>
+                <strong>Medication:</strong> {orderData.MedicationName}<br/>
+                <strong>Quantity Ordered:</strong> {orderData.Amount}<br/>
+                <strong>Order Date:</strong> {orderData.OrderDate:yyyy-MM-dd HH:mm}<br/>
+                <strong>Current Stock:</strong> {orderData.Stock}
+            </p>
+
+            <h3>Notes</h3>
+            <p>{notes}</p>
+
+            <br/>
+            <p>Kind Regards,<br/>Pharmacy Team</p>
+            "
+                }.ToMessageBody();
+
+                using var client = new MailKit.Net.Smtp.SmtpClient();
+
+                await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                await client.AuthenticateAsync("jansen.ronaldocullen@gmail.com", "xqqx kiox hcgm xvmr");
+
+                await client.SendAsync(emailMessage);
+                await client.DisconnectAsync(true);
+
+                TempData["SuccessMessage"] = "Medication order email sent successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
+            }
+
+            return RedirectToAction("ListMedication", "Pharmacist");
+        }
+
+
+
+
+
+
         //Medication Orders
+        public IActionResult MedicationOrders(int medicationId)
+        {
+            // Fetch the combined data
+            var medicationActiveIngredients = (from ma in _dbContext.MedicationActiveIngredient
+                                               join m in _dbContext.Medication on ma.MedicationID equals m.MedicationID
+                                               join a in _dbContext.Activeingredient on ma.ActiveingredientID equals a.ActiveingredientID
+                                               where ma.MedicationID == medicationId // Filter by the specified MedicationID
+                                               select new MedicationWithIngredientsViewModel
+                                               {
+                                                   MedicationName = m.MedicationName,
+                                                   ActiveIngredientName = a.ActiveIngredientName,
+                                                   ActiveIngredientStrength = ma.ActiveIngredientStrength
+                                               }).ToList();
+
+            // Fetch additional lists if needed
+            var allMedication = _dbContext.Medication.OrderBy(a => a.MedicationName).ToList();
+            var activeIngredients = _dbContext.Activeingredient
+          .OrderBy(a => a.ActiveIngredientName)
+          .ToList();
+
+            // Create the view model
+            var viewModel = new MedicationWithIngredientsViewModel
+            {
+                AllMedicationActiveIngredients = medicationActiveIngredients,
+                AllMedication = allMedication,
+                ActiveIngredients = activeIngredients
+            };
+
+            // Set ViewBag properties
+            ViewBag.UserAccountID = HttpContext.Session.GetString("UserAccountId");
+            ViewBag.UserName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserSurname = HttpContext.Session.GetString("UserSurname");
+            ViewBag.UserEmail = HttpContext.Session.GetString("UserEmail");
+
+            return View(viewModel);
+        }
+
         //View All scripts 
         //Dispens button
         //view patient vitals n history
