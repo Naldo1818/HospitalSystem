@@ -226,7 +226,10 @@
                                         <td>@Data.RejectionReason</td>
 
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                            <button class="btn btn-primary check-prescription-btn no-actions"
+                                                    data-id="@Data.PrescriptionID"
+                                                    data-toggle="modal"
+                                                    data-target="#DmedicationModal">
                                                 Check Prescription
                                             </button>
                                         </td>
@@ -268,7 +271,10 @@
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#DmedicationModal">
+                                            <button class="btn btn-primary check-prescription-btn no-actions"
+                                                    data-id="@Data.PrescriptionID"
+                                                    data-toggle="modal"
+                                                    data-target="#DmedicationModal">
                                                 Check Prescription
                                             </button>
                                         </td>
@@ -306,7 +312,7 @@
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                            <button class="btn btn-primary check-prescription-btn with-actions" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
                                                 Check Prescription
                                             </button>
                                         </td>
@@ -529,81 +535,100 @@
             let currentPrescriptionId = null; // Variable to store the current prescription ID
 
             $('.check-prescription-btn').click(function () {
-                currentPrescriptionId = $(this).data('id'); // Store the prescription ID
+            let currentPrescriptionId = $(this).data('id');
+            let isWithActions = $(this).hasClass('with-actions');
 
-                // Clear the modal body before loading new data
-                $('#example tbody').empty();
+            // Choose correct table body
+            let tableBody = isWithActions
+                ? $('#medicationModal #example tbody')
+                : $('#DmedicationModal #example tbody');
 
-                // Initialize variables to track the last seen values
-                let lastName = '';
-                let lastSurname = '';
-                let lastDateGiven = '';
+            tableBody.empty();
 
-                // Make an AJAX call to retrieve prescription details
-                $.ajax({
-                    url: '@Url.Action("PrescriptionDetails", "Home")',
-                    type: 'POST',
-                    data: { id: currentPrescriptionId },
-                    success: function (data) {
-                        // Loop through the returned data and add rows to the modal table
-                        $.each(data, function (index, item) {
-                            var row = '<tr>';
+            let lastName = '';
+            let lastSurname = '';
+            let lastDateGiven = '';
 
-                            // Check if the name, surname, or dateGiven has changed
-                            if (item.name !== lastName || item.surname !== lastSurname || item.dateGiven !== lastDateGiven) {
-                                // Add the name, surname, and dateGiven if they are different
-                                row += '<td>' + item.name + '</td>';
-                                row += '<td>' + item.surname + '</td>';
-                                row += '<td>' + item.dateGiven + '</td>';
+            $.ajax({
+                url: '@Url.Action("PrescriptionDetails", "Home")',
+                type: 'POST',
+                data: { id: currentPrescriptionId },
+                success: function (data) {
 
-                                // Update the last seen values
-                                lastName = item.name;
-                                lastSurname = item.surname;
-                                lastDateGiven = item.dateGiven;
-                            } else {
-                                // Add empty cells if the values are the same
-                                row += '<td></td><td></td><td></td>';
-                            }
+                    $.each(data, function (index, item) {
+                        var row = '<tr>';
 
-                            // Add the remaining details
-                            row += '<td>' + item.medicationName + '</td>';
-                            row += '<td>' + item.quantity + '</td>';
-                            row += '<td>' + item.schedule + '</td>';
-                            row += '<td>' + item.medicationForm + '</td>';
-                            row += '<td>' + item.instructions + '</td>';
+                        if (item.name !== lastName || item.surname !== lastSurname || item.dateGiven !== lastDateGiven) {
+                            row += '<td>' + item.name + '</td>';
+                            row += '<td>' + item.surname + '</td>';
+                            row += '<td>' + item.dateGiven + '</td>';
 
-                            row += '</tr>';
+                            lastName = item.name;
+                            lastSurname = item.surname;
+                            lastDateGiven = item.dateGiven;
+                        } else {
+                            row += '<td></td><td></td><td></td>';
+                        }
 
-                            // Append the row to the table body
-                            $('#example tbody').append(row);
-                        });
+                        row += '<td>' + item.medicationName + '</td>';
+                        row += '<td>' + item.quantity + '</td>';
+                        row += '<td>' + item.schedule + '</td>';
+                        row += '<td>' + item.medicationForm + '</td>';
+                        row += '<td>' + item.instructions + '</td>';
 
-                        // Enable the Change Medication button after loading data
-                               $('#dispense-btn')
-            .data('prescription-id', currentPrescriptionId)
-            .show();
+                        row += '</tr>';
 
-        $('#reject-btn')
-            .data('prescription-id', currentPrescriptionId)
-            .show();
+                        tableBody.append(row);
+                    });
+
+                    // ONLY show buttons for prescribed
+                    if (isWithActions) {
+                        $('#dispense-btn')
+                            .data('prescription-id', currentPrescriptionId)
+                            .show();
+
+                        $('#reject-btn')
+                            .data('prescription-id', currentPrescriptionId)
+                            .show();
                     }
-                });
+                }
             });
+        });
+           
 
-                    // DISPENSE
-        $('#dispense-btn').click(function () {
+            // DISPENSE
+                    $('#dispense-btn').click(function () {
             var prescriptionId = $(this).data('prescription-id');
 
-            if (prescriptionId) {
-                window.location.href = '@Url.Action("DispensePrescription", "Home")/' + prescriptionId;
-            }
+            if (!prescriptionId) return;
+
+            $.ajax({
+                url: '@Url.Action("DispensePrescription", "Pharmacist")',
+                type: 'POST',
+                data: { prescriptionId: prescriptionId },
+
+                success: function (response) {
+                    if (response.success) {
+                        alert("Prescription dispensed successfully!");
+
+                        $('#medicationModal').modal('hide');
+
+                        location.reload(); // refresh tables
+                    } else {
+                        alert(response.message || "Error dispensing prescription.");
+                    }
+                },
+                error: function () {
+                    alert("Something went wrong.");
+                }
+            });
         });
-                $('#medicationModal').on('hidden.bs.modal', function () {
+            $('#medicationModal').on('hidden.bs.modal', function () {
             $('#dispense-btn').hide();
             $('#reject-btn').hide();
         });
-        // REJECT
-               $('#reject-btn').click(function () {
+            // REJECT
+            $('#reject-btn').click(function () {
             var prescriptionId = $(this).data('prescription-id');
 
             if (prescriptionId) {
@@ -621,7 +646,7 @@
                 }
             });
 
-                    $('#saveRejectBtn').click(function () {
+            $('#saveRejectBtn').click(function () {
             var prescriptionId = $('#rejectPrescriptionId').val();
             var reason = $('#rejectionReason').val();
 

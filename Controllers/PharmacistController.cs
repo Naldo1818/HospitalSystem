@@ -387,12 +387,11 @@ namespace DEMO.Controllers
                                            on bs.BookingID equals ap.BookingID
                                        join pr in _dbContext.Prescription
                                            on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                       join rs in _dbContext.DispensedScriptsModel
-                                           on pr.PrescriptionID equals rs.PrescriptionID
+                                       join ds in _dbContext.DispensedScriptsModel
+                                           on pr.PrescriptionID equals ds.PrescriptionID
                                        join a in _dbContext.Accounts
-                                           on rs.AccountID equals a.AccountID
+                                       on ds.AccountID equals a.AccountID
                                        where pr.Status == "Dispensed"
-                                         && pr.AccountID == accountID
                                        orderby pr.Urgency == "Yes" descending, p.Name
                                        select new PrescriptionListViewModal
                                        {
@@ -400,10 +399,10 @@ namespace DEMO.Controllers
                                            PatientName = p.Name,
                                            PatientSurname = p.Surname,
                                            DateGiven = pr.DateGiven,
-                                           Urgency = pr.Urgency,
-                                           Status = pr.Status,
                                            AccountName = a.Name,
-                                           AccountSurname = a.Surname
+                                           AccountSurname = a.Surname,
+                                           Urgency = pr.Urgency,
+                                           Status = pr.Status
                                        }).ToList();
 
             var PrescribedRejected = (from p in _dbContext.PatientInfo
@@ -511,6 +510,68 @@ namespace DEMO.Controllers
                 prescription.Status = "Rejected";
             }
 
+            _dbContext.SaveChanges();
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
+        public IActionResult DispensePrescription(int prescriptionId)
+        {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+
+            if (string.IsNullOrEmpty(accountIDString))
+                return Json(new { success = false, message = "User not logged in" });
+
+            int accountID = int.Parse(accountIDString);
+
+            // 1. Get Prescription
+            var prescription = _dbContext.Prescription
+                .FirstOrDefault(p => p.PrescriptionID == prescriptionId);
+
+            if (prescription == null)
+                return Json(new { success = false, message = "Prescription not found" });
+
+            // 2. Get all medications linked to this prescription
+            var instructions = _dbContext.MedicationInstructions
+                .Where(mi => mi.PrescriptionID == prescriptionId)
+                .ToList();
+
+            foreach (var item in instructions)
+            {
+                var medication = _dbContext.Medication
+                    .FirstOrDefault(m => m.MedicationID == item.MedicationID);
+
+                if (medication == null)
+                    continue;
+
+                // ❗ Check stock
+                if (medication.StockonHand < item.Quantity)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"Not enough stock for {medication.MedicationName}"
+                    });
+                }
+
+                // 3. Reduce stock
+                medication.StockonHand -= item.Quantity;
+            }
+
+            // 4. Add to DispensedScripts table
+            var dispensed = new DispensedScriptsModel
+            {
+                PrescriptionID = prescriptionId,
+                AccountID = accountID
+            };
+
+            _dbContext.DispensedScriptsModel.Add(dispensed);
+
+            // 5. Update Prescription Status
+            prescription.Status = "Dispensed";
+
+            // 6. Save all changes
             _dbContext.SaveChanges();
 
             return Json(new { success = true });
