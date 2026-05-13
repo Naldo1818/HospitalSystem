@@ -1917,20 +1917,20 @@ namespace DEMO.Controllers
 
 
 
-            //var allMedication = (from pa in _dbContext.PatientAllergy
-            //                     join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
-            //                     join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-            //                     join ma in _dbContext.MedicationActiveIngredient on ai.ActiveingredientID equals ma.ActiveingredientID
-            //                     join pm in _dbContext.PharmacyMedication on ma.MedicationID equals pm.MedicationID // Adjusted join
-            //                     join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-            //                     where pa.PatientID == patientID
-            //                     orderby m.MedicationName
-            //                     select new PrescriptionMedicationViewModel
-            //                     {
-            //                         ActiveIngredientName = ai.ActiveIngredientName,
-            //                         MedicationID = m.MedicationID,
-            //                         MedicationName = m.MedicationName
-            //                     }).ToList();
+            var allMedication = (from pa in _dbContext.PatientAllergy
+                                 join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
+                                 join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                                 join ma in _dbContext.MedicationActiveIngredient on ai.ActiveingredientID equals ma.ActiveingredientID
+                                 join pm in _dbContext.Medication on ma.MedicationID equals pm.MedicationID // Adjusted join
+                                 join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+                                 where pa.PatientID == patientID
+                                 orderby m.MedicationName
+                                 select new PrescriptionMedicationViewModel
+                                 {
+                                     ActiveIngredientName = ai.ActiveIngredientName,
+                                     MedicationID = m.MedicationID,
+                                     MedicationName = m.MedicationName
+                                 }).ToList();
 
             var allergies = (from pa in _dbContext.PatientAllergy
                              join p in _dbContext.PatientInfo on pa.PatientID equals p.PatientID
@@ -1945,14 +1945,14 @@ namespace DEMO.Controllers
 
 
             var currentMed = (from pm in _dbContext.patientMedication
-                                  //join cm in _dbContext.Medication on pm.MedicationID equals cm.MedicationID
+                              join cm in _dbContext.ChronicMedication on pm.CMedicationID equals cm.CMedicationID
                               join pi in _dbContext.PatientInfo on pm.PatientID equals pi.PatientID
                               where pm.PatientID == patientID
                               select new PatientAllergyViewModel
                               {
                                   Name = pi.Name,
                                   Surname = pi.Surname,
-                                  //MedicationName = cm.MedicationName // Ensure this property exists in your view model
+                                  MedicationName = cm.CMedicationName // Ensure this property exists in your view model
                               }).OrderBy(cm => cm.MedicationName).ToList();
 
             var conditions = (from pc in _dbContext.PatientConditions
@@ -1971,7 +1971,7 @@ namespace DEMO.Controllers
                 Allvitals = patientVitals,
                 CombinedData = combinedData,
                 //AllGoodMedications = allGoodMedications,
-                //AllMedication = allMedication,
+                AllMedication = allMedication,
                 PatientInfo = patientInfo ?? new PatientListViewModal(),
             };
             var today = DateOnly.FromDateTime(DateTime.Today);
