@@ -56,27 +56,56 @@
                 box-shadow: 0 0 5px rgba(13,110,253,0.3);
             }
 
-        /* Center the modal vertically and horizontally */
-        .modal-dialog-centered {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 1rem); /* Adjust height to accommodate for Bootstrap's padding */
+        /* Modal XL size */
+        .modal-xl {
+            max-width: 95% !important;
         }
 
-        /* Ensure modal content does not stretch too wide */
-        .modal-content {
-            width: 180%;
-            max-width: 900px;
+        /* Card styling */
+        .card-header h6 {
+            margin: 0;
         }
 
-        /* Center content inside modal body */
-        .modal-body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* Better spacing in modals */
+        .modal-body .card {
+            margin-bottom: 20px;
         }
+
+        /* Styling for lists in modals */
+        .modal-body ul {
+            padding-left: 1rem;
+            margin-bottom: 0;
+        }
+
+            .modal-body ul li {
+                margin-bottom: 5px;
+            }
+
+        /* Vitals grid */
+        .vitals-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .vital-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+            .vital-item small {
+                color: #6c757d;
+                font-size: 11px;
+                display: block;
+            }
+
+            .vital-item strong {
+                font-size: 14px;
+                display: block;
+                margin-top: 4px;
+            }
+
         /* Table */
         table.dataTable {
             border-collapse: collapse !important;
@@ -100,6 +129,7 @@
             table.dataTable tbody tr:hover {
                 background: #f1f5ff;
             }
+
         /* Buttons */
         .btn-primary {
             background: #0d6efd;
@@ -114,55 +144,67 @@
                 transform: scale(1.03);
             }
 
-        /* Action buttons stack nicely */
-        .btn-group {
-            width: 100%;
-            margin-bottom: 5px;
-        }
-
         .btn-danger {
             background: #dc3545;
             border: none;
         }
 
-        /* Modals */
-        .modal-lg {
-            max-width: 10% !important;
-        }
-
-        .modal-content {
-            border-radius: 10px;
+        .btn-success {
+            background: #198754;
             border: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
+        /* Modal header */
         .modal-header {
             background: #1f1f1f;
             color: white;
             border-bottom: none;
         }
 
-            .modal-header .btn-close {
-                filter: invert(1);
+            .modal-header .close {
+                color: white;
             }
 
         .modal-footer {
             border-top: none;
         }
 
-        /* Radio boxes */
-        #SurgeryTime,
-        #Theater,
-        #Urgency {
-            background: #f8f9fa;
-            border-radius: 6px;
+        /* Info badges */
+        .info-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 2px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-size: 12px;
         }
+
+        /* Prescription table */
+        .prescription-table {
+            font-size: 13px;
+        }
+
+            .prescription-table th {
+                background: #343a40;
+                color: white;
+                font-size: 12px;
+            }
+
+        /* Tab styling */
+        .nav-tabs .nav-link {
+            color: #495057;
+            font-weight: 500;
+        }
+
+            .nav-tabs .nav-link.active {
+                color: #0d6efd;
+                font-weight: 600;
+            }
 
         /* Table container spacing */
         .mt-5 {
             margin-top: 30px !important;
         }
-
     </style>
 </head>
 <body>
@@ -200,7 +242,6 @@
                         <table id="rejectedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
@@ -224,7 +265,6 @@
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>@Data.RejectionReason</td>
-
                                         <td>
                                             <button class="btn btn-primary check-prescription-btn no-actions"
                                                     data-id="@Data.PrescriptionID"
@@ -233,7 +273,6 @@
                                                 Check Prescription
                                             </button>
                                         </td>
-
                                     </tr>
                                 }
                             </tbody>
@@ -262,7 +301,6 @@
                                 @foreach (var Data in Model.AllPrescribedDispensed)
                                 {
                                     <tr>
-
                                         <td>@Data.PatientName</td>
                                         <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
@@ -292,7 +330,6 @@
                         <table id="prescribedTable" class="display" style="width:100%">
                             <thead>
                                 <tr>
-
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
@@ -305,14 +342,16 @@
                                 @foreach (var Data in Model.AllPrescribed)
                                 {
                                     <tr>
-
                                         <td>@Data.Name</td>
                                         <td>@Data.Surname</td>
                                         <td>@Data.DateGiven</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn with-actions" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                            <button class="btn btn-primary check-prescription-btn with-actions"
+                                                    data-id="@Data.PrescriptionID"
+                                                    data-toggle="modal"
+                                                    data-target="#medicationModal">
                                                 Check Prescription
                                             </button>
                                         </td>
@@ -326,63 +365,271 @@
         </main>
     </div>
 
-    <!-- Modal -->
+    <!-- Prescribed Modal (with Actions) - New Layout -->
     <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="medicationModalLabel">Medication Check</h5>
+                    <h5 class="modal-title" id="medicationModalLabel">
+                        <i class="fas fa-prescription-bottle"></i> Prescription Details
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table" id="example">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Surname</th>
-                                <th scope="col">Prescription Date</th>
-                                <th scope="col">Medication Name</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Form</th>
-                                <th scope="col">Instructions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            </tr>
-                            <!-- More table data can be added here -->
-                        </tbody>
-                    </table>
+                    <!-- Patient Information Card -->
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Patient Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <small class="text-muted">Full Name</small>
+                                    <div><strong id="patientName">-</strong> <strong id="patientSurname">-</strong></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Gender</small>
+                                    <div><strong id="patientGender">-</strong></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Prescription Date</small>
+                                    <div><strong id="prescriptionDate">-</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vitals Card -->
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">Recent Vitals</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered" id="vitalsTable">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Height</th>
+                                            <th>Weight</th>
+                                            <th>Blood Pressure</th>
+                                            <th>Heart Rate</th>
+                                            <th>Oxygen</th>
+                                            <th>Respiration</th>
+                                            <th>Glucose</th>
+                                            <th>Temperature</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="vitalsSection">
+                                        <tr><td colspan="8"><em>Loading...</em></td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs for Medications, Allergies, Conditions -->
+                    <ul class="nav nav-tabs" id="prescriptionTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="medications-tab" data-toggle="tab" href="#medications" role="tab">
+                                Current Medications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="allergies-tab" data-toggle="tab" href="#allergies" role="tab">
+                                Allergies
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="conditions-tab" data-toggle="tab" href="#conditions" role="tab">
+                                Medical Conditions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="prescribed-tab" data-toggle="tab" href="#prescribed" role="tab">
+                                Prescribed Medications
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="prescriptionTabContent">
+                        <div class="tab-pane fade show active" id="medications" role="tabpanel">
+                            <div id="currentMedsSection" class="p-2">
+                                <em>Loading...</em>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="allergies" role="tabpanel">
+                            <div id="allergiesSection" class="p-2">
+                                <em>Loading...</em>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="conditions" role="tabpanel">
+                            <div id="conditionsSection" class="p-2">
+                                <em>Loading...</em>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="prescribed" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered prescription-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Medication</th>
+                                            <th>Quantity</th>
+                                            <th>Schedule</th>
+                                            <th>Form</th>
+                                            <th>Instructions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="prescriptionDetailsBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="dispense-btn" class="btn btn-success" style="display:none;">
-                        Dispense
+                        <i class="fas fa-check"></i> Dispense
                     </button>
                     <button type="button" id="reject-btn" class="btn btn-danger" style="display:none;">
-                        Reject
+                        <i class="fas fa-times"></i> Reject
                     </button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Dispensed/Rejected Modal (View Only) - New Layout -->
+    <div class="modal fade" id="DmedicationModal" tabindex="-1" role="dialog" aria-labelledby="DmedicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DmedicationModalLabel">
+                        <i class="fas fa-prescription-bottle"></i> Prescription Details (View Only)
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Patient Information Card -->
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h6 class="mb-0">Patient Information</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <small class="text-muted">Full Name</small>
+                                    <div><strong id="viewPatientName">-</strong> <strong id="viewPatientSurname">-</strong></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Gender</small>
+                                    <div><strong id="viewPatientGender">-</strong></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Prescription Date</small>
+                                    <div><strong id="viewPrescriptionDate">-</strong></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vitals Card -->
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">Recent Vitals</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="viewVitalsSection" class="vitals-grid">
+                                <em>Loading vitals...</em>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabs for Medications, Allergies, Conditions -->
+                    <ul class="nav nav-tabs" id="viewPrescriptionTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="viewMedications-tab" data-toggle="tab" href="#viewMedications" role="tab">
+                                Current Medications
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="viewAllergies-tab" data-toggle="tab" href="#viewAllergies" role="tab">
+                                Allergies
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="viewConditions-tab" data-toggle="tab" href="#viewConditions" role="tab">
+                                Medical Conditions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="viewPrescribed-tab" data-toggle="tab" href="#viewPrescribed" role="tab">
+                                Prescribed Medications
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="viewPrescriptionTabContent">
+                        <div class="tab-pane fade show active" id="viewMedications" role="tabpanel">
+                            <div id="viewCurrentMedsSection" class="p-2">
+                                <em>Loading...</em>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="viewAllergies" role="tabpanel">
+                            <div id="viewAllergiesSection" class="p-2">
+                                <em>Loading...</em>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="viewConditions" role="tabpanel">
+                            <div id="viewConditionsSection" class="p-2">
+                                <em>Loading...</em>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="viewPrescribed" role="tabpanel">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered prescription-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Medication</th>
+                                            <th>Quantity</th>
+                                            <th>Schedule</th>
+                                            <th>Form</th>
+                                            <th>Instructions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="viewPrescriptionDetailsBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Reject Reason Modal -->
     <div class="modal fade" id="rejectReasonModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Reject Prescription</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-
                 <div class="modal-body">
                     <input type="hidden" id="rejectPrescriptionId" />
-
                     <div class="form-group">
                         <label>Reason for Rejection</label>
                         <textarea id="rejectionReason" class="form-control" rows="4" placeholder="Enter reason..."></textarea>
                     </div>
                 </div>
-
                 <div class="modal-footer">
                     <button type="button" id="saveRejectBtn" class="btn btn-danger">
                         Save
@@ -395,119 +642,57 @@
         </div>
     </div>
 
-    <!-- dISPENSD  Modal -->
-    <div class="modal fade" id="DmedicationModal" tabindex="-1" role="dialog" aria-labelledby="DmedicationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="DmedicationModalLabel">Medication Check</h5>
-                </div>
-                <div class="modal-body">
-                    <table class="table" id="example">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Surname</th>
-                                <th scope="col">Prescription Date</th>
-                                <th scope="col">Medication Name</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Form</th>
-                                <th scope="col">Instructions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                            </tr>
-                            <!-- More table data can be added here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         $(document).ready(function () {
-            $(document).ready(function () {
-                // Initialize DataTables
-                var rejectedTable = $('#rejectedTable').DataTable({
-                    "language": {
-                        "zeroRecords": "No matching records found"
-                    }
-                });
+            // Initialize DataTables
+            var rejectedTable = $('#rejectedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
 
-                var acceptedTable = $('#acceptedTable').DataTable({
-                    "language": {
-                        "zeroRecords": "No matching records found"
-                    }
-                });
+            var acceptedTable = $('#acceptedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
 
-                var prescribedTable = $('#prescribedTable').DataTable({
-                    "language": {
-                        "zeroRecords": "No matching records found"
-                    }
-                });
+            var prescribedTable = $('#prescribedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
 
-                // Custom search function for the search input
-                $('#searchInput').on('keyup', function () {
-                    var searchText = this.value.trim(); // Trim whitespace
-                    if (searchText === '') {
-                        $('#rejectedRow').show();
-                        $('#acceptedRow').show();
-                        $('#prescribedRow').show();
+            // Custom search function for the search input
+            $('#searchInput').on('keyup', function () {
+                var searchText = this.value.trim();
+                if (searchText === '') {
+                    $('#rejectedRow').show();
+                    $('#acceptedRow').show();
+                    $('#prescribedRow').show();
+                } else {
+                    rejectedTable.search(searchText).draw();
+                    acceptedTable.search(searchText).draw();
+                    prescribedTable.search(searchText).draw();
+
+                    if (rejectedTable.page.info().recordsDisplay === 0) {
+                        $('#rejectedRow').hide();
                     } else {
-                        rejectedTable.search(searchText).draw();
-                        acceptedTable.search(searchText).draw();
-                        prescribedTable.search(searchText).draw();
-
-                        if (rejectedTable.page.info().recordsDisplay === 0) {
-                            $('#rejectedRow').hide();
-                        } else {
-                            $('#rejectedRow').show();
-                        }
-
-                        if (acceptedTable.page.info().recordsDisplay === 0) {
-                            $('#acceptedRow').hide();
-                        } else {
-                            $('#acceptedRow').show();
-                        }
-
-                        if (prescribedTable.page.info().recordsDisplay === 0) {
-                            $('#prescribedRow').hide();
-                        } else {
-                            $('#prescribedRow').show();
-                        }
+                        $('#rejectedRow').show();
                     }
-                });
 
-                // Button click handlers
-                $('#showRejected').on('click', function () {
-                    $('#rejectedRow').show();
-                    $('#acceptedRow').hide();
-                    $('#prescribedRow').hide();
-                });
+                    if (acceptedTable.page.info().recordsDisplay === 0) {
+                        $('#acceptedRow').hide();
+                    } else {
+                        $('#acceptedRow').show();
+                    }
 
-                $('#showAccepted').on('click', function () {
-                    $('#acceptedRow').show();
-                    $('#rejectedRow').hide();
-                    $('#prescribedRow').hide();
-                });
-
-                $('#showPrescribed').on('click', function () {
-                    $('#prescribedRow').show();
-                    $('#rejectedRow').hide();
-                    $('#acceptedRow').hide();
-                });
-
-                $('#showAll').on('click', function () { // New button click handler
-                    $('#rejectedRow').show();
-                    $('#acceptedRow').show();
-                    $('#prescribedRow').show();
-                });
+                    if (prescribedTable.page.info().recordsDisplay === 0) {
+                        $('#prescribedRow').hide();
+                    } else {
+                        $('#prescribedRow').show();
+                    }
+                }
             });
 
             // Button click handlers
@@ -528,163 +713,231 @@
                 $('#rejectedRow').hide();
                 $('#acceptedRow').hide();
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            let currentPrescriptionId = null; // Variable to store the current prescription ID
 
-            $('.check-prescription-btn').click(function () {
-            let currentPrescriptionId = $(this).data('id');
+            $('#showAll').on('click', function () {
+                $('#rejectedRow').show();
+                $('#acceptedRow').show();
+                $('#prescribedRow').show();
+            });
+
+            // Modal functionality
+            let currentPrescriptionId = null;
+
+                    $('.check-prescription-btn').click(function () {
+
+            let id = $(this).data('id');
             let isWithActions = $(this).hasClass('with-actions');
 
-            // Choose correct table body
-            let tableBody = isWithActions
-                ? $('#medicationModal #example tbody')
-                : $('#DmedicationModal #example tbody');
-
-            tableBody.empty();
-
-            let lastName = '';
-            let lastSurname = '';
-            let lastDateGiven = '';
-
             $.ajax({
-                url: '@Url.Action("PrescriptionDetails", "Home")',
+                url: '@Url.Action("PrescriptionDetails", "Pharmacist")',
                 type: 'POST',
-                data: { id: currentPrescriptionId },
-                success: function (data) {
-
-                    $.each(data, function (index, item) {
-                        var row = '<tr>';
-
-                        if (item.name !== lastName || item.surname !== lastSurname || item.dateGiven !== lastDateGiven) {
-                            row += '<td>' + item.name + '</td>';
-                            row += '<td>' + item.surname + '</td>';
-                            row += '<td>' + item.dateGiven + '</td>';
-
-                            lastName = item.name;
-                            lastSurname = item.surname;
-                            lastDateGiven = item.dateGiven;
-                        } else {
-                            row += '<td></td><td></td><td></td>';
-                        }
-
-                        row += '<td>' + item.medicationName + '</td>';
-                        row += '<td>' + item.quantity + '</td>';
-                        row += '<td>' + item.schedule + '</td>';
-                        row += '<td>' + item.medicationForm + '</td>';
-                        row += '<td>' + item.instructions + '</td>';
-
-                        row += '</tr>';
-
-                        tableBody.append(row);
-                    });
-
-                    // ONLY show buttons for prescribed
-                    if (isWithActions) {
-                        $('#dispense-btn')
-                            .data('prescription-id', currentPrescriptionId)
-                            .show();
-
-                        $('#reject-btn')
-                            .data('prescription-id', currentPrescriptionId)
-                            .show();
-                    }
-                }
-            });
-        });
-           
-
-            // DISPENSE
-                    $('#dispense-btn').click(function () {
-            var prescriptionId = $(this).data('prescription-id');
-
-            if (!prescriptionId) return;
-
-            $.ajax({
-                url: '@Url.Action("DispensePrescription", "Pharmacist")',
-                type: 'POST',
-                data: { prescriptionId: prescriptionId },
-
+                data: { id: id },
                 success: function (response) {
-                    if (response.success) {
-                        alert("Prescription dispensed successfully!");
 
-                        $('#medicationModal').modal('hide');
-
-                        location.reload(); // refresh tables
-                    } else {
-                        alert(response.message || "Error dispensing prescription.");
+                    if (response.error) {
+                        alert(response.error);
+                        return;
                     }
+
+                    let p = response.patientInfo || {};
+                    let v = response.patientVitals || {};
+
+                    // ================= PATIENT INFO =================
+                    if (isWithActions) {
+                        $('#patientName').text(p.name || 'N/A');
+                        $('#patientSurname').text(p.surname || 'N/A');
+                        $('#patientGender').text(p.gender || 'N/A');
+                        $('#prescriptionDate').text(
+                            p.dateGiven ? new Date(p.dateGiven).toLocaleDateString() : 'N/A'
+                        );
+                    } else {
+                        $('#viewPatientName').text(p.name || 'N/A');
+                        $('#viewPatientSurname').text(p.surname || 'N/A');
+                        $('#viewPatientGender').text(p.gender || 'N/A');
+                        $('#viewPrescriptionDate').text(
+                            p.dateGiven ? new Date(p.dateGiven).toLocaleDateString() : 'N/A'
+                        );
+                    }
+
+                    // ================= VITALS =================
+                           function buildVitalsTable(v) {
+
+            if (!v) {
+                return `<tr><td colspan="8"><em>No vitals recorded</em></td></tr>`;
+            }
+
+            return `
+                <tr>
+                    <td>${v.height || 'N/A'}</td>
+                    <td>${v.weight || 'N/A'}</td>
+                    <td>
+                        ${v.systolicBloodPressure || '-'}/${v.diastolicBloodPressure || '-'}
+                    </td>
+                    <td>${v.heartRate || 'N/A'}</td>
+                    <td>${v.bloodOxygen || 'N/A'}</td>
+                    <td>${v.respiration || 'N/A'}</td>
+                    <td>${v.bloodGlucoseLevel || 'N/A'}</td>
+                    <td>${v.temperature || 'N/A'}</td>
+                </tr>
+            `;
+        }
+
+                           if (isWithActions)
+            $('#vitalsSection').html(buildVitalsTable(v));
+        else
+            $('#viewVitalsSection').html(buildVitalsTable(v));
+
+                    // ================= MEDS =================
+                    let meds = response.currentMedications || [];
+                    let medsHtml = meds.length
+                        ? meds.map(m => `<li><span class="info-badge">${m.cMedicationName}</span></li>`).join('')
+                        : '<em>No current medications</em>';
+
+                    if (isWithActions)
+                        $('#currentMedsSection').html(`<ul>${medsHtml}</ul>`);
+                    else
+                        $('#viewCurrentMedsSection').html(`<ul>${medsHtml}</ul>`);
+
+                    // ================= ALLERGIES =================
+                    let allergies = response.allergies || [];
+                    let allergyHtml = allergies.length
+                        ? allergies.map(a => `<li><span class="info-badge bg-warning">${a.activeIngredientName}</span></li>`).join('')
+                        : '<em>No allergies</em>';
+
+                    if (isWithActions)
+                        $('#allergiesSection').html(`<ul>${allergyHtml}</ul>`);
+                    else
+                        $('#viewAllergiesSection').html(`<ul>${allergyHtml}</ul>`);
+
+                    // ================= CONDITIONS =================
+                    let conditions = response.conditions || [];
+                    let condHtml = conditions.length
+                        ? conditions.map(c => `<li><span class="info-badge bg-secondary text-white">${c.conditionName}</span></li>`).join('')
+                        : '<em>No conditions</em>';
+
+                    if (isWithActions)
+                        $('#conditionsSection').html(`<ul>${condHtml}</ul>`);
+                    else
+                        $('#viewConditionsSection').html(`<ul>${condHtml}</ul>`);
+
+                    // ================= PRESCRIPTIONS =================
+                    let medsTable = response.prescriptionDetails || [];
+                    let tableHtml = medsTable.map(x => `
+                        <tr>
+                            <td>${x.medicationName || 'N/A'}</td>
+                            <td>${x.quantity || 'N/A'}</td>
+                            <td>${x.schedule || 'N/A'}</td>
+                            <td>${x.medicationForm || 'N/A'}</td>
+                            <td>${x.instructions || 'N/A'}</td>
+                        </tr>
+                    `).join('');
+
+                    if (isWithActions)
+                        $('#prescriptionDetailsBody').html(tableHtml);
+                    else
+                        $('#viewPrescriptionDetailsBody').html(tableHtml);
                 },
                 error: function () {
-                    alert("Something went wrong.");
+                    alert("Failed to load prescription details");
                 }
             });
         });
+
+            // Helper function to clear modal data
+            function clearModalData(modalId) {
+                if (modalId === 'medicationModal') {
+                    $('#patientName, #patientSurname, #patientGender, #prescriptionDate').text('-');
+                    $('#vitalsSection').html('<em>Loading vitals...</em>');
+                    $('#currentMedsSection').html('<em>Loading...</em>');
+                    $('#allergiesSection').html('<em>Loading...</em>');
+                    $('#conditionsSection').html('<em>Loading...</em>');
+                    $('#prescriptionDetailsBody').html('');
+                } else {
+                    $('#viewPatientName, #viewPatientSurname, #viewPatientGender, #viewPrescriptionDate').text('-');
+                    $('#viewVitalsSection').html('<em>Loading vitals...</em>');
+                    $('#viewCurrentMedsSection').html('<em>Loading...</em>');
+                    $('#viewAllergiesSection').html('<em>Loading...</em>');
+                    $('#viewConditionsSection').html('<em>Loading...</em>');
+                    $('#viewPrescriptionDetailsBody').html('');
+                }
+            }
+
+            // DISPENSE
+            $('#dispense-btn').click(function () {
+                var prescriptionId = $(this).data('prescription-id');
+
+                if (!prescriptionId) return;
+
+                if (confirm('Are you sure you want to dispense this prescription?')) {
+                    $.ajax({
+                        url: '@Url.Action("DispensePrescription", "Pharmacist")',
+                        type: 'POST',
+                        data: { prescriptionId: prescriptionId },
+                        success: function (response) {
+                            if (response.success) {
+                                alert("Prescription dispensed successfully!");
+                                $('#medicationModal').modal('hide');
+                                location.reload();
+                            } else {
+                                alert(response.message || "Error dispensing prescription.");
+                            }
+                        },
+                        error: function () {
+                            alert("Something went wrong.");
+                        }
+                    });
+                }
+            });
+
             $('#medicationModal').on('hidden.bs.modal', function () {
-            $('#dispense-btn').hide();
-            $('#reject-btn').hide();
-        });
+                $('#dispense-btn').hide();
+                $('#reject-btn').hide();
+                // Reset tabs to first tab
+                $('#medications-tab').tab('show');
+            });
+
             // REJECT
             $('#reject-btn').click(function () {
-            var prescriptionId = $(this).data('prescription-id');
-
-            if (prescriptionId) {
-                $('#rejectPrescriptionId').val(prescriptionId); // store ID
-                $('#rejectionReason').val(''); // clear textbox
-                $('#rejectReasonModal').modal('show'); // open modal
-            }
-        });
-
-            // Handle Change Medication button click event
-            $('#change-medication-btn').click(function () {
                 var prescriptionId = $(this).data('prescription-id');
                 if (prescriptionId) {
-                    window.location.href = '@Url.Action("PrescriptionMedication", "Home")' + '/' + prescriptionId;
+                    $('#rejectPrescriptionId').val(prescriptionId);
+                    $('#rejectionReason').val('');
+                    $('#rejectReasonModal').modal('show');
                 }
             });
 
             $('#saveRejectBtn').click(function () {
-            var prescriptionId = $('#rejectPrescriptionId').val();
-            var reason = $('#rejectionReason').val();
+                var prescriptionId = $('#rejectPrescriptionId').val();
+                var reason = $('#rejectionReason').val();
 
-            if (!reason.trim()) {
-                alert("Please enter a rejection reason.");
-                return;
-            }
-
-            $.ajax({
-                url: '@Url.Action("RejectPrescriptionAjax", "Pharmacist")',
-                type: 'POST',
-                data: {
-                    prescriptionId: prescriptionId,
-                    reason: reason
-                },
-                success: function (response) {
-                    if (response.success) {
-                        $('#rejectReasonModal').modal('hide');
-                        $('#medicationModal').modal('hide');
-
-                        alert("Prescription rejected successfully!");
-
-                        location.reload(); // refresh table
-                    } else {
-                        alert("Error rejecting prescription.");
-                    }
-                },
-                error: function () {
-                    alert("Something went wrong.");
+                if (!reason.trim()) {
+                    alert("Please enter a rejection reason.");
+                    return;
                 }
+
+                $.ajax({
+                    url: '@Url.Action("RejectPrescriptionAjax", "Pharmacist")',
+                    type: 'POST',
+                    data: {
+                        prescriptionId: prescriptionId,
+                        reason: reason
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#rejectReasonModal').modal('hide');
+                            $('#medicationModal').modal('hide');
+                            alert("Prescription rejected successfully!");
+                            location.reload();
+                        } else {
+                            alert("Error rejecting prescription.");
+                        }
+                    },
+                    error: function () {
+                        alert("Something went wrong.");
+                    }
+                });
             });
         });
-        });
     </script>
-
-
-
 </body>
 </html>
-
-

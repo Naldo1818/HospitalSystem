@@ -355,19 +355,14 @@ namespace DEMO.Controllers
         public IActionResult PrescriptionList()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
+
             if (!int.TryParse(accountIDString, out int accountID))
-            {
-                // Handle the case where accountID is not available or is invalid
-                accountID = 0; // Or handle as required
-            }
+                accountID = 0;
 
             var Prescribed = (from p in _dbContext.PatientInfo
-                              join bs in _dbContext.BookSurgery
-                                  on p.PatientID equals bs.PatientID
-                              join ap in _dbContext.AdmittedPatients
-                                  on bs.BookingID equals ap.BookingID
-                              join pr in _dbContext.Prescription
-                                  on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                              join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
+                              join ap in _dbContext.AdmittedPatients on bs.BookingID equals ap.BookingID
+                              join pr in _dbContext.Prescription on ap.AdmittedPatientID equals pr.AdmittedPatientID
                               where pr.Status == "Prescribed"
                               orderby pr.Urgency == "Yes" descending
                               select new PrescriptionListViewModal
@@ -381,18 +376,12 @@ namespace DEMO.Controllers
                               }).ToList();
 
             var PrescribedDispensed = (from p in _dbContext.PatientInfo
-                                       join bs in _dbContext.BookSurgery
-                                           on p.PatientID equals bs.PatientID
-                                       join ap in _dbContext.AdmittedPatients
-                                           on bs.BookingID equals ap.BookingID
-                                       join pr in _dbContext.Prescription
-                                           on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                       join ds in _dbContext.DispensedScriptsModel
-                                           on pr.PrescriptionID equals ds.PrescriptionID
-                                       join a in _dbContext.Accounts
-                                       on ds.AccountID equals a.AccountID
+                                       join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
+                                       join ap in _dbContext.AdmittedPatients on bs.BookingID equals ap.BookingID
+                                       join pr in _dbContext.Prescription on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                       join ds in _dbContext.DispensedScriptsModel on pr.PrescriptionID equals ds.PrescriptionID
+                                       join a in _dbContext.Accounts on ds.AccountID equals a.AccountID
                                        where pr.Status == "Dispensed"
-                                       orderby pr.Urgency == "Yes" descending, p.Name
                                        select new PrescriptionListViewModal
                                        {
                                            PrescriptionID = pr.PrescriptionID,
@@ -406,28 +395,22 @@ namespace DEMO.Controllers
                                        }).ToList();
 
             var PrescribedRejected = (from p in _dbContext.PatientInfo
-                                      join bs in _dbContext.BookSurgery
-                                          on p.PatientID equals bs.PatientID
-                                      join ap in _dbContext.AdmittedPatients
-                                          on bs.BookingID equals ap.BookingID
-                                      join pr in _dbContext.Prescription
-                                          on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                      join rs in _dbContext.RejectScriptModel
-                                          on pr.PrescriptionID equals rs.PrescriptionID
-                                      join a in _dbContext.Accounts
-                                          on rs.AccountID equals a.AccountID
+                                      join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
+                                      join ap in _dbContext.AdmittedPatients on bs.BookingID equals ap.BookingID
+                                      join pr in _dbContext.Prescription on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                      join rs in _dbContext.RejectScriptModel on pr.PrescriptionID equals rs.PrescriptionID
+                                      join a in _dbContext.Accounts on rs.AccountID equals a.AccountID
                                       where pr.Status == "Rejected"
-                                      orderby pr.Urgency == "Yes" descending, p.Name
                                       select new PrescriptionListViewModal
                                       {
                                           PrescriptionID = pr.PrescriptionID,
                                           PatientName = p.Name,
                                           PatientSurname = p.Surname,
                                           DateGiven = pr.DateGiven,
-                                          Urgency = pr.Urgency,
-                                          Status = pr.Status,
                                           AccountName = a.Name,
                                           AccountSurname = a.Surname,
+                                          Urgency = pr.Urgency,
+                                          Status = pr.Status,
                                           RejectionReason = rs.RejectionReason
                                       }).ToList();
 
@@ -437,53 +420,103 @@ namespace DEMO.Controllers
                 AllPrescribedDispensed = PrescribedDispensed,
                 AllPrescribedRejected = PrescribedRejected
             };
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-            var today = DateOnly.FromDateTime(DateTime.Today);
 
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
 
-            var prescribedCount = (from p in _dbContext.PatientInfo
-                                   join bs in _dbContext.BookSurgery
-                                       on p.PatientID equals bs.PatientID
-                                   join ap in _dbContext.AdmittedPatients
-                                       on bs.BookingID equals ap.BookingID
-                                   join pr in _dbContext.Prescription
-                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                   where pr.Status == "Prescribed"
-                                   select pr).Count();
-
-            var dispensedCount = (from p in _dbContext.PatientInfo
-                                  join bs in _dbContext.BookSurgery
-                                      on p.PatientID equals bs.PatientID
-                                  join ap in _dbContext.AdmittedPatients
-                                      on bs.BookingID equals ap.BookingID
-                                  join pr in _dbContext.Prescription
-                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                  where pr.Status == "Dispensed"
-                                        && pr.AccountID == accountID
-                                  select pr).Count();
-
-            var rejectedCount = (from p in _dbContext.PatientInfo
-                                 join bs in _dbContext.BookSurgery
-                                     on p.PatientID equals bs.PatientID
-                                 join ap in _dbContext.AdmittedPatients
-                                     on bs.BookingID equals ap.BookingID
-                                 join pr in _dbContext.Prescription
-                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
-                                 where pr.Status == "Rejected"
-                                       && pr.AccountID == accountID
-                                 select pr).Count();
-
-            // Pass the prescribed count to the view
-            ViewBag.PrescribedCount = prescribedCount;
-            ViewBag.DispensedCount = dispensedCount;
-            ViewBag.RejectedCount = rejectedCount;
-            ViewBag.UserAccountID = accountID;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
             return View(viewModel);
+        }
+        [HttpPost]
+        public JsonResult PrescriptionDetails(int id)
+        {
+            var prescription = (from pr in _dbContext.Prescription
+                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
+                                join bs in _dbContext.BookSurgery on ap.BookingID equals bs.BookingID
+                                join p in _dbContext.PatientInfo on bs.PatientID equals p.PatientID
+                                where pr.PrescriptionID == id
+                                select new
+                                {
+                                    pr.PrescriptionID,
+                                    pr.DateGiven,
+                                    p.PatientID,
+                                    p.Name,
+                                    p.Surname,
+                                    p.Gender
+                                }).FirstOrDefault();
+
+            if (prescription == null)
+                return Json(new { error = "Prescription not found" });
+
+            var medicationDetails = (from pm in _dbContext.MedicationInstructions
+                                     join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+                                     where pm.PrescriptionID == id
+                                     select new
+                                     {
+                                         m.MedicationName,
+                                         pm.Quantity,
+                                         m.Schedule,
+                                         m.MedicationForm,
+                                         pm.Instructions
+                                     }).ToList();
+
+            var currentMedications = (from pm in _dbContext.patientMedication
+                                      join cm in _dbContext.ChronicMedication on pm.CMedicationID equals cm.CMedicationID
+                                      where pm.PatientID == prescription.PatientID
+                                      select new
+                                      {
+                                          cm.CMedicationName,
+                                          cm.CMedicationForm,
+                                          cm.Schedule
+                                      }).ToList();
+
+            var allergies = (from pa in _dbContext.PatientAllergy
+                             join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
+                             where pa.PatientID == prescription.PatientID
+                             select new
+                             {
+                                 ai.ActiveIngredientName
+                             }).ToList();
+
+            var conditions = (from pc in _dbContext.PatientConditions
+                              join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
+                              where pc.PatientID == prescription.PatientID
+                              select new
+                              {
+                                  c.ConditionName
+                              }).ToList();
+
+            var patientVitals = (from pv in _dbContext.PatientVitals
+                                 where pv.PatientID == prescription.PatientID
+                                 orderby pv.Date descending, pv.Time descending
+                                 select new
+                                 {
+                                     pv.Height,
+                                     pv.Weight,
+                                     pv.SystolicBloodPressure,
+                                     pv.DiastolicBloodPressure,
+                                     pv.HeartRate,
+                                     pv.BloodOxygen,
+                                     pv.Respiration,
+                                     pv.BloodGlucoseLevel,
+                                     pv.Temperature
+                                 }).FirstOrDefault();
+
+            return Json(new
+            {
+                patientInfo = new
+                {
+                    name = prescription.Name,
+                    surname = prescription.Surname,
+                    gender = prescription.Gender,
+                    dateGiven = prescription.DateGiven
+                },
+                prescriptionDetails = medicationDetails,
+                currentMedications,
+                allergies,
+                conditions,
+                patientVitals
+            });
         }
         [HttpPost]
         public IActionResult RejectPrescriptionAjax(int prescriptionId, string reason)
