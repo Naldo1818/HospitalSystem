@@ -81,29 +81,21 @@
                 margin-bottom: 5px;
             }
 
-        /* Vitals grid */
-        .vitals-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+        /* Vitals table */
+        .vitals-table {
+            font-size: 13px;
         }
 
-        .vital-item {
-            background: #f8f9fa;
-            padding: 8px 12px;
-            border-radius: 6px;
-        }
-
-            .vital-item small {
-                color: #6c757d;
-                font-size: 11px;
-                display: block;
+            .vitals-table th {
+                background: #343a40;
+                color: white;
+                font-size: 12px;
+                text-align: center;
             }
 
-            .vital-item strong {
-                font-size: 14px;
-                display: block;
-                margin-top: 4px;
+            .vitals-table td {
+                text-align: center;
+                vertical-align: middle;
             }
 
         /* Table */
@@ -257,11 +249,11 @@
                                 @foreach (var Data in Model.AllPrescribedRejected)
                                 {
                                     <tr>
-                                        <td>@Data.PatientName</td>
-                                        <td>@Data.PatientSurname</td>
-                                        <td>@Data.DateGiven</td>
-                                        <td>@Data.AccountName</td>
-                                        <td>@Data.AccountSurname</td>
+                                        <td>@(Data.PatientName)</td>
+                                        <td>@(Data.PatientSurname)</td>
+                                        <td>@(Data.DateGiven.ToString("yyyy-MM-dd"))</td>
+                                        <td>@(Data.AccountName)</td>
+                                        <td>@(Data.AccountSurname)</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>@Data.RejectionReason</td>
@@ -301,11 +293,11 @@
                                 @foreach (var Data in Model.AllPrescribedDispensed)
                                 {
                                     <tr>
-                                        <td>@Data.PatientName</td>
-                                        <td>@Data.PatientSurname</td>
-                                        <td>@Data.DateGiven</td>
-                                        <td>@Data.AccountName</td>
-                                        <td>@Data.AccountSurname</td>
+                                        <td>@(Data.PatientName)</td>
+                                        <td>@(Data.PatientSurname)</td>
+                                        <td>@(Data.DateGiven.ToString("yyyy-MM-dd"))</td>
+                                        <td>@(Data.AccountName)</td>
+                                        <td>@(Data.AccountSurname)</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
@@ -342,9 +334,9 @@
                                 @foreach (var Data in Model.AllPrescribed)
                                 {
                                     <tr>
-                                        <td>@Data.Name</td>
-                                        <td>@Data.Surname</td>
-                                        <td>@Data.DateGiven</td>
+                                        <td>@(Data.Name)</td>
+                                        <td>@(Data.Surname)</td>
+                                        <td>@(Data.DateGiven.ToString("yyyy-MM-dd"))</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
@@ -365,13 +357,13 @@
         </main>
     </div>
 
-    <!-- Prescribed Modal (with Actions) - New Layout -->
+    <!-- Prescribed Modal (with Actions) -->
     <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="medicationModalLabel">
-                        <i class="fas fa-prescription-bottle"></i> Prescription Details
+                        Prescription Details
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -408,17 +400,17 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-sm table-bordered" id="vitalsTable">
-                                    <thead class="thead-dark">
+                                <table class="table table-sm table-bordered vitals-table">
+                                    <thead>
                                         <tr>
-                                            <th>Height</th>
-                                            <th>Weight</th>
-                                            <th>Blood Pressure</th>
-                                            <th>Heart Rate</th>
-                                            <th>Oxygen</th>
+                                            <th>Height (cm)</th>
+                                            <th>Weight (kg)</th>
+                                            <th>BP (mmHg)</th>
+                                            <th>Heart Rate (bpm)</th>
+                                            <th>Oxygen (%)</th>
                                             <th>Respiration</th>
                                             <th>Glucose</th>
-                                            <th>Temperature</th>
+                                            <th>Temp (°C)</th>
                                         </tr>
                                     </thead>
                                     <tbody id="vitalsSection">
@@ -429,7 +421,7 @@
                         </div>
                     </div>
 
-                    <!-- Tabs for Medications, Allergies, Conditions -->
+                    <!-- Tabs -->
                     <ul class="nav nav-tabs" id="prescriptionTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="medications-tab" data-toggle="tab" href="#medications" role="tab">
@@ -489,10 +481,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="dispense-btn" class="btn btn-success" style="display:none;">
-                        <i class="fas fa-check"></i> Dispense
+                        Dispense
                     </button>
                     <button type="button" id="reject-btn" class="btn btn-danger" style="display:none;">
-                        <i class="fas fa-times"></i> Reject
+                        Reject
                     </button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
@@ -500,13 +492,13 @@
         </div>
     </div>
 
-    <!-- Dispensed/Rejected Modal (View Only) - New Layout -->
+    <!-- Dispensed/Rejected Modal (View Only) -->
     <div class="modal fade" id="DmedicationModal" tabindex="-1" role="dialog" aria-labelledby="DmedicationModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="DmedicationModalLabel">
-                        <i class="fas fa-prescription-bottle"></i> Prescription Details (View Only)
+                        Prescription Details (View Only)
                     </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -542,13 +534,29 @@
                             <h6 class="mb-0">Recent Vitals</h6>
                         </div>
                         <div class="card-body">
-                            <div id="viewVitalsSection" class="vitals-grid">
-                                <em>Loading vitals...</em>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered vitals-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Height (cm)</th>
+                                            <th>Weight (kg)</th>
+                                            <th>BP (mmHg)</th>
+                                            <th>Heart Rate (bpm)</th>
+                                            <th>Oxygen (%)</th>
+                                            <th>Respiration</th>
+                                            <th>Glucose</th>
+                                            <th>Temp (°C)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="viewVitalsSection">
+                                        <tr><td colspan="8"><em>Loading...</em></td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tabs for Medications, Allergies, Conditions -->
+                    <!-- Tabs -->
                     <ul class="nav nav-tabs" id="viewPrescriptionTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="viewMedications-tab" data-toggle="tab" href="#viewMedications" role="tab">
@@ -663,7 +671,7 @@
                 }
             });
 
-            // Custom search function for the search input
+            // Custom search function
             $('#searchInput').on('keyup', function () {
                 var searchText = this.value.trim();
                 if (searchText === '') {
@@ -720,147 +728,157 @@
                 $('#prescribedRow').show();
             });
 
-            // Modal functionality
-            let currentPrescriptionId = null;
+            // Function to build vitals table row
+            function buildVitalsRow(vitals) {
+                if (!vitals || Object.keys(vitals).length === 0) {
+                    return '<tr><td colspan="8" class="text-center">No vitals recorded</td></tr>';
+                }
 
-                    $('.check-prescription-btn').click(function () {
-
-            let id = $(this).data('id');
-            let isWithActions = $(this).hasClass('with-actions');
-
-            $.ajax({
-                url: '@Url.Action("PrescriptionDetails", "Pharmacist")',
-                type: 'POST',
-                data: { id: id },
-                success: function (response) {
-
-                    if (response.error) {
-                        alert(response.error);
-                        return;
-                    }
-
-                    let p = response.patientInfo || {};
-                    let v = response.patientVitals || {};
-
-                    // ================= PATIENT INFO =================
-                    if (isWithActions) {
-                        $('#patientName').text(p.name || 'N/A');
-                        $('#patientSurname').text(p.surname || 'N/A');
-                        $('#patientGender').text(p.gender || 'N/A');
-                        $('#prescriptionDate').text(
-                            p.dateGiven ? new Date(p.dateGiven).toLocaleDateString() : 'N/A'
-                        );
-                    } else {
-                        $('#viewPatientName').text(p.name || 'N/A');
-                        $('#viewPatientSurname').text(p.surname || 'N/A');
-                        $('#viewPatientGender').text(p.gender || 'N/A');
-                        $('#viewPrescriptionDate').text(
-                            p.dateGiven ? new Date(p.dateGiven).toLocaleDateString() : 'N/A'
-                        );
-                    }
-
-                    // ================= VITALS =================
-                           function buildVitalsTable(v) {
-
-            if (!v) {
-                return `<tr><td colspan="8"><em>No vitals recorded</em></td></tr>`;
+                return `<tr>
+                    <td>${vitals.height || '-'}</td>
+                    <td>${vitals.weight || '-'}</td>
+                    <td>${vitals.systolicBloodPressure || '-'}/${vitals.diastolicBloodPressure || '-'}</td>
+                    <td>${vitals.heartRate || '-'}</td>
+                    <td>${vitals.bloodOxygen || '-'}</td>
+                    <td>${vitals.respiration || '-'}</td>
+                    <td>${vitals.bloodGlucoseLevel || '-'}</td>
+                    <td>${vitals.temperature || '-'}</td>
+                </tr>`;
             }
 
-            return `
-                <tr>
-                    <td>${v.height || 'N/A'}</td>
-                    <td>${v.weight || 'N/A'}</td>
-                    <td>
-                        ${v.systolicBloodPressure || '-'}/${v.diastolicBloodPressure || '-'}
-                    </td>
-                    <td>${v.heartRate || 'N/A'}</td>
-                    <td>${v.bloodOxygen || 'N/A'}</td>
-                    <td>${v.respiration || 'N/A'}</td>
-                    <td>${v.bloodGlucoseLevel || 'N/A'}</td>
-                    <td>${v.temperature || 'N/A'}</td>
-                </tr>
-            `;
-        }
-
-                           if (isWithActions)
-            $('#vitalsSection').html(buildVitalsTable(v));
-        else
-            $('#viewVitalsSection').html(buildVitalsTable(v));
-
-                    // ================= MEDS =================
-                    let meds = response.currentMedications || [];
-                    let medsHtml = meds.length
-                        ? meds.map(m => `<li><span class="info-badge">${m.cMedicationName}</span></li>`).join('')
-                        : '<em>No current medications</em>';
-
-                    if (isWithActions)
-                        $('#currentMedsSection').html(`<ul>${medsHtml}</ul>`);
-                    else
-                        $('#viewCurrentMedsSection').html(`<ul>${medsHtml}</ul>`);
-
-                    // ================= ALLERGIES =================
-                    let allergies = response.allergies || [];
-                    let allergyHtml = allergies.length
-                        ? allergies.map(a => `<li><span class="info-badge bg-warning">${a.activeIngredientName}</span></li>`).join('')
-                        : '<em>No allergies</em>';
-
-                    if (isWithActions)
-                        $('#allergiesSection').html(`<ul>${allergyHtml}</ul>`);
-                    else
-                        $('#viewAllergiesSection').html(`<ul>${allergyHtml}</ul>`);
-
-                    // ================= CONDITIONS =================
-                    let conditions = response.conditions || [];
-                    let condHtml = conditions.length
-                        ? conditions.map(c => `<li><span class="info-badge bg-secondary text-white">${c.conditionName}</span></li>`).join('')
-                        : '<em>No conditions</em>';
-
-                    if (isWithActions)
-                        $('#conditionsSection').html(`<ul>${condHtml}</ul>`);
-                    else
-                        $('#viewConditionsSection').html(`<ul>${condHtml}</ul>`);
-
-                    // ================= PRESCRIPTIONS =================
-                    let medsTable = response.prescriptionDetails || [];
-                    let tableHtml = medsTable.map(x => `
-                        <tr>
-                            <td>${x.medicationName || 'N/A'}</td>
-                            <td>${x.quantity || 'N/A'}</td>
-                            <td>${x.schedule || 'N/A'}</td>
-                            <td>${x.medicationForm || 'N/A'}</td>
-                            <td>${x.instructions || 'N/A'}</td>
-                        </tr>
-                    `).join('');
-
-                    if (isWithActions)
-                        $('#prescriptionDetailsBody').html(tableHtml);
-                    else
-                        $('#viewPrescriptionDetailsBody').html(tableHtml);
-                },
-                error: function () {
-                    alert("Failed to load prescription details");
+            // Function to build list items
+            function buildListItems(items, type) {
+                if (!items || items.length === 0) {
+                    return '<em>No ' + type + ' found</em>';
                 }
-            });
-        });
 
-            // Helper function to clear modal data
-            function clearModalData(modalId) {
-                if (modalId === 'medicationModal') {
-                    $('#patientName, #patientSurname, #patientGender, #prescriptionDate').text('-');
-                    $('#vitalsSection').html('<em>Loading vitals...</em>');
+                let html = '<ul class="list-unstyled">';
+                items.forEach(function(item) {
+                    if (type === 'medications') {
+                        html += `<li><span class="info-badge">${item.cMedicationName || item.CMedicationName || '-'}</span></li>`;
+                    } else if (type === 'allergies') {
+                        html += `<li><span class="info-badge bg-warning">${item.activeIngredientName || item.ActiveIngredientName || '-'}</span></li>`;
+                    } else if (type === 'conditions') {
+                        html += `<li><span class="info-badge bg-secondary text-white">${item.conditionName || item.ConditionName || '-'}</span></li>`;
+                    }
+                });
+                html += '</ul>';
+                return html;
+            }
+
+            // Function to build prescription table
+            function buildPrescriptionTable(prescriptions) {
+                if (!prescriptions || prescriptions.length === 0) {
+                    return '<tr><td colspan="5" class="text-center">No prescription details found</td></tr>';
+                }
+
+                let html = '';
+                prescriptions.forEach(function(item) {
+                    html += `<tr>
+                        <td>${item.medicationName || item.MedicationName || '-'}</td>
+                        <td>${item.quantity || item.Quantity || '-'}</td>
+                        <td>${item.schedule || item.Schedule || '-'}</td>
+                        <td>${item.medicationForm || item.MedicationForm || '-'}</td>
+                        <td>${item.instructions || item.Instructions || '-'}</td>
+                    </tr>`;
+                });
+                return html;
+            }
+
+            // Check prescription button click handler
+            $('.check-prescription-btn').click(function () {
+                let id = $(this).data('id');
+                let isWithActions = $(this).hasClass('with-actions');
+
+                // Show loading state
+                if (isWithActions) {
+                    $('#vitalsSection').html('<tr><td colspan="8"><em>Loading vitals...</em></td></tr>');
                     $('#currentMedsSection').html('<em>Loading...</em>');
                     $('#allergiesSection').html('<em>Loading...</em>');
                     $('#conditionsSection').html('<em>Loading...</em>');
                     $('#prescriptionDetailsBody').html('');
                 } else {
-                    $('#viewPatientName, #viewPatientSurname, #viewPatientGender, #viewPrescriptionDate').text('-');
-                    $('#viewVitalsSection').html('<em>Loading vitals...</em>');
+                    $('#viewVitalsSection').html('<tr><td colspan="8"><em>Loading vitals...</em></td></tr>');
                     $('#viewCurrentMedsSection').html('<em>Loading...</em>');
                     $('#viewAllergiesSection').html('<em>Loading...</em>');
                     $('#viewConditionsSection').html('<em>Loading...</em>');
                     $('#viewPrescriptionDetailsBody').html('');
                 }
-            }
+
+                $.ajax({
+                    url: '@Url.Action("PrescriptionDetails", "Pharmacist")',
+                    type: 'POST',
+                    data: { id: id },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.error) {
+                            alert(response.error);
+                            return;
+                        }
+
+                        // Patient Info
+                        let patientInfo = response.patientInfo || {};
+                        let prescriptionDetails = response.prescriptionDetails || [];
+                        // Get date from prescriptionDetails array
+                        let prescriptionDate = prescriptionDetails.length > 0
+                            ? (prescriptionDetails[0].dateGiven || prescriptionDetails[0].dateGiven || prescriptionDetails[0].DateGiven)
+                            : null;
+
+                        if (isWithActions) {
+                            $('#patientName').text(patientInfo.name || patientInfo.Name || '-');
+                            $('#patientSurname').text(patientInfo.surname || patientInfo.Surname || '-');
+                            $('#patientGender').text(patientInfo.gender || patientInfo.Gender || '-');
+                            // Display prescription date from the prescription details
+                            $('#prescriptionDate').text(prescriptionDate ? new Date(prescriptionDate).toLocaleDateString() : '-');
+
+                            // Vitals
+                            $('#vitalsSection').html(buildVitalsRow(response.patientVitals));
+
+                            // Current Medications
+                            $('#currentMedsSection').html(buildListItems(response.currentMedications, 'medications'));
+
+                            // Allergies
+                            $('#allergiesSection').html(buildListItems(response.allergies, 'allergies'));
+
+                            // Conditions
+                            $('#conditionsSection').html(buildListItems(response.conditions, 'conditions'));
+
+                            // Prescribed Medications
+                            $('#prescriptionDetailsBody').html(buildPrescriptionTable(prescriptionDetails));
+
+                            // Show action buttons
+                            $('#dispense-btn').data('prescription-id', id).show();
+                            $('#reject-btn').data('prescription-id', id).show();
+                        } else {
+                            $('#viewPatientName').text(patientInfo.name || patientInfo.Name || '-');
+                            $('#viewPatientSurname').text(patientInfo.surname || patientInfo.Surname || '-');
+                            $('#viewPatientGender').text(patientInfo.gender || patientInfo.Gender || '-');
+                            // Display prescription date from the prescription details
+                            $('#viewPrescriptionDate').text(prescriptionDate ? new Date(prescriptionDate).toLocaleDateString() : '-');
+
+                            // Vitals
+                            $('#viewVitalsSection').html(buildVitalsRow(response.patientVitals));
+
+                            // Current Medications
+                            $('#viewCurrentMedsSection').html(buildListItems(response.currentMedications, 'medications'));
+
+                            // Allergies
+                            $('#viewAllergiesSection').html(buildListItems(response.allergies, 'allergies'));
+
+                            // Conditions
+                            $('#viewConditionsSection').html(buildListItems(response.conditions, 'conditions'));
+
+                            // Prescribed Medications
+                            $('#viewPrescriptionDetailsBody').html(buildPrescriptionTable(prescriptionDetails));
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error:", error);
+                        console.error("Response:", xhr.responseText);
+                        alert("Failed to load prescription details. Please try again.");
+                    }
+                });
+            });
 
             // DISPENSE
             $('#dispense-btn').click(function () {
@@ -889,11 +907,15 @@
                 }
             });
 
+            // Reset modal when closed
             $('#medicationModal').on('hidden.bs.modal', function () {
                 $('#dispense-btn').hide();
                 $('#reject-btn').hide();
-                // Reset tabs to first tab
                 $('#medications-tab').tab('show');
+            });
+
+            $('#DmedicationModal').on('hidden.bs.modal', function () {
+                $('#viewMedications-tab').tab('show');
             });
 
             // REJECT

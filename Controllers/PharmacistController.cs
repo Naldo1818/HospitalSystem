@@ -430,39 +430,49 @@ namespace DEMO.Controllers
         [HttpPost]
         public JsonResult PrescriptionDetails(int id)
         {
-            var prescription = (from pr in _dbContext.Prescription
-                                join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
-                                join bs in _dbContext.BookSurgery on ap.BookingID equals bs.BookingID
-                                join p in _dbContext.PatientInfo on bs.PatientID equals p.PatientID
-                                where pr.PrescriptionID == id
-                                select new
-                                {
-                                    pr.PrescriptionID,
-                                    pr.DateGiven,
-                                    p.PatientID,
-                                    p.Name,
-                                    p.Surname,
-                                    p.Gender
-                                }).FirstOrDefault();
+            // Get the prescription and medication details
+            var prescriptionDetails = (from pr in _dbContext.Prescription
+                                       join ap in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ap.AdmittedPatientID
+                                       join bs in _dbContext.BookSurgery on ap.BookingID equals bs.BookingID
+                                       join p in _dbContext.PatientInfo on bs.PatientID equals p.PatientID
+                                       join pm in _dbContext.MedicationInstructions on pr.PrescriptionID equals pm.PrescriptionID
+                                       join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
+                                       where pr.PrescriptionID == id
+                                       select new
+                                       {
+                                           pr.PrescriptionID,
+                                           p.PatientID,
+                                           p.Name,
+                                           p.Surname,
+                                           pr.DateGiven,
+                                           m.MedicationName,
+                                           pm.Quantity,
+                                           m.Schedule,
+                                           m.MedicationForm,
+                                           pm.Instructions
+                                       }).ToList();
 
-            if (prescription == null)
-                return Json(new { error = "Prescription not found" });
+            if (!prescriptionDetails.Any())
+                return Json(new { error = "No prescription details found" });
 
-            var medicationDetails = (from pm in _dbContext.MedicationInstructions
-                                     join m in _dbContext.Medication on pm.MedicationID equals m.MedicationID
-                                     where pm.PrescriptionID == id
-                                     select new
-                                     {
-                                         m.MedicationName,
-                                         pm.Quantity,
-                                         m.Schedule,
-                                         m.MedicationForm,
-                                         pm.Instructions
-                                     }).ToList();
+            var patientID = prescriptionDetails.First().PatientID;
+            var dateGiven = prescriptionDetails.First().DateGiven;
 
+            // Get Patient Info (include DateGiven)
+            var patientInfo = (from p in _dbContext.PatientInfo
+                               where p.PatientID == patientID
+                               select new
+                               {
+                                   p.Name,
+                                   p.Surname,
+                                   p.Gender,
+                                   DateGiven = dateGiven  // Add this line
+                               }).FirstOrDefault();
+
+            // Get Current Medications
             var currentMedications = (from pm in _dbContext.patientMedication
                                       join cm in _dbContext.ChronicMedication on pm.CMedicationID equals cm.CMedicationID
-                                      where pm.PatientID == prescription.PatientID
+                                      where pm.PatientID == patientID
                                       select new
                                       {
                                           cm.CMedicationName,
@@ -470,24 +480,27 @@ namespace DEMO.Controllers
                                           cm.Schedule
                                       }).ToList();
 
+            // Get Allergies
             var allergies = (from pa in _dbContext.PatientAllergy
                              join ai in _dbContext.Activeingredient on pa.ActiveingredientID equals ai.ActiveingredientID
-                             where pa.PatientID == prescription.PatientID
+                             where pa.PatientID == patientID
                              select new
                              {
                                  ai.ActiveIngredientName
                              }).ToList();
 
+            // Get Conditions
             var conditions = (from pc in _dbContext.PatientConditions
                               join c in _dbContext.Condition on pc.ConditionsID equals c.ConditionID
-                              where pc.PatientID == prescription.PatientID
+                              where pc.PatientID == patientID
                               select new
                               {
-                                  c.ConditionName
+                               c.ConditionName
                               }).ToList();
 
+            // Get Vitals (most recent)
             var patientVitals = (from pv in _dbContext.PatientVitals
-                                 where pv.PatientID == prescription.PatientID
+                                 where pv.PatientID == patientID
                                  orderby pv.Date descending, pv.Time descending
                                  select new
                                  {
@@ -499,23 +512,19 @@ namespace DEMO.Controllers
                                      pv.BloodOxygen,
                                      pv.Respiration,
                                      pv.BloodGlucoseLevel,
-                                     pv.Temperature
+                                     pv.Temperature,
+                                     pv.Date,
+                                     pv.Time
                                  }).FirstOrDefault();
 
             return Json(new
             {
-                patientInfo = new
-                {
-                    name = prescription.Name,
-                    surname = prescription.Surname,
-                    gender = prescription.Gender,
-                    dateGiven = prescription.DateGiven
-                },
-                prescriptionDetails = medicationDetails,
-                currentMedications,
-                allergies,
-                conditions,
-                patientVitals
+                prescriptionDetails = prescriptionDetails,
+                patientInfo = patientInfo,
+                currentMedications = currentMedications,
+                allergies = allergies,
+                conditions = conditions,
+                patientVitals = patientVitals
             });
         }
         [HttpPost]
