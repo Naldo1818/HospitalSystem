@@ -1,0 +1,522 @@
+﻿@{
+    ViewData["Title"] = "Prescription List";
+    Layout = "_LayoutNurse";
+}
+@model DEMO.ViewModels.PrescriptionListViewModal
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+
+    <!-- jQuery -->
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+
+    <style>
+        body {
+            background: #f5f7fb;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        /* Card containers */
+        .p-3.border {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Page title */
+        h2 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Inputs */
+        .form-control {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+            width: 300px;
+        }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            }
+
+        /* Center the modal vertically and horizontally */
+        .modal-dialog-centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 1rem);
+        }
+
+        /* Ensure modal content does not stretch too wide */
+        .modal-content {
+            width: 180%;
+            max-width: 900px;
+        }
+
+        /* Center content inside modal body */
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Table */
+        table.dataTable {
+            border-collapse: collapse !important;
+            width: 100%;
+        }
+
+            table.dataTable thead {
+                background: #1f1f1f;
+                color: white;
+            }
+
+                table.dataTable thead th {
+                    padding: 12px;
+                    font-weight: 600;
+                }
+
+            table.dataTable tbody td {
+                padding: 10px;
+            }
+
+            table.dataTable tbody tr:hover {
+                background: #f1f5ff;
+            }
+        /* Buttons */
+        .btn-primary {
+            background: #0d6efd;
+            border: none;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: all 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #0b5ed7;
+                transform: scale(1.03);
+            }
+
+        /* Action buttons stack nicely */
+        .btn-group {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            border: none;
+        }
+
+        /* Modals */
+        .modal-lg {
+            max-width: 10% !important;
+        }
+
+        .modal-content {
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: #1f1f1f;
+            color: white;
+            border-bottom: none;
+        }
+
+            .modal-header .btn-close {
+                filter: invert(1);
+            }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        /* Radio boxes */
+        #SurgeryTime,
+        #Theater,
+        #Urgency {
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        /* Table container spacing */
+        .mt-5 {
+            margin-top: 30px !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row" style="width:auto">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <form>
+                            <h2>Prescription Page</h2>
+                            <div class="form-group row">
+                                <div class="col-4">
+                                    <br>
+                                    <label for="searchInput" class="form-label">Search</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
+                                </div>
+                            </div>
+                            <div class="form-group row mt-3">
+                                <div class="col-12">
+                                    <button type="button" id="showDispensed" class="btn btn-primary">Show Dispensed</button>
+                                    <button type="button" id="showInProgress" class="btn btn-primary">Show In Progress</button>
+                                    <button type="button" id="showAdministered" class="btn btn-primary">Show Administered</button>
+                                    <button type="button" id="showAll" class="btn btn-primary">Show All</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="width:auto ;display:none" id="inProgressRow">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <h2>Prescription In Progress</h2>
+                        <table id="inProgressTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist Name</th>
+                                    <th scope="col">Pharmacist Surname</th>
+                                    <th scope="col">Urgency</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Rejected Reason</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @*  @foreach (var Data in Model.AllPrescribedRejected)
+                                {
+                                    <tr>
+                                        <td>@Data.PatientName</td>
+                                        <td>@Data.PatientSurname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td>@Data.AccountName</td>
+                                        <td>@Data.AccountSurname</td>
+                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
+                                        <td>@Data.Status</td>
+                                        <td>@Data.RejectionReason</td>
+                                        <td>
+                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                                Check Prescription
+                                            </button>
+                                        </td>
+                                    </tr>
+                                } *@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="width:auto;display:none" id="dispensedRow">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <h2>Prescription Dispensed</h2>
+                        <table id="dispensedTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist Name</th>
+                                    <th scope="col">Pharmacist Surname</th>
+                                    <th scope="col">Urgency</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                           @*      @foreach (var Data in Model.AllPrescribedDispensed)
+                                {
+                                    <tr>
+                                        <td>@Data.PatientName</td>
+                                        <td>@Data.PatientSurname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td>@Data.AccountName</td>
+                                        <td>@Data.AccountSurname</td>
+                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
+                                        <td>@Data.Status</td>
+                                        <td>
+                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#DmedicationModal">
+                                                Check Prescription
+                                            </button>
+                                        </td>
+                                    </tr>
+                                } *@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="width:auto ;display:none" id="administeredRow">
+                <div class="col">
+                    <div class="p-3 mt-5 border" style="background-color: white;">
+                        <h2>Prescription Administered</h2>
+                        <table id="administeredTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Surname</th>
+                                    <th scope="col">Prescription Date</th>
+                                    <th scope="col">Urgency</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                             @*    @foreach (var Data in Model.AllPrescribed)
+                                {
+                                    <tr>
+                                        <td>@Data.Name</td>
+                                        <td>@Data.Surname</td>
+                                        <td>@Data.DateGiven</td>
+                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
+                                        <td>@Data.Status</td>
+                                        <td>
+                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
+                                                Check Prescription
+                                            </button>
+                                        </td>
+                                    </tr>
+                                } *@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="medicationModalLabel">Medication Check</h5>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="example">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Surname</th>
+                                <th scope="col">Prescription Date</th>
+                                <th scope="col">Medication Name</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Schedule</th>
+                                <th scope="col">Form</th>
+                                <th scope="col">Instructions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="change-medication-btn" class="btn btn-primary" style="display:none;">Change Medication</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dispensed Modal -->
+    <div class="modal fade" id="DmedicationModal" tabindex="-1" role="dialog" aria-labelledby="DmedicationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="DmedicationModalLabel">Medication Check</h5>
+                </div>
+                <div class="modal-body">
+                    <table class="table" id="example2">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Surname</th>
+                                <th scope="col">Prescription Date</th>
+                                <th scope="col">Medication Name</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Schedule</th>
+                                <th scope="col">Form</th>
+                                <th scope="col">Instructions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Table data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            var inProgressTable = $('#inProgressTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            var dispensedTable = $('#dispensedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            var administeredTable = $('#administeredTable').DataTable({
+                "language": {
+                    "zeroRecords": "No matching records found"
+                }
+            });
+
+            // Custom search function for the search input
+            $('#searchInput').on('keyup', function () {
+                var searchText = this.value.trim();
+                if (searchText === '') {
+                    $('#inProgressRow').show();
+                    $('#dispensedRow').show();
+                    $('#administeredRow').show();
+                } else {
+                    inProgressTable.search(searchText).draw();
+                    dispensedTable.search(searchText).draw();
+                    administeredTable.search(searchText).draw();
+
+                    if (inProgressTable.page.info().recordsDisplay === 0) {
+                        $('#inProgressRow').hide();
+                    } else {
+                        $('#inProgressRow').show();
+                    }
+
+                    if (dispensedTable.page.info().recordsDisplay === 0) {
+                        $('#dispensedRow').hide();
+                    } else {
+                        $('#dispensedRow').show();
+                    }
+
+                    if (administeredTable.page.info().recordsDisplay === 0) {
+                        $('#administeredRow').hide();
+                    } else {
+                        $('#administeredRow').show();
+                    }
+                }
+            });
+
+            // Button click handlers
+            $('#showInProgress').on('click', function () {
+                $('#inProgressRow').show();
+                $('#dispensedRow').hide();
+                $('#administeredRow').hide();
+            });
+
+            $('#showDispensed').on('click', function () {
+                $('#dispensedRow').show();
+                $('#inProgressRow').hide();
+                $('#administeredRow').hide();
+            });
+
+            $('#showAdministered').on('click', function () {
+                $('#administeredRow').show();
+                $('#inProgressRow').hide();
+                $('#dispensedRow').hide();
+            });
+
+            $('#showAll').on('click', function () {
+                $('#inProgressRow').show();
+                $('#dispensedRow').show();
+                $('#administeredRow').show();
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            let currentPrescriptionId = null;
+
+            $('.check-prescription-btn').click(function () {
+                currentPrescriptionId = $(this).data('id');
+
+                $('#example tbody').empty();
+
+                let lastName = '';
+                let lastSurname = '';
+                let lastDateGiven = '';
+
+                $.ajax({
+                    url: '@Url.Action("PrescriptionDetails", "Home")',
+                    type: 'POST',
+                    data: { id: currentPrescriptionId },
+                    success: function (data) {
+                        $.each(data, function (index, item) {
+                            var row = '<tr>';
+
+                            if (item.name !== lastName || item.surname !== lastSurname || item.dateGiven !== lastDateGiven) {
+                                row += '<td>' + item.name + '</td>';
+                                row += '<td>' + item.surname + '</td>';
+                                row += '<td>' + item.dateGiven + '</td>';
+                                lastName = item.name;
+                                lastSurname = item.surname;
+                                lastDateGiven = item.dateGiven;
+                            } else {
+                                row += '<td></td><td></td><td></td>';
+                            }
+
+                            row += '<td>' + item.medicationName + '</td>';
+                            row += '<td>' + item.quantity + '</td>';
+                            row += '<td>' + item.schedule + '</td>';
+                            row += '<td>' + item.medicationForm + '</td>';
+                            row += '<td>' + item.instructions + '</td>';
+                            row += '</tr>';
+
+                            $('#example tbody').append(row);
+                        });
+
+                        $('#change-medication-btn').data('prescription-id', currentPrescriptionId).show();
+                    }
+                });
+            });
+
+            $('#change-medication-btn').click(function () {
+                var prescriptionId = $(this).data('prescription-id');
+                if (prescriptionId) {
+                    window.location.href = '@Url.Action("PrescriptionMedication", "Home")' + '/' + prescriptionId;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
