@@ -527,34 +527,55 @@ namespace DEMO.Controllers
                 patientVitals = patientVitals
             });
         }
+      
         [HttpPost]
         public IActionResult RejectPrescriptionAjax(int prescriptionId, string reason)
         {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-            int accountID = int.Parse(accountIDString);
-
-            // 1. Save rejection reason
-            var rejection = new RejectedScriptsModel
+            try
             {
-                PrescriptionID = prescriptionId,
-                RejectionReason = reason,
-                AccountID = accountID
-            };
+                var accountIDString = HttpContext.Session.GetString("UserAccountId");
 
-            _dbContext.RejectScriptModel.Add(rejection);
+                if (!int.TryParse(accountIDString, out int accountID))
+                {
+                    return Json(new { success = false, message = "User not logged in" });
+                }
 
-            // 2. Update prescription status
-            var prescription = _dbContext.Prescription
-                .FirstOrDefault(p => p.PrescriptionID == prescriptionId);
+                if (string.IsNullOrWhiteSpace(reason))
+                {
+                    return Json(new { success = false, message = "Rejection reason is required" });
+                }
 
-            if (prescription != null)
-            {
+                // 1. Save rejection reason - Use the correct DbSet name
+                var rejection = new RejectedScriptsModel  // Make sure this matches your DbSet type
+                {
+                    PrescriptionID = prescriptionId,
+                    RejectionReason = reason,
+                    AccountID = accountID,// Add rejected date if your model has it
+                };
+
+                _dbContext.RejectScriptModel.Add(rejection);
+
+                // 2. Update prescription status
+                var prescription = _dbContext.Prescription
+                    .FirstOrDefault(p => p.PrescriptionID == prescriptionId);
+
+                if (prescription == null)
+                {
+                    return Json(new { success = false, message = "Prescription not found" });
+                }
+
                 prescription.Status = "Rejected";
+
+                // 3. Save changes
+                _dbContext.SaveChanges();
+
+                return Json(new { success = true, message = "Prescription rejected successfully" });
             }
-
-            _dbContext.SaveChanges();
-
-            return Json(new { success = true });
+            catch (Exception ex)
+            {
+                // Log the exception
+                return Json(new { success = false, message = "An error occurred: " + ex.Message });
+            }
         }
 
         [HttpPost]

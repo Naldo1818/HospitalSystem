@@ -622,36 +622,60 @@
     </div>
 
     <!-- Reject Reason Modal -->
-    <div class="modal fade" id="rejectReasonModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Reject Prescription</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" id="rejectPrescriptionId" />
+    <!-- Reject Reason Modal -->
+<div class="modal fade" id="rejectReasonModal" tabindex="-1" role="dialog" aria-labelledby="rejectReasonModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectReasonModalLabel">Reject Prescription</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="rejectPrescriptionId" />
                     <div class="form-group">
-                        <label>Reason for Rejection</label>
-                        <textarea id="rejectionReason" class="form-control" rows="4" placeholder="Enter reason..."></textarea>
+
+                        <label for="rejectionReasonSelect">Reason for Rejection</label>
+
+                        <select id="rejectionReasonSelect" class="form-control">
+                            <option value="">-- Select Reason --</option>
+                            <option value="Medication out of stock">Medication out of stock</option>
+                            <option value="Incorrect dosage prescribed">Incorrect dosage prescribed</option>
+                            <option value="Patient allergy conflict">Patient allergy conflict</option>
+                            <option value="Drug interaction detected">Drug interaction detected</option>
+                            <option value="Incomplete prescription information">Incomplete prescription information</option>
+                            <option value="Prescription expired">Prescription expired</option>
+                            <option value="Duplicate medication">Duplicate medication</option>
+                            <option value="Other">Other</option>
+                        </select>
+
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="saveRejectBtn" class="btn btn-danger">
-                        Save
-                    </button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                        Cancel
-                    </button>
-                </div>
+
+                    <div class="form-group mt-3" id="customReasonContainer" style="display:none;">
+
+                        <label for="customReason">Custom Reason</label>
+
+                        <input type="text"
+                               id="customReason"
+                               class="form-control"
+                               placeholder="Enter custom rejection reason" />
+
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="saveRejectBtn" class="btn btn-danger">
+                    Save & Reject
+                </button>
             </div>
         </div>
     </div>
+</div>
 
     <script>
         $(document).ready(function () {
+
             // Initialize DataTables
             var rejectedTable = $('#rejectedTable').DataTable({
                 "language": {
@@ -673,12 +697,17 @@
 
             // Custom search function
             $('#searchInput').on('keyup', function () {
+
                 var searchText = this.value.trim();
+
                 if (searchText === '') {
+
                     $('#rejectedRow').show();
                     $('#acceptedRow').show();
                     $('#prescribedRow').show();
+
                 } else {
+
                     rejectedTable.search(searchText).draw();
                     acceptedTable.search(searchText).draw();
                     prescribedTable.search(searchText).draw();
@@ -705,32 +734,42 @@
 
             // Button click handlers
             $('#showRejected').on('click', function () {
+
                 $('#rejectedRow').show();
                 $('#acceptedRow').hide();
                 $('#prescribedRow').hide();
+
             });
 
             $('#showAccepted').on('click', function () {
+
                 $('#acceptedRow').show();
                 $('#rejectedRow').hide();
                 $('#prescribedRow').hide();
+
             });
 
             $('#showPrescribed').on('click', function () {
+
                 $('#prescribedRow').show();
                 $('#rejectedRow').hide();
                 $('#acceptedRow').hide();
+
             });
 
             $('#showAll').on('click', function () {
+
                 $('#rejectedRow').show();
                 $('#acceptedRow').show();
                 $('#prescribedRow').show();
+
             });
 
             // Function to build vitals table row
             function buildVitalsRow(vitals) {
+
                 if (!vitals || Object.keys(vitals).length === 0) {
+
                     return '<tr><td colspan="8" class="text-center">No vitals recorded</td></tr>';
                 }
 
@@ -748,32 +787,59 @@
 
             // Function to build list items
             function buildListItems(items, type) {
+
                 if (!items || items.length === 0) {
+
                     return '<em>No ' + type + ' found</em>';
                 }
 
                 let html = '<ul class="list-unstyled">';
-                items.forEach(function(item) {
+
+                items.forEach(function (item) {
+
                     if (type === 'medications') {
-                        html += `<li><span class="info-badge">${item.cMedicationName || item.CMedicationName || '-'}</span></li>`;
+
+                        html += `<li>
+                            <span class="info-badge">
+                                ${item.cMedicationName || item.CMedicationName || '-'}
+                            </span>
+                        </li>`;
+
                     } else if (type === 'allergies') {
-                        html += `<li><span class="info-badge bg-warning">${item.activeIngredientName || item.ActiveIngredientName || '-'}</span></li>`;
+
+                        html += `<li>
+                            <span class="info-badge bg-warning">
+                                ${item.activeIngredientName || item.ActiveIngredientName || '-'}
+                            </span>
+                        </li>`;
+
                     } else if (type === 'conditions') {
-                        html += `<li><span class="info-badge bg-secondary text-white">${item.conditionName || item.ConditionName || '-'}</span></li>`;
+
+                        html += `<li>
+                            <span class="info-badge bg-secondary text-white">
+                                ${item.conditionName || item.ConditionName || '-'}
+                            </span>
+                        </li>`;
                     }
                 });
+
                 html += '</ul>';
+
                 return html;
             }
 
             // Function to build prescription table
             function buildPrescriptionTable(prescriptions) {
+
                 if (!prescriptions || prescriptions.length === 0) {
+
                     return '<tr><td colspan="5" class="text-center">No prescription details found</td></tr>';
                 }
 
                 let html = '';
-                prescriptions.forEach(function(item) {
+
+                prescriptions.forEach(function (item) {
+
                     html += `<tr>
                         <td>${item.medicationName || item.MedicationName || '-'}</td>
                         <td>${item.quantity || item.Quantity || '-'}</td>
@@ -782,22 +848,27 @@
                         <td>${item.instructions || item.Instructions || '-'}</td>
                     </tr>`;
                 });
+
                 return html;
             }
 
             // Check prescription button click handler
             $('.check-prescription-btn').click(function () {
+
                 let id = $(this).data('id');
                 let isWithActions = $(this).hasClass('with-actions');
 
-                // Show loading state
+                // Loading state
                 if (isWithActions) {
+
                     $('#vitalsSection').html('<tr><td colspan="8"><em>Loading vitals...</em></td></tr>');
                     $('#currentMedsSection').html('<em>Loading...</em>');
                     $('#allergiesSection').html('<em>Loading...</em>');
                     $('#conditionsSection').html('<em>Loading...</em>');
                     $('#prescriptionDetailsBody').html('');
+
                 } else {
+
                     $('#viewVitalsSection').html('<tr><td colspan="8"><em>Loading vitals...</em></td></tr>');
                     $('#viewCurrentMedsSection').html('<em>Loading...</em>');
                     $('#viewAllergiesSection').html('<em>Loading...</em>');
@@ -806,159 +877,252 @@
                 }
 
                 $.ajax({
+
                     url: '@Url.Action("PrescriptionDetails", "Pharmacist")',
                     type: 'POST',
                     data: { id: id },
                     dataType: 'json',
+
                     success: function (response) {
+
                         if (response.error) {
+
                             alert(response.error);
                             return;
                         }
 
-                        // Patient Info
                         let patientInfo = response.patientInfo || {};
                         let prescriptionDetails = response.prescriptionDetails || [];
-                        // Get date from prescriptionDetails array
+
                         let prescriptionDate = prescriptionDetails.length > 0
-                            ? (prescriptionDetails[0].dateGiven || prescriptionDetails[0].dateGiven || prescriptionDetails[0].DateGiven)
+                            ? (prescriptionDetails[0].dateGiven || prescriptionDetails[0].DateGiven)
                             : null;
 
                         if (isWithActions) {
+
                             $('#patientName').text(patientInfo.name || patientInfo.Name || '-');
                             $('#patientSurname').text(patientInfo.surname || patientInfo.Surname || '-');
                             $('#patientGender').text(patientInfo.gender || patientInfo.Gender || '-');
-                            // Display prescription date from the prescription details
-                            $('#prescriptionDate').text(prescriptionDate ? new Date(prescriptionDate).toLocaleDateString() : '-');
 
-                            // Vitals
+                            $('#prescriptionDate').text(
+                                prescriptionDate
+                                    ? new Date(prescriptionDate).toLocaleDateString()
+                                    : '-'
+                            );
+
                             $('#vitalsSection').html(buildVitalsRow(response.patientVitals));
 
-                            // Current Medications
-                            $('#currentMedsSection').html(buildListItems(response.currentMedications, 'medications'));
+                            $('#currentMedsSection').html(
+                                buildListItems(response.currentMedications, 'medications')
+                            );
 
-                            // Allergies
-                            $('#allergiesSection').html(buildListItems(response.allergies, 'allergies'));
+                            $('#allergiesSection').html(
+                                buildListItems(response.allergies, 'allergies')
+                            );
 
-                            // Conditions
-                            $('#conditionsSection').html(buildListItems(response.conditions, 'conditions'));
+                            $('#conditionsSection').html(
+                                buildListItems(response.conditions, 'conditions')
+                            );
 
-                            // Prescribed Medications
-                            $('#prescriptionDetailsBody').html(buildPrescriptionTable(prescriptionDetails));
+                            $('#prescriptionDetailsBody').html(
+                                buildPrescriptionTable(prescriptionDetails)
+                            );
 
-                            // Show action buttons
                             $('#dispense-btn').data('prescription-id', id).show();
                             $('#reject-btn').data('prescription-id', id).show();
+
                         } else {
+
                             $('#viewPatientName').text(patientInfo.name || patientInfo.Name || '-');
                             $('#viewPatientSurname').text(patientInfo.surname || patientInfo.Surname || '-');
                             $('#viewPatientGender').text(patientInfo.gender || patientInfo.Gender || '-');
-                            // Display prescription date from the prescription details
-                            $('#viewPrescriptionDate').text(prescriptionDate ? new Date(prescriptionDate).toLocaleDateString() : '-');
 
-                            // Vitals
+                            $('#viewPrescriptionDate').text(
+                                prescriptionDate
+                                    ? new Date(prescriptionDate).toLocaleDateString()
+                                    : '-'
+                            );
+
                             $('#viewVitalsSection').html(buildVitalsRow(response.patientVitals));
 
-                            // Current Medications
-                            $('#viewCurrentMedsSection').html(buildListItems(response.currentMedications, 'medications'));
+                            $('#viewCurrentMedsSection').html(
+                                buildListItems(response.currentMedications, 'medications')
+                            );
 
-                            // Allergies
-                            $('#viewAllergiesSection').html(buildListItems(response.allergies, 'allergies'));
+                            $('#viewAllergiesSection').html(
+                                buildListItems(response.allergies, 'allergies')
+                            );
 
-                            // Conditions
-                            $('#viewConditionsSection').html(buildListItems(response.conditions, 'conditions'));
+                            $('#viewConditionsSection').html(
+                                buildListItems(response.conditions, 'conditions')
+                            );
 
-                            // Prescribed Medications
-                            $('#viewPrescriptionDetailsBody').html(buildPrescriptionTable(prescriptionDetails));
+                            $('#viewPrescriptionDetailsBody').html(
+                                buildPrescriptionTable(prescriptionDetails)
+                            );
                         }
                     },
-                    error: function(xhr, status, error) {
+
+                    error: function (xhr, status, error) {
+
                         console.error("AJAX Error:", error);
                         console.error("Response:", xhr.responseText);
-                        alert("Failed to load prescription details. Please try again.");
+
+                        alert("Failed to load prescription details.");
                     }
                 });
             });
 
             // DISPENSE
             $('#dispense-btn').click(function () {
+
                 var prescriptionId = $(this).data('prescription-id');
 
                 if (!prescriptionId) return;
 
                 if (confirm('Are you sure you want to dispense this prescription?')) {
+
                     $.ajax({
+
                         url: '@Url.Action("DispensePrescription", "Pharmacist")',
                         type: 'POST',
                         data: { prescriptionId: prescriptionId },
+
                         success: function (response) {
+
                             if (response.success) {
+
                                 alert("Prescription dispensed successfully!");
+
                                 $('#medicationModal').modal('hide');
+
                                 location.reload();
+
                             } else {
+
                                 alert(response.message || "Error dispensing prescription.");
                             }
                         },
+
                         error: function () {
+
                             alert("Something went wrong.");
                         }
                     });
                 }
             });
 
-            // Reset modal when closed
+            // Reset modal
             $('#medicationModal').on('hidden.bs.modal', function () {
+
                 $('#dispense-btn').hide();
                 $('#reject-btn').hide();
+
                 $('#medications-tab').tab('show');
             });
 
             $('#DmedicationModal').on('hidden.bs.modal', function () {
+
                 $('#viewMedications-tab').tab('show');
             });
 
-            // REJECT
+            // SHOW CUSTOM REASON
+            $('#rejectionReasonSelect').change(function () {
+
+                if ($(this).val() === "Other") {
+
+                    $('#customReasonContainer').show();
+
+                } else {
+
+                    $('#customReasonContainer').hide();
+                    $('#customReason').val('');
+                }
+            });
+
+            // REJECT BUTTON CLICK
             $('#reject-btn').click(function () {
+
                 var prescriptionId = $(this).data('prescription-id');
+
                 if (prescriptionId) {
+
                     $('#rejectPrescriptionId').val(prescriptionId);
-                    $('#rejectionReason').val('');
+
+                    // Reset fields
+                    $('#rejectionReasonSelect').val('');
+                    $('#customReason').val('');
+                    $('#customReasonContainer').hide();
+
                     $('#rejectReasonModal').modal('show');
                 }
             });
 
+            // SAVE REJECTION
             $('#saveRejectBtn').click(function () {
-                var prescriptionId = $('#rejectPrescriptionId').val();
-                var reason = $('#rejectionReason').val();
 
-                if (!reason.trim()) {
-                    alert("Please enter a rejection reason.");
+                var prescriptionId = $('#rejectPrescriptionId').val();
+
+                var selectedReason = $('#rejectionReasonSelect').val();
+
+                var customReason = $('#customReason').val().trim();
+
+                var reason = '';
+
+                // Determine final reason
+                if (selectedReason === "Other") {
+
+                    reason = customReason;
+
+                } else {
+
+                    reason = selectedReason;
+                }
+
+                // Validation
+                if (!reason || reason.trim() === '') {
+
+                    alert("Please select or enter a rejection reason.");
+
                     return;
                 }
 
                 $.ajax({
+
                     url: '@Url.Action("RejectPrescriptionAjax", "Pharmacist")',
                     type: 'POST',
+
                     data: {
                         prescriptionId: prescriptionId,
                         reason: reason
                     },
+
                     success: function (response) {
+
                         if (response.success) {
+
                             $('#rejectReasonModal').modal('hide');
                             $('#medicationModal').modal('hide');
+
                             alert("Prescription rejected successfully!");
+
                             location.reload();
+
                         } else {
-                            alert("Error rejecting prescription.");
+
+                            alert(response.message || "Error rejecting prescription.");
                         }
                     },
-                    error: function () {
+
+                    error: function (xhr) {
+
+                        console.log(xhr.responseText);
+
                         alert("Something went wrong.");
                     }
                 });
             });
+
         });
     </script>
 </body>
