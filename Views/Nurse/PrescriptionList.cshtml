@@ -2,7 +2,7 @@
     ViewData["Title"] = "Prescription List";
     Layout = "_LayoutNurse";
 }
-@model DEMO.ViewModels.PrescriptionListViewModal
+@model DEMO.ViewModels.NursePrescriptionListViewModal
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,27 +56,6 @@
                 box-shadow: 0 0 5px rgba(13,110,253,0.3);
             }
 
-        /* Center the modal vertically and horizontally */
-        .modal-dialog-centered {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: calc(100vh - 1rem);
-        }
-
-        /* Ensure modal content does not stretch too wide */
-        .modal-content {
-            width: 180%;
-            max-width: 900px;
-        }
-
-        /* Center content inside modal body */
-        .modal-body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
         /* Table */
         table.dataTable {
             border-collapse: collapse !important;
@@ -100,6 +79,7 @@
             table.dataTable tbody tr:hover {
                 background: #f1f5ff;
             }
+
         /* Buttons */
         .btn-primary {
             background: #0d6efd;
@@ -114,49 +94,17 @@
                 transform: scale(1.03);
             }
 
-        /* Action buttons stack nicely */
-        .btn-group {
-            width: 100%;
-            margin-bottom: 5px;
-        }
-
-        .btn-danger {
-            background: #dc3545;
+        .btn-success {
+            background: #198754;
             border: none;
-        }
-
-        /* Modals */
-        .modal-lg {
-            max-width: 10% !important;
-        }
-
-        .modal-content {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            background: #1f1f1f;
-            color: white;
-            border-bottom: none;
-        }
-
-            .modal-header .btn-close {
-                filter: invert(1);
-            }
-
-        .modal-footer {
-            border-top: none;
-        }
-
-        /* Radio boxes */
-        #SurgeryTime,
-        #Theater,
-        #Urgency {
-            background: #f8f9fa;
             border-radius: 6px;
+            transition: all 0.2s;
         }
+
+            .btn-success:hover {
+                background: #157347;
+                transform: scale(1.03);
+            }
 
         /* Table container spacing */
         .mt-5 {
@@ -207,29 +155,27 @@
                                     <th scope="col">Pharmacist Surname</th>
                                     <th scope="col">Urgency</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Rejected Reason</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               @*  @foreach (var Data in Model.AllPrescribedRejected)
+                                @foreach (var Data in Model.AllPrescribedInProgress)
                                 {
                                     <tr>
                                         <td>@Data.PatientName</td>
                                         <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
-                                        <td>@Data.AccountName</td>
-                                        <td>@Data.AccountSurname</td>
+                                        <td>@Data.PharmacistName</td>
+                                        <td>@Data.PharmacistSurname</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
-                                        <td>@Data.RejectionReason</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
-                                                Check Prescription
+                                            <button class="btn btn-success administer-btn" data-id="@Data.PrescriptionID">
+                                                Administer Prescription
                                             </button>
                                         </td>
                                     </tr>
-                                } *@
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -254,23 +200,23 @@
                                 </tr>
                             </thead>
                             <tbody>
-                           @*      @foreach (var Data in Model.AllPrescribedDispensed)
+                                @foreach (var Data in Model.AllPrescribedDispensed)
                                 {
                                     <tr>
                                         <td>@Data.PatientName</td>
                                         <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
-                                        <td>@Data.AccountName</td>
-                                        <td>@Data.AccountSurname</td>
+                                        <td>@Data.PharmacistName</td>
+                                        <td>@Data.PharmacistSurname</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#DmedicationModal">
-                                                Check Prescription
+                                            <button class="btn btn-success administer-btn" data-id="@Data.PrescriptionID">
+                                                Administer Prescription
                                             </button>
                                         </td>
                                     </tr>
-                                } *@
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -287,100 +233,37 @@
                                     <th scope="col">Name</th>
                                     <th scope="col">Surname</th>
                                     <th scope="col">Prescription Date</th>
+                                    <th scope="col">Pharmacist Name</th>
+                                    <th scope="col">Pharmacist Surname</th>
                                     <th scope="col">Urgency</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                             @*    @foreach (var Data in Model.AllPrescribed)
+                                @foreach (var Data in Model.AllPrescribedAdministered)
                                 {
                                     <tr>
-                                        <td>@Data.Name</td>
-                                        <td>@Data.Surname</td>
+                                        <td>@Data.PatientName</td>
+                                        <td>@Data.PatientSurname</td>
                                         <td>@Data.DateGiven</td>
+                                        <td>@Data.PharmacistName</td>
+                                        <td>@Data.PharmacistSurname</td>
                                         <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
                                         <td>@Data.Status</td>
                                         <td>
-                                            <button class="btn btn-primary check-prescription-btn" data-id="@Data.PrescriptionID" data-toggle="modal" data-target="#medicationModal">
-                                                Check Prescription
+                                            <button class="btn btn-info view-btn" data-id="@Data.PrescriptionID">
+                                                View Prescription
                                             </button>
                                         </td>
                                     </tr>
-                                } *@
+                                }
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </main>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="medicationModalLabel">Medication Check</h5>
-                </div>
-                <div class="modal-body">
-                    <table class="table" id="example">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Surname</th>
-                                <th scope="col">Prescription Date</th>
-                                <th scope="col">Medication Name</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Form</th>
-                                <th scope="col">Instructions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Table data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" id="change-medication-btn" class="btn btn-primary" style="display:none;">Change Medication</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dispensed Modal -->
-    <div class="modal fade" id="DmedicationModal" tabindex="-1" role="dialog" aria-labelledby="DmedicationModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="DmedicationModalLabel">Medication Check</h5>
-                </div>
-                <div class="modal-body">
-                    <table class="table" id="example2">
-                        <thead>
-                            <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Surname</th>
-                                <th scope="col">Prescription Date</th>
-                                <th scope="col">Medication Name</th>
-                                <th scope="col">Quantity</th>
-                                <th scope="col">Schedule</th>
-                                <th scope="col">Form</th>
-                                <th scope="col">Instructions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Table data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -404,116 +287,107 @@
                 }
             });
 
+            // Initially show all rows with data
+            if (inProgressTable.page.info().recordsDisplay > 0) {
+                $('#inProgressRow').show();
+            }
+            if (dispensedTable.page.info().recordsDisplay > 0) {
+                $('#dispensedRow').show();
+            }
+            if (administeredTable.page.info().recordsDisplay > 0) {
+                $('#administeredRow').show();
+            }
+
             // Custom search function for the search input
             $('#searchInput').on('keyup', function () {
                 var searchText = this.value.trim();
-                if (searchText === '') {
+
+                // Apply search to all tables
+                inProgressTable.search(searchText).draw();
+                dispensedTable.search(searchText).draw();
+                administeredTable.search(searchText).draw();
+
+                // Show/hide rows based on search results and active filter
+                var activeFilter = $('.btn-primary.active').attr('id');
+
+                if (activeFilter === 'showInProgress') {
                     $('#inProgressRow').show();
+                    $('#dispensedRow').hide();
+                    $('#administeredRow').hide();
+                } else if (activeFilter === 'showDispensed') {
                     $('#dispensedRow').show();
+                    $('#inProgressRow').hide();
+                    $('#administeredRow').hide();
+                } else if (activeFilter === 'showAdministered') {
                     $('#administeredRow').show();
+                    $('#inProgressRow').hide();
+                    $('#dispensedRow').hide();
                 } else {
-                    inProgressTable.search(searchText).draw();
-                    dispensedTable.search(searchText).draw();
-                    administeredTable.search(searchText).draw();
-
-                    if (inProgressTable.page.info().recordsDisplay === 0) {
-                        $('#inProgressRow').hide();
-                    } else {
-                        $('#inProgressRow').show();
-                    }
-
-                    if (dispensedTable.page.info().recordsDisplay === 0) {
-                        $('#dispensedRow').hide();
-                    } else {
-                        $('#dispensedRow').show();
-                    }
-
-                    if (administeredTable.page.info().recordsDisplay === 0) {
-                        $('#administeredRow').hide();
-                    } else {
-                        $('#administeredRow').show();
-                    }
+                    // Show all with search results
+                    $('#inProgressRow').toggle(inProgressTable.page.info().recordsDisplay > 0);
+                    $('#dispensedRow').toggle(dispensedTable.page.info().recordsDisplay > 0);
+                    $('#administeredRow').toggle(administeredTable.page.info().recordsDisplay > 0);
                 }
             });
 
             // Button click handlers
             $('#showInProgress').on('click', function () {
+                $('.btn-primary').removeClass('active');
+                $(this).addClass('active');
                 $('#inProgressRow').show();
                 $('#dispensedRow').hide();
                 $('#administeredRow').hide();
+                // Clear search when changing filter
+                $('#searchInput').val('');
+                inProgressTable.search('').draw();
             });
 
             $('#showDispensed').on('click', function () {
+                $('.btn-primary').removeClass('active');
+                $(this).addClass('active');
                 $('#dispensedRow').show();
                 $('#inProgressRow').hide();
                 $('#administeredRow').hide();
+                $('#searchInput').val('');
+                dispensedTable.search('').draw();
             });
 
             $('#showAdministered').on('click', function () {
+                $('.btn-primary').removeClass('active');
+                $(this).addClass('active');
                 $('#administeredRow').show();
                 $('#inProgressRow').hide();
                 $('#dispensedRow').hide();
+                $('#searchInput').val('');
+                administeredTable.search('').draw();
             });
 
             $('#showAll').on('click', function () {
+                $('.btn-primary').removeClass('active');
+                $(this).addClass('active');
                 $('#inProgressRow').show();
                 $('#dispensedRow').show();
                 $('#administeredRow').show();
-            });
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            let currentPrescriptionId = null;
-
-            $('.check-prescription-btn').click(function () {
-                currentPrescriptionId = $(this).data('id');
-
-                $('#example tbody').empty();
-
-                let lastName = '';
-                let lastSurname = '';
-                let lastDateGiven = '';
-
-                $.ajax({
-                    url: '@Url.Action("PrescriptionDetails", "Home")',
-                    type: 'POST',
-                    data: { id: currentPrescriptionId },
-                    success: function (data) {
-                        $.each(data, function (index, item) {
-                            var row = '<tr>';
-
-                            if (item.name !== lastName || item.surname !== lastSurname || item.dateGiven !== lastDateGiven) {
-                                row += '<td>' + item.name + '</td>';
-                                row += '<td>' + item.surname + '</td>';
-                                row += '<td>' + item.dateGiven + '</td>';
-                                lastName = item.name;
-                                lastSurname = item.surname;
-                                lastDateGiven = item.dateGiven;
-                            } else {
-                                row += '<td></td><td></td><td></td>';
-                            }
-
-                            row += '<td>' + item.medicationName + '</td>';
-                            row += '<td>' + item.quantity + '</td>';
-                            row += '<td>' + item.schedule + '</td>';
-                            row += '<td>' + item.medicationForm + '</td>';
-                            row += '<td>' + item.instructions + '</td>';
-                            row += '</tr>';
-
-                            $('#example tbody').append(row);
-                        });
-
-                        $('#change-medication-btn').data('prescription-id', currentPrescriptionId).show();
-                    }
-                });
+                $('#searchInput').val('');
+                inProgressTable.search('').draw();
+                dispensedTable.search('').draw();
+                administeredTable.search('').draw();
             });
 
-            $('#change-medication-btn').click(function () {
-                var prescriptionId = $(this).data('prescription-id');
+            // Redirect to PrescriptionAdminister view for In Progress and Dispensed prescriptions
+            $(document).on('click', '.administer-btn', function () {
+                var prescriptionId = $(this).data('id');
                 if (prescriptionId) {
-                    window.location.href = '@Url.Action("PrescriptionMedication", "Home")' + '/' + prescriptionId;
+                    window.location.href = '@Url.Action("PrescriptionAdminister", "Nurse")/' + prescriptionId;
+                }
+            });
+
+            // For Administered prescriptions - just view (optional - can redirect to a view-only page)
+            $(document).on('click', '.view-btn', function () {
+                var prescriptionId = $(this).data('id');
+                if (prescriptionId) {
+                    // You can change this to a view-only page if needed
+                    window.location.href = '@Url.Action("PrescriptionDetails", "Nurse")/' + prescriptionId;
                 }
             });
         });
