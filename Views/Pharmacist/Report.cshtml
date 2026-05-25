@@ -159,52 +159,74 @@
                 var startDate = document.getElementById('StartDateInput').value;
                 var endDate = document.getElementById('EndDateInput').value;
                 var uniquePatients = new Set();
+                var totalDispensed = 0;
+                var totalRejected = 0;
 
                 document.getElementById('summaryBody').innerHTML = '';
-                var totalPatients = 0;
+
+                // Reset totals
+                var medicationSummary = new Map();
 
                 var rows = document.querySelectorAll('#Surgeries tbody tr');
                 rows.forEach(function (row) {
                     var rowDate = row.cells[0].textContent;
                     var formattedRowDate = new Date(rowDate).toISOString().split('T')[0];
                     var patientName = row.cells[1].textContent;
+                    var status = row.cells[5].textContent;
+                    var medicationName = row.cells[3].textContent;
+                    var quantity = parseInt(row.cells[4].textContent);
 
-                    if ((startDate && formattedRowDate < startDate) || (endDate && formattedRowDate > endDate)) {
-                        row.style.display = 'none';
-                    } else {
-                        row.style.display = ''; // Show row
+                    var showRow = true;
+
+                    if (startDate && formattedRowDate < startDate) {
+                        showRow = false;
+                    }
+                    if (endDate && formattedRowDate > endDate) {
+                        showRow = false;
+                    }
+
+                    if (showRow) {
+                        row.style.display = '';
                         uniquePatients.add(patientName);
 
-                        var treatmentName = row.cells[2].textContent;
-                        var treatmentCode = row.cells[3].textContent;
+                        // Count dispensed vs rejected
+                        if (status === 'Dispensed') {
+                            totalDispensed++;
+                        } else if (status === 'Rejected') {
+                            totalRejected++;
+                        }
 
-                        updateSummary(treatmentName, treatmentCode);
+                        // Update medication summary
+                        if (medicationSummary.has(medicationName)) {
+                            medicationSummary.set(medicationName, medicationSummary.get(medicationName) + quantity);
+                        } else {
+                            medicationSummary.set(medicationName, quantity);
+                        }
+                    } else {
+                        row.style.display = 'none';
                     }
                 });
 
-                document.getElementById('totalPatients').textContent = uniquePatients.size;
-            }
-
-            function updateSummary(treatmentName, treatmentCode) {
-                var summaryBody = document.getElementById('summaryBody');
-                var existingRow = Array.from(summaryBody.querySelectorAll('tr')).find(function (row) {
-                    return row.dataset.treatmentCode === treatmentCode;
-                });
-
-                if (existingRow) {
-                    var countCell = existingRow.querySelector('td:last-child');
-                    countCell.textContent = parseInt(countCell.textContent) + 1;
-                } else {
-                    var newRow = document.createElement('tr');
-                    newRow.dataset.treatmentCode = treatmentCode;
-
-                    newRow.innerHTML = `
-                                        <td>${treatmentName}</td>
-                                        <td>${treatmentCode}</td>
-                                        <td>1</td>
-                                    `;
-                    summaryBody.appendChild(newRow);
+                // Update totals display
+                var totalsDiv = document.querySelector('.totals');
+                if (totalsDiv) {
+                    var totalsHtml = `
+                        <div class="totals">TOTAL SCRIPTS DISPENSED: <span id="totalDispensed">${totalDispensed}</span></div>
+                        <div class="totals">TOTAL SCRIPTS REJECTED: <span id="totalRejected">${totalRejected}</span></div>
+                    `;
+                    document.querySelector('.totals').innerHTML = totalsHtml;
                 }
+
+                // Build summary table
+                var summaryBody = document.getElementById('summaryBody');
+                medicationSummary.forEach(function(quantity, medication) {
+                    var newRow = document.createElement('tr');
+                    newRow.innerHTML = `
+                        <td>${medication}</td>
+                        <td>${quantity}</td>
+                    `;
+                    summaryBody.appendChild(newRow);
+                });
             }
 
             function displaySelectedDates() {
@@ -213,7 +235,16 @@
                 var today = new Date().toLocaleDateString();
 
                 document.getElementById('todayDate').textContent = today;
-                document.getElementById('selectedDateRange').textContent = startDate + ' to ' + endDate;
+
+                if (startDate && endDate) {
+                    document.getElementById('selectedDateRange').textContent = startDate + ' to ' + endDate;
+                } else if (startDate) {
+                    document.getElementById('selectedDateRange').textContent = 'From ' + startDate;
+                } else if (endDate) {
+                    document.getElementById('selectedDateRange').textContent = 'Until ' + endDate;
+                } else {
+                    document.getElementById('selectedDateRange').textContent = 'All Records';
+                }
             }
 
             document.getElementById('StartDateInput').addEventListener('change', function () {
@@ -226,6 +257,7 @@
                 displaySelectedDates();
             });
 
+            // Initial load
             filterByDate();
             displaySelectedDates();
         });

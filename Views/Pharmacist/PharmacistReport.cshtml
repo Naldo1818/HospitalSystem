@@ -1,0 +1,507 @@
+﻿@using DEMO.ViewModels
+@{
+    ViewData["Title"] = "Pharmacist Report";
+    Layout = "_LayoutPharmacist";
+}
+@model PharmacistReportViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacist Report</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- jQuery & DataTables -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    <style>
+        body {
+            background: #f5f7fb;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1400px;
+        }
+
+        .p-3.border {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 8px 12px;
+        }
+
+            .form-control:focus {
+                border-color: #0d6efd;
+                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            }
+
+        .btn-primary {
+            background: #0d6efd;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 20px;
+            transition: all 0.2s;
+        }
+
+            .btn-primary:hover {
+                background: #0b5ed7;
+                transform: scale(1.03);
+            }
+
+        table.dataTable {
+            border-collapse: collapse !important;
+            width: 100%;
+        }
+
+            table.dataTable thead {
+                background: #1f1f1f;
+                color: white;
+            }
+
+                table.dataTable thead th {
+                    padding: 12px;
+                    font-weight: 600;
+                }
+
+            table.dataTable tbody td {
+                padding: 10px;
+            }
+
+            table.dataTable tbody tr:hover {
+                background: #f1f5ff;
+            }
+
+        .totals {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .summary-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .badge-dispensed {
+            background: #17a2b8;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .badge-rejected {
+            background: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        /* Print styles */
+        @@media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            .p-3.border {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                page-break-after: avoid;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <main role="main" class="pb-5">
+            <div class="row no-print">
+                <div class="col">
+                    <div class="p-3 mt-5 border">
+                        <h2><i class="fas fa-chart-line"></i> Pharmacist Reports</h2>
+                        <div class="form-group row mt-3">
+                            <div class="col-4">
+                                <label for="StartDateInput" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="StartDateInput">
+                            </div>
+                            <div class="col-4">
+                                <label for="EndDateInput" class="form-label">End Date</label>
+                                <input type="date" class="form-control" id="EndDateInput">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col">
+                    <div class="p-3 border" id="reportContent">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h1>DISPENSARY REPORT</h1>
+                            <h3>Reports of: @ViewBag.UserName @ViewBag.UserSurname</h3>
+                            <h5>Report Generated: <span id="todayDate"></span></h5>
+                            <h5>Date Range: <span id="selectedDateRange"></span></h5>
+                        </div>
+
+                        <h4 class="mt-4"><i class="fas fa-prescription"></i> Dispensed Prescriptions</h4>
+                        <table id="dispensedTable" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Patient</th>
+                                    <th scope="col">Medication</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Urgency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.DispensedMedications)
+                                {
+                                    <tr>
+                                        <td>@Data.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@Data.Patient</td>
+                                        <td>@Data.MedicationName</td>
+                                        <td>@Data.Quantity</td>
+                                        <td>
+                                            @if (Data.Urgency == "Yes")
+                                            {
+                                                <span class="badge-dispensed">High Urgency</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge-dispensed">Normal</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <h4 class="mt-4"><i class="fas fa-ban"></i> Rejected Prescriptions</h4>
+                        <table id="rejectedTable" class="table table-striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Patient</th>
+                                    <th scope="col">Medication</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Rejection Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var Data in Model.RejectedMedications)
+                                {
+                                    <tr>
+                                        <td>@Data.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@Data.Patient</td>
+                                        <td>@Data.MedicationName</td>
+                                        <td>@Data.Quantity</td>
+                                        <td><span class="badge-rejected">@Data.RejectionReason</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <div class="totals" id="totalsDiv">
+                            <p><strong>TOTAL PRESCRIPTIONS DISPENSED:</strong> <span id="totalDispensed">0</span></p>
+                            <p><strong>TOTAL PRESCRIPTIONS REJECTED:</strong> <span id="totalRejected">0</span></p>
+                            <p><strong>TOTAL MEDICATIONS DISPENSED:</strong> <span id="totalMedications">0</span></p>
+                        </div>
+
+                        <div class="summary-box">
+                            <h4><i class="fas fa-chart-bar"></i> SUMMARY PER MEDICATION</h4>
+                            <table id="summaryTable" class="table" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">MEDICATION</th>
+                                        <th scope="col">TOTAL DISPENSED</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="summaryBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="no-print">
+                        <button class="btn btn-primary" onclick="generatePDF()">
+                            <i class="fas fa-print"></i> Print Report
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print (Browser)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Initialize DataTables
+            var dispensedTable = $('#dispensedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No dispensed prescriptions found"
+                },
+                "order": [[0, "desc"]],
+                "pageLength": 25,
+                "scrollX": true
+            });
+
+            var rejectedTable = $('#rejectedTable').DataTable({
+                "language": {
+                    "zeroRecords": "No rejected prescriptions found"
+                },
+                "order": [[0, "desc"]],
+                "pageLength": 25,
+                "scrollX": true
+            });
+
+            // Filter by date range
+            function filterByDate() {
+                var startDate = document.getElementById('StartDateInput').value;
+                var endDate = document.getElementById('EndDateInput').value;
+
+                var startDateObj = startDate ? new Date(startDate) : null;
+                var endDateObj = endDate ? new Date(endDate) : null;
+
+                // Add one day to end date to include the end date fully
+                if (endDateObj) {
+                    endDateObj.setDate(endDateObj.getDate() + 1);
+                }
+
+                // Filter dispensed table
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    var date = new Date(data[0]);
+
+                    if (startDateObj && date < startDateObj) return false;
+                    if (endDateObj && date > endDateObj) return false;
+                    return true;
+                });
+
+                dispensedTable.draw();
+                rejectedTable.draw();
+
+                // Clear the custom filter
+                $.fn.dataTable.ext.search.pop();
+
+                // Update totals after filtering
+                updateTotals();
+                updateSummary();
+            }
+
+            // Update totals based on filtered data
+            function updateTotals() {
+                var totalDispensed = 0;
+                var totalRejected = 0;
+                var totalMedications = 0;
+
+                // Calculate dispensed totals
+                $('#dispensedTable tbody tr').each(function() {
+                    if ($(this).css('display') !== 'none') {
+                        totalDispensed++;
+                        var quantity = parseInt($(this).find('td:eq(3)').text()) || 0;
+                        totalMedications += quantity;
+                    }
+                });
+
+                // Calculate rejected totals
+                $('#rejectedTable tbody tr').each(function() {
+                    if ($(this).css('display') !== 'none') {
+                        totalRejected++;
+                    }
+                });
+
+                $('#totalDispensed').text(totalDispensed);
+                $('#totalRejected').text(totalRejected);
+                $('#totalMedications').text(totalMedications);
+            }
+
+            // Update summary per medication
+            function updateSummary() {
+                var summaryData = new Map();
+
+                // Process dispensed table
+                $('#dispensedTable tbody tr').each(function() {
+                    if ($(this).css('display') !== 'none') {
+                        var medicationName = $(this).find('td:eq(2)').text();
+                        var quantity = parseInt($(this).find('td:eq(3)').text()) || 0;
+
+                        if (summaryData.has(medicationName)) {
+                            summaryData.set(medicationName, summaryData.get(medicationName) + quantity);
+                        } else {
+                            summaryData.set(medicationName, quantity);
+                        }
+                    }
+                });
+
+                // Build summary table
+                var summaryBody = $('#summaryBody');
+                summaryBody.empty();
+
+                var sortedData = Array.from(summaryData.entries()).sort((a, b) => b[1] - a[1]);
+
+                sortedData.forEach(function([medication, quantity]) {
+                    summaryBody.append(`
+                        <tr>
+                            <td><strong>${medication}</strong></td>
+                            <td>${quantity}</td>
+                        </tr>
+                    `);
+                });
+            }
+
+            // Display selected date range
+            function displaySelectedDates() {
+                var startDate = document.getElementById('StartDateInput').value;
+                var endDate = document.getElementById('EndDateInput').value;
+                var today = new Date().toLocaleDateString();
+
+                var formattedStartDate = startDate ? new Date(startDate).toLocaleDateString() : 'All records';
+                var formattedEndDate = endDate ? new Date(endDate).toLocaleDateString() : 'All records';
+
+                document.getElementById('todayDate').textContent = today;
+
+                if (startDate && endDate) {
+                    document.getElementById('selectedDateRange').textContent = formattedStartDate + ' to ' + formattedEndDate;
+                } else if (startDate) {
+                    document.getElementById('selectedDateRange').textContent = 'From ' + formattedStartDate;
+                } else if (endDate) {
+                    document.getElementById('selectedDateRange').textContent = 'Until ' + formattedEndDate;
+                } else {
+                    document.getElementById('selectedDateRange').textContent = 'All records';
+                }
+            }
+
+            // Event listeners
+            $('#StartDateInput, #EndDateInput').on('change', function() {
+                filterByDate();
+                displaySelectedDates();
+            });
+
+            // Initial load
+            displaySelectedDates();
+            updateTotals();
+            updateSummary();
+        });
+    </script>
+
+    <script>
+        function generatePDF() {
+            // Get the report content element
+            var element = document.getElementById('reportContent');
+
+            // Show loading indicator
+            var button = event.target;
+            var originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+            button.disabled = true;
+
+            // Clone the element to avoid affecting the original
+            var cloneElement = element.cloneNode(true);
+
+            // Ensure all tables are visible in the clone
+            $(cloneElement).find('table').each(function() {
+                $(this).css('display', 'table');
+            });
+
+            var opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: 'Pharmacist_Report_' + new Date().toISOString().slice(0,10) + '.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    letterRendering: true,
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: {
+                    unit: 'in',
+                    format: 'a4',
+                    orientation: 'landscape'
+                },
+                pagebreak: {
+                    mode: ['css', 'legacy'],
+                    before: '.page-break',
+                    after: '.page-break-after'
+                }
+            };
+
+            // Generate PDF
+            html2pdf().set(opt).from(cloneElement).save().then(function() {
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }).catch(function(error) {
+                console.error('PDF generation error:', error);
+                button.innerHTML = originalText;
+                button.disabled = false;
+                alert('Error generating PDF. Please try again or use the browser print option.');
+            });
+        }
+
+        // Alternative print function using browser's print
+        function printReport() {
+            var originalTitle = document.title;
+            document.title = 'Pharmacist Report - @ViewBag.UserName @ViewBag.UserSurname';
+            window.print();
+            document.title = originalTitle;
+        }
+    </script>
+</body>
+</html>

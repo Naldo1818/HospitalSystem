@@ -640,6 +640,124 @@ namespace DEMO.Controllers
             return Json(new { success = true });
         }
 
+        public IActionResult PharmacistReport()
+        {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                accountID = 0;
+            }
+
+            // Get dispensed medications
+            var dispensedMedications = (from d in _dbContext.DispensedScriptsModel
+                                        join pr in _dbContext.Prescription
+                                            on d.PrescriptionID equals pr.PrescriptionID
+                                        join ap in _dbContext.AdmittedPatients
+                                            on pr.AdmittedPatientID equals ap.AdmittedPatientID
+                                        join bs in _dbContext.BookSurgery
+                                            on ap.BookingID equals bs.BookingID
+                                        join p in _dbContext.PatientInfo
+                                            on bs.PatientID equals p.PatientID
+                                        join a in _dbContext.Accounts
+                                            on bs.AccountID equals a.AccountID
+                                        join mi in _dbContext.MedicationInstructions
+                                            on pr.PrescriptionID equals mi.PrescriptionID
+                                        join m in _dbContext.Medication
+                                            on mi.MedicationID equals m.MedicationID
+                                        where d.AccountID == accountID
+                                        orderby pr.DateGiven descending
+                                        select new PharmacistReportItem
+                                        {
+                                            PrescriptionDate = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day),
+                                            Date = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day), // For view
+                                            Patient = p.Name + " " + p.Surname,
+                                            Surgeon = a.Name + " " + a.Surname,
+                                            Medication = m.MedicationName,
+                                            MedicationName = m.MedicationName, // For view
+                                            qty = mi.Quantity,
+                                            Quantity = mi.Quantity, // For view
+                                            status = "Dispensed",
+                                            Urgency = pr.Urgency
+                                        }).ToList();
+
+            // Get rejected medications
+            var rejectedMedications = (from r in _dbContext.RejectScriptModel
+                                       join d in _dbContext.DispensedScriptsModel
+                                           on r.PrescriptionID equals d.PrescriptionID
+                                       join pr in _dbContext.Prescription
+                                           on d.PrescriptionID equals pr.PrescriptionID
+                                       join ap in _dbContext.AdmittedPatients
+                                           on pr.AdmittedPatientID equals ap.AdmittedPatientID
+                                       join bs in _dbContext.BookSurgery
+                                           on ap.BookingID equals bs.BookingID
+                                       join p in _dbContext.PatientInfo
+                                           on bs.PatientID equals p.PatientID
+                                       join a in _dbContext.Accounts
+                                           on bs.AccountID equals a.AccountID
+                                       join mi in _dbContext.MedicationInstructions
+                                           on pr.PrescriptionID equals mi.PrescriptionID
+                                       join m in _dbContext.Medication
+                                           on mi.MedicationID equals m.MedicationID
+                                       where d.AccountID == accountID
+                                       orderby pr.DateGiven descending
+                                       select new PharmacistReportItem
+                                       {
+                                           PrescriptionDate = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day),
+                                           Date = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day), // For view
+                                           Patient = p.Name + " " + p.Surname,
+                                           Surgeon = a.Name + " " + a.Surname,
+                                           Medication = m.MedicationName,
+                                           MedicationName = m.MedicationName, // For view
+                                           qty = mi.Quantity,
+                                           Quantity = mi.Quantity, // For view
+                                           status = "Rejected",
+                                           Urgency = pr.Urgency,
+                                           RejectionReason = r.RejectionReason
+                                       }).ToList();
+
+            // Combine both lists for the view
+            var allCombinedData = new List<PharmacistReportItem>();
+            allCombinedData.AddRange(dispensedMedications);
+            allCombinedData.AddRange(rejectedMedications);
+
+            // Order by date descending
+            allCombinedData = allCombinedData.OrderByDescending(x => x.PrescriptionDate).ToList();
+
+            var viewModel = new PharmacistReportViewModel
+            {
+                DispensedMedications = dispensedMedications,
+                RejectedMedications = rejectedMedications,
+                AllcombinedData = allCombinedData
+            };
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            return View(viewModel);
+        }
+        public IActionResult InfoPharmacist()
+        {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            return View();
+        }
         //Dispens button
         //view patient vitals n history
         //View Script n despense
