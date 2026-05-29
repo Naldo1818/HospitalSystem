@@ -370,61 +370,14 @@ namespace DEMO.Controllers
 
                 _dbContext.PatientInfo.Add(newPatient);
                 _dbContext.SaveChanges();
-
+                TempData["SuccessMessage"] = $"Patient {model.Name} {model.Surname} has been successfully registered!";
                 return RedirectToAction("PatientList");
             }
 
             // If validation fails, redisplay the form with errors
             return View("PatientList", model);
         }
-        public IActionResult PatientAdd()
-        {
-            var accountID = HttpContext.Session.GetString("UserAccountId");
-            var userName = HttpContext.Session.GetString("UserName");
-            var userSurname = HttpContext.Session.GetString("UserSurname");
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-            var today = DateOnly.FromDateTime(DateTime.Today);
-
-            var surgeryCount = _dbContext.BookSurgery
-                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
-                .Count();
-
-
-            //var prescribedCount = (from p in _dbContext.PatientInfo
-            //                       join ap in _dbContext.AdmittedPatients
-            //                       on p.PatientID equals ap.PatientID
-            //                       join pr in _dbContext.Prescription
-            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
-            //                       where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
-            //                       select pr).Count();
-
-            //var dispensedCount = (from p in _dbContext.PatientInfo
-            //                      join ap in _dbContext.AdmittedPatients
-            //                      on p.PatientID equals ap.PatientID
-            //                      join pr in _dbContext.Prescription
-            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
-            //                      where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
-            //                      select pr).Count();
-
-            //var rejectedCount = (from p in _dbContext.PatientInfo
-            //                     join ap in _dbContext.AdmittedPatients
-            //                     on p.PatientID equals ap.PatientID
-            //                     join pr in _dbContext.Prescription
-            //                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
-            //                     where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
-            //                     select pr).Count();
-
-            // Pass the prescribed count to the view
-            ViewBag.SurgeryCount = surgeryCount;
-            //ViewBag.PrescribedCount = prescribedCount;
-            //ViewBag.DispensedCount = dispensedCount;
-            //ViewBag.RejectedCount = rejectedCount;
-            ViewBag.UserAccountID = accountID;
-            ViewBag.UserName = userName;
-            ViewBag.UserSurname = userSurname;
-            ViewBag.UserEmail = userEmail;
-            return View();
-        }
+      
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult BookSurgery(BookSurgery model)
@@ -2105,6 +2058,55 @@ namespace DEMO.Controllers
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
             return View(viewModel);
+        }
+
+        public IActionResult PatientAdd()
+        {
+            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            //var prescribedCount = (from p in _dbContext.PatientInfo
+            //                       join ap in _dbContext.AdmittedPatients
+            //                       on p.PatientID equals ap.PatientID
+            //                       join pr in _dbContext.Prescription
+            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+            //                       where pr.Status == "Prescribed" && pr.AccountID.ToString() == accountID
+            //                       select pr).Count();
+
+            //var dispensedCount = (from p in _dbContext.PatientInfo
+            //                      join ap in _dbContext.AdmittedPatients
+            //                      on p.PatientID equals ap.PatientID
+            //                      join pr in _dbContext.Prescription
+            //                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+            //                      where pr.Status == "Dispensed" && pr.AccountID.ToString() == accountID
+            //                      select pr).Count();
+
+            //var rejectedCount = (from p in _dbContext.PatientInfo
+            //                     join ap in _dbContext.AdmittedPatients
+            //                     on p.PatientID equals ap.PatientID
+            //                     join pr in _dbContext.Prescription
+            //                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+            //                     where pr.Status == "Rejected" && pr.AccountID.ToString() == accountID
+            //                     select pr).Count();
+
+            // Pass the prescribed count to the view
+            ViewBag.SurgeryCount = surgeryCount;
+            //ViewBag.PrescribedCount = prescribedCount;
+            //ViewBag.DispensedCount = dispensedCount;
+            //ViewBag.RejectedCount = rejectedCount;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

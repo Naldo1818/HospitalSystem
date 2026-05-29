@@ -11,28 +11,27 @@
             <h1 class="fw-bold mb-1" style="color: #0f2b3d; font-size: 2rem;">
                 <i class="bi bi-people-fill me-2" style="color: #4e73df;"></i>Patient Management
             </h1>
-            <p class="text-secondary mb-0" style="font-size: 1rem;">Manage patient records and schedule surgical procedures</p>
+            <p class="text-secondary mb-0">Manage patient records and schedule surgical procedures</p>
         </div>
-        <button type="button" class="btn btn-primary rounded-pill px-5 py-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#addPatientModal" style="font-size: 1rem;">
+        <button type="button" class="btn btn-primary rounded-pill px-5 py-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#addPatientModal">
             <i class="bi bi-plus-circle me-2"></i>Add New Patient
         </button>
     </div>
 
     <!-- Search Card -->
-    <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+    <div class="card shadow-sm border-0 mb-4">
         <div class="card-body p-4">
             <div class="row align-items-end g-3">
                 <div class="col-md-6 col-lg-5">
-                    <label class="form-label fw-semibold text-secondary mb-2" style="font-size: 0.95rem;">
+                    <label class="form-label fw-semibold text-secondary mb-2">
                         <i class="bi bi-search me-1"></i>Search by ID Number
                     </label>
                     <input type="text" class="form-control" id="idNumber"
-                           placeholder="Enter 13-digit ID number" pattern="^\d{13}$" maxlength="13"
-                           style="border-radius: 12px; padding: 14px 18px; font-size: 1rem;" />
-                    <div id="idNumberError" class="text-danger small mt-1" style="font-size: 0.85rem;"></div>
+                           placeholder="Enter 13-digit ID number" pattern="^\d{13}$" maxlength="13" />
+                    <div id="idNumberError" class="text-danger small mt-1"></div>
                 </div>
                 <div class="col-md-4 col-lg-3">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill w-100" id="clearSearchBtn" style="padding: 14px 18px; font-size: 1rem; border-radius: 12px;">
+                    <button type="button" class="btn btn-outline-secondary w-100" id="clearSearchBtn">
                         <i class="bi bi-x-circle me-1"></i>Clear Search
                     </button>
                 </div>
@@ -41,43 +40,42 @@
     </div>
 
     <!-- Patients Table Card -->
-    <div class="card shadow-sm border-0" style="border-radius: 20px; overflow: hidden;">
+    <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table id="patientsTable" class="table mb-0" style="width: 100%;">
-                    <thead style="background: #f8fafd; border-bottom: 2px solid #e2e8f0;">
+                <table id="patientsTable" class="table mb-0">
+                    <thead>
                         <tr>
-                            <th style="padding: 16px 12px; font-size: 0.95rem; font-weight: 600; color: #1e293b;">ID Number</th>
-                            <th style="padding: 16px 12px; font-size: 0.95rem; font-weight: 600; color: #1e293b;">Name</th>
-                            <th style="padding: 16px 12px; font-size: 0.95rem; font-weight: 600; color: #1e293b;">Surname</th>
-                            <th style="padding: 16px 12px; font-size: 0.95rem; font-weight: 600; color: #1e293b;">Gender</th>
-                            <th style="padding: 16px 12px; font-size: 0.95rem; font-weight: 600; color: #1e293b;">Email</th>
-                            <th style="padding: 16px 12px; font-size: 0.95rem; font-weight: 600; color: #1e293b; width: 160px;">Action</th>
+                            <th>ID Number</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            <th>Gender</th>
+                            <th>Email</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var Patient in Model.AllPatients)
                         {
-                            <tr style="border-bottom: 1px solid #eef2f8;">
-                                <td style="padding: 14px 12px; font-size: 0.95rem;" class="fw-medium">@Patient.IDNumber</td>
-                                <td style="padding: 14px 12px; font-size: 0.95rem;">@Patient.Name</td>
-                                <td style="padding: 14px 12px; font-size: 0.95rem;">@Patient.Surname</td>
-                                <td style="padding: 14px 12px; font-size: 0.95rem;">
-                                    <span class="badge @(Patient.Gender == "Male" ? "bg-info bg-opacity-10 text-info" : "bg-danger bg-opacity-10 text-danger") px-3 py-2 rounded-pill" style="font-size: 0.85rem;">
+                            <tr>
+                                <td class="fw-medium">@Patient.IDNumber</td>
+                                <td>@Patient.Name</td>
+                                <td>@Patient.Surname</td>
+                                <td>
+                                    <span class="badge @(Patient.Gender == "Male" ? "bg-info bg-opacity-10 text-info" : "bg-danger bg-opacity-10 text-danger") px-3 py-2 rounded-pill">
                                         <i class="bi @(Patient.Gender == "Male" ? "bi-gender-male" : "bi-gender-female") me-1"></i>@Patient.Gender
                                     </span>
                                 </td>
-                                <td style="padding: 14px 12px; font-size: 0.95rem;">
-                                    <a href="mailto:@Patient.Email" class="text-decoration-none" style="color: #4e73df;">@Patient.Email</a>
+                                <td>
+                                    <a href="mailto:@Patient.Email" class="text-decoration-none email-link">@Patient.Email</a>
                                 </td>
-                                <td style="padding: 14px 12px;">
+                                <td>
                                     <button type="button" class="btn btn-primary rounded-pill book-surgery-btn"
                                             data-bs-toggle="modal"
                                             data-bs-target="#bookSurgeryModal"
                                             data-name="@Patient.Name"
                                             data-surname="@Patient.Surname"
-                                            data-patient-id="@Patient.PatientID"
-                                            style="font-size: 0.9rem; padding: 10px 18px;">
+                                            data-patient-id="@Patient.PatientID">
                                         <i class="bi bi-scissors me-1"></i>Book Surgery
                                     </button>
                                 </td>
@@ -93,29 +91,31 @@
 <!-- Book Surgery Modal -->
 <div class="modal fade" id="bookSurgeryModal" tabindex="-1" aria-labelledby="bookSurgeryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 20px;">
+        <div class="modal-content">
             <div class="modal-header border-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="bookSurgeryModalLabel" style="font-size: 1.35rem;">
-                    <i class="bi bi-calendar-plus me-2" style="color: #4e73df;"></i>Schedule Surgery
+                <h5 class="modal-title fw-bold" id="bookSurgeryModalLabel">
+                    <i class="bi bi-calendar-plus me-2"></i>Schedule Surgery
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body px-4 pb-2">
                 <form id="bookingForm" method="post" asp-action="BookSurgery" asp-controller="Home">
+                    @Html.AntiForgeryToken()
+
                     <!-- Patient Info Section -->
-                    <div class="bg-light rounded-3 p-4 mb-4" style="background: #f8fafc; border-radius: 12px;">
+                    <div class="bg-light rounded-3 p-4 mb-4">
                         <div class="row g-3">
                             <div class="col-sm-4">
-                                <label class="form-label fw-semibold text-secondary mb-2" style="font-size: 0.85rem;">Patient Name</label>
-                                <input type="text" class="form-control bg-white" id="nameInput" name="Name" readonly style="font-size: 1rem; border-radius: 10px; padding: 12px 16px;">
+                                <label class="form-label fw-semibold text-secondary mb-2">Patient Name</label>
+                                <input type="text" class="form-control bg-white" id="modalPatientName" readonly>
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label fw-semibold text-secondary mb-2" style="font-size: 0.85rem;">Patient Surname</label>
-                                <input type="text" class="form-control bg-white" id="surnameInput" name="Surname" readonly style="font-size: 1rem; border-radius: 10px; padding: 12px 16px;">
+                                <label class="form-label fw-semibold text-secondary mb-2">Patient Surname</label>
+                                <input type="text" class="form-control bg-white" id="modalPatientSurname" readonly>
                             </div>
                             <div class="col-sm-4">
-                                <label class="form-label fw-semibold text-secondary mb-2" style="font-size: 0.85rem;">Surgeon</label>
-                                <input type="text" class="form-control bg-white" value="@ViewBag.UserName @ViewBag.UserSurname" disabled style="font-size: 1rem; border-radius: 10px; padding: 12px 16px;">
+                                <label class="form-label fw-semibold text-secondary mb-2">Surgeon</label>
+                                <input type="text" class="form-control bg-white" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
                             </div>
                         </div>
                     </div>
@@ -123,51 +123,52 @@
                     <!-- Surgery Details -->
                     <div class="row g-4">
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.95rem;">Theatre</label>
-                            <div class="bg-light rounded-3 p-3" style="background: #f8fafc; border-radius: 12px;">
+                            <label class="form-label fw-semibold mb-2">Theatre <span class="text-danger">*</span></label>
+                            <div class="theatre-container">
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="Theater" id="DoveTheatre" value="Dove Theatre" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="DoveTheatre" style="font-size: 0.95rem;">🕊️ Dove Theatre</label>
+                                    <input class="form-check-input" type="radio" name="Theater" id="DoveTheatre" value="Dove Theatre" required>
+                                    <label class="form-check-label" for="DoveTheatre">🕊️ Dove Theatre</label>
                                 </div>
                                 <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="Theater" id="EagleTheatre" value="Eagle Theatre" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="EagleTheatre" style="font-size: 0.95rem;">🦅 Eagle Theatre</label>
+                                    <input class="form-check-input" type="radio" name="Theater" id="EagleTheatre" value="Eagle Theatre">
+                                    <label class="form-check-label" for="EagleTheatre">🦅 Eagle Theatre</label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="Theater" id="HadidaTheatre" value="Hadida Theatre" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="HadidaTheatre" style="font-size: 0.95rem;">🪶 Hadida Theatre</label>
+                                    <input class="form-check-input" type="radio" name="Theater" id="HadidaTheatre" value="Hadida Theatre">
+                                    <label class="form-check-label" for="HadidaTheatre">🪶 Hadida Theatre</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.95rem;">Surgery Date</label>
-                            <input type="date" class="form-control" name="SurgeryDate" required style="border-radius: 10px; padding: 12px 16px; font-size: 1rem;">
+                            <label class="form-label fw-semibold mb-2">Surgery Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" name="SurgeryDate" required>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.95rem;">Time Slot</label>
-                            <div class="bg-light rounded-3 p-3" style="background: #f8fafc; border-radius: 12px;">
+                            <label class="form-label fw-semibold mb-2">Time Slot <span class="text-danger">*</span></label>
+                            <div class="time-slot-container">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="SurgeryTime" id="AM" value="AM" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="AM" style="font-size: 0.95rem;">🌅 AM</label>
+                                    <input class="form-check-input" type="radio" name="SurgeryTime" id="AM" value="AM" required>
+                                    <label class="form-check-label" for="AM">🌅 AM</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="SurgeryTime" id="PM" value="PM" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="PM" style="font-size: 0.95rem;">🌙 PM</label>
+                                    <input class="form-check-input" type="radio" name="SurgeryTime" id="PM" value="PM">
+                                    <label class="form-check-label" for="PM">🌙 PM</label>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Hidden fields -->
                     <input type="hidden" name="Status" value="Booked">
-                    <input type="hidden" id="PatientID" name="PatientID">
+                    <input type="hidden" id="modalPatientID" name="PatientID">
                     <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
                 </form>
             </div>
             <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal" style="font-size: 0.95rem; padding: 12px 24px;">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
                     <i class="bi bi-x-lg me-1"></i>Cancel
                 </button>
-                <button type="button" id="confirmBookSurgeryButton" class="btn btn-primary rounded-pill px-4" style="font-size: 0.95rem; padding: 12px 24px;">
+                <button type="submit" form="bookingForm" class="btn btn-primary rounded-pill px-4">
                     <i class="bi bi-check-lg me-1"></i>Confirm Booking
                 </button>
             </div>
@@ -175,13 +176,13 @@
     </div>
 </div>
 
-<!-- Add Patient Modal -->
+<!-- Add Patient Modal - Updated Form -->
 <div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content" style="border-radius: 20px;">
+        <div class="modal-content">
             <div class="modal-header border-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold" id="addPatientModalLabel" style="font-size: 1.35rem;">
-                    <i class="bi bi-person-plus me-2" style="color: #4e73df;"></i>Register New Patient
+                <h5 class="modal-title fw-bold" id="addPatientModalLabel">
+                    <i class="bi bi-person-plus me-2"></i>Register New Patient
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -190,46 +191,46 @@
                     @Html.AntiForgeryToken()
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.9rem;">First Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="Name" required maxlength="100" placeholder="Enter first name" style="border-radius: 10px; padding: 12px 16px; font-size: 1rem;">
-                            <span class="text-danger small" id="nameError" style="font-size: 0.8rem;"></span>
+                            <label class="form-label fw-semibold mb-2">First Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="Name" required maxlength="100" placeholder="Enter first name">
+                            <span class="text-danger small" id="nameError"></span>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.9rem;">Last Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="Surname" required maxlength="100" placeholder="Enter last name" style="border-radius: 10px; padding: 12px 16px; font-size: 1rem;">
-                            <span class="text-danger small" id="surnameError" style="font-size: 0.8rem;"></span>
+                            <label class="form-label fw-semibold mb-2">Last Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="Surname" required maxlength="100" placeholder="Enter last name">
+                            <span class="text-danger small" id="surnameError"></span>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.9rem;">ID Number <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="IdNumber" required pattern="^\d{13}$" maxlength="13" placeholder="13-digit ID" style="border-radius: 10px; padding: 12px 16px; font-size: 1rem;">
-                            <span class="text-danger small" id="idNumberError" style="font-size: 0.8rem;"></span>
+                            <label class="form-label fw-semibold mb-2">ID Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="IdNumber" required pattern="^\d{13}$" maxlength="13" placeholder="13-digit ID">
+                            <span class="text-danger small" id="idNumberError"></span>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.9rem;">Gender <span class="text-danger">*</span></label>
-                            <div class="bg-light rounded-3 p-3" style="background: #f8fafc; border-radius: 12px;">
+                            <label class="form-label fw-semibold mb-2">Gender <span class="text-danger">*</span></label>
+                            <div class="gender-container">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="Gender" value="Male" checked id="genderMale" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="genderMale" style="font-size: 0.95rem;">Male</label>
+                                    <input class="form-check-input" type="radio" name="Gender" value="Male" checked id="genderMale">
+                                    <label class="form-check-label" for="genderMale">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="Gender" value="Female" id="genderFemale" style="width: 1.2rem; height: 1.2rem;">
-                                    <label class="form-check-label" for="genderFemale" style="font-size: 0.95rem;">Female</label>
+                                    <input class="form-check-input" type="radio" name="Gender" value="Female" id="genderFemale">
+                                    <label class="form-check-label" for="genderFemale">Female</label>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-8">
-                            <label class="form-label fw-semibold mb-2" style="font-size: 0.9rem;">Email Address <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" name="Email" required placeholder="patient@example.com" style="border-radius: 10px; padding: 12px 16px; font-size: 1rem;">
-                            <span class="text-danger small" id="emailError" style="font-size: 0.8rem;"></span>
+                            <label class="form-label fw-semibold mb-2">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" name="Email" required placeholder="patient@example.com">
+                            <span class="text-danger small" id="emailError"></span>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer border-0 pb-4 px-4">
-                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal" style="font-size: 0.95rem; padding: 12px 24px;">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
                     <i class="bi bi-x-lg me-1"></i>Cancel
                 </button>
-                <button type="button" id="mainSavePatientButton" class="btn btn-primary rounded-pill px-4" style="font-size: 0.95rem; padding: 12px 24px;">
+                <button type="submit" form="addPatientForm" class="btn btn-primary rounded-pill px-4">
                     <i class="bi bi-save me-1"></i>Save Patient
                 </button>
             </div>
@@ -295,18 +296,44 @@
                 table.search('').draw();
             });
 
-            // Book Surgery Modal - populate data using vanilla JS to ensure compatibility
+            // Book Surgery Modal - populate data
             var bookSurgeryModal = document.getElementById('bookSurgeryModal');
             if (bookSurgeryModal) {
                 bookSurgeryModal.addEventListener('show.bs.modal', function (event) {
                     var button = event.relatedTarget;
+
+                    // Get data from button attributes
                     var name = button.getAttribute('data-name');
                     var surname = button.getAttribute('data-surname');
                     var patientID = button.getAttribute('data-patient-id');
 
-                    document.getElementById('nameInput').value = name;
-                    document.getElementById('surnameInput').value = surname;
-                    document.getElementById('PatientID').value = patientID;
+                    console.log('Populating modal with:', { name, surname, patientID });
+
+                    // Populate the readonly display fields with the NEW IDs
+                    var nameInput = document.getElementById('modalPatientName');
+                    var surnameInput = document.getElementById('modalPatientSurname');
+                    var patientIdInput = document.getElementById('modalPatientID');
+
+                    if (nameInput) {
+                        nameInput.value = name || '';
+                        console.log('Name input set to:', nameInput.value);
+                    } else {
+                        console.error('modalPatientName element not found!');
+                    }
+
+                    if (surnameInput) {
+                        surnameInput.value = surname || '';
+                        console.log('Surname input set to:', surnameInput.value);
+                    } else {
+                        console.error('modalPatientSurname element not found!');
+                    }
+
+                    if (patientIdInput) {
+                        patientIdInput.value = patientID || '';
+                        console.log('PatientID set to:', patientIdInput.value);
+                    } else {
+                        console.error('modalPatientID element not found!');
+                    }
 
                     // Reset radio buttons
                     var radioButtons = document.querySelectorAll('#bookSurgeryModal input[type="radio"]');
@@ -320,167 +347,37 @@
                 });
             }
 
-            // Confirm surgery booking button - direct click handler
-            $('#confirmBookSurgeryButton').off('click').on('click', function (e) {
-                e.preventDefault();
-
-                // Get form values
+            // Add validation for booking form
+            $('#bookingForm').on('submit', function(e) {
+                var patientID = $('#modalPatientID').val();
                 var theaterSelected = $('input[name="Theater"]:checked').val();
                 var timeSelected = $('input[name="SurgeryTime"]:checked').val();
                 var surgeryDate = $('input[name="SurgeryDate"]').val();
-                var patientID = $('#PatientID').val();
 
-                // Validate
+                console.log('Form submission - PatientID:', patientID);
+
+                if (!patientID) {
+                    alert('Patient information is missing. Please try again.');
+                    e.preventDefault();
+                    return false;
+                }
                 if (!theaterSelected) {
                     alert('Please select a theatre');
+                    e.preventDefault();
                     return false;
                 }
                 if (!timeSelected) {
                     alert('Please select a time slot');
+                    e.preventDefault();
                     return false;
                 }
                 if (!surgeryDate) {
                     alert('Please select a surgery date');
+                    e.preventDefault();
                     return false;
                 }
-                if (!patientID) {
-                    alert('Patient information is missing');
-                    return false;
-                }
-
-                // Submit the form
-                $('#bookingForm').submit();
-            });
-
-            // Save new patient button
-            $('#mainSavePatientButton').off('click').on('click', function (e) {
-                e.preventDefault();
-
-                var form = $('#addPatientForm')[0];
-                if (form.checkValidity()) {
-                    $('#addPatientForm').submit();
-                } else {
-                    form.reportValidity();
-                }
+                return true;
             });
         });
     </script>
 }
-
-<style>
-    /* General styles */
-    #idNumber,
-    .form-control,
-    input[type="text"],
-    input[type="email"],
-    input[type="number"],
-    input[type="date"],
-    select {
-        font-size: 1rem !important;
-        padding: 14px 18px !important;
-        min-height: 52px;
-    }
-
-    #idNumber {
-        font-size: 1.05rem !important;
-        letter-spacing: 0.5px;
-    }
-
-    .modal .form-control,
-    .modal input[type="text"],
-    .modal input[type="email"],
-    .modal input[type="number"],
-    .modal input[type="date"] {
-        font-size: 1rem !important;
-        padding: 14px 18px !important;
-        min-height: 52px;
-        border-radius: 12px;
-    }
-
-    .dataTables_filter input {
-        font-size: 1rem !important;
-        padding: 12px 18px 12px 40px !important;
-        min-height: 52px;
-        width: 300px;
-        border-radius: 12px;
-        border: 1px solid #e2e8f0;
-    }
-
-    ::placeholder {
-        font-size: 0.95rem !important;
-        color: #94a3b8;
-    }
-
-    .form-label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .dataTables_wrapper .dataTables_filter input {
-        border-radius: 12px;
-        padding: 12px 18px 12px 40px !important;
-        font-size: 1rem !important;
-        min-height: 52px;
-    }
-
-    .dataTables_wrapper .dataTables_length select {
-        border-radius: 10px;
-        padding: 8px 12px;
-        border: 1px solid #e2e8f0;
-        font-size: 0.95rem;
-        min-height: 42px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        border-radius: 40px !important;
-        margin: 0 3px;
-        padding: 8px 16px !important;
-        font-size: 0.9rem;
-    }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: #4e73df !important;
-            color: white !important;
-            border-color: #4e73df !important;
-        }
-
-    .btn-close {
-        background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
-        opacity: 0.5;
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-
-        .btn-close:hover {
-            opacity: 0.75;
-        }
-
-    .form-control:focus {
-        border-color: #4e73df;
-        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-    }
-
-    .book-surgery-btn {
-        transition: all 0.2s ease;
-    }
-
-        .book-surgery-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
-        }
-
-    @@media (max-width: 768px) {
-        .dashboard-container {
-            padding: 0;
-        }
-
-        .dataTables_filter input {
-            width: 100% !important;
-        }
-
-        #idNumber {
-            font-size: 1rem !important;
-        }
-    }
-</style>
