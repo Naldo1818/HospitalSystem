@@ -1,220 +1,256 @@
+/* site2.css - Enhanced UI */
+/* Apollo+ modern theme refresh */
+
+/* Base styles */
 html {
     font-size: 14px;
-}
-
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
-}
-
-html {
     position: relative;
     min-height: 100%;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    background-color: #f0f0f0;
-    padding-top: 100px;
+@media (min-width: 768px) {
+    html {
+        font-size: 15px;
+    }
 }
 
-/* ---------- Navbar ---------- */
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f4f7fc;
+    margin: 0;
+    padding: 0;
+}
 
+/* Improved Navbar polish */
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 10px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(10px);
+    z-index: 1030;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    padding: 12px 24px;
 }
 
 .offcanvas-body {
-    padding-top: 3.5rem;
+    padding-top: 4rem;
 }
 
-/* ---------- Layout ---------- */
-
+/* Wrapper & container refinements */
 .wrapper {
     display: flex;
     justify-content: left;
-    padding-left: 10px;
-    padding-right: 15px;
+    padding: 0 20px;
 }
 
 .container {
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0 16px;
 }
 
 .col-md-6 {
-    margin-left: 0px;
-    margin-right: 0px;
+    margin: 0;
 }
 
 .p-3 {
     margin: 0;
 }
 
-/* ---------- Cards ---------- */
-
+/* Premium card design */
 .custom-card {
     width: 50%;
-    height: 100vh;
-    margin-top: 30vh;
-    right: 100px;
+    height: auto;
+    margin: 2rem auto;
+    right: auto;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
 }
 
 .card img {
     object-fit: cover;
-    height: 180px;
+    height: 200px;
+    transition: transform 0.3s ease;
 }
 
 .card {
-    border-radius: 12px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 28px;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.02);
 }
 
     .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.12);
     }
 
-/* ---------- Forms ---------- */
-
+/* Input fields modern */
 .form-control {
-    width: 10%;
+    border-radius: 48px;
+    border: 1px solid #e2edf2;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
 }
 
     .form-control:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 5px rgba(13,110,253,0.3);
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        outline: none;
     }
 
-/* ---------- Buttons ---------- */
-
+/* Buttons with depth */
 .custom-button {
-    background-color: #4CAF50;
+    background: linear-gradient(95deg, #10b981, #059669);
     border: none;
     color: white;
-    padding: 10px 20px;
-    text-align: center;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 500;
+    border-radius: 40px;
+    transition: all 0.2s;
 }
 
+    .custom-button:hover {
+        transform: scale(1.02);
+        background: linear-gradient(95deg, #059669, #047857);
+    }
+
 .btn-primary {
-    background: #0d6efd;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     border: none;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    border-radius: 40px;
+    padding: 8px 20px;
+    font-weight: 500;
 }
 
     .btn-primary:hover {
-        background: #0b5ed7;
-        transform: scale(1.03);
+        background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 14px rgba(37,99,235,0.25);
     }
 
-/* ---------- Typography ---------- */
-
-h1 {
-    font-weight: 600;
-    color: #2c3e50;
-}
-
-/* ===================================================== */
-/* ===== Added Styling for Tables + Modals + UI ======== */
-/* ===================================================== */
-
-/* ---------- DataTables ---------- */
-
-table.dataTable {
-    border-collapse: collapse !important;
+/* Tables (DataTables style) */
+table.dataTable, .table-custom {
+    border-collapse: separate;
+    border-spacing: 0;
     width: 100%;
 }
 
-    table.dataTable thead {
-        background: #0d6efd;
-        color: white;
+    .table-custom thead {
+        background: #f1f5f9;
+        color: #1e293b;
     }
 
-        table.dataTable thead th {
-            padding: 12px;
+        .table-custom thead th {
+            padding: 14px 12px;
             font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
-    table.dataTable tbody td {
-        padding: 10px;
+    .table-custom tbody td {
+        padding: 12px 12px;
+        border-bottom: 1px solid #eef2f8;
     }
 
-    table.dataTable tbody tr:hover {
-        background: #f1f5ff;
+    .table-custom tbody tr:hover {
+        background: #fafcff;
     }
 
-/* ---------- Modal Styling ---------- */
-
-.modal-lg {
-    max-width: 50% !important; /* Reduce modal width by 50% */
-}
-
-.modal-dialog-centered {
-    display: flex;
-    align-items: center;
-    min-height: calc(100% - 1.75rem);
-}
-
+/* modern modals */
 .modal-content {
-    border-radius: 10px;
+    border-radius: 32px;
     border: none;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 30px 50px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
-
-/* Modal header styling */
 
 .modal-header {
-    background: #0d6efd;
-    color: white;
-    border-bottom: none;
+    background: #ffffff;
+    border-bottom: 1px solid #eef2f8;
+    color: #0f172a;
+    padding: 1.25rem 1.5rem;
 }
 
     .modal-header .btn-close {
-        filter: invert(1);
+        filter: none;
+        opacity: 0.7;
     }
 
-/* Modal footer */
-
-.modal-footer {
-    border-top: none;
+/* Radio containers */
+#SurgeryTime, #Theater, #Urgency {
+    background: #f8fafd;
+    border-radius: 20px;
+    padding: 12px 18px;
 }
 
-/* ---------- Radio Containers ---------- */
-
-#SurgeryTime,
-#Theater,
-#Urgency {
-    background: #f8f9fa;
-    border-radius: 6px;
-    padding: 10px;
-}
-
-/* ---------- Responsive Modals ---------- */
-
+/* Responsive queries - properly formatted */
 @media (max-width: 992px) {
     .modal-lg {
-        max-width: 80% !important;
+        max-width: 85%;
     }
 }
 
 @media (max-width: 768px) {
-    .modal-lg {
-        max-width: 95% !important;
+    .custom-card {
+        width: 90%;
     }
+
+    body {
+        padding-top: 70px;
+    }
+}
+
+/* extra medical badge */
+.badge-stat {
+    background: #eef2ff;
+    color: #1e3a8a;
+    border-radius: 40px;
+    padding: 2px 12px;
+    font-weight: 600;
+}
+
+/* Table search input styling */
+.search-input {
+    border-radius: 48px;
+    border: 1px solid #e2e8f0;
+    padding: 8px 16px 8px 40px;
+    font-size: 13px;
+    background: #ffffff;
+    width: 260px;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+/* Section titles */
+.section-title {
+    font-weight: 700;
+    color: #0f2b3d;
+    letter-spacing: -0.2px;
+    margin-bottom: 18px;
+    font-size: 1.35rem;
+}
+
+/* Chart cards */
+.chart-card {
+    border-radius: 28px;
+    border: none;
+    background: white;
+    transition: all 0.2s;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.02);
+}
+
+/* Data table wrapper */
+.data-table-wrapper {
+    background: white;
+    border-radius: 24px;
+    padding: 8px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+    border: 1px solid #edf2f7;
 }
