@@ -11,159 +11,720 @@
     <title>Edit Treatment Codes</title>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            padding: 2rem 1rem;
+        }
+
+        /* ---------- Page Header ---------- */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+            .page-header h2 {
+                font-size: 1.875rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+
+            .page-header .subtitle {
+                color: var(--text-secondary);
+                font-size: 0.95rem;
+            }
+
+            .page-header .booking-id-badge {
+                background: #eef2ff;
+                color: var(--primary);
+                padding: 0.35rem 1rem;
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                margin-left: 0.75rem;
+            }
+
+        /* ---------- Add Treatment Card ---------- */
+        .add-treatment-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: box-shadow 0.2s ease;
+        }
+
+            .add-treatment-card:hover {
+                box-shadow: var(--shadow-lg);
+            }
+
+            .add-treatment-card .card-title {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 1.25rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .add-treatment-card .form-label {
+                font-weight: 600;
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 0.5rem;
+            }
+
+            .add-treatment-card .form-control,
+            .add-treatment-card .form-select {
+                border: 2px solid var(--border-color);
+                border-radius: 10px;
+                padding: 0.625rem 1rem;
+                font-size: 0.95rem;
+                transition: all 0.2s ease;
+                background: var(--light-bg);
+            }
+
+                .add-treatment-card .form-control:focus,
+                .add-treatment-card .form-select:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+                    background: white;
+                }
+
+        .search-icon {
+            position: relative;
+        }
+
+            .search-icon i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-secondary);
+                z-index: 10;
+            }
+
+            .search-icon input {
+                padding-left: 2.5rem;
+            }
+
+        .btn-add-treatment {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.625rem 1.5rem;
+            font-weight: 600;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            height: 44px;
+            margin-top: 1.85rem;
+        }
+
+            .btn-add-treatment:hover {
+                background: var(--primary-hover);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            }
+
+        /* ---------- Table Card ---------- */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+            .table-card .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.25rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid var(--border-color);
+            }
+
+                .table-card .card-header h3 {
+                    font-size: 1.2rem;
+                    font-weight: 700;
+                    color: var(--text-primary);
+                    margin: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+        .treatment-count {
+            background: #eef2ff;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* ---------- Table Styling ---------- */
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                color: white;
+                font-weight: 600;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 14px 16px;
+                border: none;
+            }
+
+                .table thead th:first-child {
+                    border-top-left-radius: 12px;
+                }
+
+                .table thead th:last-child {
+                    border-top-right-radius: 12px;
+                }
+
+            .table tbody tr {
+                transition: all 0.2s ease;
+            }
+
+                .table tbody tr:hover {
+                    background-color: #f1f5f9;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                }
+
+            .table tbody td {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+                color: var(--text-primary);
+                border-bottom: 1px solid var(--border-color);
+                vertical-align: middle;
+            }
+
+            .table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+                .table tbody tr:last-child td:first-child {
+                    border-bottom-left-radius: 12px;
+                }
+
+                .table tbody tr:last-child td:last-child {
+                    border-bottom-right-radius: 12px;
+                }
+
+        /* ---------- Patient Info Cell ---------- */
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .patient-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* ---------- Code Badge ---------- */
+        .code-badge {
+            display: inline-block;
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        /* ---------- Time Badge ---------- */
+        .time-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .time-am {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .time-pm {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        /* ---------- Remove Button ---------- */
+        .btn-remove {
+            background: #fef2f2;
+            color: var(--danger);
+            border: none;
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+            .btn-remove:hover {
+                background: var(--danger);
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+            }
+
+        /* ---------- Save Button ---------- */
+        .btn-save-section {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.75rem 2.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+            .btn-save:hover {
+                background: #059669;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+                color: white;
+            }
+
+        /* ---------- Empty State ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                color: #cbd5e1;
+                margin-bottom: 1rem;
+            }
+
+        /* ---------- Modal Styling ---------- */
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            border-bottom: none;
+            padding: 1.25rem 1.5rem;
+        }
+
+            .modal-header .modal-title {
+                font-weight: 700;
+                font-size: 1.2rem;
+            }
+
+            .modal-header .btn-close {
+                filter: brightness(0) invert(1);
+                opacity: 0.8;
+            }
+
+        .modal-body {
+            padding: 2rem;
+            text-align: center;
+            background: white;
+        }
+
+            .modal-body i {
+                font-size: 3rem;
+                color: var(--warning);
+                margin-bottom: 1rem;
+            }
+
+            .modal-body h5 {
+                color: var(--text-primary);
+                margin-bottom: 0.5rem;
+            }
+
+            .modal-body p {
+                color: var(--text-secondary);
+                margin-bottom: 0;
+            }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-modal-save {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 2rem;
+            font-weight: 600;
+            border-radius: 10px;
+        }
+
+            .btn-modal-save:hover {
+                background: var(--primary-hover);
+            }
+
+        .btn-modal-cancel {
+            background: white;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+            padding: 0.6rem 2rem;
+            font-weight: 600;
+            border-radius: 10px;
+        }
+
+            .btn-modal-cancel:hover {
+                background: var(--light-bg);
+            }
+
+        /* ---------- Animations ---------- */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .add-treatment-card {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .table-card {
+            animation: fadeInUp 0.5s ease forwards;
+            animation-delay: 0.1s;
+        }
+
+        /* ---------- Responsive ---------- */
+        @@media (max-width: 768px) {
+            .add-treatment-card .row > div {
+                margin-bottom: 1rem;
+            }
+
+            .btn-add-treatment {
+                margin-top: 0.5rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .btn-save-section {
+                justify-content: center;
+            }
+
+            .btn-save {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="addTreatmentForm" method="post" asp-action="EditTreatment" asp-controller="Home">
-                            <h2>Edit Treatment Codes</h2>
-
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchTreatmentInput" class="form-label">Search Treatment Description</label>
-                                    <input id="searchTreatmentInput" class="form-control me-2" type="search" placeholder="Search Treatment Description" aria-label="Search" style="width:300px" onkeyup="filterTreatmentNames()">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="treatmentSelect" class="form-label">Treatment Description</label>
-                                    <select class="form-control" id="treatmentSelect" name="TreatmentCodeID" style="width:250px" required>
-                                        <option value="">Select a Description</option>
-                                        @foreach (var treatment in Model.AllTreatmentCodes)
-                                        {
-                                            <option value="@treatment.TreatmentCodeID" data-search="@treatment.TreatmentName.ToLower()">@treatment.TreatmentName</option>
-                                        }
-                                    </select>
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <br />
-                                    <input type="hidden" name="BookingID" value="@ViewBag.BookSurgeryID" />
-                                  
-                                    <button type="button" id="openTreatmentButton" class="btn btn-primary">Add</button>
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2>
+                    <i class="bi bi-capsule me-2"></i>Edit Treatment Codes
+                    <span class="booking-id-badge">
+                        <i class="bi bi-hash"></i> Booking #@ViewBag.BookSurgeryID
+                    </span>
+                </h2>
+                <p class="subtitle">Add or remove ICD-10 treatment codes for this surgery booking</p>
             </div>
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <!-- Your table content here -->
+
+            <!-- Add Treatment Section -->
+            <div class="add-treatment-card">
+                <div class="card-title">
+                    <i class="bi bi-plus-circle-fill" style="color: var(--primary);"></i>
+                    Add New Treatment Code
+                </div>
+                <form id="addTreatmentForm" method="post" asp-action="EditTreatment" asp-controller="Home">
+                    <div class="row align-items-end">
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <label for="searchTreatmentInput" class="form-label">
+                                <i class="bi bi-search me-1"></i> Search Description
+                            </label>
+                            <div class="search-icon">
+                                <i class="bi bi-search"></i>
+                                <input id="searchTreatmentInput" class="form-control" type="search" placeholder="Type to search treatment..." onkeyup="filterTreatmentNames()">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label for="treatmentSelect" class="form-label">
+                                <i class="bi bi-list-ul me-1"></i> Treatment Description
+                            </label>
+                            <select class="form-select" id="treatmentSelect" name="TreatmentCodeID" required>
+                                <option value="">Select a Description</option>
+                                @foreach (var treatment in Model.AllTreatmentCodes)
+                                {
+                                    <option value="@treatment.TreatmentCodeID" data-search="@treatment.TreatmentName.ToLower()">
+                                        @treatment.TreatmentName
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="hidden" name="BookingID" value="@ViewBag.BookSurgeryID" />
+                            <button type="button" id="openTreatmentButton" class="btn-add-treatment">
+                                <i class="bi bi-plus-lg"></i> Add Treatment
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Treatment Codes Table -->
+            <div class="table-card">
+                <div class="card-header">
+                    <h3>
+                        <i class="bi bi-table me-2"></i>Assigned Treatment Codes
+                    </h3>
+                    <span class="treatment-count">
+                        <i class="bi bi-tag me-1"></i>
+                        @Model.AllcombinedData.Count() Codes
+                    </span>
+                </div>
+
+                @if (Model.AllcombinedData.Any())
+                {
+                    <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Name</th>
+                                    <th scope="col"><i class="bi bi-person me-1"></i>Patient Name</th>
                                     <th scope="col">Surname</th>
-                                    <th scope="col">Surgery Date</th>
-                                    <th scope="col">Surgery Time</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Treatment Code(ICD-10 Code)</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col"><i class="bi bi-calendar-check me-1"></i>Surgery Date</th>
+                                    <th scope="col"><i class="bi bi-clock me-1"></i>Time</th>
+                                    <th scope="col"><i class="bi bi-journal-text me-1"></i>Description</th>
+                                    <th scope="col"><i class="bi bi-upc-scan me-1"></i>ICD-10 Code</th>
+                                    <th scope="col"><i class="bi bi-gear me-1"></i>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.AllcombinedData)
                                 {
                                     <tr>
-                                        <td>@item.Name</td>
+                                        <td>
+                                            <div class="patient-info">
+                                                <div class="patient-avatar">
+                                                    @item.Name?.Substring(0, 1)@item.Surname?.Substring(0, 1)
+                                                </div>
+                                                <strong>@item.Name</strong>
+                                            </div>
+                                        </td>
                                         <td>@item.Surname</td>
                                         <td>@item.SurgeryDate</td>
-                                        <td>@item.SurgeryTime</td>
+                                        <td>
+                                            <span class="time-badge @(item.SurgeryTime == "AM" ? "time-am" : "time-pm")">
+                                                <i class="bi bi-@(item.SurgeryTime == "AM" ? "sunrise" : "sunset") me-1"></i>
+                                                @item.SurgeryTime
+                                            </span>
+                                        </td>
                                         <td>@item.TreatmentName</td>
-                                        <td>@item.TreatmentCode</td>
+                                        <td>
+                                            <span class="code-badge">@item.TreatmentCode</span>
+                                        </td>
                                         <td>
                                             <form asp-action="DeleteTreatmentCode" asp-controller="Home" method="post">
                                                 <input type="hidden" name="btcID" value="@item.btcID" />
                                                 <input type="hidden" name="bookingID" value="@item.BookingID" />
                                                 <input type="hidden" name="name" value="@item.Name" />
                                                 <input type="hidden" name="surname" value="@item.Surname" />
-                                                <button type="submit" class="btn btn-danger">Remove</button>
+                                                <button type="submit" class="btn-remove">
+                                                    <i class="bi bi-trash"></i> Remove
+                                                </button>
                                             </form>
                                         </td>
-
                                     </tr>
                                 }
                             </tbody>
                         </table>
-                        <div class="form-group row">
-                            <div class="col-4">
-                                <br>
-                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Home" asp-action="SurgeonHome">Save</a>
-                            </div>
-                        </div>
                     </div>
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <h5>No Treatment Codes Added</h5>
+                        <p>Use the form above to add ICD-10 treatment codes for this booking.</p>
+                    </div>
+                }
+
+                <div class="btn-save-section">
+                    <a class="btn-save" asp-controller="Home" asp-action="SurgeonHome">
+                        <i class="bi bi-check2-circle"></i> Save & Return
+                    </a>
                 </div>
             </div>
+
             <!-- Confirmation Modal -->
-            <div class="modal fade" id="confirmTreatmentModal" tabindex="-1" role="dialog" aria-labelledby="confirmTreatmentModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal fade" id="confirmTreatmentModal" tabindex="-1" aria-labelledby="confirmTreatmentModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="confirmTreatmentModalLabel">Confirm Save</h5>
+                            <h5 class="modal-title" id="confirmTreatmentModalLabel">
+                                <i class="bi bi-check-circle me-2"></i>Confirm Addition
+                            </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure you want to add this Treatment?
+                            <i class="bi bi-question-circle"></i>
+                            <h5>Add This Treatment Code?</h5>
+                            <p>Are you sure you want to add this treatment code to the booking?</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="saveTreatmentButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
+                            <button type="button" class="btn-modal-cancel" data-bs-dismiss="modal" id="cancelSaveButton">
+                                <i class="bi bi-x-lg me-1"></i> No, Cancel
+                            </button>
+                            <button type="button" id="saveTreatmentButton" class="btn-modal-save">
+                                <i class="bi bi-check-lg me-1"></i> Yes, Add
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <script>
-                // Handle 'Add Medication Code' button click
-                $('#openTreatmentButton').on('click', function () {
-                    $('#confirmTreatmentModal').modal('show');
-                });
-                // Ensure 'No' button closes the confirmation modal
-                $('#cancelSaveButton').on('click', function () {
-                    $('#confirmTreatmentModal').modal('hide');
-                });
-                // Handle confirmation of saving Medication code
-                $('#saveTreatmentButton').on('click', function () {
-    $.ajax({
-        url: '@Url.Action("EditTreatment", "Home")',
-        type: 'POST',
-        data: $('#addTreatmentForm').serialize(),
-        success: function (response) {
-            // Redirect to the treatment codes list after successful addition
-            window.location.href = '@Url.Action("CheckTreatmentCode", "Home", new { bookingId = @ViewBag.BookSurgeryID })';
-        },
-        error: function (xhr, status, error) {
-            console.log("Error occurred:", error);
-        }
-    });
-});
-   // Function to filter treatment names
-               function filterTreatmentNames() {
-                var input = $('#searchTreatmentInput').val().toLowerCase();
-                $('#treatmentSelect option').each(function () {
-                    var treatmentName = $(this).text().toLowerCase();
-                    $(this).toggle(treatmentName.includes(input));
-                });
-                }
-            </script>
         </main>
     </div>
+
+    <script>
+        // Handle 'Add Treatment Code' button click
+        $('#openTreatmentButton').on('click', function () {
+            // Validate that a treatment is selected
+            if ($('#treatmentSelect').val() === '') {
+                alert('Please select a treatment description first.');
+                return;
+            }
+            $('#confirmTreatmentModal').modal('show');
+        });
+
+        // Ensure 'No' button closes the confirmation modal
+        $('#cancelSaveButton').on('click', function () {
+            $('#confirmTreatmentModal').modal('hide');
+        });
+
+        // Handle confirmation of saving Treatment code
+        $('#saveTreatmentButton').on('click', function () {
+            $.ajax({
+                url: '@Url.Action("EditTreatment", "Home")',
+                type: 'POST',
+                data: $('#addTreatmentForm').serialize(),
+                success: function (response) {
+                    // Redirect to the treatment codes list after successful addition
+                    window.location.href = '@Url.Action("CheckTreatmentCode", "Home", new { bookingId = @ViewBag.BookSurgeryID })';
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error occurred:", error);
+                    alert('An error occurred while adding the treatment code. Please try again.');
+                }
+            });
+        });
+
+        // Function to filter treatment names in dropdown
+        function filterTreatmentNames() {
+            var input = $('#searchTreatmentInput').val().toLowerCase();
+            var hasVisible = false;
+
+            $('#treatmentSelect option').each(function () {
+                if ($(this).val() === '') return; // Skip the placeholder
+
+                var treatmentName = $(this).text().toLowerCase();
+                var isVisible = treatmentName.includes(input);
+                $(this).toggle(isVisible);
+                if (isVisible) hasVisible = true;
+            });
+
+            // Reset selection if current selection is hidden
+            if ($('#treatmentSelect option:selected').is(':hidden')) {
+                $('#treatmentSelect').val('');
+            }
+        }
+    </script>
 </body>
 </html>
