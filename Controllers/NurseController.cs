@@ -32,7 +32,6 @@ namespace DEMO.Controllers
         [HttpGet]
         public IActionResult MainPage()
         {
-
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
             int.TryParse(accountIDString, out int accountID);
 
@@ -46,6 +45,13 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
+            // Get statistics for the profile sidebar
+            // You'll need to inject your DbContext or service to get these counts
+            // Example using a hypothetical _context:
+            ViewBag.AdmittedCount = _dbContext.BookSurgery.Count(p => p.Status == "Admitted");
+            ViewBag.DischargedCount = _dbContext.BookSurgery.Count(p => p.Status == "Discharged" );
+            ViewBag.AwaitingAdmissionCount = _dbContext.BookSurgery.Count(s => s.SurgeryDate == today && s.Status == "Booked");
 
             return View();
         }
@@ -175,12 +181,17 @@ namespace DEMO.Controllers
             var userEmail = HttpContext.Session.GetString("UserEmail");
             var today = DateOnly.FromDateTime(DateTime.Today);
 
+            ViewBag.AdmittedCount = _dbContext.BookSurgery.Count(p => p.Status == "Admitted");
+            ViewBag.DischargedCount = _dbContext.BookSurgery.Count(p => p.Status == "Discharged");
+            ViewBag.AwaitingAdmissionCount = _dbContext.BookSurgery.Count(s => s.SurgeryDate == today && s.Status == "Booked");
+
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
+
         [HttpGet]
         public JsonResult GetBedsByWard(int wardId)
         {

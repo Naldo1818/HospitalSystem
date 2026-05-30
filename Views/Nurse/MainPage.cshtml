@@ -3,47 +3,558 @@
     Layout = "_LayoutNurse";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Murse Main Page</title>
-</head>
-<body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:1000px">
-                <div class="col">
-                    <div class="p-3 mt-5 border">
+<style>
+    :root {
+        --primary: #0d9488;
+        --primary-hover: #0f766e;
+        --card-bg: #ffffff;
+        --border-color: #e2e8f0;
+        --text-primary: #1e293b;
+        --text-secondary: #64748b;
+        --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    }
 
-                        <h1 style=" text-align: center;">Welcome @ViewBag.UserName @ViewBag.UserSurname</h1>
-                        <div style="display: flex; gap: 20px;  padding-left: 180px;">
-                            
-                            <div class="card" style="width: 18rem; margin-top: 48px;">
-                                <img src="~/css/DP.jpeg" class="card-img-top" alt="Doctor Prescription">
-                                <div class="card-body">
-                                    <h5 class="card-title">Booking list</h5>
-                                    <p class="card-text">This will take the Nurse to the bookings made by the surgeon to view the bookings and allow for admission of patients to the system.</p>
-                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="ViewSurgeryBooking" asp-route-accountID="@ViewBag.AccountID">Booking list</a>
+    /* ---------- Welcome Banner ---------- */
+    .welcome-banner {
+        background: linear-gradient(135deg, #1e473a 0%, #0f3d2b 100%);
+        border-radius: 20px;
+        padding: 2rem 2.5rem;
+        margin-bottom: 2rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+    }
 
-                                </div>
-                            </div>
-                            <div class="card" style="width: 18rem; margin-top: 48px;">
-                                <img src="~/css/HB.jpeg" class="card-img-top" alt="Hospital Bed">
-                                <div class="card-body">
-                                    <h5 class="card-title">Admissions list</h5>
-                                    <p class="card-text">By clicking the button below, you will be able to view all current patients admitted in the day hospitals. From the you can also search for a specific patient and look at the vitals takin by the nurses</p>
-                                    <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="AdmittedPatients" asp-route-accountID="@ViewBag.AccountID">Admission List</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </main>
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            right: 15%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50%;
+        }
+
+        .welcome-banner h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+            color: white; /* Add this line */
+        }
+
+        .welcome-banner .welcome-subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .welcome-banner .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+            margin-top: 0.75rem;
+        }
+
+    /* ---------- Quick Stats Row ---------- */
+    .quick-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+            .stat-card .stat-icon.blue {
+                background: #eff6ff;
+                color: #3b82f6;
+            }
+
+            .stat-card .stat-icon.green {
+                background: #f0fdf4;
+                color: #22c55e;
+            }
+
+            .stat-card .stat-icon.amber {
+                background: #fffbeb;
+                color: #f59e0b;
+            }
+
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-card .stat-trend {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+            .stat-card .stat-trend.up {
+                color: #22c55e;
+            }
+
+            .stat-card .stat-trend.down {
+                color: #ef4444;
+            }
+
+    /* ---------- Navigation Cards ---------- */
+    .nav-cards {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .nav-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+        .nav-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-card .nav-card-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+            .nav-card .nav-card-image.booking {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-card .nav-card-image.admission {
+                background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-card .nav-card-image i {
+                font-size: 4rem;
+                color: rgba(255,255,255,0.9);
+            }
+
+        .nav-card .nav-card-body {
+            padding: 1.5rem;
+        }
+
+        .nav-card .nav-card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-card .nav-card-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+        }
+
+        .nav-card .nav-card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+            .nav-card .nav-card-btn.booking-btn {
+                background: #eef2ff;
+                color: #4f46e5;
+            }
+
+                .nav-card .nav-card-btn.booking-btn:hover {
+                    background: #4f46e5;
+                    color: white;
+                }
+
+            .nav-card .nav-card-btn.admission-btn {
+                background: #e6f7f0;
+                color: #0d9488;
+            }
+
+                .nav-card .nav-card-btn.admission-btn:hover {
+                    background: #0d9488;
+                    color: white;
+                }
+
+    /* ---------- Recent Activity Table ---------- */
+    .activity-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+    }
+
+        .activity-card .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+            .activity-card .card-header h3 {
+                font-size: 1.1rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+    .activity-table {
+        width: 100%;
+    }
+
+        .activity-table th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            padding: 0.75rem 1rem;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        .activity-table td {
+            padding: 0.85rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .activity-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            .activity-table tbody tr:hover {
+                background: #f8fafc;
+            }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+        .status-badge.booked {
+            background: #eff6ff;
+            color: #3b82f6;
+        }
+
+        .status-badge.admitted {
+            background: #f0fdf4;
+            color: #22c55e;
+        }
+
+        .status-badge.pending {
+            background: #fffbeb;
+            color: #f59e0b;
+        }
+
+    /* ---------- Responsive ---------- */
+    @@media (max-width: 1024px) {
+        .quick-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .nav-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .welcome-banner {
+            padding: 1.5rem;
+        }
+
+            .welcome-banner h1 {
+                font-size: 1.5rem;
+            }
+
+        .quick-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* ---------- Animations ---------- */
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .welcome-banner {
+        animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .stat-card:nth-child(1) {
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(2) {
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: 0.2s;
+    }
+
+    .stat-card:nth-child(3) {
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: 0.3s;
+    }
+
+    .nav-cards {
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: 0.2s;
+    }
+
+    .activity-card {
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: 0.3s;
+    }
+</style>
+
+<!-- Welcome Banner -->
+<div class="welcome-banner">
+    <h1>Welcome back, Nurse @ViewBag.UserName @ViewBag.UserSurname 👋</h1>
+    <div class="welcome-subtitle">
+        <span>Here's what's happening with your patients today</span>
     </div>
-</body>
-</html>
+    <div class="date-badge">
+        <i class="bi bi-calendar3"></i>
+        @DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+    </div>
+</div>
 
+<!-- Quick Stats Row -->
+<div class="quick-stats">
+    <div class="stat-card">
+        <div class="stat-icon blue">
+            <i class="bi bi-person-plus"></i>
+        </div>
+        <div class="stat-value">@(ViewBag.AdmittedCount ?? 0)</div>
+        <div class="stat-label">Total Admitted Patients</div>
+        <div class="stat-trend up">
+            <i class="bi bi-arrow-up-short"></i> Currently in ward
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon green">
+            <i class="bi bi-clipboard-check"></i>
+        </div>
+        <div class="stat-value">@(ViewBag.DischargedCount ?? 0)</div>
+        <div class="stat-label">Discharged Today</div>
+        <div class="stat-trend up">
+            <i class="bi bi-check-circle"></i> Completed
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon amber">
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div class="stat-value">@(ViewBag.AwaitingAdmissionCount ?? 0)</div>
+        <div class="stat-label">Awaiting Admission</div>
+        <div class="stat-trend">
+            <i class="bi bi-clock"></i> Pending today
+        </div>
+    </div>
+</div>
+
+<!-- Navigation Cards -->
+<div class="nav-cards">
+    <a class="nav-card" asp-controller="Nurse" asp-action="ViewSurgeryBooking" asp-route-accountID="@ViewBag.AccountID">
+        <div class="nav-card-image booking">
+            <i class="bi bi-calendar2-check"></i>
+        </div>
+        <div class="nav-card-body">
+            <div class="nav-card-title">
+                <i class="bi bi-journal-medical"></i> Surgery Bookings
+            </div>
+            <p class="nav-card-text">
+                View all surgery bookings made by surgeons. Manage patient admissions, check surgery schedules, and prepare for upcoming procedures.
+            </p>
+            <span class="nav-card-btn booking-btn">
+                View Bookings <i class="bi bi-arrow-right"></i>
+            </span>
+        </div>
+    </a>
+
+    <a class="nav-card" asp-controller="Nurse" asp-action="AdmittedPatients" asp-route-accountID="@ViewBag.AccountID">
+        <div class="nav-card-image admission">
+            <i class="bi bi-hospital"></i>
+        </div>
+        <div class="nav-card-body">
+            <div class="nav-card-title">
+                <i class="bi bi-people-fill"></i> Admitted Patients
+            </div>
+            <p class="nav-card-text">
+                Monitor all currently admitted patients. Search for specific patients, review vitals taken by nurses, and manage patient care.
+            </p>
+            <span class="nav-card-btn admission-btn">
+                View Patients <i class="bi bi-arrow-right"></i>
+            </span>
+        </div>
+    </a>
+</div>
+
+<!-- Recent Activity Section -->
+<div class="activity-card">
+    <div class="card-header">
+        <h3>
+            <i class="bi bi-activity"></i> Recent Admissions
+        </h3>
+        <a class="btn btn-sm btn-outline-secondary rounded-pill" asp-controller="Nurse" asp-action="AdmittedPatients">
+            View All <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="activity-table">
+            <thead>
+                <tr>
+                    <th>Patient Name</th>
+                    <th>Admission Date</th>
+                    <th>Ward</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.RecentAdmissions != null)
+                {
+                    @foreach (var admission in ViewBag.RecentAdmissions)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div style="width:32px;height:32px;border-radius:50%;background:#e6f7f0;color:#0d9488;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.8rem;">
+                                        @admission.Name?.Substring(0, 1)@admission.Surname?.Substring(0, 1)
+                                    </div>
+                                    <strong>@admission.Name @admission.Surname</strong>
+                                </div>
+                            </td>
+                            <td>@admission.AdmissionDate</td>
+                            <td>@admission.Ward</td>
+                            <td>
+                                <span class="status-badge @(admission.Status == "Admitted" ? "admitted" : admission.Status == "Booked" ? "booked" : "pending")">
+                                    @admission.Status
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" style="text-align:center;padding:2rem;color:#94a3b8;">
+                            <i class="bi bi-inbox" style="font-size:2rem;display:block;margin-bottom:0.5rem;"></i>
+                            No recent admissions to display
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
