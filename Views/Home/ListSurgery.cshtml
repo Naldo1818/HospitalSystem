@@ -11,491 +11,725 @@
     <title>Surgery Bookings</title>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
-
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        /* ---------- General Table ---------- */
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            padding: 2rem 1rem;
+        }
+
+        /* ---------- Page Header ---------- */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+            .page-header h2 {
+                font-size: 1.875rem;
+                font-weight: 700;
+                color: var(--text-primary);
+                margin-bottom: 0.25rem;
+            }
+
+            .page-header .subtitle {
+                color: var(--text-secondary);
+                font-size: 0.95rem;
+            }
+
+        /* ---------- Search Card ---------- */
+        .search-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            transition: box-shadow 0.2s ease;
+        }
+
+            .search-card:hover {
+                box-shadow: var(--shadow-lg);
+            }
+
+            .search-card .form-label {
+                font-weight: 600;
+                font-size: 0.875rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                margin-bottom: 0.5rem;
+            }
+
+            .search-card .form-control {
+                border: 2px solid var(--border-color);
+                border-radius: 10px;
+                padding: 0.625rem 1rem;
+                font-size: 0.95rem;
+                transition: all 0.2s ease;
+                background: var(--light-bg);
+            }
+
+                .search-card .form-control:focus {
+                    border-color: var(--primary);
+                    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+                    background: white;
+                }
+
+        .search-icon {
+            position: relative;
+        }
+
+            .search-icon i {
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-secondary);
+                z-index: 10;
+            }
+
+            .search-icon input {
+                padding-left: 2.5rem;
+            }
+
+        /* ---------- Table Card ---------- */
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        /* ---------- DataTable Styling ---------- */
         #example {
-            display: none; /* Hide initially */
+            display: none;
+            width: 100% !important;
         }
 
-        table.display {
-            width: 100%;
-            border-collapse: collapse;
+        .dataTables_wrapper {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-            table.display th, table.display td {
-                text-align: left;
-                padding: 12px;
-            }
-
-            table.display thead {
-                background-color: #1f1f1f;
-                color: #fff;
-            }
-
-            table.display tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-
-        /* ---------- Form Container ---------- */
-        .p-3.mt-5.border {
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+        .dataTables_length label,
+        .dataTables_filter label {
+            font-weight: 500;
+            color: var(--text-secondary);
         }
 
-        /* ---------- Input Fields ---------- */
-        .form-control {
-            border-radius: 6px;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            transition: 0.3s;
+        .dataTables_length select,
+        .dataTables_filter input {
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            padding: 0.4rem 0.75rem;
+            background: var(--light-bg);
         }
 
-            .form-control:focus {
-                border-color: #007bff;
-                box-shadow: 0 0 5px rgba(0,123,255,0.3);
-            }
-
-        /* ---------- Buttons ---------- */
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            border-radius: 6px;
-            padding: 6px 12px;
-            transition: 0.3s;
+        table.dataTable {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
         }
 
-            .btn-primary:hover {
-                background-color: #0056b3;
-                border-color: #0056b3;
+            table.dataTable thead th {
+                background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+                color: white;
+                font-weight: 600;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                padding: 14px 16px;
+                border: none;
             }
 
-        .btn-secondary {
-            border-radius: 6px;
-            padding: 6px 12px;
+            table.dataTable tbody tr {
+                transition: all 0.2s ease;
+            }
+
+                table.dataTable tbody tr:hover {
+                    background-color: #f1f5f9;
+                    transform: translateY(-1px);
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                }
+
+            table.dataTable tbody td {
+                padding: 14px 16px;
+                font-size: 0.9rem;
+                color: var(--text-primary);
+                border-bottom: 1px solid var(--border-color);
+                vertical-align: middle;
+            }
+
+            table.dataTable tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+        /* ---------- Action Buttons ---------- */
+        .btn-group-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-edit {
+            background: #eef2ff;
+            color: var(--primary);
+        }
+
+            .btn-edit:hover {
+                background: var(--primary);
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            }
+
+        .btn-treatment {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+            .btn-treatment:hover {
+                background: #16a34a;
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+            }
+
+        .btn-vitals {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+            .btn-vitals:hover {
+                background: #ea580c;
+                color: white;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+            }
+
+        /* ---------- Badges ---------- */
+        .badge-theatre {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-dove {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .badge-eagle {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .badge-hadida {
+            background: #fce7f3;
+            color: #db2777;
         }
 
         /* ---------- Modal Styling ---------- */
-        .modal-lg, .modal-lg-custom {
-            max-width: 50% !important; /* 50% width for all large modals */
-            width: 50% !important;
-        }
-
-        .modal-dialog-centered {
-            display: flex;
-            align-items: center;
-            min-height: calc(100% - 60px); /* Adjust based on header/footer */
-        }
-
         .modal-content {
-            width: 100%; /* Fit content inside new modal width */
-            border-radius: 10px;
+            border-radius: 20px;
             border: none;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
-            background-color: #fff;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            overflow: hidden;
         }
 
-        /* Modal Headers */
         .modal-header {
-            background-color: #1f1f1f;
-            color: #fff;
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
             border-bottom: none;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+            padding: 1.25rem 1.5rem;
         }
 
-            .modal-header .btn-close {
-                filter: invert(1);
+            .modal-header .modal-title {
+                font-weight: 700;
+                font-size: 1.2rem;
             }
 
-        /* Modal Body */
+            .modal-header .btn-close {
+                filter: brightness(0) invert(1);
+                opacity: 0.8;
+            }
+
         .modal-body {
-            padding: 20px;
-            max-height: 60vh;
-            overflow-y: auto;
+            padding: 1.75rem;
+            background: var(--light-bg);
         }
 
-        /* Modal Footer */
         .modal-footer {
-            border-top: none;
-            justify-content: flex-start;
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--border-color);
+            gap: 0.75rem;
         }
 
-        /* ---------- Form Radio Inputs ---------- */
-        .form-check-input {
-            margin-right: 5px;
+            .modal-footer .btn {
+                padding: 0.6rem 1.5rem;
+                font-weight: 600;
+                border-radius: 10px;
+                font-size: 0.9rem;
+            }
+
+        .btn-save {
+            background: var(--primary);
+            color: white;
+            border: none;
         }
 
-        .form-check-label {
-            font-weight: 500;
+            .btn-save:hover {
+                background: var(--primary-hover);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            }
+
+        .btn-cancel {
+            background: white;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
         }
 
-        /* ---------- Error Messages ---------- */
-        .text-danger {
+            .btn-cancel:hover {
+                background: var(--light-bg);
+                border-color: #cbd5e1;
+            }
+
+        /* ---------- Form Fields in Modal ---------- */
+        .modal-body .form-label {
+            font-weight: 600;
             font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
         }
 
-        /* ---------- Row Adjustments ---------- */
-        .row {
-            margin-left: 0;
-            margin-right: 0;
+        .modal-body .form-control {
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+            padding: 0.6rem 0.9rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+            .modal-body .form-control:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+
+            .modal-body .form-control:disabled {
+                background: #f1f5f9;
+                color: #94a3b8;
+            }
+
+        /* Radio Button Group */
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+            .radio-option:hover {
+                border-color: var(--primary);
+                background: #eef2ff;
+            }
+
+            .radio-option input[type="radio"]:checked + label {
+                color: var(--primary);
+                font-weight: 700;
+            }
+
+            .radio-option:has(input:checked) {
+                border-color: var(--primary);
+                background: #eef2ff;
+            }
+
+        /* ---------- Confirmation Modal ---------- */
+        .confirm-modal .modal-content {
+            border-radius: 16px;
+        }
+
+        .confirm-modal .modal-body {
+            background: white;
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+
+            .confirm-modal .modal-body i {
+                font-size: 3rem;
+                color: var(--warning);
+                margin-bottom: 1rem;
+            }
+
+        /* ---------- Responsive ---------- */
+        @@media (max-width: 768px) {
+            .search-card .row > div {
+                margin-bottom: 1rem;
+            }
+
+            .btn-group-actions {
+                flex-direction: column;
+            }
+
+            .btn-action {
+                justify-content: center;
+            }
+
+            .modal-lg {
+                max-width: 95% !important;
+            }
+        }
+
+        /* ---------- Animations ---------- */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-card, .table-card {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .table-card {
+            animation-delay: 0.1s;
         }
     </style>
-
-
 </head>
 <body>
     <div class="container">
         <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="searchForm">
-                            <h2>Surgery List</h2>
-                            <div class="form-group row">
-                                <div class="col-3">
-                                    <label for="searchInput" class="form-label">Search</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
-                                </div>
-                                <div class="col-3">
-                                    <label for="dateInput" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="dateInput" style="width:300px">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h2><i class="bi bi-calendar-heart me-2"></i>Surgery Bookings</h2>
+                <p class="subtitle">Manage and view all scheduled surgeries</p>
             </div>
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table id="example" class="display" style="width:100%">
-                            <thead>
-                                <tr>
 
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Surgeon Name</th>
-                                    <th scope="col">Surgery Date</th>
-                                    <th scope="col">Surgery Time</th>
-                                    <th scope="col">Theatre</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var Data in Model.AllcombinedData)
-                                {
-                                    <tr>
-                                        <td>@Data.Name</td>
-                                        <td>@Data.Surname</td>
-                                        <td>@ViewBag.UserName @ViewBag.UserSurname</td>
-                                        <td>@Data.SurgeryDate</td>
-                                        <td>@Data.SurgeryTime</td>
-                                        <td>@Data.Theater</td>
-                                        <td>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   data-bs-toggle="modal"
-                                                   data-bs-target="#editBookingModal"
-                                                   data-name="@Data.Name"
-                                                   data-surname="@Data.Surname"
-                                                   data-surgery-date="@Data.SurgeryDate"
-                                                   data-surgery-time="@Data.SurgeryTime"
-                                                   data-theater="@Data.Theater"
-                                                   data-booking-id="@Data.BookingID"
-                                                   data-account-id="@Data.AccountID"
-                                                   data-patient-id="@Data.PatientID">
-                                                    Edit Booking
-                                                </a>
-                                            </div>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   aria-hidden="true"
-                                                   asp-controller="Home"
-                                                   asp-action="CheckTreatmentCode"
-                                                   asp-route-bookingId="@Data.BookingID">
-                                                    Edit Treatment Codes
-                                                </a>
-                                            </div>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   aria-hidden="true"
-                                                   asp-controller="Home"
-                                                   asp-action="vitalsAndHistory"
-                                                   asp-route-name="@Data.Name"
-                                                   asp-route-surname="@Data.Surname"
-                                                   asp-route-patientID="@Data.PatientID">
-                                                    Check Vitals and Medical History
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+            <!-- Search Section -->
+            <div class="search-card">
+                <form id="searchForm">
+                    <div class="row align-items-end">
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <label for="searchInput" class="form-label">
+                                <i class="bi bi-search me-1"></i> Search Patient
+                            </label>
+                            <div class="search-icon">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search by name, surname...">
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label for="dateInput" class="form-label">
+                                <i class="bi bi-calendar3 me-1"></i> Filter by Date
+                            </label>
+                            <input type="date" class="form-control" id="dateInput">
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-secondary w-100" id="clearFilters">
+                                <i class="bi bi-x-circle me-1"></i> Clear Filters
+                            </button>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
+
+            <!-- Table Section -->
+            <div class="table-card">
+                <table id="example" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th scope="col"><i class="bi bi-person me-1"></i>Name</th>
+                            <th scope="col">Surname</th>
+                            <th scope="col"><i class="bi bi-heart-pulse me-1"></i>Surgeon</th>
+                            <th scope="col"><i class="bi bi-calendar-check me-1"></i>Surgery Date</th>
+                            <th scope="col"><i class="bi bi-clock me-1"></i>Time</th>
+                            <th scope="col"><i class="bi bi-building me-1"></i>Theatre</th>
+                            <th scope="col"><i class="bi bi-gear me-1"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var Data in Model.AllcombinedData)
+                        {
+                            <tr>
+                                <td><strong>@Data.Name</strong></td>
+                                <td>@Data.Surname</td>
+                                <td>@ViewBag.UserName @ViewBag.UserSurname</td>
+                                <td>@Data.SurgeryDate</td>
+                                <td>
+                                    <span class="badge @(Data.SurgeryTime == "AM" ? "bg-info text-dark" : "bg-warning text-dark")">
+                                        @Data.SurgeryTime
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge-theatre @(Data.Theater == "Dove Theatre" ? "badge-dove" : Data.Theater == "Eagle Theatre" ? "badge-eagle" : "badge-hadida")">
+                                        @Data.Theater
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group-actions">
+                                        <a class="btn-action btn-edit"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#editBookingModal"
+                                           data-name="@Data.Name"
+                                           data-surname="@Data.Surname"
+                                           data-surgery-date="@Data.SurgeryDate"
+                                           data-surgery-time="@Data.SurgeryTime"
+                                           data-theater="@Data.Theater"
+                                           data-booking-id="@Data.BookingID"
+                                           data-account-id="@Data.AccountID"
+                                           data-patient-id="@Data.PatientID">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a>
+                                        <a class="btn-action btn-treatment"
+                                           asp-controller="Home"
+                                           asp-action="CheckTreatmentCode"
+                                           asp-route-bookingId="@Data.BookingID">
+                                            <i class="bi bi-capsule"></i> Treatment
+                                        </a>
+                                        <a class="btn-action btn-vitals"
+                                           asp-controller="Home"
+                                           asp-action="vitalsAndHistory"
+                                           asp-route-name="@Data.Name"
+                                           asp-route-surname="@Data.Surname"
+                                           asp-route-patientID="@Data.PatientID">
+                                            <i class="bi bi-clipboard2-heart"></i> Vitals
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
             <!-- Edit Booking Modal -->
-            <div class="modal fade" id="editBookingModal" role="dialog" tabindex="-1" aria-labelledby="editBookingModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal fade" id="editBookingModal" tabindex="-1" aria-labelledby="editBookingModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="editBookingModal">Edit Booking</h5>
+                            <h5 class="modal-title" id="editBookingModalLabel">
+                                <i class="bi bi-pencil-square me-2"></i>Edit Surgery Booking
+                            </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form id="editUserForm" method="post" asp-action="EditSurgery" asp-controller="Home">
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <input type="hidden" id="PatientID" name="PatientID" />
-                                        <input type="hidden" id="BookingID" name="BookingID" />
-                                        <input type="hidden" id="AccountID" name="AccountID" />
-                                        <input type="hidden" name="Status" value="Booked">
-                                        <label for="nameInput" class="form-label">Name</label>
-                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" disabled style="width:250px">
+                                <input type="hidden" id="PatientID" name="PatientID" />
+                                <input type="hidden" id="BookingID" name="BookingID" />
+                                <input type="hidden" id="AccountID" name="AccountID" />
+                                <input type="hidden" name="Status" value="Booked">
 
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="nameInput" class="form-label">Patient Name</label>
+                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" disabled>
                                     </div>
-                                    <div class="col-4">
-                                        <label for="surnameInput" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" disabled style="width:250px">
+                                    <div class="col-md-6">
+                                        <label for="surnameInput" class="form-label">Patient Surname</label>
+                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" disabled>
                                     </div>
-                                    <div class="col-4">
+                                    <div class="col-md-6">
                                         <label for="surgeryDateInput" class="form-label">Surgery Date</label>
-                                        <input type="date" class="form-control" name="SurgeryDate" id="surgeryDateInput" placeholder="Select Date" style="width:250px">
+                                        <input type="date" class="form-control" name="SurgeryDate" id="surgeryDateInput">
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                  
-                                    <div class="col-4">
-                                        <br />
-                                        <label for="SurgeryTime" class="form-label">Surgery Time</label>
-                                        <div id="SurgeryTime" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
-                                            <div class="form-check" style="margin: 0;">
-                                                <input class="form-check-input" type="radio" name="SurgeryTime" id="surgeryTimeInput" value="AM">
-                                                <label class="form-check-label" for="AM">AM</label>
-                                            </div>
-                                            <div class="form-check" style="margin: 0;">
-                                                <input class="form-check-input" type="radio" name="SurgeryTime" id="surgeryTimeInput" value="PM">
-                                                <label class="form-check-label" for="PM">PM</label>
-                                            </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Surgery Time</label>
+                                        <div class="radio-group">
+                                            <label class="radio-option">
+                                                <input class="form-check-input" type="radio" name="SurgeryTime" value="AM">
+                                                <span><i class="bi bi-sunrise me-1"></i> AM</span>
+                                            </label>
+                                            <label class="radio-option">
+                                                <input class="form-check-input" type="radio" name="SurgeryTime" value="PM">
+                                                <span><i class="bi bi-sunset me-1"></i> PM</span>
+                                            </label>
                                         </div>
                                     </div>
-                                    
-                                    <div class="col-4">
-                                        <br />
-                                        <label for="Theater" class="form-label">Theater</label>
-                                        <div id="Theater" class="form-control" style="width:250px; padding: 10px; display: inline-table; justify-content: space-around; align-items: center;">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Dove Theatre">
-                                                <label class="form-check-label" for="Dove Theatre">Dove Theatre</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Eagle Theatre">
-                                                <label class="form-check-label" for="Eagle Theatre">Eagle Theatre</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Hadida Theatre">
-                                                <label class="form-check-label" for="Hadida Theatre">Hadida Theatre</label>
-                                            </div>
+                                    <div class="col-12">
+                                        <label class="form-label">Theatre</label>
+                                        <div class="radio-group">
+                                            <label class="radio-option">
+                                                <input class="form-check-input" type="radio" name="Theater" value="Dove Theatre">
+                                                <span><i class="bi bi-building me-1"></i> Dove Theatre</span>
+                                            </label>
+                                            <label class="radio-option">
+                                                <input class="form-check-input" type="radio" name="Theater" value="Eagle Theatre">
+                                                <span><i class="bi bi-building me-1"></i> Eagle Theatre</span>
+                                            </label>
+                                            <label class="radio-option">
+                                                <input class="form-check-input" type="radio" name="Theater" value="Hadida Theatre">
+                                                <span><i class="bi bi-building me-1"></i> Hadida Theatre</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Confirmation Modal for Book Surgery -->
-            <div class="modal fade" id="confirmEditBookingModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditBookingModal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmEditBookingModal">Confirm Booking</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg me-1"></i> Cancel
+                            </button>
+                            <button type="button" id="openConfirmModalButton" class="btn btn-save">
+                                <i class="bi bi-check-lg me-1"></i> Save Changes
                             </button>
                         </div>
-                        <div class="modal-body">
-                            Are you sure you want to save this updated surgery?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="confirmEditBookingButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                        </div>
                     </div>
                 </div>
             </div>
-            <!-- Add Prescription Modal -->
-            <div class="modal fade" id="addPrescriptionModal" role="dialog" tabindex="-1" aria-labelledby="addPrescriptionModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+
+            <!-- Confirmation Modal -->
+            <div class="modal fade confirm-modal" id="confirmEditBookingModal" tabindex="-1" aria-labelledby="confirmEditBookingModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addPrescriptionModal">Add Prescription</h5>
+                            <h5 class="modal-title" id="confirmEditBookingModalLabel">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Confirm Changes
+                            </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="addPrescriptionForm" method="post" action="@Url.Action("AddPrescription", "Home")">
-                                <div class="form-group row">
-                                    <div class="col-4">
-
-                                        <input type="hidden" id="BookingID" name="BookingID" />
-                                        <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
-
-                                        <br>
-                                        <label for="nameInput" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="nameInput" name="Name" disabled style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="surnameInput" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" id="surnameInput" name="Surname" disabled style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="surgeonName" class="form-label">Surgeon Name</label>
-                                        <input type="text" class="form-control" id="surgeonName" name="SurgeonName" style="width:250px" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="dateGiven" class="form-label">Date Given</label>
-                                        <input type="date" class="form-control" id="dateGiven" name="DateGiven" style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="Urgency" class="form-label">Urgency</label>
-                                        <div id="Urgency" class="form-control" style="width:250px; padding: 10px;">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Urgency" id="Yes" value="Yes">
-                                                <label class="form-check-label" for="Yes">Yes</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Urgency" id="No" value="No">
-                                                <label class="form-check-label" for="No">No</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="Take" class="form-label">Time Instructions(When will Prescription be given) </label>
-                                        <input type="text" class="form-control" name="Take" id="Take" placeholder="Enter Instruction" style="width:250px">
-
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-
-                                    <div class="col-4">
-                                        <select input class="form-control" name="Status" placeholder="Status" style=" width:250px" hidden>
-                                            <option value="Prescribed">Prescribed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
+                            <i class="bi bi-question-circle"></i>
+                            <h5>Are you sure?</h5>
+                            <p class="text-muted">Do you want to save these changes to the surgery booking?</p>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" id="openConfirmPrescriptionModalButton" class="btn btn-primary">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Confirmation Modal for Book Surgery -->
-            <div class="modal fade" id="confirmAddPrescriptionModal" tabindex="-1" role="dialog" aria-labelledby="confirmAddPrescriptionModal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmAddPrescriptionModal">Confirm Booking</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg me-1"></i> No, Cancel
+                            </button>
+                            <button type="button" id="confirmEditBookingButton" class="btn btn-save">
+                                <i class="bi bi-check-lg me-1"></i> Yes, Save
                             </button>
                         </div>
-                        <div class="modal-body">
-                            Are you sure you want to save this Prescription?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="confirmAddPrescriptionButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                        </div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
+
     <script>
         $(document).ready(function () {
             var table = $('#example').DataTable({
                 "language": {
-                    "zeroRecords": "No matching records found"
+                    "zeroRecords": "No matching records found",
+                    "search": "",
+                    "searchPlaceholder": "Search records..."
+                },
+                "dom": '<"top"f>rt<"bottom"lip><"clear">',
+                "initComplete": function() {
+                    $('.dataTables_filter input').addClass('form-control');
                 }
             });
 
-            // Custom search function for the search input and date input
+            // Custom search function
             $('#searchInput, #dateInput').on('keyup change', function () {
-                var searchText = $('#searchInput').val().trim(); // Trim whitespace from search input
-                var dateText = $('#dateInput').val(); // Get the selected date in YYYY-MM-DD format
+                var searchText = $('#searchInput').val().trim();
+                var dateText = $('#dateInput').val();
 
-                // If a date is selected, proceed with date filtering
                 if (dateText) {
-                    // Iterate through each row in the Date column (assuming it's the 4th column, index 3)
                     table.column(3).data().each(function (value, index) {
-                        // Assume the date format in the table is MM/DD/YYYY
-                        var tableDate = value.trim(); // Get the date from the table cell
-                        var parts = tableDate.split("/"); // Split the date into month, day, year
-
+                        var tableDate = value.trim();
+                        var parts = tableDate.split("/");
                         if (parts.length === 3) {
-                            // Reformat the date from MM/DD/YYYY to YYYY-MM-DD to match the date input
                             var reformattedDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
-
-                            // Compare the reformatted table date with the selected date
                             if (reformattedDate === dateText) {
-                                table.row(index).nodes().to$().show(); // Show matching row
+                                table.row(index).nodes().to$().show();
                             } else {
-                                table.row(index).nodes().to$().hide(); // Hide non-matching row
+                                table.row(index).nodes().to$().hide();
                             }
                         }
                     });
                 } else {
-                    // If no date is selected, reset the rows visibility
                     table.rows().nodes().to$().show();
                 }
 
-                // Apply text search to all columns
                 table.search(searchText).draw();
 
-                // Control table visibility based on inputs and search results
                 if (searchText === '' && dateText === '') {
-                    $('#example').hide(); // Hide table if both search inputs are empty
+                    $('#example').hide();
                 } else {
-                    $('#example').show(); // Show table if either input is not empty
-
-                    // Hide table if there are no matching records after filtering
+                    $('#example').show();
                     if (table.page.info().recordsDisplay === 0) {
                         $('#example').hide();
                     }
                 }
             });
 
+            // Clear filters button
+            $('#clearFilters').on('click', function() {
+                $('#searchInput').val('');
+                $('#dateInput').val('');
+                table.search('').draw();
+                table.rows().nodes().to$().show();
+                $('#example').hide();
+            });
         });
-    </script>
-    <script>
+
+        // Edit Booking Modal
         $('#editBookingModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var patientID = button.data('patient-id');
@@ -506,18 +740,14 @@
             var theater = button.data('theater');
             var bookingID = button.data('booking-id');
 
-            // Create a Date object from the surgeryDate and adjust for timezone offset
             var localDate = new Date(surgeryDate);
             var correctedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
-
-            // Format the date in 'YYYY-MM-DD' format
             var formattedDate = correctedDate.toISOString().split('T')[0];
 
-            // Update the modal's content
             var modal = $(this);
             modal.find('#nameInput').val(name);
             modal.find('#surnameInput').val(surname);
-            modal.find('#surgeryDateInput').val(formattedDate); // Correctly formatted date
+            modal.find('#surgeryDateInput').val(formattedDate);
             modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
             modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
             modal.find('#PatientID').val(patientID);
@@ -525,51 +755,13 @@
             modal.find('#AccountID').val(button.data('account-id'));
         });
 
-
-
-
-
-        // Show confirmation modal before submitting the booking form
         $('#openConfirmModalButton').on('click', function () {
-            $('#confirmEditBookingModal').modal('show'); // Show confirmation modal
+            $('#confirmEditBookingModal').modal('show');
         });
 
-        // Handle the "Yes" button click in the confirmation modal
         $('#confirmEditBookingButton').on('click', function () {
-            $('#editUserForm').submit(); // Submit the form
+            $('#editUserForm').submit();
         });
-
     </script>
-    <script>
-        $('#addPrescriptionModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var patientID = button.data('patient-id');
-            var name = button.data('name');
-            var surname = button.data('surname');
-            var bookingID = button.data('booking-id');
-
-            // Update the modal's content
-            var modal = $(this);
-            modal.find('#nameInput').val(name);
-            modal.find('#surnameInput').val(surname);
-             modal.find('#PatientID').val(patientID);
-            modal.find('#BookingID').val(bookingID); // Ensure this is correctly set
-
-        });
-
-
-
-        // Show confirmation modal before submitting the booking form
-        $('#openConfirmPrescriptionModalButton').on('click', function () {
-            $('#confirmAddPrescriptionModal').modal('show'); // Show confirmation modal
-        });
-
-        // Handle the "Yes" button click in the confirmation modal
-        $('#confirmAddPrescriptionButton').on('click', function () {
-            $('#addPrescriptionForm').submit(); // Submit the form
-        });
-
-    </script>
-
 </body>
-</html> 
+</html>
