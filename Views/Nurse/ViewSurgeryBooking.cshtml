@@ -8,209 +8,353 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surgery Bookings</title>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Surgery Bookings | Surgical Queue</title>
 
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <!-- jQuery (latest) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <!-- Bootstrap 5.3 + Icons + clean theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js">
-    </script>
-    <!-- Bootstrap 5 (CORRECT CDN) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables + BS5 integration (lightweight) -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
-        /* ---------- General Table ---------- */
-        #example {
-            display: none; /* Hide initially */
+        * {
+            font-family: 'Inter', sans-serif;
         }
 
-        table.display {
-            width: 100%;
-            border-collapse: collapse;
+        body {
+            background: #f4f7fc;
+            margin: 0;
+            padding: 0;
         }
 
-            table.display th, table.display td {
-                text-align: left;
-                padding: 12px;
-            }
-
-            table.display thead {
-                background-color: #1f1f1f;
-                color: #fff;
-            }
-
-            table.display tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
-
-        /* ---------- Form Container ---------- */
-        .p-3.mt-5.border {
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.8rem 1.5rem;
         }
 
-        /* ---------- Input Fields ---------- */
-        .form-control {
-            border-radius: 6px;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            transition: 0.3s;
-        }
-
-            .form-control:focus {
-                border-color: #007bff;
-                box-shadow: 0 0 5px rgba(0,123,255,0.3);
-            }
-
-        /* ---------- Buttons ---------- */
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            border-radius: 6px;
-            padding: 6px 12px;
-            transition: 0.3s;
-        }
-
-            .btn-primary:hover {
-                background-color: #0056b3;
-                border-color: #0056b3;
-            }
-
-        .btn-secondary {
-            border-radius: 6px;
-            padding: 6px 12px;
-        }
-
-        /* ---------- Modal Styling ---------- */
-        .modal-lg, .modal-lg-custom {
-            max-width: 50% !important; /* 50% width for all large modals */
-            width: 50% !important;
-        }
-
-        .modal-dialog-centered {
-            display: flex;
-            align-items: center;
-            min-height: calc(100% - 60px); /* Adjust based on header/footer */
-        }
-
-        .modal-content {
-            width: 100%; /* Fit content inside new modal width */
-            border-radius: 10px;
+        /* modern card style */
+        .modern-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
             border: none;
-            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
-            background-color: #fff;
+            overflow: hidden;
         }
 
-        /* Modal Headers */
-        .modal-header {
-            background-color: #1f1f1f;
-            color: #fff;
-            border-bottom: none;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+        .card-header-custom {
+            background: white;
+            padding: 1.2rem 1.8rem 0.6rem 1.8rem;
+            border-bottom: 2px solid #eef2fa;
         }
 
-            .modal-header .btn-close {
-                filter: invert(1);
+        .card-body-custom {
+            padding: 1.6rem 1.8rem 1.8rem 1.8rem;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1f4870, #1b3b5c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #4a627a;
+            margin-bottom: 0.4rem;
+        }
+
+        .search-input-icon {
+            position: relative;
+        }
+
+            .search-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+                pointer-events: none;
             }
 
-        /* Modal Body */
-        .modal-body {
-            padding: 20px;
-            max-height: 60vh;
-            overflow-y: auto;
+            .search-input-icon input {
+                padding-left: 40px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                transition: 0.2s;
+                height: 44px;
+            }
+
+                .search-input-icon input:focus {
+                    border-color: #2c7da0;
+                    box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+                    outline: none;
+                }
+
+        .date-input-icon {
+            position: relative;
         }
 
-        /* Modal Footer */
-        .modal-footer {
-            border-top: none;
-            justify-content: flex-start;
+            .date-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+                pointer-events: none;
+            }
+
+            .date-input-icon input {
+                padding-left: 40px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                height: 44px;
+            }
+
+        .btn-admit {
+            background: #1f7b4d;
+            border: none;
+            border-radius: 40px;
+            padding: 0.4rem 1.4rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: white;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* ---------- Form Radio Inputs ---------- */
-        .form-check-input {
-            margin-right: 5px;
+            .btn-admit:hover {
+                background: #0f5e3a;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 18px rgba(31,123,77,0.2);
+            }
+
+        .data-table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
         }
 
-        .form-check-label {
+        .table-surgery {
+            width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            .table-surgery th {
+                background: #f8fafd;
+                color: #1f3b4c;
+                font-weight: 600;
+                font-size: 0.85rem;
+                padding: 1rem 1rem;
+                border-bottom: 1px solid #e9edf2;
+            }
+
+            .table-surgery td {
+                padding: 1rem 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f2f7;
+                color: #1f2f3e;
+                font-weight: 500;
+            }
+
+        .badge-theatre {
+            background: #eef2ff;
+            color: #1f4870;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* modal modern */
+        .modal-content-modern {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .modal-header-modern {
+            background: #1f3b4c;
+            color: white;
+            padding: 1.1rem 1.5rem;
+            border-bottom: none;
+        }
+
+            .modal-header-modern .btn-close {
+                filter: brightness(0) invert(1);
+            }
+
+        .form-label-modern {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4b6f8c;
+            margin-bottom: 0.3rem;
+        }
+
+        .nice-select-input, .form-control-modern {
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #fefefe;
+            padding: 0.55rem 1rem;
+            transition: 0.2s;
+        }
+
+            .nice-select-input:focus, .form-control-modern:focus {
+                border-color: #2c7da0;
+                box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+                outline: none;
+            }
+
+        .modal-footer-clean {
+            border-top: 1px solid #edf2f7;
+            padding: 1rem 1.5rem;
+            background: #fefefe;
+        }
+
+        hr.divider-soft {
+            margin: 1rem 0;
+            background: #eef2fa;
+            height: 1px;
+            opacity: 0.5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            background: #fafcff;
+            border-radius: 24px;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                color: #b9cded;
+            }
+
+        .btn-outline-secondary-clean {
+            border-radius: 40px;
+            border: 1px solid #cbd5e1;
+            padding: 0.4rem 1.2rem;
             font-weight: 500;
         }
 
-        /* ---------- Error Messages ---------- */
-        .text-danger {
-            font-size: 0.85rem;
-        }
+       
 
-        /* ---------- Row Adjustments ---------- */
-        .row {
-            margin-left: 0;
-            margin-right: 0;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="searchForm">
-                            <h2>Surgery List</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <label for="searchInput" class="form-label">Search</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <label for="dateInput" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="dateInput" style="width:300px">
-                                </div>
+
+    <div class="main-container">
+        <main role="main">
+            <!-- Header with gradient elegance -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-calendar-check me-2" style="color:#1f7b4d;"></i> Surgery Bookings</h1>
+                    <p class="text-muted mt-1 mb-0 small">Manage daily surgical schedule & admit patients</p>
+                </div>
+                <div class="mt-2 mt-sm-0">
+                    <a href="@Url.Action("SurgeonHome", "Home")" class="btn btn-light rounded-pill shadow-sm px-4 py-2">
+                        <i class="fas fa-arrow-left me-2"></i>Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter Card (Search + Date) -->
+            <div class="modern-card mb-4">
+                <div class="card-header-custom">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-sliders-h fs-5" style="color:#2c7da0;"></i>
+                        <h5 class="fw-bold mb-0" style="color:#1f2f3e;">Filter Surgery Schedule</h5>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="filter-label"><i class="fas fa-search me-1"></i> PATIENT / SURGEON</div>
+                            <div class="search-input-icon">
+                                <i class="fas fa-user-md"></i>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Search by name, surname or surgeon...">
                             </div>
-                        </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="filter-label"><i class="fas fa-calendar-day me-1"></i> SURGERY DATE</div>
+                            <div class="date-input-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" class="form-control" id="dateInput">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table id="example" class="display" style="width:100%">
+
+            <!-- Surgery Bookings Table Card -->
+            <div class="modern-card">
+                <div class="card-header-custom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div><i class="fas fa-procedures me-2" style="color:#1f7b4d;"></i> <strong>Upcoming Surgeries</strong></div>
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-2"><i class="far fa-clock"></i> @Model.AllcombinedData.Count records</span>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="data-table-wrapper">
+                        <table id="surgeryTable" class="table table-surgery" style="width:100%">
                             <thead>
                                 <tr>
-
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Surgeon Name</th>
-                                    <th scope="col">Surgery Date</th>
-                                    <th scope="col">Surgery Time</th>
-                                    <th scope="col">Theatre</th>
-                                    <th scope="col">Actions</th>
+                                    <th><i class="fas fa-user me-1"></i> Name</th>
+                                    <th>Surname</th>
+                                    <th><i class="fas fa-user-md me-1"></i> Surgeon</th>
+                                    <th><i class="fas fa-calendar-alt me-1"></i> Surgery Date</th>
+                                    <th><i class="fas fa-clock me-1"></i> Time</th>
+                                    <th><i class="fas fa-building me-1"></i> Theatre</th>
+                                    <th style="width: 110px;">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var Data in Model.AllcombinedData)
                                 {
                                     <tr>
-                                        <td>@Data.PatientName</td>
+                                        <td class="fw-semibold">@Data.PatientName</td>
                                         <td>@Data.PatientSurname</td>
                                         <td>@Data.AccountName @Data.AccountSurname</td>
                                         <td>@Data.SurgeryDate</td>
                                         <td>@Data.SurgeryTime</td>
-                                        <td>@Data.Theater</td>
+                                        <td><span class="badge-theatre"><i class="fas fa-door-open me-1"></i> @Data.Theater</span></td>
                                         <td>
-                                            <button class="btn btn-success"
-                                                    onclick="openAdmitModal('@Data.PatientID','@Data.BookingID','@Data.PatientName','@Data.PatientSurname','@Data.AccountName @Data.AccountSurname')">
-                                                Admit
+                                            <button class="btn btn-admit admit-trigger"
+                                                    data-patientid="@Data.PatientID"
+                                                    data-bookingid="@Data.BookingID"
+                                                    data-patientname="@Data.PatientName"
+                                                    data-patientsurname="@Data.PatientSurname"
+                                                    data-surgeon="@Data.AccountName @Data.AccountSurname">
+                                                <i class="fas fa-hospital-user me-1"></i> Admit
                                             </button>
                                         </td>
                                     </tr>
@@ -218,279 +362,301 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="noRecordsMessage" class="empty-state d-none">
+                        <i class="fas fa-search"></i>
+                        <p class="mt-2 mb-0">No surgeries match your filters.</p>
+                    </div>
                 </div>
             </div>
-          
         </main>
     </div>
 
-    <!-- Admity Modal -->
-    <div class="modal fade" id="admitModal" tabindex="-1">
+    <!-- ADMIT PATIENT MODAL (modern redesign) -->
+    <div class="modal fade" id="admitModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Admit Patient</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-notes-medical me-2"></i>Admit Patient – Clinical Admission</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
-                <div class="modal-body">
-                    <form method="post" asp-action="AdmitPatient" asp-controller="Nurse">
-
-                        <!-- Patient Info -->
-                       
-                        <div class="form-group row">
-                            <h5 class="modal-title">Patient Info</h5>
-                            <div class="col-4">
-                                <label>Name</label>
-                                <input type="text" class="form-control" id="nameInput" readonly style="width:250px">
-                            </div>
-
-                            <div class="col-4">
-                                <label>Surname</label>
-                                <input type="text" class="form-control" id="surnameInput" readonly style="width:250px">
-                            </div>
-
-                            <div class="col-4">
-                                <label>Surgeon</label>
-                                <input type="text" class="form-control" id="surgeonInput" readonly style="width:250px">
+                <form method="post" asp-action="AdmitPatient" asp-controller="Nurse" id="admitForm">
+                    <div class="modal-body" style="max-height: 65vh; overflow-y: auto;">
+                        <!-- Patient Info Summary Card (inline) -->
+                        <div class="bg-light p-3 rounded-4 mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label-modern">Patient Name</label>
+                                    <input type="text" class="form-control form-control-modern" id="nameInput" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-modern">Surname</label>
+                                    <input type="text" class="form-control form-control-modern" id="surnameInput" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label-modern">Surgeon</label>
+                                    <input type="text" class="form-control form-control-modern" id="surgeonInput" readonly>
+                                </div>
                             </div>
                         </div>
-                        <!-- Contact -->
-                        <div class="form-group row">
-                            <div class="col-6">
-                                <label>Contact Number</label>
-                                <input type="text" class="form-control" name="ContactNumber" required style="width:250px">
+
+                        <!-- Contact & Address section -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3"><i class="fas fa-phone-alt me-2" style="color:#1f7b4d;"></i>Emergency Contact</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label-modern">Contact Number</label>
+                                    <input type="text" class="form-control form-control-modern" name="ContactNumber" required placeholder="e.g. 081 234 5678">
+                                </div>
                             </div>
                         </div>
-                        <br />
-                        <!-- Address -->
-                        <div class="form-group row">
-                            <h5 class="modal-title">Address</h5>
-                            <div class="col-4">
-                                <label>Province</label>
-                                <select class="form-control" id="provincetSelect" name="ProvinceID" style="width:250px" required>
-                                    <option value="">Select a Description</option>
+
+                        <hr class="divider-soft">
+
+                        <h6 class="fw-bold mb-3"><i class="fas fa-map-marker-alt me-2" style="color:#1f7b4d;"></i>Residential Address</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Province</label>
+                                <select class="form-select nice-select-input" id="provincetSelect" name="ProvinceID" required>
+                                    <option value="">Select Province</option>
                                     @foreach (var province in Model.AllProvince)
                                     {
-                                        <option value="@province.ProvinceID" data-search="@province.ProvinceName.ToLower()">@province.ProvinceName</option>
+                                        <option value="@province.ProvinceID">@province.ProvinceName</option>
                                     }
                                 </select>
                             </div>
-
-                            <div class="col-4">
-                                <label>City</label>
-                                <select class="form-control" id="citySelect" name="CityID" style="width:250px" required>
+                            <div class="col-md-4">
+                                <label class="form-label-modern">City</label>
+                                <select class="form-select nice-select-input" id="citySelect" name="CityID" required>
                                     <option value="">Select City</option>
                                 </select>
                             </div>
-
-                            <div class="col-4">
-                                <label>Suburb</label>
-                                <select class="form-control" id="suburbSelect" name="suburbID" style="width:250px" required>
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Suburb</label>
+                                <select class="form-select nice-select-input" id="suburbSelect" name="suburbID" required>
                                     <option value="">Select Suburb</option>
                                 </select>
                             </div>
-
-                            <div class="col-6">
-                                <label>Street Name</label>
-                                <input type="text" class="form-control" name="StreetName" required style="width:250px">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Street Name</label>
+                                <input type="text" class="form-control form-control-modern" name="StreetName" required placeholder="Street address">
                             </div>
-
                         </div>
-                        <br />
-                        <!-- Ward and Bed -->
-                        <div class="form-group row">
 
-                            <div class="col-4">
-                                <label>Ward</label>
-                                <select class="form-control" id="wardSelect" name="wardID" style="width:250px" required>
-                                    <option value="">Select a Description</option>
+                        <hr class="divider-soft mt-4">
+
+                        <h6 class="fw-bold mb-3"><i class="fas fa-bed me-2" style="color:#1f7b4d;"></i>Ward & Bed Assignment</h6>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Ward</label>
+                                <select class="form-select nice-select-input" id="wardSelect" name="wardID" required>
+                                    <option value="">Select Ward</option>
                                     @foreach (var ward in Model.AllWards)
                                     {
-                                        <option value="@ward.WardId" data-search="@ward.WardName.ToLower()">@ward.WardName</option>
+                                        <option value="@ward.WardId">@ward.WardName</option>
                                     }
                                 </select>
                             </div>
-
-                            <div class="col-4">
-                                <label>Bed</label>
-                                <select class="form-control" id="bedSelect" name="bedID" style="width:250px" required>
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Bed Number</label>
+                                <select class="form-select nice-select-input" id="bedSelect" name="bedID" required>
                                     <option value="">Select Bed</option>
                                 </select>
                             </div>
-
                         </div>
 
-                        <!-- Hidden Fields -->
+                        <!-- Hidden fields -->
                         <input type="hidden" id="PatientID" name="PatientID">
                         <input type="hidden" id="BookingID" name="BookingID">
                         <input type="hidden" name="AccountID" value="@ViewBag.UserAccountID">
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Admit Patient</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
+                    </div>
 
-                    </form>
-                </div>
-
+                    <div class="modal-footer modal-footer-clean">
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i> Cancel</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-5" style="background:#1f7b4d; border:none;"><i class="fas fa-check-circle me-2"></i>Confirm Admission</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+
     <script>
         $(document).ready(function () {
-            var table = $('#example').DataTable({
+            // Initialize DataTable with enhanced styling
+            var table = $('#surgeryTable').DataTable({
+                "pageLength": 8,
+                "lengthMenu": [[5, 8, 15, 25], [5, 8, 15, 25]],
                 "language": {
-                    "zeroRecords": "No matching records found"
-                }
+                    "zeroRecords": " ",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                    "search": "",
+                    "searchPlaceholder": "Quick filter..."
+                },
+                "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+                "responsive": true,
+                "order": [[3, 'asc']]   // sort by surgery date asc
             });
 
-            // Custom search function for the search input and date input
-            $('#searchInput, #dateInput').on('keyup change', function () {
-                var searchText = $('#searchInput').val().trim(); // Trim whitespace from search input
-                var dateText = $('#dateInput').val(); // Get the selected date in YYYY-MM-DD format
+            // Custom filter logic: combine date + global search (already integrated)
+            function applyFilters() {
+                var searchVal = $('#searchInput').val().trim();
+                var dateVal = $('#dateInput').val();
 
-                // If a date is selected, proceed with date filtering
-                if (dateText) {
-                    // Iterate through each row in the Date column (assuming it's the 4th column, index 3)
-                    table.column(3).data().each(function (value, index) {
-                        // Assume the date format in the table is MM/DD/YYYY
-                        var tableDate = value.trim(); // Get the date from the table cell
-                        var parts = tableDate.split("/"); // Split the date into month, day, year
-
-                        if (parts.length === 3) {
-                            // Reformat the date from MM/DD/YYYY to YYYY-MM-DD to match the date input
-                            var reformattedDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
-
-                            // Compare the reformatted table date with the selected date
-                            if (reformattedDate === dateText) {
-                                table.row(index).nodes().to$().show(); // Show matching row
-                            } else {
-                                table.row(index).nodes().to$().hide(); // Hide non-matching row
-                            }
-                        }
-                    });
-                } else {
-                    // If no date is selected, reset the rows visibility
-                    table.rows().nodes().to$().show();
-                }
-
-                // Apply text search to all columns
-                table.search(searchText).draw();
-
-                // Control table visibility based on inputs and search results
-                if (searchText === '' && dateText === '') {
-                    $('#example').hide(); // Hide table if both search inputs are empty
-                } else {
-                    $('#example').show(); // Show table if either input is not empty
-
-                    // Hide table if there are no matching records after filtering
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
+                // custom date filter on column index 3 (Surgery Date)
+                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                    var dateCol = data[3]; // Surgery Date column
+                    if (!dateVal) return true;
+                    // convert date from table format (e.g., "04/15/2025" or "2025-04-15"? we handle both)
+                    var parts = dateCol.split("/");
+                    var formattedTableDate = null;
+                    if (parts.length === 3) {
+                        formattedTableDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
+                    } else {
+                        formattedTableDate = dateCol;
                     }
-                }
+                    return formattedTableDate === dateVal;
+                });
+                table.draw();
+                $.fn.dataTable.ext.search.pop(); // remove after draw to not interfere globally
+            }
+
+            $('#searchInput').on('keyup', function () {
+                table.search($(this).val()).draw();
+                toggleEmptyState();
             });
 
+            $('#dateInput').on('change', function () {
+                applyFilters();
+                toggleEmptyState();
+            });
+
+            function toggleEmptyState() {
+                var info = table.page.info();
+                if (info.recordsDisplay === 0) {
+                    $('#noRecordsMessage').removeClass('d-none');
+                    $('#surgeryTable').hide();
+                } else {
+                    $('#noRecordsMessage').addClass('d-none');
+                    $('#surgeryTable').show();
+                }
+            }
+
+            // initial trigger for showing/hiding based on default empty state
+            setTimeout(() => toggleEmptyState(), 100);
+            // remove initial empty if data exists
+            if (@Model.AllcombinedData.Count > 0) {
+                $('#noRecordsMessage').addClass('d-none');
+                $('#surgeryTable').show();
+            } else {
+                $('#noRecordsMessage').removeClass('d-none');
+                $('#surgeryTable').hide();
+            }
+
+            // On page load - show table if data exists
+            if (@Model.AllcombinedData.Count === 0) {
+                $('#surgeryTable').hide();
+                $('#noRecordsMessage').removeClass('d-none');
+            } else {
+                $('#surgeryTable').show();
+            }
         });
-    </script>
-    <script>
-                function openAdmitModal(patientId, bookingId, name, surname, surgeon) {
-            document.getElementById("PatientID").value = patientId;
-            document.getElementById("BookingID").value = bookingId;
-            document.getElementById("nameInput").value = name;
-            document.getElementById("surnameInput").value = surname;
-            document.getElementById("surgeonInput").value = surgeon;
 
-            var modal = new bootstrap.Modal(document.getElementById('admitModal')); 
+        // Admit modal trigger (improved event delegation)
+        $(document).on('click', '.admit-trigger', function () {
+            var patientId = $(this).data('patientid');
+            var bookingId = $(this).data('bookingid');
+            var name = $(this).data('patientname');
+            var surname = $(this).data('patientsurname');
+            var surgeon = $(this).data('surgeon');
+
+            $('#PatientID').val(patientId);
+            $('#BookingID').val(bookingId);
+            $('#nameInput').val(name);
+            $('#surnameInput').val(surname);
+            $('#surgeonInput').val(surgeon);
+
+            // reset dependent selects for fresh state
+            $('#citySelect').html('<option value="">Select City</option>');
+            $('#suburbSelect').html('<option value="">Select Suburb</option>');
+            $('#bedSelect').html('<option value="">Select Bed</option>');
+            // reset ward selection to default but keep values (optional)
+            $('#wardSelect').val('');
+            $('#provincetSelect').val('');
+
+            var modal = new bootstrap.Modal(document.getElementById('admitModal'));
             modal.show();
+        });
 
-
-        }
-    </script>
-    <script>
-        document.getElementById("wardSelect").addEventListener("change", function () {
-            var wardId = this.value;
-
-            var bedSelect = document.getElementById("bedSelect");
-            bedSelect.innerHTML = '<option value="">Loading...</option>';
-
+        // Dynamically load beds when ward changes
+        $("#wardSelect").on("change", function () {
+            var wardId = $(this).val();
+            var bedSelect = $("#bedSelect");
+            bedSelect.html('<option value="">Loading beds...</option>');
             if (wardId !== "") {
                 fetch('/Nurse/GetBedsByWard?wardId=' + wardId)
                     .then(response => response.json())
                     .then(data => {
-                        bedSelect.innerHTML = '<option value="">Select Bed</option>';
-
+                        bedSelect.html('<option value="">Select Bed</option>');
+                        if (data.length === 0) bedSelect.append('<option disabled>No available beds</option>');
                         data.forEach(bed => {
-                            var option = document.createElement("option");
-                            option.value = bed.bedId;
-                            option.text = bed.number;
-                            bedSelect.appendChild(option);
+                            var option = `<option value="${bed.bedId}">${bed.number}</option>`;
+                            bedSelect.append(option);
                         });
                     })
-                    .catch(error => {
-                        console.error('Error:', error);
+                    .catch(() => {
+                        bedSelect.html('<option value="">Error loading beds</option>');
                     });
             } else {
-                bedSelect.innerHTML = '<option value="">Select Bed</option>';
+                bedSelect.html('<option value="">Select Bed</option>');
             }
         });
 
-            // Province → City
-        document.getElementById("provincetSelect").addEventListener("change", function () {
-            var provinceId = this.value;
-
-            var citySelect = document.getElementById("citySelect");
-            var suburbSelect = document.getElementById("suburbSelect");
-
-            citySelect.innerHTML = '<option>Loading...</option>';
-            suburbSelect.innerHTML = '<option>Select Suburb</option>';
+        // Province → City cascade
+        $("#provincetSelect").on("change", function () {
+            var provinceId = $(this).val();
+            var citySelect = $("#citySelect");
+            var suburbSelect = $("#suburbSelect");
+            citySelect.html('<option>Loading...</option>');
+            suburbSelect.html('<option>Select Suburb</option>');
 
             if (provinceId !== "") {
-                fetch('@Url.Action("GetCitiesByProvince", "Nurse")?provinceId=' + provinceId)
+                fetch('/Nurse/GetCitiesByProvince?provinceId=' + provinceId)
                     .then(response => response.json())
                     .then(data => {
-                        citySelect.innerHTML = '<option value="">Select City</option>';
-
+                        citySelect.html('<option value="">Select City</option>');
                         data.forEach(city => {
-                            var option = document.createElement("option");
-                            option.value = city.cityId;
-                            option.text = city.cityName;
-                            citySelect.appendChild(option);
+                            citySelect.append(`<option value="${city.cityId}">${city.cityName}</option>`);
                         });
                     })
-                    .catch(err => {
-                        console.error(err);
-                        citySelect.innerHTML = '<option>Error loading cities</option>';
+                    .catch(() => {
+                        citySelect.html('<option>Error loading cities</option>');
                     });
+            } else {
+                citySelect.html('<option value="">Select City</option>');
             }
         });
 
-        // City → Suburb
-        document.getElementById("citySelect").addEventListener("change", function () {
-            var cityId = this.value;
-
-            var suburbSelect = document.getElementById("suburbSelect");
-            suburbSelect.innerHTML = '<option>Loading...</option>';
-
+        // City → Suburb cascade
+        $("#citySelect").on("change", function () {
+            var cityId = $(this).val();
+            var suburbSelect = $("#suburbSelect");
+            suburbSelect.html('<option>Loading...</option>');
             if (cityId !== "") {
-                fetch('@Url.Action("GetSuburbsByCity", "Nurse")?cityId=' + cityId)
+                fetch('/Nurse/GetSuburbsByCity?cityId=' + cityId)
                     .then(response => response.json())
                     .then(data => {
-                        suburbSelect.innerHTML = '<option value="">Select Suburb</option>';
-
+                        suburbSelect.html('<option value="">Select Suburb</option>');
                         data.forEach(suburb => {
-                            var option = document.createElement("option");
-                            option.value = suburb.suburbId;
-                            option.text = suburb.name;
-                            suburbSelect.appendChild(option);
+                            suburbSelect.append(`<option value="${suburb.suburbId}">${suburb.name}</option>`);
                         });
                     })
-                    .catch(err => {
-                        console.error(err);
-                        suburbSelect.innerHTML = '<option>Error loading suburbs</option>';
+                    .catch(() => {
+                        suburbSelect.html('<option>Error loading suburbs</option>');
                     });
+            } else {
+                suburbSelect.html('<option value="">Select Suburb</option>');
             }
         });
     </script>
+
 </body>
 </html>
