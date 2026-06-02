@@ -7,45 +7,314 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Allergies & Conditions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Edit Allergies & Conditions | Patient Clinical Record</title>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!-- Google Fonts + Font Awesome for Icons (UI upgrade) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- DataTables CSS & JS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <!-- jQuery (latest) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <!-- Bootstrap CSS & JS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap 5.3 + Icons + clean theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables CSS (optional subtle style) but we use standard but keep light -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f0f2f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* card styling */
+        .modern-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05), 0 4px 8px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            background: white;
+            padding: 1.5rem 1.8rem 0.5rem 1.8rem;
+            border-bottom: 2px solid #eef2fa;
+        }
+
+        .card-body-custom {
+            padding: 1.8rem;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.85rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1e2a5e, #2c3e66);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .patient-badge {
+            background-color: #eef2ff;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label-modern {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4a5b7a;
+            margin-bottom: 0.5rem;
+        }
+
+        .search-input-icon {
+            position: relative;
+        }
+
+            .search-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+            }
+
+            .search-input-icon input {
+                padding-left: 38px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #fafcff;
+                transition: 0.2s;
+            }
+
+                .search-input-icon input:focus {
+                    border-color: #3b71ca;
+                    box-shadow: 0 0 0 3px rgba(59,113,202,0.1);
+                    background: white;
+                }
+
+        .nice-select {
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #fafcff;
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            color: #1f2a44;
+            transition: 0.2s;
+        }
+
+            .nice-select:focus {
+                border-color: #3b71ca;
+                box-shadow: 0 0 0 3px rgba(59,113,202,0.1);
+                outline: none;
+            }
+
+        .btn-primary-soft {
+            background: #1e3a8a;
+            border: none;
+            border-radius: 40px;
+            padding: 0.55rem 1.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+            .btn-primary-soft:hover {
+                background: #0f2b6d;
+                transform: translateY(-1px);
+                box-shadow: 0 8px 20px rgba(30,58,138,0.15);
+            }
+
+        .btn-outline-remove {
+            border-radius: 40px;
+            padding: 0.35rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid #f1c0c0;
+            background: #fff8f8;
+            color: #b91c1c;
+            transition: all 0.15s;
+        }
+
+            .btn-outline-remove:hover {
+                background: #fee2e2;
+                border-color: #f5acac;
+                color: #991b1b;
+            }
+
+        .data-table-wrapper {
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-modern {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+            .table-modern th {
+                background: #f8fafd;
+                color: #2c3e66;
+                font-weight: 600;
+                font-size: 0.85rem;
+                padding: 1rem 1rem;
+                border-bottom: 1px solid #e9edf2;
+            }
+
+            .table-modern td {
+                padding: 1rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f2f7;
+                color: #1f2a44;
+                font-weight: 500;
+            }
+
+        .section-title-icon {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+            .section-title-icon i {
+                font-size: 1.5rem;
+                color: #1e3a8a;
+            }
+
+        hr.divider-light {
+            margin: 1rem 0;
+            background: #eef2fa;
+            height: 2px;
+            opacity: 0.6;
+        }
+
+        .footer-save-btn {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #eef2fa;
+        }
+
+        .btn-save-large {
+            background: #0f3b2c;
+            color: white;
+            border-radius: 40px;
+            padding: 0.7rem 2rem;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+            .btn-save-large:hover {
+                background: #0a2c20;
+                transform: scale(1.01);
+            }
+
+        /* modal modern */
+        .modal-content-modern {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.25);
+        }
+
+        .modal-header-modern {
+            border-bottom: 1px solid #edf2f7;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .badge-info-light {
+            background: #eef2ff;
+            color: #1e3a8a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+       
+
+        .row .col-4 {
+            margin-bottom: 1rem;
+        }
+
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <h2>Patient Allergies & Conditions - @ViewBag.PatientName @ViewBag.PatientSurname</h2>
 
-                        <!-- Unified Add Form -->
-                        <form id="addAllergyConditionForm" method="post" asp-action="EditAllergyCondition" asp-controller="Nurse">
-                            <div class="form-group row">
-                                <!-- Allergy Search -->
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchAllergyInput" class="form-label">Search Allergy / Active Ingredient</label>
-                                    <input id="searchAllergyInput" class="form-control" type="search" placeholder="Search Active Ingredient"
-                                           onkeyup="filterAllergyNames()" style="width:300px">
+    <div class="main-container">
+        <main role="main">
+            <!-- Header with patient context -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-notes-medical me-2" style="color: #1e3a8a;"></i> Clinical Profile</h1>
+                    <div class="mt-2">
+                        <span class="patient-badge"><i class="fas fa-user-injured me-1"></i> @ViewBag.PatientName @ViewBag.PatientSurname</span>
+                        <span class="badge-info-light ms-2"><i class="far fa-id-card"></i> ID: @ViewBag.PatientID</span>
+                    </div>
+                </div>
+                <div class="mt-2 mt-sm-0">
+                    <a href="@Url.Action("MainPage", "Nurse")" class="btn btn-light rounded-pill shadow-sm px-4"><i class="fas fa-arrow-left me-2"></i>Back to Dashboard</a>
+                </div>
+            </div>
+
+            <!-- Add new allergy / condition unified card (modern) -->
+            <div class="modern-card mb-4">
+                <div class="card-header-custom">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-plus-circle fs-4" style="color:#2c6e9e;"></i>
+                        <h5 class="fw-bold mb-0" style="color:#1f2a44;">Add Allergy or Condition</h5>
+                        <span class="badge bg-light text-dark ms-2 rounded-pill"><i class="far fa-clock"></i> Unified entry</span>
+                    </div>
+                    <p class="text-muted small mt-1 mb-0">Select active ingredient for allergy OR condition. You can add both in one step.</p>
+                </div>
+                <div class="card-body-custom">
+                    <form id="addAllergyConditionForm" method="post" asp-action="EditAllergyCondition" asp-controller="Nurse">
+                        <div class="row g-4">
+                            <!-- Allergy section -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label-modern"><i class="fas fa-allergies me-1"></i> ALLERGY / ACTIVE INGREDIENT</label>
+                                    <div class="search-input-icon">
+                                        <i class="fas fa-search"></i>
+                                        <input id="searchAllergyInput" class="form-control" type="search" placeholder="Search by ingredient name..." onkeyup="filterAllergyNames()">
+                                    </div>
                                 </div>
-
-                                <!-- Allergy Select -->
-                                <div class="col-4">
-                                    <br>
-                                    <label for="allergySelect" class="form-label">Active Ingredient</label>
-                                    <select class="form-control" id="allergySelect" name="ActiveingredientID" style="width:250px">
-                                        <option value="">Select an Active Ingredient</option>
+                                <div>
+                                    <select class="form-select nice-select" id="allergySelect" name="ActiveingredientID">
+                                        <option value="">-- Choose active ingredient --</option>
                                         @foreach (var ingredient in Model.AllActiveIngredients)
                                         {
                                             <option value="@ingredient.ActiveingredientID" data-search="@ingredient.ActiveIngredientName.ToLower()">
@@ -56,21 +325,18 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <!-- Condition Search -->
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchConditionInput" class="form-label">Condition</label>
-                                    <input id="searchConditionInput" class="form-control" type="search" placeholder="Search Condition"
-                                           onkeyup="filterConditionNames()" style="width:300px">
+                            <!-- Condition section -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label-modern"><i class="fas fa-stethoscope me-1"></i> MEDICAL CONDITION</label>
+                                    <div class="search-input-icon">
+                                        <i class="fas fa-search"></i>
+                                        <input id="searchConditionInput" class="form-control" type="search" placeholder="Search condition..." onkeyup="filterConditionNames()">
+                                    </div>
                                 </div>
-
-                                <!-- Condition Select -->
-                                <div class="col-4">
-                                    <br>
-                                    <label for="conditionSelect" class="form-label">Condition</label>
-                                    <select class="form-control" id="conditionSelect" name="ConditionsID" style="width:250px">
-                                        <option value="">Select a Condition</option>
+                                <div>
+                                    <select class="form-select nice-select" id="conditionSelect" name="ConditionsID">
+                                        <option value="">-- Choose condition --</option>
                                         @foreach (var condition in Model.AllConditions)
                                         {
                                             <option value="@condition.ConditionID" data-search="@condition.ConditionName.ToLower()">
@@ -79,189 +345,297 @@
                                         }
                                     </select>
                                 </div>
+                            </div>
+                        </div>
 
-                                <!-- Hidden Patient ID + Add Button -->
-                                <div class="col-4">
-                                    <br><br>
-                                    <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
-                                    <button type="button" id="openAddButton" class="btn btn-primary">Add</button>
+                        <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
+                        <div class="mt-4 d-flex justify-content-end">
+                            <button type="button" id="openAddButton" class="btn btn-primary-soft px-5 py-2"><i class="fas fa-save me-2"></i> Add to Record</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Current Allergies & Conditions in two-column modern layout -->
+            <div class="row g-4">
+                <!-- Allergies Card -->
+                <div class="col-lg-6">
+                    <div class="modern-card h-100">
+                        <div class="card-header-custom pb-1">
+                            <div class="section-title-icon">
+                                <i class="fas fa-allergies"></i>
+                                <span>Current Allergies</span>
+                                <span class="badge rounded-pill bg-secondary bg-opacity-10 text-dark ms-2">@Model.PatientAllergieslist.Count</span>
+                            </div>
+                        </div>
+                        <div class="card-body-custom">
+                            @if (Model.PatientAllergieslist.Any())
+                            {
+                                <div class="data-table-wrapper">
+                                    <table class="table table-modern align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Allergy / Active Ingredient</th>
+                                                <th class="text-end" style="width:110px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.PatientAllergieslist)
+                                            {
+                                                <tr>
+                                                    <td><i class="fas fa-exclamation-triangle text-warning me-2"></i> @item.Allergy</td>
+                                                    <td class="text-end">
+                                                        <button type="button" class="btn btn-outline-remove openRemoveAllergyModal" data-id="@item.patientAllergyID">
+                                                            <i class="fas fa-trash-alt me-1"></i> Remove
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
-                            </div>
-                        </form>
+                            }
+                            else
+                            {
+                                <div class="text-center py-4 bg-light rounded-4">
+                                    <i class="fas fa-thermometer-empty fs-1 text-muted"></i>
+                                    <p class="mt-2 text-secondary">No recorded allergies</p>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Allergies Table -->
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="fs-4">Allergy</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.PatientAllergieslist)
-                                {
-                                    <tr>
-                                        <td>@item.Allergy</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger openRemoveAllergyModal" data-id="@item.patientAllergyID">Remove</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-
-                        <!-- Conditions Table -->
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th class="fs-4">Condition</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.PatientConditionslist)
-                                {
-                                    <tr>
-                                        <td>@item.Condition</td>
-                                        <td>
-                                            <button type="button" class="btn btn-danger openRemoveConditionModal" data-id="@item.patientConditionsID">Remove</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-
-                        <div class="form-group row">
-                            <div class="col-4">
-                                <br>
-                                <a class="btn btn-primary" asp-controller="Home" asp-action="SurgeonHome">Save</a>
+                <!-- Conditions Card -->
+                <div class="col-lg-6">
+                    <div class="modern-card h-100">
+                        <div class="card-header-custom pb-1">
+                            <div class="section-title-icon">
+                                <i class="fas fa-notes-medical"></i>
+                                <span>Current Conditions</span>
+                                <span class="badge rounded-pill bg-secondary bg-opacity-10 text-dark ms-2">@Model.PatientConditionslist.Count</span>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Confirm Add Modal -->
-            <div class="modal fade" id="confirmAddModal" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Confirm Add</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to add the selected allergy and/or condition?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="saveAddButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Remove Allergy Modal -->
-            <div class="modal fade" id="removeAllergyModal" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Remove Allergy</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">Are you sure you want to remove this allergy?</div>
-                        <div class="modal-footer">
-                            <form id="removeAllergyForm" method="post" asp-action="RemoveAllergy" asp-controller="Nurse">
-                                <input type="hidden" name="patientAllergyID" id="allergyIdToRemove" />
-                                <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
-                                <button type="submit" class="btn btn-danger">Yes</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                            </form>
+                        <div class="card-body-custom">
+                            @if (Model.PatientConditionslist.Any())
+                            {
+                                <div class="data-table-wrapper">
+                                    <table class="table table-modern align-middle">
+                                        <thead>
+                                            <tr>
+                                                <th>Condition name</th>
+                                                <th class="text-end" style="width:110px">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.PatientConditionslist)
+                                            {
+                                                <tr>
+                                                    <td><i class="fas fa-diagnoses text-info me-2"></i> @item.Condition</td>
+                                                    <td class="text-end">
+                                                        <button type="button" class="btn btn-outline-remove openRemoveConditionModal" data-id="@item.patientConditionsID">
+                                                            <i class="fas fa-trash-alt me-1"></i> Remove
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-4 bg-light rounded-4">
+                                    <i class="fas fa-file-medical fs-1 text-muted"></i>
+                                    <p class="mt-2 text-secondary">No active conditions recorded</p>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Remove Condition Modal -->
-            <div class="modal fade" id="removeConditionModal" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Remove Condition</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">Are you sure you want to remove this condition?</div>
-                        <div class="modal-footer">
-                            <form id="removeConditionForm" method="post" asp-action="RemoveConditions" asp-controller="Nurse">
-                                <input type="hidden" name="patientConditionsID" id="conditionIdToRemove" />
-                                <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
-                                <button type="submit" class="btn btn-danger">Yes</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <!-- Save Footer area -->
+            <div class="footer-save-btn">
+                <a class="btn btn-save-large" asp-controller="Home" asp-action="SurgeonHome">
+                    <i class="fas fa-check-circle me-2"></i> Save & Finish
+                </a>
             </div>
-
-            <script>
-                // =========================
-                // Unified Add Button
-                // =========================
-                $('#openAddButton').click(function () {
-                    $('#confirmAddModal').modal('show');
-                });
-
-                $('#saveAddButton').click(function () {
-                    $.ajax({
-                        url: '@Url.Action("EditAllergyCondition", "Nurse")',
-                        type: 'POST',
-                        data: $('#addAllergyConditionForm').serialize(),
-                        success: function () { location.reload(); },
-                        error: function (xhr, status, error) { console.log("Add error:", error); }
-                    });
-                    $('#confirmAddModal').modal('hide');
-                });
-
-                // =========================
-                // Remove Modals
-                // =========================
-                $('.openRemoveAllergyModal').click(function () {
-                    $('#allergyIdToRemove').val($(this).data('id'));
-                    $('#removeAllergyModal').modal('show');
-                });
-
-                $('.openRemoveConditionModal').click(function () {
-                    $('#conditionIdToRemove').val($(this).data('id'));
-                    $('#removeConditionModal').modal('show');
-                });
-
-                // =========================
-                // Search/Filter Functions
-                // =========================
-                function filterAllergyNames() {
-                    var input = $('#searchAllergyInput').val().toLowerCase();
-                    $('#allergySelect option').each(function () {
-                        var text = $(this).data('search');
-                        if (!text) return;
-                        $(this).toggle(text.includes(input));
-                    });
-                }
-
-                function filterConditionNames() {
-                    var input = $('#searchConditionInput').val().toLowerCase();
-                    $('#conditionSelect option').each(function () {
-                        var text = $(this).data('search');
-                        if (!text) return;
-                        $(this).toggle(text.includes(input));
-                    });
-                }
-            </script>
         </main>
     </div>
+
+    <!-- ========= MODALS ========= -->
+    <!-- Confirm Add Modal (enhanced) -->
+    <div class="modal fade" id="confirmAddModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern bg-light">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-question-circle me-2" style="color:#1e3a8a;"></i>Confirm addition</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-prescription-bottle me-3 fs-1 text-primary"></i>
+                        <span>Are you sure you want to add the selected allergy and/or condition to this patient's record?</span>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <button type="button" id="saveAddButton" class="btn btn-primary rounded-pill px-4">Yes, add</button>
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Allergy Modal (modern) -->
+    <div class="modal fade" id="removeAllergyModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern bg-light">
+                    <h5 class="modal-title fw-bold text-danger"><i class="fas fa-trash-alt me-2"></i>Remove allergy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p class="mb-0">This action will permanently remove the allergy from patient clinical record. Continue?</p>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <form id="removeAllergyForm" method="post" asp-action="RemoveAllergy" asp-controller="Nurse">
+                        <input type="hidden" name="patientAllergyID" id="allergyIdToRemove" />
+                        <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
+                        <button type="submit" class="btn btn-danger rounded-pill px-4"><i class="fas fa-check me-1"></i> Yes, remove</button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Condition Modal (modern) -->
+    <div class="modal fade" id="removeConditionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern bg-light">
+                    <h5 class="modal-title fw-bold text-danger"><i class="fas fa-eraser me-2"></i>Remove condition</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <p>Removing this condition may affect care plan. Confirm removal?</p>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <form id="removeConditionForm" method="post" asp-action="RemoveConditions" asp-controller="Nurse">
+                        <input type="hidden" name="patientConditionsID" id="conditionIdToRemove" />
+                        <input type="hidden" name="PatientID" value="@ViewBag.PatientID" />
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">Yes, remove</button>
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================
+        // Unified Add Button
+        // =========================
+        $('#openAddButton').click(function () {
+            var allergySelected = $('#allergySelect').val();
+            var conditionSelected = $('#conditionSelect').val();
+            if (!allergySelected && !conditionSelected) {
+                alert("Please select at least an allergy (active ingredient) OR a condition.");
+                return;
+            }
+            $('#confirmAddModal').modal('show');
+        });
+
+        $('#saveAddButton').click(function () {
+            $.ajax({
+                url: '@Url.Action("EditAllergyCondition", "Nurse")',
+                type: 'POST',
+                data: $('#addAllergyConditionForm').serialize(),
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.log("Add error:", error);
+                    alert("An error occurred while adding. Please try again.");
+                }
+            });
+            $('#confirmAddModal').modal('hide');
+        });
+
+        // =========================
+        // Remove Modals wiring
+        // =========================
+        $('.openRemoveAllergyModal').click(function () {
+            var allergyId = $(this).data('id');
+            $('#allergyIdToRemove').val(allergyId);
+            $('#removeAllergyModal').modal('show');
+        });
+
+        $('.openRemoveConditionModal').click(function () {
+            var conditionId = $(this).data('id');
+            $('#conditionIdToRemove').val(conditionId);
+            $('#removeConditionModal').modal('show');
+        });
+
+        // =========================
+        // Enhanced Search/Filter Functions (live filter)
+        // =========================
+        function filterAllergyNames() {
+            var input = $('#searchAllergyInput').val().toLowerCase().trim();
+            $('#allergySelect option').each(function () {
+                var searchText = $(this).data('search');
+                if (!searchText && $(this).val() !== "") return;
+                if ($(this).val() === "") {
+                    $(this).toggle(true);
+                    return;
+                }
+                if (searchText && searchText.includes(input)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            // reset selected if hidden becomes invisible?
+            var visibleOpts = $('#allergySelect option:visible').length;
+            if ($('#allergySelect option:selected').is(':hidden') && $('#allergySelect option:visible').length > 0) {
+                $('#allergySelect').val($('#allergySelect option:visible').first().val());
+            } else if (visibleOpts === 0) {
+                $('#allergySelect').val('');
+            }
+        }
+
+        function filterConditionNames() {
+            var input = $('#searchConditionInput').val().toLowerCase().trim();
+            $('#conditionSelect option').each(function () {
+                var searchText = $(this).data('search');
+                if (!searchText && $(this).val() !== "") return;
+                if ($(this).val() === "") {
+                    $(this).toggle(true);
+                    return;
+                }
+                if (searchText && searchText.includes(input)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            var visibleConds = $('#conditionSelect option:visible').length;
+            if ($('#conditionSelect option:selected').is(':hidden') && $('#conditionSelect option:visible').length > 0) {
+                $('#conditionSelect').val($('#conditionSelect option:visible').first().val());
+            } else if (visibleConds === 0) {
+                $('#conditionSelect').val('');
+            }
+        }
+
+        // optional: reset search filters on focus?
+        $(document).ready(function() {
+            // ensure initial data attributes are fine
+            $('.modal').on('hidden.bs.modal', function () {
+                // avoids any stuck backdrop
+            });
+        });
+    </script>
+
 </body>
 </html>
