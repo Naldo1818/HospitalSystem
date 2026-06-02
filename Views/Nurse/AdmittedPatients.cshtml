@@ -7,180 +7,357 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admissions List</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admissions List | Active Patients</title>
+
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap 5.3 + clean theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables + BS5 integration -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
     <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* Page */
         body {
-            background: #f5f7fb;
-            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fc;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Card containers */
-        .p-3.border {
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.8rem 1.5rem;
+        }
+
+        /* modern card style */
+        .modern-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .card-header-custom {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.2rem 1.8rem 0.6rem 1.8rem;
+            border-bottom: 2px solid #eef2fa;
         }
 
-        /* Page title */
-        h2 {
+        .card-body-custom {
+            padding: 1.6rem 1.8rem 1.8rem 1.8rem;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1f4870, #1b3b5c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0;
+        }
+
+        .filter-label {
             font-weight: 600;
-            color: #2c3e50;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #4a627a;
+            margin-bottom: 0.4rem;
         }
 
-        /* Inputs */
-        .form-control {
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            padding: 8px 12px;
-            width: 300px;
+        .search-input-icon {
+            position: relative;
         }
 
-            .form-control:focus {
-                border-color: #0d6efd;
-                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            .search-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+                pointer-events: none;
             }
 
-        /* Table */
-        #example {
-            display: none;
+            .search-input-icon input {
+                padding-left: 40px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                transition: 0.2s;
+                height: 44px;
+            }
+
+                .search-input-icon input:focus {
+                    border-color: #2c7da0;
+                    box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+                    outline: none;
+                }
+
+        .date-input-icon {
+            position: relative;
         }
 
-        table.dataTable {
-            border-collapse: collapse !important;
+            .date-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+                pointer-events: none;
+            }
+
+            .date-input-icon input {
+                padding-left: 40px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                height: 44px;
+            }
+
+        /* table styling */
+        .data-table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+
+        .table-admissions {
             width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-            table.dataTable thead {
-                background: #1f1f1f;
+            .table-admissions th {
+                background: #f8fafd;
+                color: #1f3b4c;
+                font-weight: 600;
+                font-size: 0.8rem;
+                padding: 1rem 0.8rem;
+                border-bottom: 1px solid #e9edf2;
+                white-space: nowrap;
+            }
+
+            .table-admissions td {
+                padding: 1rem 0.8rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f2f7;
+                color: #1f2f3e;
+                font-weight: 500;
+                font-size: 0.9rem;
+            }
+
+        .badge-theatre, .badge-ward {
+            background: #eef2ff;
+            color: #1f4870;
+            border-radius: 40px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .badge-bed {
+            background: #e6f7ec;
+            color: #1f7b4d;
+            border-radius: 40px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* action buttons group */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-action-sm {
+            border-radius: 40px;
+            padding: 0.35rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-outline-allergy {
+            background: #fff;
+            border: 1px solid #2c7da0;
+            color: #2c7da0;
+        }
+
+            .btn-outline-allergy:hover {
+                background: #2c7da0;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .btn-outline-medication {
+            background: #fff;
+            border: 1px solid #1f7b4d;
+            color: #1f7b4d;
+        }
+
+            .btn-outline-medication:hover {
+                background: #1f7b4d;
                 color: white;
             }
 
-                table.dataTable thead th {
-                    padding: 12px;
-                    font-weight: 600;
-                }
+        .btn-outline-vitals {
+            background: #fff;
+            border: 1px solid #e67e22;
+            color: #e67e22;
+        }
 
-            table.dataTable tbody td {
-                padding: 10px;
+            .btn-outline-vitals:hover {
+                background: #e67e22;
+                color: white;
             }
 
-            table.dataTable tbody tr:hover {
-                background: #f1f5ff;
+        .btn-outline-vitals-warning {
+            background: #fef5e7;
+            border: 1px solid #f39c12;
+            color: #d35400;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: #fafcff;
+            border-radius: 24px;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                color: #b9cded;
             }
 
-        /* Buttons */
-        .btn-primary {
-            background: #0d6efd;
+        /* modal modern */
+        .modal-content-modern {
+            border-radius: 28px;
             border: none;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            transition: all 0.2s;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
 
-            .btn-primary:hover {
-                background: #0b5ed7;
-                transform: scale(1.03);
-            }
-
-        /* Action buttons stack nicely */
-        .btn-group {
-            width: 100%;
-            margin-bottom: 5px;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-            border: none;
-        }
-
-        /* Modals */
-        .modal-lg {
-            max-width: 50% !important;
-        }
-
-        .modal-content {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            background: #1f1f1f;
+        .modal-header-modern {
+            background: #1f3b4c;
             color: white;
+            padding: 1rem 1.5rem;
             border-bottom: none;
         }
 
-            .modal-header .btn-close {
-                filter: invert(1);
+            .modal-header-modern .btn-close {
+                filter: brightness(0) invert(1);
             }
 
-        .modal-footer {
-            border-top: none;
+       
+
+        .action-buttons {
+            flex-direction: column;
+            gap: 5px;
         }
 
-        /* Radio boxes */
-        #SurgeryTime,
-        #Theater,
-        #Urgency {
-            background: #f8f9fa;
-            border-radius: 6px;
+        .btn-action-sm {
+            text-align: center;
         }
 
-        /* Table container spacing */
-        .mt-5 {
-            margin-top: 30px !important;
         }
-
     </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="searchForm">
-                            <h2>Admissions List</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchInput" class="form-label">Search</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="dateInput" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="dateInput" style="width:300px">
-                                </div>
+
+    <div class="main-container">
+        <main role="main">
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-procedures me-2" style="color:#1f7b4d;"></i> Admissions List</h1>
+                    <p class="text-muted mt-1 mb-0 small">Currently admitted patients | Manage care, vitals & medication</p>
+                </div>
+                <div class="mt-2 mt-sm-0">
+                    <a href="@Url.Action("SurgeonHome", "Home")" class="btn btn-light rounded-pill shadow-sm px-4 py-2">
+                        <i class="fas fa-arrow-left me-2"></i>Dashboard
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter Card -->
+            <div class="modern-card mb-4">
+                <div class="card-header-custom">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-filter fs-5" style="color:#2c7da0;"></i>
+                        <h5 class="fw-bold mb-0" style="color:#1f2f3e;">Filter Admissions</h5>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="filter-label"><i class="fas fa-search me-1"></i> SEARCH PATIENT / SURGEON</div>
+                            <div class="search-input-icon">
+                                <i class="fas fa-user-injured"></i>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Name, surname, surgeon...">
                             </div>
-                        </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="filter-label"><i class="fas fa-calendar-day me-1"></i> SURGERY DATE</div>
+                            <div class="date-input-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" class="form-control" id="dateInput">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:1200px">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table id="example" class="display" style="width:100%">
+
+            <!-- Admissions Table Card -->
+            <div class="modern-card">
+                <div class="card-header-custom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div><i class="fas fa-users me-2" style="color:#1f7b4d;"></i> <strong>Active Admissions</strong></div>
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                            <i class="far fa-hospital"></i> @(Model.AllcombinedData?.Count ?? 0) patients
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="data-table-wrapper">
+                        <table id="admissionsTable" class="table table-admissions" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Surgeon Name</th>
-                                    <th scope="col">Surgery Date</th>
-                                    <th scope="col">Surgery Time</th>
-                                    <th scope="col">Theatre</th>
-                                    <th scope="col">Ward Name</th>
-                                    <th scope="col">Bed Number</th>
-                                    <th scope="col">Admitted Date</th>
-                                    <th scope="col">Admitted Time</th>
-                                    <th scope="col">Actions</th>
-                                    <th scope="col"></th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Surgeon</th>
+                                    <th>Surgery Date</th>
+                                    <th>Time</th>
+                                    <th>Theatre</th>
+                                    <th>Ward</th>
+                                    <th>Bed</th>
+                                    <th>Admit Date</th>
+                                    <th>Admit Time</th>
+                                    <th style="min-width: 240px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -189,79 +366,56 @@
                                     @foreach (var Data in Model.AllcombinedData)
                                     {
                                         <tr>
-                                            <td>@Data.Name</td>
+                                            <td class="fw-semibold">@Data.Name</td>
                                             <td>@Data.Surname</td>
                                             <td>@Data.SurgeonName @Data.SurgeonSurname</td>
                                             <td>@Data.SurgeryDate</td>
                                             <td>@Data.SurgeryTime</td>
-                                            <td>@Data.Theater</td>
-                                            <td>@Data.WardName</td>
-                                            <td>@Data.BedNumber</td>
+                                            <td><span class="badge-theatre"><i class="fas fa-door-open me-1"></i> @Data.Theater</span></td>
+                                            <td><span class="badge-ward"><i class="fas fa-building me-1"></i> @Data.WardName</span></td>
+                                            <td><span class="badge-bed"><i class="fas fa-bed me-1"></i> @Data.BedNumber</span></td>
                                             <td>@Data.AdmitDate</td>
                                             <td>@Data.Time</td>
                                             <td>
-                                                @*
-                                                   // Discharge
-                                                *@
-                                                <a class="btn btn-primary"
-                                                   aria-hidden="true"
-                                                   asp-controller="Nurse"
-                                                   asp-action="PatientAllergiesConditions"
-                                                   asp-route-patientID="@Data.PatientID"
-                                                   asp-route-name="@Data.Name"
-                                                   asp-route-surname="@Data.Surname">
-                                                   Allergies and Conditions
-                                                </a>
-                                                <a class="btn btn-primary"
-                                                   aria-hidden="true"
-                                                   asp-controller="Nurse"
-                                                   asp-action="PatientChronicMedication"
-                                                   asp-route-patientID="@Data.PatientID"
-                                                   asp-route-name="@Data.Name"
-                                                   asp-route-surname="@Data.Surname">
-                                                    Chronic Medication
-                                                </a>
-                                                <a class="btn @(Data.HasVitals ? "btn-warning" : "btn-success")"
-                                                   asp-controller="Nurse"
-                                                   asp-action="PatientVitals"
-                                                   asp-route-patientID="@Data.PatientID"
-                                                   asp-route-name="@Data.Name"
-                                                   asp-route-surname="@Data.Surname">
-
-                                                    @(Data.HasVitals ? "Retake Vitals" : "Take Vitals")
-
-                                                </a>
-                                              
-                                               @*  <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="PatientRecords" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID">Patient Information</a>
-
-                                                <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollected" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Collected Medication List</a>
-                                                *@ 
+                                                <div class="action-buttons">
+                                                    <!-- Allergies & Conditions -->
+                                                    <a class="btn btn-action-sm btn-outline-allergy"
+                                                       asp-controller="Nurse"
+                                                       asp-action="PatientAllergiesConditions"
+                                                       asp-route-patientID="@Data.PatientID"
+                                                       asp-route-name="@Data.Name"
+                                                       asp-route-surname="@Data.Surname">
+                                                        <i class="fas fa-allergies me-1"></i> Allergies
+                                                    </a>
+                                                    <!-- Chronic Medication -->
+                                                    <a class="btn btn-action-sm btn-outline-medication"
+                                                       asp-controller="Nurse"
+                                                       asp-action="PatientChronicMedication"
+                                                       asp-route-patientID="@Data.PatientID"
+                                                       asp-route-name="@Data.Name"
+                                                       asp-route-surname="@Data.Surname">
+                                                        <i class="fas fa-pills me-1"></i> Medication
+                                                    </a>
+                                                    <!-- Vitals button dynamic style -->
+                                                    <a class="btn btn-action-sm @(Data.HasVitals ? "btn-outline-vitals-warning" : "btn-outline-vitals")"
+                                                       asp-controller="Nurse"
+                                                       asp-action="PatientVitals"
+                                                       asp-route-patientID="@Data.PatientID"
+                                                       asp-route-name="@Data.Name"
+                                                       asp-route-surname="@Data.Surname">
+                                                        <i class="fas fa-heartbeat me-1"></i> @(Data.HasVitals ? "Retake Vitals" : "Take Vitals")
+                                                    </a>
+                                                </div>
                                             </td>
-                                            <td>
-                                             @*    <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="Vitals" asp-route-accountID="@ViewBag.UserAccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber">Retake Vitals</a> *@
-
-
-                                              @*   <a class="btn btn-primary" aria-hidden="true" asp-controller="Nurse" asp-action="MedicationCollection" asp-route-accountID="@ViewBag.AccountID" asp-route-AdmittedPatientID="@Data.AdmittedPatientID" asp-route-name="@Data.Name" asp-route-Surname="@Data.Surname" asp-route-Ward="@Data.WardName" asp-route-Bed="@Data.BedNumber" asp-route-accountID="@ViewBag.UserAccountID">Prescription List</a> *@
-
-                                               @*  <form method="post" asp-controller="Nurse" asp-action="Discharge">
-                                                    <input type="hidden" name="admittedPatientID" value="@Data.AdmittedPatientID" />
-                                                    <input type="hidden" name="accountID" value="@ViewBag.AccountID" />
-                                                    <input type="hidden" name="userAccountID" value="@ViewBag.UserAccountID" />
-                                                    <input type="hidden" name="name" value="@Data.Name" />
-                                                    <input type="hidden" name="surname" value="@Data.Surname" />
-                                                    <input type="hidden" name="ward" value="@Data.WardName" />
-                                                    <input type="hidden" name="bed" value="@Data.BedNumber" />
-                                                    <button type="submit" class="btn btn-primary">
-                                                        Discharge Patient
-                                                    </button>
-                                                </form> *@
-                                            </td>
-                                         
                                         </tr>
                                     }
                                 }
                             </tbody>
                         </table>
+                    </div>
+                    <div id="noRecordsMessage" class="empty-state d-none">
+                        <i class="fas fa-user-slash"></i>
+                        <p class="mt-2 mb-0">No active admissions match your filters.</p>
                     </div>
                 </div>
             </div>
@@ -270,141 +424,97 @@
 
     <script>
         $(document).ready(function () {
-            // Initialize DataTable
-            var table = $('#example').DataTable({
+            // Initialize DataTable with enhanced options
+            var table = $('#admissionsTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [[5, 10, 15, 25, 50], [5, 10, 15, 25, 50]],
                 "language": {
-                    "zeroRecords": "No matching records found"
-                }
+                    "zeroRecords": " ",
+                    "info": "Showing _START_ to _END_ of _TOTAL_ admissions",
+                    "search": "",
+                    "searchPlaceholder": "Type to filter..."
+                },
+                "dom": '<"top"lf>rt<"bottom"ip><"clear">',
+                "responsive": false,
+                "order": [[8, 'desc']], // order by admit date desc (most recent first)
+                "columnDefs": [
+                    { "orderable": true, "targets": [0,1,2,3,4,8,9] },
+                    { "orderable": false, "targets": [5,6,7,10] }
+                ]
             });
 
-            // Custom search function for the search input and date input
-            $('#searchInput, #dateInput').on('keyup change', function () {
-                var searchText = $('#searchInput').val().trim(); // Trim whitespace from search input
-                var dateText = $('#dateInput').val(); // Get the selected date in YYYY-MM-DD format
+            // Custom date filter on Surgery Date column (index 3)
+            function applyCustomFilters() {
+                var searchVal = $('#searchInput').val().trim();
+                var dateVal = $('#dateInput').val();
 
-                // If a date is selected, proceed with date filtering
-                if (dateText) {
-                    // Iterate through each row in the Date column (assuming it's the 4th column, index 3)
-                    table.column(3).data().each(function (value, index) {
-                        // Assume the date format in the table is MM/DD/YYYY
-                        var tableDate = value.trim(); // Get the date from the table cell
-                        var parts = tableDate.split("/"); // Split the date into month, day, year
+                // apply global search
+                table.search(searchVal).draw();
 
+                // if date is selected, perform custom row filtering on column 3
+                if (dateVal) {
+                    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                        var surgeryDateRaw = data[3]; // Surgery Date column
+                        if (!surgeryDateRaw) return true;
+                        // parse date: assume format MM/DD/YYYY or YYYY-MM-DD
+                        var formattedTableDate = surgeryDateRaw;
+                        var parts = surgeryDateRaw.split("/");
                         if (parts.length === 3) {
-                            // Reformat the date from MM/DD/YYYY to YYYY-MM-DD to match the date input
-                            var reformattedDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
-
-                            // Compare the reformatted table date with the selected date
-                            if (reformattedDate === dateText) {
-                                table.row(index).nodes().to$().show(); // Show matching row
-                            } else {
-                                table.row(index).nodes().to$().hide(); // Hide non-matching row
-                            }
+                            formattedTableDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
                         }
+                        return formattedTableDate === dateVal;
                     });
+                    table.draw();
+                    $.fn.dataTable.ext.search.pop();
                 } else {
-                    // If no date is selected, reset the rows visibility
-                    table.rows().nodes().to$().show();
+                    table.draw(); // redraw without custom date filter
                 }
+                toggleEmptyState();
+            }
 
-                // Apply text search to all columns
-                table.search(searchText).draw();
+            $('#searchInput').on('keyup', function () {
+                table.search($(this).val()).draw();
+                toggleEmptyState();
+            });
 
-                // Control table visibility based on inputs and search results
-                if (searchText === '' && dateText === '') {
-                    $('#example').hide(); // Hide table if both search inputs are empty
+            $('#dateInput').on('change', function () {
+                applyCustomFilters();
+            });
+
+            function toggleEmptyState() {
+                var info = table.page.info();
+                if (info.recordsDisplay === 0) {
+                    $('#noRecordsMessage').removeClass('d-none');
+                    $('#admissionsTable').hide();
                 } else {
-                    $('#example').show(); // Show table if either input is not empty
-
-                    // Hide table if there are no matching records after filtering
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
-                    }
+                    $('#noRecordsMessage').addClass('d-none');
+                    $('#admissionsTable').show();
                 }
-            });
+            }
 
+            // initial check: if no data or all data filtered
+            if (@(Model.AllcombinedData?.Count ?? 0) === 0) {
+                $('#admissionsTable').hide();
+                $('#noRecordsMessage').removeClass('d-none');
+            } else {
+                $('#admissionsTable').show();
+                toggleEmptyState();
+            }
 
-            // Edit Booking Modal: Populate modal fields with data from the clicked button
-            $('#editBookingModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget);
-                var patientID = button.data('patient-id');
-                var name = button.data('name');
-                var surname = button.data('surname');
-                var surgeryDate = button.data('surgery-date');
-                var surgeryTime = button.data('surgery-time');
-                var theater = button.data('theater');
-                var bookingID = button.data('booking-id');
-
-                // Create a Date object from the surgeryDate and adjust for timezone offset
-                var localDate = new Date(surgeryDate);
-                var correctedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
-
-                // Format the date in 'YYYY-MM-DD' format
-                var formattedDate = correctedDate.toISOString().split('T')[0];
-
-                // Update the modal's content
-                var modal = $(this);
-                modal.find('#nameInput').val(name);
-                modal.find('#surnameInput').val(surname);
-                modal.find('#surgeryDateInput').val(formattedDate); // Correctly formatted date
-                modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
-                modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
-                modal.find('#PatientID').val(patientID);
-                modal.find('#BookingID').val(bookingID);
-                modal.find('#AccountID').val(button.data('account-id'));
-            });
-
-            // Show confirmation modal before submitting the booking form
-            $('#openConfirmModalButton').on('click', function () {
-                $('#confirmEditBookingModal').modal('show'); // Show confirmation modal
-            });
-
-            // Handle the "Yes" button click in the confirmation modal
-            $('#confirmEditBookingButton').on('click', function () {
-                $('#editUserForm').submit(); // Submit the form
-            });
-
-
-            // Add Prescription Modal: Populate modal fields with data from the clicked button
-            $('#addPrescriptionModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget); // Button that triggered the modal
-                var patientID = button.data('patient-id');
-                var name = button.data('name');
-                var surname = button.data('surname');
-                var bookingID = button.data('booking-id');
-                var admittedPatientId = button.data('admitted-patient-id');
-
-                // Update the modal's content
-                var modal = $(this);
-                modal.find('#nameInput').val(name);
-                modal.find('#surnameInput').val(surname);
-                modal.find('#PatientID').val(patientID);
-                modal.find('#BookingID').val(bookingID);
-                modal.find('#AdmittedPatientID').val(admittedPatientId);// Ensure this is correctly set
-            });
-
-            // Show confirmation modal before submitting the prescription form
-            $('#openConfirmPrescriptionModalButton').on('click', function () {
-                $('#confirmAddPrescriptionModal').modal('show'); // Show confirmation modal
-            });
-
-            // Handle the "Yes" button click in the confirmation modal for prescriptions
-            $('#confirmAddPrescriptionButton').on('click', function () {
-                $('#addPrescriptionForm').submit(); // Submit the form
-            });
-
-            // Discharge modal data
-            $('#confirmDischargeModal').on('show.bs.modal', function (event) {
-
-                var button = $(event.relatedTarget);
-                var patientID = button.data('id');
-
-                $('#dischargePatientID').val(patientID);
-
-            });
-            });
+            // optional: hide initial empty message if rows exist
+            setTimeout(() => toggleEmptyState(), 200);
+        });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- optional fallback for any modal functionality (discharge / edit references from original, kept hidden but not breaking) -->
+    <div style="display: none;">
+        <!-- Hidden modals to avoid broken references (original page had edit modals, we keep placeholders to avoid JS errors) -->
+        <div class="modal fade" id="editBookingModal" tabindex="-1"></div>
+        <div class="modal fade" id="confirmEditBookingModal" tabindex="-1"></div>
+        <div class="modal fade" id="addPrescriptionModal" tabindex="-1"></div>
+        <div class="modal fade" id="confirmAddPrescriptionModal" tabindex="-1"></div>
+        <div class="modal fade" id="confirmDischargeModal" tabindex="-1"></div>
+    </div>
+
 </body>
 </html>
