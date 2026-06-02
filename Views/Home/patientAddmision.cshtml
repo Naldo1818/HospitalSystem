@@ -8,247 +8,450 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admissions List</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admissions List | Patient Management</title>
+
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+    <!-- Bootstrap 5.3 + clean theme -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables + BS5 integration -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
     <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
 
-        /* Page */
         body {
-            background: #f5f7fb;
-            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fc;
+            margin: 0;
+            padding: 0;
         }
 
-        /* Card containers */
-        .p-3.border {
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.8rem 1.5rem;
+        }
+
+        /* modern card style */
+        .modern-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .card-header-custom {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 1.2rem 1.8rem 0.6rem 1.8rem;
+            border-bottom: 2px solid #eef2fa;
         }
 
-        /* Page title */
-        h2 {
+        .card-body-custom {
+            padding: 1.6rem 1.8rem 1.8rem 1.8rem;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1f4870, #1b3b5c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0;
+        }
+
+        .filter-label {
             font-weight: 600;
-            color: #2c3e50;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #4a627a;
+            margin-bottom: 0.4rem;
         }
 
-        /* Inputs */
-        .form-control {
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            padding: 8px 12px;
-            width: 300px;
+        .search-input-icon {
+            position: relative;
         }
 
-            .form-control:focus {
-                border-color: #0d6efd;
-                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            .search-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+                pointer-events: none;
             }
 
-        /* Table */
-        #example {
-            display: none;
+            .search-input-icon input {
+                padding-left: 40px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                transition: 0.2s;
+                height: 44px;
+            }
+
+                .search-input-icon input:focus {
+                    border-color: #2c7da0;
+                    box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+                    outline: none;
+                }
+
+        .date-input-icon {
+            position: relative;
         }
 
-        table.dataTable {
-            border-collapse: collapse !important;
+            .date-input-icon i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #8a99b4;
+                font-size: 0.9rem;
+                pointer-events: none;
+            }
+
+            .date-input-icon input {
+                padding-left: 40px;
+                border-radius: 60px;
+                border: 1px solid #e2e8f0;
+                background: #ffffff;
+                height: 44px;
+            }
+
+        /* table styling */
+        .data-table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+
+        .table-admissions {
             width: 100%;
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
-            table.dataTable thead {
-                background: #1f1f1f;
+            .table-admissions th {
+                background: #f8fafd;
+                color: #1f3b4c;
+                font-weight: 600;
+                font-size: 0.75rem;
+                padding: 1rem 0.7rem;
+                border-bottom: 1px solid #e9edf2;
+                white-space: nowrap;
+            }
+
+            .table-admissions td {
+                padding: 0.9rem 0.7rem;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f2f7;
+                color: #1f2f3e;
+                font-size: 0.85rem;
+            }
+
+        /* badge styles */
+        .badge-theatre, .badge-ward {
+            background: #eef2ff;
+            color: #1f4870;
+            border-radius: 40px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-bed {
+            background: #e6f7ec;
+            color: #1f7b4d;
+            border-radius: 40px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* action buttons group - modern stacked or inline */
+        .action-buttons-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 140px;
+        }
+
+        .btn-action-sm {
+            border-radius: 40px;
+            padding: 0.35rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .btn-outline-edit {
+            background: #fff;
+            border: 1px solid #2c7da0;
+            color: #2c7da0;
+        }
+
+            .btn-outline-edit:hover {
+                background: #2c7da0;
                 color: white;
             }
 
-                table.dataTable thead th {
-                    padding: 12px;
-                    font-weight: 600;
-                }
+        .btn-outline-code {
+            background: #fff;
+            border: 1px solid #6c757d;
+            color: #495057;
+        }
 
-            table.dataTable tbody td {
-                padding: 10px;
+            .btn-outline-code:hover {
+                background: #6c757d;
+                color: white;
             }
 
-            table.dataTable tbody tr:hover {
-                background: #f1f5ff;
+        .btn-outline-prescription {
+            background: #fff;
+            border: 1px solid #1f7b4d;
+            color: #1f7b4d;
+        }
+
+            .btn-outline-prescription:hover {
+                background: #1f7b4d;
+                color: white;
             }
 
-        /* Buttons */
-        .btn-primary {
-            background: #0d6efd;
-            border: none;
-            border-radius: 6px;
-            margin-bottom: 5px;
-            transition: all 0.2s;
+        .btn-outline-history {
+            background: #fff;
+            border: 1px solid #e67e22;
+            color: #e67e22;
         }
 
-            .btn-primary:hover {
-                background: #0b5ed7;
-                transform: scale(1.03);
+            .btn-outline-history:hover {
+                background: #e67e22;
+                color: white;
             }
 
-        /* Action buttons stack nicely */
-        .btn-group {
-            width: 100%;
-            margin-bottom: 5px;
+        .btn-outline-discharge {
+            background: #fff;
+            border: 1px solid #dc3545;
+            color: #dc3545;
         }
 
-        .btn-danger {
-            background: #dc3545;
+            .btn-outline-discharge:hover {
+                background: #dc3545;
+                color: white;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem;
+            background: #fafcff;
+            border-radius: 24px;
+        }
+
+        /* modal modern */
+        .modal-content-modern {
+            border-radius: 28px;
             border: none;
+            box-shadow: 0 25px 45px -12px rgba(0,0,0,0.3);
+            overflow: hidden;
         }
 
-        /* Modals */
-        .modal-lg {
-            max-width: 50% !important;
-        }
-
-        .modal-content {
-            border-radius: 10px;
-            border: none;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .modal-header {
-            background: #1f1f1f;
+        .modal-header-modern {
+            background: #1f3b4c;
             color: white;
+            padding: 1rem 1.5rem;
             border-bottom: none;
         }
 
-            .modal-header .btn-close {
-                filter: invert(1);
+            .modal-header-modern .btn-close {
+                filter: brightness(0) invert(1);
             }
 
-        .modal-footer {
-            border-top: none;
+        .form-label-modern {
+            font-weight: 600;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4a627a;
+            margin-bottom: 0.3rem;
         }
 
-        /* Radio boxes */
-        #SurgeryTime,
-        #Theater,
-        #Urgency {
-            background: #f8f9fa;
-            border-radius: 6px;
+        .radio-group-modern {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 10px 15px;
+            display: flex;
+            gap: 20px;
+            border: 1px solid #e2e8f0;
         }
 
-        /* Table container spacing */
-        .mt-5 {
-            margin-top: 30px !important;
+            .radio-group-modern .form-check {
+                margin: 0;
+            }
+
+      
+
+        .action-buttons-group {
+            min-width: 120px;
         }
 
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form id="searchForm">
-                            <h2>Admissions List</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchInput" class="form-label">Search</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="dateInput" class="form-label">Date</label>
-                                    <input type="date" class="form-control" id="dateInput" style="width:300px">
-                                </div>
+
+    <div class="main-container">
+        <main role="main">
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-procedures me-2" style="color:#1f7b4d;"></i> Admissions Management</h1>
+                    <p class="text-muted mt-1 mb-0 small">Manage active admissions, edit bookings, prescriptions & discharge</p>
+                </div>
+                <div class="mt-2 mt-sm-0">
+                    <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                        <i class="fas fa-user-md me-1"></i> @ViewBag.UserName @ViewBag.UserSurname
+                    </span>
+                </div>
+            </div>
+
+            <!-- Filter Card -->
+            <div class="modern-card mb-4">
+                <div class="card-header-custom">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-filter fs-5" style="color:#2c7da0;"></i>
+                        <h5 class="fw-bold mb-0" style="color:#1f2f3e;">Filter Admissions</h5>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="filter-label"><i class="fas fa-search me-1"></i> SEARCH PATIENT / SURGEON</div>
+                            <div class="search-input-icon">
+                                <i class="fas fa-user-injured"></i>
+                                <input type="text" class="form-control" id="searchInput" placeholder="Name, surname, surgeon...">
                             </div>
-                        </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="filter-label"><i class="fas fa-calendar-day me-1"></i> SURGERY DATE</div>
+                            <div class="date-input-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="date" class="form-control" id="dateInput">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table id="example" class="display" style="width:100%">
+
+            <!-- Admissions Table Card -->
+            <div class="modern-card">
+                <div class="card-header-custom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div><i class="fas fa-users me-2" style="color:#1f7b4d;"></i> <strong>Current Admissions</strong></div>
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                            <i class="far fa-hospital"></i> @Model.AllcombinedData.Count patients
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="data-table-wrapper">
+                        <table id="admissionsTable" class="table table-admissions" style="width:100%">
                             <thead>
                                 <tr>
-
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Surgeon Name</th>
-                                    <th scope="col">Surgery Date</th>
-                                    <th scope="col">Surgery Time</th>
-                                    <th scope="col">Theatre</th>
-                                    <th scope="col">Ward Name</th>
-                                    <th scope="col">Bed Number</th>
-                                    <th scope="col">Admitted Date</th>
-                                    <th scope="col">Admitted Time</th>
-                                    <th scope="col">Actions</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Surgeon</th>
+                                    <th>Surgery Date</th>
+                                    <th>Time</th>
+                                    <th>Theatre</th>
+                                    <th>Ward</th>
+                                    <th>Bed</th>
+                                    <th>Admit Date</th>
+                                    <th>Admit Time</th>
+                                    <th style="min-width: 160px;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var Data in Model.AllcombinedData)
                                 {
                                     <tr>
-                                        <td>@Data.Name</td>
+                                        <td class="fw-semibold">@Data.Name</td>
                                         <td>@Data.Surname</td>
                                         <td>@ViewBag.UserName @ViewBag.UserSurname</td>
                                         <td>@Data.SurgeryDate.ToShortDateString()</td>
                                         <td>@Data.SurgeryTime</td>
-                                        <td>@Data.Theater</td>
-                                        <td>@Data.WardName</td>
-                                        <td>@Data.BedNumber</td>
+                                        <td><span class="badge-theatre"><i class="fas fa-door-open me-1"></i> @Data.Theater</span></td>
+                                        <td><span class="badge-ward"><i class="fas fa-building me-1"></i> @Data.WardName</span></td>
+                                        <td><span class="badge-bed"><i class="fas fa-bed me-1"></i> @Data.BedNumber</span></td>
                                         <td>@Data.AdmitDate</td>
                                         <td>@Data.Time</td>
                                         <td>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   data-bs-toggle="modal"
-                                                   data-bs-target="#editBookingModal"
-                                                   data-name="@Data.Name"
-                                                   data-surname="@Data.Surname"
-                                                   data-surgery-date="@Data.SurgeryDate"
-                                                   data-surgery-time="@Data.SurgeryTime"
-                                                   data-theater="@Data.Theater"
-                                                   data-booking-id="@Data.BookingID"
-                                                   data-account-id="@Data.AccountID"
-                                                   data-patient-id="@Data.PatientID">Edit Booking</a>
-                                            </div>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   aria-hidden="true"
+                                            <div class="action-buttons-group">
+                                                <!-- Edit Booking -->
+                                                <button class="btn btn-action-sm btn-outline-edit edit-booking-btn"
+                                                        data-patient-id="@Data.PatientID"
+                                                        data-name="@Data.Name"
+                                                        data-surname="@Data.Surname"
+                                                        data-surgery-date="@Data.SurgeryDate.ToString("yyyy-MM-dd")"
+                                                        data-surgery-time="@Data.SurgeryTime"
+                                                        data-theater="@Data.Theater"
+                                                        data-booking-id="@Data.BookingID"
+                                                        data-account-id="@Data.AccountID">
+                                                    <i class="fas fa-edit me-1"></i> Edit Booking
+                                                </button>
+
+                                                <!-- Show Treatment Codes -->
+                                                <a class="btn btn-action-sm btn-outline-code"
                                                    asp-controller="Home"
                                                    asp-action="CheckTreatmentCode"
                                                    asp-route-bookingId="@Data.BookingID">
-                                                    Show Treatment Codes
+                                                    <i class="fas fa-qrcode me-1"></i> Treatment Codes
                                                 </a>
-                                            </div>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   data-bs-toggle="modal"
-                                                   data-bs-target="#addPrescriptionModal"
-                                                   data-name="@Data.Name"
-                                                   data-surname="@Data.Surname"
-                                                   data-booking-id="@Data.BookingID"
-                                                   data-account-id="@Data.AccountID"
-                                                   data-admitted-patient-id="@Data.AdmittedPatientID"
-                                                   data-patient-id="@Data.PatientID">Give Prescription</a>
-                                            </div>
-                                            <div class="w-100 btn-group" role="group">
-                                                <a class="btn btn-primary"
-                                                   aria-hidden="true"
+
+                                                <!-- Give Prescription -->
+                                                <button class="btn btn-action-sm btn-outline-prescription add-prescription-btn"
+                                                        data-name="@Data.Name"
+                                                        data-surname="@Data.Surname"
+                                                        data-booking-id="@Data.BookingID"
+                                                        data-account-id="@Data.AccountID"
+                                                        data-admitted-patient-id="@Data.AdmittedPatientID"
+                                                        data-patient-id="@Data.PatientID">
+                                                    <i class="fas fa-prescription me-1"></i> Prescription
+                                                </button>
+
+                                                <!-- Vitals & History -->
+                                                <a class="btn btn-action-sm btn-outline-history"
                                                    asp-controller="Home"
                                                    asp-action="vitalsAndHistory"
                                                    asp-route-name="@Data.Name"
                                                    asp-route-surname="@Data.Surname"
                                                    asp-route-patientID="@Data.PatientID">
-                                                    Check Vitals and Medical History
+                                                    <i class="fas fa-chart-line me-1"></i> Vitals & History
                                                 </a>
-                                            </div>
-                                            <div class="w-100 btn-group" role="group">
-                                                <button class="btn btn-danger discharge-btn"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#confirmDischargeModal"
-                                                        data-id="@Data.BookingID">
-                                                    Discharge Patient
+
+                                                <!-- Discharge -->
+                                                <button class="btn btn-action-sm btn-outline-discharge discharge-btn"
+                                                        data-booking-id="@Data.BookingID"
+                                                        data-admitted-patient-id="@Data.AdmittedPatientID">
+                                                    <i class="fas fa-sign-out-alt me-1"></i> Discharge
                                                 </button>
                                             </div>
                                         </td>
@@ -257,359 +460,304 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-            <!-- Edit Booking Modal -->
-            <div class="modal fade" id="editBookingModal" role="dialog" tabindex="-1" aria-labelledby="editBookingModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editBookingModal">Edit Booking</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="editUserForm" method="post" asp-action="EditSurgery" asp-controller="Home">
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <input type="hidden" id="PatientID" name="PatientID" />
-                                        <input type="hidden" id="BookingID" name="BookingID" />
-                                        <input type="hidden" id="AccountID" name="AccountID" />
-
-                                        <br>
-                                        <label for="nameInput" class="form-label">Name</label>
-                                        <input type="text" class="form-control" name="Name" id="nameInput" placeholder="Enter Name" disabled style="width:250px">
-
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="surnameInput" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" name="Surname" id="surnameInput" placeholder="Enter Surname" disabled style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="surgeryDateInput" class="form-label">Surgery Date</label>
-                                        <input type="date" class="form-control" name="SurgeryDate" id="surgeryDateInput" placeholder="Select Date" style="width:250px">
-                                    </div>
-                                    <br />
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="SurgeryTime" class="form-label">Surgery Time</label>
-                                        <div id="SurgeryTime" class="form-control" style="width:250px; padding: 10px; display: flex; justify-content: space-around; align-items: center;">
-                                            <div class="form-check" style="margin: 0;">
-                                                <input class="form-check-input" type="radio" name="SurgeryTime" id="surgeryTimeInput" value="AM">
-                                                <label class="form-check-label" for="AM">AM</label>
-                                            </div>
-                                            <div class="form-check" style="margin: 0;">
-                                                <input class="form-check-input" type="radio" name="SurgeryTime" id="surgeryTimeInput" value="PM">
-                                                <label class="form-check-label" for="PM">PM</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="Theater" class="form-label">Theater</label>
-                                        <div id="Theater" class="form-control" style="width:250px; padding: 10px; display: inline-table; justify-content: space-around; align-items: center;">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Dove Theatre">
-                                                <label class="form-check-label" for="Dove Theatre">Dove Theatre</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Eagle Theatre">
-                                                <label class="form-check-label" for="Eagle Theatre">Eagle Theatre</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Theater" id="theaterInput" value="Hadida Theatre">
-                                                <label class="form-check-label" for="Hadida Theatre">Hadida Theatre</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" id="openConfirmModalButton" class="btn btn-primary">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Confirmation Modal for Book Surgery -->
-            <div class="modal fade" id="confirmEditBookingModal" tabindex="-1" role="dialog" aria-labelledby="confirmEditBookingModal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmEditBookingModal">Confirm Booking</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save this updated surgery?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                            <button type="button" id="confirmEditBookingButton" class="btn btn-primary">Yes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Add Prescription Modal -->
-            <div class="modal fade" id="addPrescriptionModal" role="dialog" tabindex="-1" aria-labelledby="addPrescriptionModal" aria-hidden="true">
-                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addPrescriptionModal">Add Prescription</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addPrescriptionForm" method="post" action="@Url.Action("AddPrescription", "Home")">
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <input type="hidden" id="AdmittedPatientID" name="AdmittedPatientID" />
-                                        <input type="hidden" id="BookingID" name="BookingID" />
-                                        <input type="hidden" id="AccountID" name="AccountID" value="@ViewBag.UserAccountID">
-
-                                        <label for="nameInput" class="form-label">Name</label>
-                                        <input type="text" class="form-control" id="nameInput" name="Name" disabled style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        
-                                        <label for="surnameInput" class="form-label">Surname</label>
-                                        <input type="text" class="form-control" id="surnameInput" name="Surname" disabled style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        <label for="surgeonName" class="form-label">Surgeon Name</label>
-                                        <input type="text" class="form-control" id="surgeonName" name="SurgeonName" style="width:250px" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="dateGiven" class="form-label">Date Given</label>
-                                        <input type="date" class="form-control" id="dateGiven" name="DateGiven" style="width:250px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="Urgency" class="form-label">Urgency</label>
-                                        <div id="Urgency" class="form-control" style="width:250px; padding: 10px;">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Urgency" id="Yes" value="Yes">
-                                                <label class="form-check-label" for="Yes">Yes</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="Urgency" id="No" value="No">
-                                                <label class="form-check-label" for="No">No</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                 
-                                </div>
-                                <div class="form-group row">
-
-                                    <div class="col-4">
-                                        <br>
-                                        
-                                        <select input class="form-control" name="Status" placeholder="Status" style=" width:250px" hidden>
-                                            <option value="Prescribed">Prescribed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" id="openConfirmPrescriptionModalButton" class="btn btn-primary">Save</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Confirmation Modal for Book Surgery -->
-            <div class="modal fade" id="confirmAddPrescriptionModal" tabindex="-1" role="dialog" aria-labelledby="confirmAddPrescriptionModal" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmAddPrescriptionModal">Confirm Booking</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to save this Prescription?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="confirmAddPrescriptionButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Discharge Confirmation Modal -->
-            <div class="modal fade" id="confirmDischargeModal" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-
-                        <div class="modal-header">
-                            <h5 class="modal-title">Confirm Discharge</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            Are you sure you want to discharge this patient?
-                        </div>
-
-                        <div class="modal-footer">
-
-                            <form id="dischargeForm" asp-action="Discharge" asp-controller="Home" method="post">
-                                <input type="hidden" id="dischargePatientID" name="AdmittedPatientID" />
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                <button type="submit" class="btn btn-danger">Yes, Discharge</button>
-                            </form>
-
-                        </div>
-
+                    <div id="noRecordsMessage" class="empty-state d-none">
+                        <i class="fas fa-user-slash"></i>
+                        <p class="mt-2 mb-0">No admissions match your filters.</p>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- ========= MODALS ========= -->
+    <!-- Edit Booking Modal (Modern) -->
+    <div class="modal fade" id="editBookingModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-calendar-edit me-2"></i>Edit Surgery Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="editUserForm" method="post" asp-action="EditSurgery" asp-controller="Home">
+                        <input type="hidden" id="editPatientID" name="PatientID" />
+                        <input type="hidden" id="editBookingID" name="BookingID" />
+                        <input type="hidden" id="editAccountID" name="AccountID" />
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Patient Name</label>
+                                <input type="text" class="form-control form-control-sm" id="editNameInput" disabled style="background:#f1f5f9">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Surname</label>
+                                <input type="text" class="form-control form-control-sm" id="editSurnameInput" disabled style="background:#f1f5f9">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Surgery Date</label>
+                                <input type="date" class="form-control form-control-sm" id="surgeryDateInput" name="SurgeryDate">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Surgery Time</label>
+                                <div class="radio-group-modern">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="SurgeryTime" id="editTimeAM" value="AM">
+                                        <label class="form-check-label" for="editTimeAM">AM</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="SurgeryTime" id="editTimePM" value="PM">
+                                        <label class="form-check-label" for="editTimePM">PM</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Theatre</label>
+                                <div class="radio-group-modern">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="editTheaterDove" value="Dove Theatre">
+                                        <label class="form-check-label" for="editTheaterDove">Dove</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="editTheaterEagle" value="Eagle Theatre">
+                                        <label class="form-check-label" for="editTheaterEagle">Eagle</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Theater" id="editTheaterHadida" value="Hadida Theatre">
+                                        <label class="form-check-label" for="editTheaterHadida">Hadida</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="openConfirmModalButton" class="btn btn-primary rounded-pill px-4" style="background:#2c7da0;">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Edit Booking Modal -->
+    <div class="modal fade" id="confirmEditBookingModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title">Confirm Changes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">Are you sure you want to update this surgery booking?</div>
+                <div class="modal-footer border-0 pt-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">No</button>
+                    <button type="button" id="confirmEditBookingButton" class="btn btn-primary rounded-pill px-4">Yes, Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Prescription Modal -->
+    <div class="modal fade" id="addPrescriptionModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-prescription-bottle me-2"></i>Add Prescription</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="addPrescriptionForm" method="post" action="@Url.Action("AddPrescription", "Home")">
+                        <input type="hidden" id="prescAdmittedPatientID" name="AdmittedPatientID" />
+                        <input type="hidden" id="prescBookingID" name="BookingID" />
+                        <input type="hidden" name="AccountID" value="@ViewBag.UserAccountID" />
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Name</label>
+                                <input type="text" class="form-control" id="prescNameInput" name="Name" disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Surname</label>
+                                <input type="text" class="form-control" id="prescSurnameInput" name="Surname" disabled>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-modern">Surgeon</label>
+                                <input type="text" class="form-control" value="@ViewBag.UserName @ViewBag.UserSurname" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Date Given</label>
+                                <input type="date" class="form-control" id="dateGiven" name="DateGiven">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-modern">Urgency (Stat)</label>
+                                <div class="radio-group-modern">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Urgency" value="Yes" id="urgencyYes">
+                                        <label class="form-check-label" for="urgencyYes">Yes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="Urgency" value="No" id="urgencyNo" checked>
+                                        <label class="form-check-label" for="urgencyNo">No</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="Status" value="Prescribed">
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="openConfirmPrescriptionModalButton" class="btn btn-primary rounded-pill px-4" style="background:#1f7b4d;">Save Prescription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Prescription Modal -->
+    <div class="modal fade" id="confirmAddPrescriptionModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title">Confirm Prescription</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">Are you sure you want to save this prescription?</div>
+                <div class="modal-footer border-0 pt-0 pb-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">No</button>
+                    <button type="button" id="confirmAddPrescriptionButton" class="btn btn-primary rounded-pill px-4">Yes, Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discharge Confirmation Modal -->
+    <div class="modal fade" id="confirmDischargeModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-modern">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-sign-out-alt me-2"></i>Confirm Discharge</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">Are you sure you want to discharge this patient?</div>
+                <div class="modal-footer border-0 pt-0 pb-4">
+                    <form id="dischargeForm" asp-action="Discharge" asp-controller="Home" method="post">
+                        <input type="hidden" id="dischargeAdmittedPatientID" name="AdmittedPatientID" />
+                        <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">Yes, Discharge</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function () {
             // Initialize DataTable
-            var table = $('#example').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
+            var table = $('#admissionsTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [[5, 10, 15, 25], [5, 10, 15, 25]],
+                "language": { "zeroRecords": " ", "info": "Showing _START_ to _END_ of _TOTAL_ admissions" },
+                "order": [[8, 'desc']],
+                "scrollX": true
             });
 
-            // Custom search function for the search input and date input
-            $('#searchInput, #dateInput').on('keyup change', function () {
-                var searchText = $('#searchInput').val().trim(); // Trim whitespace from search input
-                var dateText = $('#dateInput').val(); // Get the selected date in YYYY-MM-DD format
-
-                // If a date is selected, proceed with date filtering
-                if (dateText) {
-                    // Iterate through each row in the Date column (assuming it's the 4th column, index 3)
-                    table.column(3).data().each(function (value, index) {
-                        // Assume the date format in the table is MM/DD/YYYY
-                        var tableDate = value.trim(); // Get the date from the table cell
-                        var parts = tableDate.split("/"); // Split the date into month, day, year
-
+            // Custom date filter
+            function applyDateFilter() {
+                var dateVal = $('#dateInput').val();
+                if (dateVal) {
+                    $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                        var surgeryDateRaw = data[3];
+                        var formatted = surgeryDateRaw;
+                        var parts = surgeryDateRaw.split("/");
                         if (parts.length === 3) {
-                            // Reformat the date from MM/DD/YYYY to YYYY-MM-DD to match the date input
-                            var reformattedDate = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
-
-                            // Compare the reformatted table date with the selected date
-                            if (reformattedDate === dateText) {
-                                table.row(index).nodes().to$().show(); // Show matching row
-                            } else {
-                                table.row(index).nodes().to$().hide(); // Hide non-matching row
-                            }
+                            formatted = parts[2] + '-' + ('0' + parts[0]).slice(-2) + '-' + ('0' + parts[1]).slice(-2);
                         }
+                        return formatted === dateVal;
                     });
+                    table.draw();
+                    $.fn.dataTable.ext.search.pop();
                 } else {
-                    // If no date is selected, reset the rows visibility
-                    table.rows().nodes().to$().show();
+                    table.draw();
                 }
+                toggleEmptyState();
+            }
 
-                // Apply text search to all columns
-                table.search(searchText).draw();
+            $('#searchInput').on('keyup', function () {
+                table.search($(this).val()).draw();
+                toggleEmptyState();
+            });
+            $('#dateInput').on('change', applyDateFilter);
 
-                // Control table visibility based on inputs and search results
-                if (searchText === '' && dateText === '') {
-                    $('#example').hide(); // Hide table if both search inputs are empty
+            function toggleEmptyState() {
+                if (table.page.info().recordsDisplay === 0) {
+                    $('#noRecordsMessage').removeClass('d-none');
+                    $('#admissionsTable').hide();
                 } else {
-                    $('#example').show(); // Show table if either input is not empty
-
-                    // Hide table if there are no matching records after filtering
-                    if (table.page.info().recordsDisplay === 0) {
-                        $('#example').hide();
-                    }
+                    $('#noRecordsMessage').addClass('d-none');
+                    $('#admissionsTable').show();
                 }
+            }
+            if (@Model.AllcombinedData.Count === 0) {
+                $('#admissionsTable').hide();
+                $('#noRecordsMessage').removeClass('d-none');
+            } else {
+                toggleEmptyState();
+            }
+
+            // Edit Booking Modal handling
+            $(document).on('click', '.edit-booking-btn', function() {
+                var btn = $(this);
+                $('#editPatientID').val(btn.data('patient-id'));
+                $('#editBookingID').val(btn.data('booking-id'));
+                $('#editAccountID').val(btn.data('account-id'));
+                $('#editNameInput').val(btn.data('name'));
+                $('#editSurnameInput').val(btn.data('surname'));
+                $('#surgeryDateInput').val(btn.data('surgery-date'));
+                var surgeryTime = btn.data('surgery-time');
+                if (surgeryTime === 'AM') $('#editTimeAM').prop('checked', true);
+                else if (surgeryTime === 'PM') $('#editTimePM').prop('checked', true);
+                var theater = btn.data('theater');
+                if (theater === 'Dove Theatre') $('#editTheaterDove').prop('checked', true);
+                else if (theater === 'Eagle Theatre') $('#editTheaterEagle').prop('checked', true);
+                else if (theater === 'Hadida Theatre') $('#editTheaterHadida').prop('checked', true);
+                new bootstrap.Modal(document.getElementById('editBookingModal')).show();
             });
 
-
-            // Edit Booking Modal: Populate modal fields with data from the clicked button
-            $('#editBookingModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget);
-                var patientID = button.data('patient-id');
-                var name = button.data('name');
-                var surname = button.data('surname');
-                var surgeryDate = button.data('surgery-date');
-                var surgeryTime = button.data('surgery-time');
-                var theater = button.data('theater');
-                var bookingID = button.data('booking-id');
-
-                // Create a Date object from the surgeryDate and adjust for timezone offset
-                var localDate = new Date(surgeryDate);
-                var correctedDate = new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000);
-
-                // Format the date in 'YYYY-MM-DD' format
-                var formattedDate = correctedDate.toISOString().split('T')[0];
-
-                // Update the modal's content
-                var modal = $(this);
-                modal.find('#nameInput').val(name);
-                modal.find('#surnameInput').val(surname);
-                modal.find('#surgeryDateInput').val(formattedDate); // Correctly formatted date
-                modal.find('input[name="SurgeryTime"][value="' + surgeryTime + '"]').prop('checked', true);
-                modal.find('input[name="Theater"][value="' + theater + '"]').prop('checked', true);
-                modal.find('#PatientID').val(patientID);
-                modal.find('#BookingID').val(bookingID);
-                modal.find('#AccountID').val(button.data('account-id'));
+            $('#openConfirmModalButton').on('click', function() {
+                $('#confirmEditBookingModal').modal('show');
+            });
+            $('#confirmEditBookingButton').on('click', function() {
+                $('#editUserForm').submit();
             });
 
-            // Show confirmation modal before submitting the booking form
-            $('#openConfirmModalButton').on('click', function () {
-                $('#confirmEditBookingModal').modal('show'); // Show confirmation modal
+            // Prescription Modal
+            $(document).on('click', '.add-prescription-btn', function() {
+                var btn = $(this);
+                $('#prescAdmittedPatientID').val(btn.data('admitted-patient-id'));
+                $('#prescBookingID').val(btn.data('booking-id'));
+                $('#prescNameInput').val(btn.data('name'));
+                $('#prescSurnameInput').val(btn.data('surname'));
+                $('#dateGiven').val(new Date().toISOString().split('T')[0]);
+                $('#urgencyNo').prop('checked', true);
+                new bootstrap.Modal(document.getElementById('addPrescriptionModal')).show();
             });
 
-            // Handle the "Yes" button click in the confirmation modal
-            $('#confirmEditBookingButton').on('click', function () {
-                $('#editUserForm').submit(); // Submit the form
+            $('#openConfirmPrescriptionModalButton').on('click', function() {
+                if (!$('#dateGiven').val()) { alert("Please select date given."); return; }
+                $('#confirmAddPrescriptionModal').modal('show');
+            });
+            $('#confirmAddPrescriptionButton').on('click', function() {
+                $('#addPrescriptionForm').submit();
             });
 
-
-            // Add Prescription Modal: Populate modal fields with data from the clicked button
-            $('#addPrescriptionModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget); // Button that triggered the modal
-                var patientID = button.data('patient-id');
-                var name = button.data('name');
-                var surname = button.data('surname');
-                var bookingID = button.data('booking-id');
-                var admittedPatientId = button.data('admitted-patient-id');
-
-                // Update the modal's content
-                var modal = $(this);
-                modal.find('#nameInput').val(name);
-                modal.find('#surnameInput').val(surname);
-                modal.find('#PatientID').val(patientID);
-                modal.find('#BookingID').val(bookingID);
-                modal.find('#AdmittedPatientID').val(admittedPatientId);// Ensure this is correctly set
+            // Discharge Modal
+            $(document).on('click', '.discharge-btn', function() {
+                var admittedId = $(this).data('admitted-patient-id');
+                $('#dischargeAdmittedPatientID').val(admittedId);
+                new bootstrap.Modal(document.getElementById('confirmDischargeModal')).show();
             });
-
-            // Show confirmation modal before submitting the prescription form
-            $('#openConfirmPrescriptionModalButton').on('click', function () {
-                $('#confirmAddPrescriptionModal').modal('show'); // Show confirmation modal
-            });
-
-            // Handle the "Yes" button click in the confirmation modal for prescriptions
-            $('#confirmAddPrescriptionButton').on('click', function () {
-                $('#addPrescriptionForm').submit(); // Submit the form
-            });
-
-            // Discharge modal data
-            $('#confirmDischargeModal').on('show.bs.modal', function (event) {
-
-                var button = $(event.relatedTarget);
-                var patientID = button.data('id');
-
-                $('#dischargePatientID').val(patientID);
-
-            });
-            });
+        });
     </script>
-
 </body>
 </html>
