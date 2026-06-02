@@ -9,376 +9,691 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Medication</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Add Medication | Prescription Management</title>
+
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
     <style>
-        .table-danger {
-            background-color: #f8d7da;
-            color: #721c24;
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.8rem 1.5rem;
+        }
+
+        /* modern card style */
+        .modern-card {
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.04), 0 0 1px rgba(0, 0, 0, 0.03);
+            border: none;
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            background: white;
+            padding: 1.2rem 1.8rem 0.6rem 1.8rem;
+            border-bottom: 2px solid #eef2fa;
+        }
+
+        .card-body-custom {
+            padding: 1.6rem 1.8rem 1.8rem 1.8rem;
+        }
+
+        .page-title {
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #1f4870, #1b3b5c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 0;
+        }
+
+        .patient-badge {
+            background-color: #eef2ff;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label-modern {
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4a627a;
+            margin-bottom: 0.4rem;
+        }
+
+        .search-input-icon {
+            position: relative;
+        }
+
+        .search-input-icon i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8a99b4;
+            font-size: 0.9rem;
+            pointer-events: none;
+        }
+
+        .search-input-icon input {
+            padding-left: 40px;
+            border-radius: 60px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            transition: 0.2s;
+            height: 44px;
+        }
+
+        .search-input-icon input:focus {
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+            outline: none;
+        }
+
+        .nice-select {
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background: #fafcff;
+            padding: 0.6rem 1rem;
+            font-weight: 500;
+            color: #1f2a44;
+            transition: 0.2s;
+            height: 44px;
+        }
+
+        .nice-select:focus {
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+            outline: none;
+        }
+
+        .btn-primary-soft {
+            background: #1f7b4d;
+            border: none;
+            border-radius: 40px;
+            padding: 0.55rem 1.8rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary-soft:hover {
+            background: #0f5e3a;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-info-panel {
+            border-radius: 40px;
+            border: 1px solid #2c7da0;
+            background: white;
+            color: #2c7da0;
+            padding: 0.55rem 1.5rem;
+            font-weight: 500;
+        }
+
+        .btn-outline-info-panel:hover {
+            background: #2c7da0;
+            color: white;
+        }
+
+        /* table styling */
+        .data-table-wrapper {
+            overflow-x: auto;
+            border-radius: 20px;
+        }
+
+        .table-prescriptions {
+            width: 100%;
+            margin-bottom: 0;
+            font-size: 0.8rem;
+        }
+
+        .table-prescriptions th {
+            background: #f8fafd;
+            color: #1f3b4c;
+            font-weight: 600;
+            font-size: 0.7rem;
+            padding: 1rem 0.7rem;
+            border-bottom: 1px solid #e9edf2;
+            white-space: nowrap;
+        }
+
+        .table-prescriptions td {
+            padding: 0.9rem 0.7rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f0f2f7;
+            color: #1f2f3e;
+        }
+
+        .table-danger-row {
+            background-color: #fff5f5;
+            border-left: 4px solid #e53e3e;
+        }
+
+        .badge-contraindicated {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-radius: 40px;
+            padding: 4px 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .btn-outline-remove-sm {
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 1px solid #f1c0c0;
+            background: #fff8f8;
+            color: #b91c1c;
+        }
+
+        .btn-outline-remove-sm:hover {
+            background: #fee2e2;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem;
+            background: #fafcff;
+            border-radius: 24px;
+        }
+
+        hr.divider-light {
+            margin: 1rem 0;
+            background: #eef2fa;
+            height: 1px;
+            opacity: 0.6;
+        }
+
+        /* offcanvas modern styling */
+        .offcanvas-dark-modern {
+            background: #1f2f3e;
+            color: #eef2ff;
+        }
+
+        .offcanvas-dark-modern .offcanvas-header {
+            border-bottom: 1px solid #334155;
+        }
+
+        .offcanvas-dark-modern .table-dark-custom {
+            background: transparent;
+            color: #e2e8f0;
+            font-size: 0.8rem;
+        }
+
+        .offcanvas-dark-modern .table-dark-custom th {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        /* modal modern */
+        .modal-content-modern {
+            border-radius: 28px;
+            border: none;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .modal-header-warning {
+            background: #e67e22;
+            color: white;
+        }
+
+        .modal-header-confirm {
+            background: #1f4870;
+            color: white;
         }
     </style>
+</head>
+<body>
 
-    <!-- Sidebar -->
-    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
-        <div class="offcanvas-header">
-            <h3 id="offcanvasSidebarLabel">Patient Information</h3>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-
-        <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                    <p style="font-size: 1.2rem;">Name: @Model.PatientInfo.Name</p>
-                </li>
-                <li class="nav-item">
-                    <p style="font-size: 1.2rem;">Surname: @Model.PatientInfo.Surname</p>
-                </li>
-                <li class="nav-item">
-                    <p style="font-size: 1.2rem;">Gender: @Model.PatientInfo.Gender</p>
-                </li>
-                <li class="nav-item">
-                    <p style="font-size: 2rem;">_______________________</p>
-                </li>
-
-                <li class="nav-item">
-                    <p>Medical History</p>
-                    <p>
-                        Medical Conditions:
-                        @if (Model.Conditions != null && Model.Conditions.Any())
-                        {
-                            <ul>
-                                @foreach (var condition in Model.Conditions)
-                                {
-                                    <li>@condition.ConditionName</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <span>None</span>
-                        }
-                    </p>
-
-                    <p>
-                        Allergies:
-                        @if (Model.Allergies != null && Model.Allergies.Any())
-                        {
-                            <ul>
-                                @foreach (var allergy in Model.Allergies)
-                                {
-                                    <li>@allergy.ActiveIngredientName</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <span>None</span>
-                        }
-                    </p>
-
-                    <p>
-                        Current Medication:
-                        @if (Model.CurrentMedications != null && Model.CurrentMedications.Any())
-                        {
-                            <ul>
-                                @foreach (var med in Model.CurrentMedications)
-                                {
-                                    <li>@med.MedicationName</li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <li>None</li>
-                        }
-                    </p>
-
-                </li>
-                <li class="nav-item">
-                    <p style="font-size: 2rem;">_______________________</p>
-                </li>
-
-                <li class="nav-item">
-                    <p style="font-size: 1.2rem;">Latest Vitals</p>
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        <table class="table table-dark table-striped">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Time</th>
-                                    <th scope="col">Height cm</th>
-                                    <th scope="col">Weight kg</th>
-                                    <th scope="col">Systolic Blood Pressure mmHg</th>
-                                    <th scope="col">Distolic Blood Pressure mmHg</th>
-                                    <th scope="col">Heart Rate bpm</th>
-                                    <th scope="col">Blood Oxygen %</th>
-                                    <th scope="col">Respiration Rate bpm</th>
-                                    <th scope="col">Blood Glucose Level mg/dL</th>
-                                    <th scope="col">Temperature °C</th>
-                                    <th scope="col">BMI</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.Allvitals)
-                                {
-                                    <tr>
-                                        <td>@item.Date</td>
-                                        <td>@item.Time</td>
-                                        <td>@item.Height</td>
-                                        <td>@item.Weight</td>
-                                        <td>@item.SystolicBloodPressure</td>
-                                        <td>@item.DiastolicBloodPressure</td>
-                                        <td>@item.HeartRate</td>
-                                        <td>@item.BloodOxygen</td>
-                                        <td>@item.Respiration</td>
-                                        <td>@item.BloodGlucoseLevel</td>
-                                        <td>@item.Temperature</td>
-                                        @{
-                                            // Calculate BMI
-                                            double heightInMeters = item.Height / 100.0; // Convert height to meters
-                                            double bmi = item.Weight / (heightInMeters * heightInMeters); // BMI formula
-                                        }
-                                        <td>@Math.Round(bmi, 2)</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+    <div class="main-container">
+        <main role="main">
+            <!-- Header -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="page-title"><i class="fas fa-prescription-bottle me-2" style="color:#1f7b4d;"></i> Prescription Medication</h1>
+                    <div class="mt-2">
+                        <span class="patient-badge">
+                            <i class="fas fa-user-injured me-1"></i> @Model.PatientInfo?.Name @Model.PatientInfo?.Surname
+                        </span>
+                        <span class="badge bg-light text-dark ms-2 rounded-pill">
+                            <i class="fas fa-venus-mars"></i> @Model.PatientInfo?.Gender
+                        </span>
                     </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="main" class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-
-                        <form id="addMedicationForm" method="post" action="@Url.Action("AddMedication", "Home")">
-                            <h2>Prescription Medication</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchMedicationInput" class="form-label">Medication Name Filter</label>
-                                    <input type="text" class="form-control" id="searchMedicationInput" placeholder="Medication Name Filter" style="width:300px" oninput="filterMedicationNames()">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="medicationSelect" class="form-label">Medication</label>
-                                    <select class="form-control" id="medicationSelect" name="MedicationID" style="width:300px" required onchange="checkForAllergy()">
-                                        <option disabled selected>Select a Description</option>
-                                        @foreach (var medication in Model.AllGoodMedications ?? new List<DEMO.ViewModels.PrescriptionMedicationViewModel>())
-                                        {
-                                            <option value="@medication.MedicationID" data-allergic="false">
-                                                @medication.MedicationName
-                                            </option>
-                                        }
-
-                                        @foreach (var medication in Model.AllMedication ?? new List<DEMO.ViewModels.PrescriptionMedicationViewModel>())
-                                        {
-                                            <option value="@medication.MedicationID" style="color:red;" data-allergic="true">
-                                                @medication.MedicationName - Contraindicated
-                                            </option>
-                                        }
-                                       
-                                    </select>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="exampleFormControlInput1" class="form-label">Quantity/Units</label>
-                                        <input type="text" class="form-control" id="quantity" name="quantity" placeholder="Add Amount" style="width:300px">
-                                    </div>
-                                    <div class="col-4">
-                                        <br>
-                                        <label for="instructionsInput" class="form-label">Instructions</label>
-                                        <input type="text" class="form-control" id="instructions" name="instructions" placeholder="Enter Instructions" style="width:600px">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <input type="hidden" id="PrescriptionID" name="PrescriptionID" value="@ViewBag.PrescriptionID">
-                                    <button type="button" id="openMedicationButton" class="btn btn-primary">Add</button>
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">Patient Info</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                </div>
+                <div class="mt-2 mt-sm-0">
+                    <button class="btn btn-outline-info-panel" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+                        <i class="fas fa-chart-line me-2"></i>Patient Clinical Summary
+                    </button>
                 </div>
             </div>
 
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <table id="example" class="table display">
+            <!-- Add Medication Card -->
+            <div class="modern-card mb-4">
+                <div class="card-header-custom">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fas fa-plus-circle fs-5" style="color:#1f7b4d;"></i>
+                        <h5 class="fw-bold mb-0" style="color:#1f2f3e;">Add New Medication</h5>
+                    </div>
+                    <p class="text-muted small mt-1 mb-0">Search and select medication — <span class="text-danger">red items</span> indicate potential allergy/contraindication</p>
+                </div>
+                <div class="card-body-custom">
+                    <form id="addMedicationForm" method="post" action="@Url.Action("AddMedication", "Home")">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label-modern"><i class="fas fa-search me-1"></i> SEARCH MEDICATION</label>
+                                <div class="search-input-icon">
+                                    <i class="fas fa-capsules"></i>
+                                    <input type="text" class="form-control" id="searchMedicationInput" placeholder="Type to filter medications..." oninput="filterMedicationNames()">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label-modern"><i class="fas fa-list-ul me-1"></i> SELECT MEDICATION</label>
+                                <select class="form-select nice-select" id="medicationSelect" name="MedicationID" required onchange="checkForAllergyAndWarn()">
+                                    <option value="" disabled selected>-- Choose a medication --</option>
+                                    @foreach (var medication in Model.AllGoodMedications ?? new List<DEMO.ViewModels.PrescriptionMedicationViewModel>())
+                                    {
+                                        <option value="@medication.MedicationID" data-allergic="false" data-name="@medication.MedicationName">
+                                            @medication.MedicationName
+                                        </option>
+                                    }
+                                    @foreach (var medication in Model.AllMedication ?? new List<DEMO.ViewModels.PrescriptionMedicationViewModel>())
+                                    {
+                                        <option value="@medication.MedicationID" data-allergic="true" data-name="@medication.MedicationName" style="color:#d9534f; font-weight:500;">
+                                            ⚠️ @medication.MedicationName - Contraindicated
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label-modern"><i class="fas fa-cubes me-1"></i> QUANTITY / UNITS</label>
+                                <input type="text" class="form-control nice-select" id="quantity" name="quantity" placeholder="e.g., 30 tablets" required>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label-modern"><i class="fas fa-clipboard-list me-1"></i> INSTRUCTIONS</label>
+                                <input type="text" class="form-control nice-select" id="instructions" name="instructions" placeholder="e.g., Take one daily after meals" required>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="PrescriptionID" name="PrescriptionID" value="@ViewBag.PrescriptionID">
+                        <div class="d-flex gap-3 mt-5">
+                            <button type="button" id="openMedicationButton" class="btn btn-primary-soft px-5"><i class="fas fa-save me-2"></i>Add Medication</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Current Prescriptions Card -->
+            <div class="modern-card">
+                <div class="card-header-custom">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div><i class="fas fa-clipboard-list me-2" style="color:#1f7b4d;"></i> <strong>Current Prescriptions</strong></div>
+                        <span class="badge bg-light text-dark rounded-pill px-3 py-2">
+                            <i class="fas fa-prescription"></i> @(Model.CombinedData?.Count ?? 0) medications
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body-custom">
+                    <div class="data-table-wrapper">
+                        <table id="prescriptionsTable" class="table table-prescriptions">
                             <thead>
                                 <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Prescription Date</th>
-                                    <th scope="col">Medication Name</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Schedule</th>
-                                    <th scope="col">Form</th>
-                                    <th scope="col">Instructions</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Actions</th>
+                                    <th>Name</th>
+                                    <th>Surname</th>
+                                    <th>Prescription Date</th>
+                                    <th>Medication</th>
+                                    <th>Quantity</th>
+                                    <th>Schedule</th>
+                                    <th>Form</th>
+                                    <th>Instructions</th>
+                                    <th>Status</th>
+                                    <th style="width:80px">Action</th>
                                 </tr>
                             </thead>
-                            @{
-                                var allergicMedications = Model.AllMedication.Select(m => m.MedicationName).ToList(); // List of allergic medication names
-                            }
-
                             <tbody>
-                                @foreach (var patientGroup in Model.CombinedData.GroupBy(item => new { item.Name, item.Surname, item.DateGiven }))
+                                @{
+                                    var allergicMedicationNames = Model.AllMedication?.Select(m => m.MedicationName).ToList() ?? new List<string>();
+                                }
+                                @if (Model.CombinedData != null && Model.CombinedData.Any())
                                 {
-                                    // Get the patient details
-                                    var patientName = patientGroup.Key.Name;
-                                    var patientSurname = patientGroup.Key.Surname;
-                                    var patientDateGiven = patientGroup.Key.DateGiven;
-
-                                    // Initialize a flag to check if any medication is allergic
-                                    bool hasAllergicMedication = false;
-
-                                    // Iterate through each medication for the current patient
-                                    foreach (var item in patientGroup)
+                                    @foreach (var item in Model.CombinedData)
                                     {
-                                        // Check if the medication is in the list of allergic medications
-                                        if (allergicMedications.Contains(item.MedicationName))
-                                        {
-                                            hasAllergicMedication = true;
-                                        }
-                                    }
-
-                                    // Create a row for the patient details, only once
-                                    <tr class="@((hasAllergicMedication) ? "table-danger" : "")">
-                                        <td>@patientName</td>
-                                        <td>@patientSurname</td>
-                                        <td>@patientGroup.First().SurgeryDate</td>
-
-                                        <!-- Display the first medication details in the same row -->
-                                        <td>@patientGroup.First().MedicationName</td>
-                                        <td>@patientGroup.First().Quantity</td>
-                                        <td>@patientGroup.First().Schedule</td>
-                                        <td>@patientGroup.First().MedicationForm</td>
-                                        <td>@patientGroup.First().Instructions</td>
-                                        <td>@patientGroup.First().Status</td>
-                                        <td>
-                                            <form asp-action="DeleteMedication" method="post">
-                                               
-                                                <input type="hidden" name="MedicationID" value="@patientGroup.First().MedicationID" />
-                                                <input type="hidden" name="prescriptionId" value="@ViewBag.PrescriptionID" />
-                                                <button type="submit" class="btn btn-danger">Remove</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-
-                                    // Iterate through remaining medications (if any) for the same patient
-                                    foreach (var item in patientGroup.Skip(1))
-                                    {
-                                        <tr class="@((allergicMedications.Contains(item.MedicationName)) ? "table-danger" : "")">
-                                            <td colspan="3"></td> <!-- Empty cells for Name, Surname, DateGiven -->
-                                            <td>@item.MedicationName</td>
+                                        bool isAllergic = allergicMedicationNames.Contains(item.MedicationName);
+                                        <tr class="@(isAllergic ? "table-danger-row" : "")">
+                                            <td class="fw-semibold">@item.Name</td>
+                                            <td>@item.Surname</td>
+                                            <td>@item.SurgeryDate</td>
+                                            <td>
+                                                @item.MedicationName
+                                                @if (isAllergic)
+                                                {
+                                                    <span class="badge-contraindicated ms-2"><i class="fas fa-exclamation-triangle"></i> Contraindicated</span>
+                                                }
+                                            </td>
                                             <td>@item.Quantity</td>
                                             <td>@item.Schedule</td>
                                             <td>@item.MedicationForm</td>
-                                            <td>@item.Instructions</td>
-                                            <td>@item.Status</td>
+                                            <td><span class="text-muted">@item.Instructions</span></td>
+                                            <td><span class="badge bg-secondary bg-opacity-10 text-dark">@item.Status</span></td>
                                             <td>
-                                                <form asp-action="DeleteMedication" method="post">
+                                                <form asp-action="DeleteMedication" method="post" onsubmit="return confirm('Remove this medication from prescription?');">
                                                     <input type="hidden" name="MedicationID" value="@item.MedicationID" />
                                                     <input type="hidden" name="prescriptionId" value="@ViewBag.PrescriptionID" />
-                                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                                    <button type="submit" class="btn btn-outline-remove-sm">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
                                     }
                                 }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="10" class="text-center text-muted py-4">No medications added yet</td>
+                                    </tr>
+                                }
                             </tbody>
-
-                            <tfoot>
-                                <tr>
-                                    <td>
-                                        <a class="btn btn-primary" aria-hidden="true" style="width:70px" asp-controller="Home" asp-action="SurgeonHome">Save</a>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
-
-                </div>
-            </div>
-            <!--Error Modal -->
-            <div class="modal fade" id="allergyWarningModal" tabindex="-1" aria-labelledby="allergyWarningModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="allergyWarningModalLabel">Warning</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            This medication contains an active ingredient that may affect the patient negatively due to allergies or medical conditions.
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Proceed</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Confirmation Modal -->
-            <div class="modal fade" id="confirmMedicationModal" tabindex="-1" role="dialog" aria-labelledby="confirmMedicationModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="confirmMedicationModalLabel">Confirm Save</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to add this Medication ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" id="saveMedicationButton" class="btn btn-primary">Yes</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelSaveButton">No</button>
-                        </div>
+                    <hr class="divider-light">
+                    <div class="d-flex justify-content-end">
+                        <a class="btn btn-primary-soft" asp-controller="Home" asp-action="SurgeonHome" style="background:#2c7da0;">
+                            <i class="fas fa-check-circle me-2"></i> Save & Finish
+                        </a>
                     </div>
                 </div>
             </div>
         </main>
     </div>
+
+    <!-- ========= OFF CANVAS PATIENT INFO (MODERN) ========= -->
+    <div class="offcanvas offcanvas-start offcanvas-dark-modern" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel" style="width: 550px;">
+        <div class="offcanvas-header">
+            <h4 class="offcanvas-title" id="offcanvasSidebarLabel"><i class="fas fa-user-circle me-2"></i>Patient Clinical Summary</h4>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body" style="overflow-y: auto;">
+            <div class="mb-4">
+                <h6><i class="fas fa-id-card me-2"></i>Demographics</h6>
+                <p><strong>Name:</strong> @Model.PatientInfo?.Name @Model.PatientInfo?.Surname</p>
+                <p><strong>Gender:</strong> @Model.PatientInfo?.Gender</p>
+            </div>
+            <hr class="bg-secondary">
+            <div class="mb-4">
+                <h6><i class="fas fa-notes-medical me-2"></i>Medical History</h6>
+                <p><strong>Conditions:</strong></p>
+                @if (Model.Conditions != null && Model.Conditions.Any())
+                {
+                    <ul class="small">
+                        @foreach (var condition in Model.Conditions)
+                        {
+                            <li>@condition.ConditionName</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">None recorded</p>
+                }
+
+                <p><strong>Allergies (Active Ingredients):</strong></p>
+                @if (Model.Allergies != null && Model.Allergies.Any())
+                {
+                    <ul class="small text-danger">
+                        @foreach (var allergy in Model.Allergies)
+                        {
+                            <li><i class="fas fa-allergies"></i> @allergy.ActiveIngredientName</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">None reported</p>
+                }
+
+                <p><strong>Current Chronic Medications:</strong></p>
+                @if (Model.CurrentMedications != null && Model.CurrentMedications.Any())
+                {
+                    <ul class="small">
+                        @foreach (var med in Model.CurrentMedications)
+                        {
+                            <li>@med.MedicationName</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted">None</p>
+                }
+            </div>
+            <hr class="bg-secondary">
+            <div>
+                <h6><i class="fas fa-heartbeat me-2"></i>Latest Vitals</h6>
+                <div style="max-height: 350px; overflow-y: auto;">
+                    <table class="table table-sm table-dark-custom">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Temp</th>
+                                <th>HR</th>
+                                <th>BP</th>
+                                <th>BMI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Allvitals != null && Model.Allvitals.Any())
+                            {
+                                foreach (var item in Model.Allvitals.Take(5))
+                                {
+                                    // SAFE BMI CALCULATION - Fixed DivideByZeroException
+                                    double bmi = 0;
+                                    if (item.Height > 0 && item.Weight > 0)
+                                    {
+                                        double heightInMeters = item.Height / 100.0;
+                                        bmi = item.Weight / (heightInMeters * heightInMeters);
+                                    }
+                                    <tr>
+                                        <td>@item.Date.ToString("yyyy-MM-dd")</td>
+                                        <td>@(item.Temperature > 0 ? item.Temperature.ToString("F1") + "°C" : "—")</td>
+                                        <td>@(item.HeartRate > 0 ? item.HeartRate.ToString() : "—")</td>
+                                        <td>@(item.SystolicBloodPressure > 0 ? $"{item.SystolicBloodPressure}/{item.DiastolicBloodPressure}" : "—")</td>
+                                        <td>@(bmi > 0 ? bmi.ToString("0.0") : "—")</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No vital records available</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= MODALS ========= -->
+    <!-- Allergy Warning Modal -->
+    <div class="modal fade" id="allergyWarningModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-warning">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-exclamation-triangle me-2"></i>Contraindication Alert</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="fas fa-allergies fs-1" style="color:#e67e22;"></i>
+                        <div>
+                            <strong>This medication contains an active ingredient that may be contraindicated</strong> based on the patient's allergies or medical conditions.
+                            <p class="mt-2 mb-0 text-muted small">Proceed only after clinical verification.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="proceedWithMedication" class="btn btn-warning rounded-pill px-4">Proceed Anyway</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Add Medication Modal -->
+    <div class="modal fade" id="confirmMedicationModal" tabindex="-1" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-content-modern">
+                <div class="modal-header modal-header-confirm">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-question-circle me-2"></i>Confirm Prescription</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <i class="fas fa-prescription me-2"></i> Are you sure you want to add this medication to the prescription list?
+                </div>
+                <div class="modal-footer border-0 pt-0 pb-4 pe-4">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">No</button>
+                    <button type="button" id="saveMedicationButton" class="btn btn-primary rounded-pill px-4" style="background:#1f7b4d;">Yes, Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Flag to track if allergy warning is pending for current selection
+        let pendingAllergySelection = null;
+        let selectedOptionBeforeWarning = null;
+
         $(document).ready(function () {
-            $('#example').DataTable();
+            if ($.fn.DataTable.isDataTable('#prescriptionsTable')) {
+                $('#prescriptionsTable').DataTable().destroy();
+            }
+            $('#prescriptionsTable').DataTable({
+                "pageLength": 8,
+                "lengthMenu": [[5, 8, 15, 25], [5, 8, 15, 25]],
+                "language": { "zeroRecords": "No medications added", "info": "Showing _START_ to _END_ of _TOTAL_ entries" },
+                "order": [[2, 'desc']]
+            });
         });
-        // Handle 'Add Medication Code' button click
+
+        // Filter medication dropdown by text
+        function filterMedicationNames() {
+            const filter = document.getElementById('searchMedicationInput').value.toLowerCase();
+            const select = document.getElementById('medicationSelect');
+            const options = select.options;
+
+            for (let i = 0; i < options.length; i++) {
+                const option = options[i];
+                const text = option.text.toLowerCase();
+                if (text.includes(filter) || option.value === "") {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+        }
+
+        // Check for allergy/contraindication and trigger warning modal
+        function checkForAllergyAndWarn() {
+            const select = document.getElementById('medicationSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            if (!selectedOption || !selectedOption.value) return;
+
+            const isAllergic = selectedOption.getAttribute('data-allergic') === 'true';
+
+            if (isAllergic) {
+                selectedOptionBeforeWarning = selectedOption.value;
+                pendingAllergySelection = selectedOption.value;
+                const warningModal = new bootstrap.Modal(document.getElementById('allergyWarningModal'));
+                warningModal.show();
+            }
+        }
+
+        // Proceed with medication after warning
+        document.getElementById('proceedWithMedication')?.addEventListener('click', function() {
+            $('#allergyWarningModal').modal('hide');
+            pendingAllergySelection = null;
+            selectedOptionBeforeWarning = null;
+        });
+
+        // If modal is closed without proceed, reset selection
+        $('#allergyWarningModal').on('hidden.bs.modal', function () {
+            if (pendingAllergySelection !== null) {
+                const select = document.getElementById('medicationSelect');
+                select.value = '';
+                pendingAllergySelection = null;
+                selectedOptionBeforeWarning = null;
+            }
+        });
+
+        // Handle Add button click: validate + show confirmation modal
         $('#openMedicationButton').on('click', function () {
+            const select = document.getElementById('medicationSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            const quantity = $('#quantity').val().trim();
+            const instructions = $('#instructions').val().trim();
+
+            if (!selectedOption || !selectedOption.value) {
+                alert("Please select a medication.");
+                return;
+            }
+            if (!quantity) {
+                alert("Please enter quantity/units.");
+                return;
+            }
+            if (!instructions) {
+                alert("Please enter instructions.");
+                return;
+            }
+
+            const isAllergic = selectedOption.getAttribute('data-allergic') === 'true';
+            if (isAllergic && pendingAllergySelection === selectedOption.value) {
+                const warningModal = new bootstrap.Modal(document.getElementById('allergyWarningModal'));
+                warningModal.show();
+                return;
+            }
             $('#confirmMedicationModal').modal('show');
         });
-        // Ensure 'No' button closes the confirmation modal
-        $('#cancelSaveButton').on('click', function () {
-            $('#confirmMedicationModal').modal('hide');
-        });
-        // Handle confirmation of saving Medication code
+
+        // Confirm save via AJAX
         $('#saveMedicationButton').on('click', function () {
             $.ajax({
                 url: '@Url.Action("AddMedication", "Home")',
@@ -388,41 +703,12 @@
                     window.location.href = '@Url.Action("PrescriptionMedication", "Home")' + '?PrescriptionId=' + $('#PrescriptionID').val();
                 },
                 error: function (xhr, status, error) {
-                    alert('Error: ' + error);
+                    console.error("Error:", error);
+                    alert("Error adding medication: " + (xhr.responseText || error));
+                    $('#confirmMedicationModal').modal('hide');
                 }
             });
-            $('#confirmMedicationModal').modal('hide'); // Close the confirmation modal after saving
         });
-
-
-
-    </script>
-    <script>
-        function filterMedicationNames() {
-            const filter = document.getElementById('searchMedicationInput').value.toLowerCase();
-            const select = document.getElementById('medicationSelect');
-            const options = select.getElementsByTagName('option');
-
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                const text = option.text.toLowerCase();
-                if (text.includes(filter)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            }
-        }
-        function checkForAllergy() {
-            const select = document.getElementById('medicationSelect');
-            const selectedOption = select.options[select.selectedIndex];
-
-            // Check if the selected medication has an allergy issue
-            if (selectedOption.getAttribute('data-allergic') === 'true') {
-                // Show the allergy warning modal
-                $('#allergyWarningModal').modal('show');
-            }
-        }
     </script>
 </body>
 </html>
