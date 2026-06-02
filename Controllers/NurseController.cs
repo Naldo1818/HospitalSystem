@@ -589,7 +589,10 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-        
+            ViewBag.AdmittedCount = _dbContext.BookSurgery.Count(p => p.Status == "Admitted");
+            ViewBag.DischargedCount = _dbContext.BookSurgery.Count(p => p.Status == "Discharged");
+            ViewBag.AwaitingAdmissionCount = _dbContext.BookSurgery.Count(s => s.SurgeryDate == today && s.Status == "Booked");
+
 
             //var patients = _dbContext.AdmittedPatients.ToList();
             return View("AdmittedPatients", viewModel);
@@ -654,6 +657,12 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
             ViewBag.PatientName = name;
             ViewBag.PatientSurname = surname;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+            ViewBag.AdmittedCount = _dbContext.BookSurgery.Count(p => p.Status == "Admitted");
+            ViewBag.DischargedCount = _dbContext.BookSurgery.Count(p => p.Status == "Discharged");
+            ViewBag.AwaitingAdmissionCount = _dbContext.BookSurgery.Count(s => s.SurgeryDate == today && s.Status == "Booked");
 
             return View(viewModel);
         }
@@ -829,6 +838,13 @@ namespace DEMO.Controllers
         //Patient Vitals
         public IActionResult PatientVitals(int patientID, string name, string surname)
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            if (!int.TryParse(accountIDString, out int accountID))
+            {
+                // Handle the case where accountID is not available or is invalid
+                accountID = 0; // Or handle as required
+            }
+            
             var patientVitals = (from pv in _dbContext.PatientVitals
                                  join b in _dbContext.BookSurgery
                                      on pv.PatientID equals b.PatientID
@@ -865,6 +881,24 @@ namespace DEMO.Controllers
             ViewBag.PatientID = patientID;
             ViewBag.PatientName = name;
             ViewBag.PatientSurname = surname;
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            // Get statistics for the profile sidebar
+            // You'll need to inject your DbContext or service to get these counts
+            // Example using a hypothetical _context:
+            ViewBag.AdmittedCount = _dbContext.BookSurgery.Count(p => p.Status == "Admitted");
+            ViewBag.DischargedCount = _dbContext.BookSurgery.Count(p => p.Status == "Discharged");
+            ViewBag.AwaitingAdmissionCount = _dbContext.BookSurgery.Count(s => s.SurgeryDate == today && s.Status == "Booked");
 
             return View(viewModel);
         }
