@@ -1127,6 +1127,50 @@ namespace DEMO.Controllers
         //Alerts
         public IActionResult PrescriptionMedication(int id)
         {
+            var accountID = HttpContext.Session.GetString("UserAccountId");
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var surgeryCount = _dbContext.BookSurgery
+                .Where(bs => bs.AccountID.ToString() == accountID && bs.SurgeryDate == today)
+                .Count();
+
+
+            var prescribedCount = (from p in _dbContext.PatientInfo
+                                   join bs in _dbContext.BookSurgery
+                                       on p.PatientID equals bs.PatientID
+                                   join ap in _dbContext.AdmittedPatients
+                                       on bs.BookingID equals ap.BookingID
+                                   join pr in _dbContext.Prescription
+                                       on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                   where pr.Status == "Prescribed"
+                                          && pr.AccountID.ToString() == accountID
+                                   select pr).Count();
+
+            var dispensedCount = (from p in _dbContext.PatientInfo
+                                  join bs in _dbContext.BookSurgery
+                                      on p.PatientID equals bs.PatientID
+                                  join ap in _dbContext.AdmittedPatients
+                                      on bs.BookingID equals ap.BookingID
+                                  join pr in _dbContext.Prescription
+                                      on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                  where pr.Status == "Dispensed"
+                                        && pr.AccountID.ToString() == accountID
+                                  select pr).Count();
+
+            var rejectedCount = (from p in _dbContext.PatientInfo
+                                 join bs in _dbContext.BookSurgery
+                                     on p.PatientID equals bs.PatientID
+                                 join ap in _dbContext.AdmittedPatients
+                                     on bs.BookingID equals ap.BookingID
+                                 join pr in _dbContext.Prescription
+                                     on ap.AdmittedPatientID equals pr.AdmittedPatientID
+                                 where pr.Status == "Rejected"
+                                       && pr.AccountID.ToString() == accountID
+                                 select pr).Count();
+
             var patientID = (from pr in _dbContext.Prescription
                              join ad in _dbContext.AdmittedPatients on pr.AdmittedPatientID equals ad.AdmittedPatientID
                              join b in _dbContext.BookSurgery on ad.BookingID equals b.BookingID
@@ -1146,16 +1190,25 @@ namespace DEMO.Controllers
             // ✅ SAFE medications
             var allGoodMedications = _dbContext.Medication
                                     .Where(m => !_dbContext.MedicationActiveIngredient
-                                        .Join(_dbContext.ConditionActiveIngredient,
-                                              mai => mai.ActiveingredientID,
-                                              cai => cai.ActiveingredientID,
-                                              (mai, cai) => new { mai, cai })
-                                        .Join(_dbContext.PatientConditions,
-                                              temp => temp.cai.ConditionID,
-                                              pc => pc.ConditionsID,
-                                              (temp, pc) => new { temp.mai, pc })
-                                        .Any(x => x.mai.MedicationID == m.MedicationID
-                                               && x.pc.PatientID == patientID))
+                                            .Join(_dbContext.ConditionActiveIngredient,
+                                                mai => mai.ActiveingredientID,
+                                                cai => cai.ActiveingredientID,
+                                                (mai, cai) => new { mai, cai })
+                                            .Join(_dbContext.PatientConditions,
+                                                temp => temp.cai.ConditionID,
+                                                pc => pc.ConditionsID,
+                                                (temp, pc) => new { temp.mai, pc })
+                                            .Any(x => x.mai.MedicationID == m.MedicationID
+                                                   && x.pc.PatientID == patientID)
+                                             &&
+                                             !_dbContext.MedicationActiveIngredient
+                                    .Join(_dbContext.PatientAllergy,
+                                                mai => mai.ActiveingredientID,
+                                                pa => pa.ActiveingredientID,
+                                                (mai, pa) => new { mai, pa })
+                                            .Any(x => x.mai.MedicationID == m.MedicationID
+                                                   && x.pa.PatientID == patientID)
+                                    )
                                     .Select(m => new PrescriptionMedicationViewModel
                                     {
                                         MedicationID = m.MedicationID,
@@ -1169,12 +1222,18 @@ namespace DEMO.Controllers
             // ✅ BAD medications (contraindicated)
             var badMedications = _dbContext.Medication
                                 .Where(m => _dbContext.MedicationActiveIngredient
-                                    .Where(mai => mai.MedicationID == m.MedicationID)
-                                    .Any(mai => _dbContext.ConditionActiveIngredient
-                                        .Where(cai => cai.ActiveingredientID == mai.ActiveingredientID)
-                                        .Any(cai => _dbContext.PatientConditions
-                                            .Any(pc => pc.ConditionsID == cai.ConditionID
-                                                    && pc.PatientID == 4))))
+                                        .Any(mai => mai.MedicationID == m.MedicationID &&
+                                            ( _dbContext.ConditionActiveIngredient
+                                                    .Any(cai => cai.ActiveingredientID == mai.ActiveingredientID &&
+                                                        _dbContext.PatientConditions
+                                                            .Any(pc => pc.PatientID == patientID &&
+                                                                pc.ConditionsID == cai.ConditionID))
+                                              ||
+                                              _dbContext.PatientAllergy
+                                                    .Any(pa => pa.PatientID == patientID &&
+                                                        pa.ActiveingredientID == mai.ActiveingredientID)
+                                            )
+                                        ))
                                 .Select(m => new PrescriptionMedicationViewModel
                                 {
                                     MedicationID = m.MedicationID,
@@ -1285,7 +1344,14 @@ namespace DEMO.Controllers
             };
 
             ViewBag.PrescriptionID = id;
-
+            ViewBag.SurgeryCount = surgeryCount;
+            ViewBag.PrescribedCount = prescribedCount;
+            ViewBag.DispensedCount = dispensedCount;
+            ViewBag.RejectedCount = rejectedCount;
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
             return View(viewModel);
         }
         [HttpPost]
