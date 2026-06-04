@@ -1,83 +1,469 @@
 ﻿@model DEMO.ViewModels.HomeViewModel
 @{
-    ViewData["Title"] = "Pharmacist Home";
+    ViewData["Title"] = "Pharmacist Dashboard";
     Layout = "_LayoutPharmacist";
 }
 
-<div class="container mt-4">
+<div class="container-fluid px-4 py-3">
 
-    <!-- Top Cards Section -->
-    <div class="row g-3">
-        <!-- Patients Card -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm text-white top-card" style="background: linear-gradient(135deg, #4e73df, #1cc88a); transform: scale(0.95); transition: transform 0.3s;">
-                <img src="~/css/DnP.jpeg" class="card-img-top" alt="Doctor Patient">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Patients</h5>
-                    <p class="card-text">View patients & book surgeries.</p>
-                    <a class="btn btn-light w-100 mt-2" asp-controller="Home" asp-action="PatientList">View Patients</a>
+    <!-- Modern Hero / Welcome Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-6 fw-semibold text-gradient mb-0">
+                <i class="bi bi-capsule-pill text-danger me-2"></i> Pharmacy Dashboard
+            </h1>
+            <p class="text-muted mt-2">Manage prescriptions, inventory & medication orders efficiently.</p>
+        </div>
+        <div class="mt-2 mt-sm-0">
+            <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
+                <i class="bi bi-calendar-week me-1"></i> @DateTime.Now.ToString("dddd, MMMM dd")
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats Cards Row - Real-time Pharmacy KPIs -->
+    <div class="row g-4 mb-4">
+        <!-- Pending Prescriptions -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase small fw-semibold">Pending Rx</span>
+                            <h2 class="mt-2 mb-0 fw-bold">@ViewBag.PendingPrescriptionsCount</h2>
+                            <p class="mb-0 text-muted small">Awaiting verification</p>
+                        </div>
+                        <div class="stat-icon bg-warning-subtle rounded-3 p-3">
+                            <i class="bi bi-clock-history fs-1 text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3 px-4">
+                    <a asp-controller="Pharmacist" asp-action="PrescriptionList" class="text-decoration-none small fw-semibold">
+                        Review now <i class="bi bi-chevron-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Prescriptions Card -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm text-white top-card" style="background: linear-gradient(135deg, #36b9cc, #f6c23e); transform: scale(0.95); transition: transform 0.3s;">
-                <img src="~/css/DP.jpeg" class="card-img-top" alt="Doctor Prescription">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Prescriptions</h5>
-                    <p class="card-text">Track your prescriptions.</p>
-                    <a class="btn btn-light w-100 mt-2" asp-controller="Home" asp-action="PrescriptionList">View Prescriptions</a>
+        <!-- Today's Dispensed -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase small fw-semibold">Today's Dispensed</span>
+                            <h2 class="mt-2 mb-0 fw-bold">@ViewBag.TodaysDispensedCount</h2>
+                            <p class="mb-0 text-muted small">Completed orders</p>
+                        </div>
+                        <div class="stat-icon bg-success-subtle rounded-3 p-3">
+                            <i class="bi bi-check2-circle fs-1 text-success"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Admissions Card -->
-        <div class="col-md-4">
-            <div class="card h-100 shadow-sm text-white top-card" style="background: linear-gradient(135deg, #e74a3b, #858796); transform: scale(0.95); transition: transform 0.3s;">
-                <img src="~/css/HB.jpeg" class="card-img-top" alt="Hospital Bed">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Admissions</h5>
-                    <p class="card-text">Current admissions & vitals.</p>
-                    <a class="btn btn-light w-100 mt-2" asp-controller="Home" asp-action="patientAddmision">View Admissions</a>
+        <!-- Low Stock Alerts -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase small fw-semibold">Low Stock Items</span>
+                            <h2 class="mt-2 mb-0 fw-bold text-danger">@ViewBag.LowStockItemsCount</h2>
+                            <p class="mb-0 text-muted small">Critical inventory</p>
+                        </div>
+                        <div class="stat-icon bg-danger-subtle rounded-3 p-3">
+                            <i class="bi bi-exclamation-triangle fs-1 text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3 px-4">
+                    <a asp-controller="Pharmacist" asp-action="ListMedication" class="text-decoration-none small fw-semibold">
+                        Reorder now <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Revenue / Stats -->
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase small fw-semibold">Active Orders</span>
+                            <h2 class="mt-2 mb-0 fw-bold">@ViewBag.ActiveMedOrders</h2>
+                            <p class="mb-0 text-muted small">Pending delivery</p>
+                        </div>
+                        <div class="stat-icon bg-primary-subtle rounded-3 p-3">
+                            <i class="bi bi-truck fs-1 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0 pb-3 px-4">
+                    <a asp-controller="Pharmacist" asp-action="MedicationOrders" class="text-decoration-none small fw-semibold">
+                        Track orders <i class="bi bi-chevron-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-   
-    <!-- Prescriptions Table -->
-    <div class="row mt-4">
+
+    <!-- Two column layout: Recent Prescriptions + Low Stock Alert & Actions -->
+    <div class="row g-4 mb-4">
+        <!-- Recent Prescriptions Table (Modernized) -->
+        <div class="col-xl-7 col-lg-12">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex flex-wrap justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-semibold"><i class="bi bi-journal-medical text-danger me-2"></i> Recent Prescriptions</h5>
+                    <a asp-controller="Pharmacist" asp-action="PrescriptionList" class="btn btn-sm btn-outline-danger rounded-pill px-3">View All <i class="bi bi-arrow-right ms-1"></i></a>
+                </div>
+                <div class="card-body p-4">
+                    <div class="input-group mb-3 shadow-sm rounded-pill overflow-hidden">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" id="searchPrescriptions" class="form-control border-start-0" placeholder="Search by patient, medication...">
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle" id="recentPrescriptionsTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Medication</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              @*   @if (Model.RecentPrescriptions != null && Model.RecentPrescriptions.Any())
+                                {
+                                    foreach (var rx in Model.RecentPrescriptions)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold">@rx.PatientName</td>
+                                            <td>@rx.MedicineName</td>
+                                            <td>@rx.PrescribedDate.ToString("MMM dd")</td>
+                                            <td>
+                                                @if (rx.Status == "Pending")
+                                                {
+                                                    <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill"><i class="bi bi-hourglass-split me-1"></i> Pending</span>
+                                                }
+                                                else if (rx.Status == "Dispensed")
+                                                {
+                                                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill"><i class="bi bi-check-circle me-1"></i> Dispensed</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill"><i class="bi bi-x-circle me-1"></i> Rejected</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Pharmacist" asp-action="PrescriptionDetails" asp-route-id="@rx.Id" class="btn btn-sm btn-link text-danger text-decoration-none">Review</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">No recent prescriptions found.</td>
+                                    </tr>
+                                }
+              *@               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Low Stock Alert & Quick Actions -->
+        <div class="col-xl-5 col-lg-12">
+            <!-- Low Stock Alert Card -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <h5 class="mb-0 fw-semibold"><i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Critical Stock Alert</h5>
+                </div>
+                <div class="card-body p-4">
+                    @if (ViewBag.LowStockMedicines != null && ViewBag.LowStockMedicines.Count > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var med in ViewBag.LowStockMedicines)
+                            {
+                                <div class="list-group-item px-0 d-flex justify-content-between align-items-center border-0 border-bottom">
+                                    <div>
+                                        <span class="fw-semibold">@med.Name</span>
+                                        <br />
+                                        <small class="text-muted">Current stock: @med.StockLeft units</small>
+                                    </div>
+                                    <span class="badge bg-danger rounded-pill">Reorder soon</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="mt-3 text-center">
+                            <a asp-controller="Pharmacist" asp-action="ListMedication" class="btn btn-danger rounded-pill px-4 shadow-sm w-100">Order Medications <i class="bi bi-cart-plus ms-2"></i></a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-3">
+                            <i class="bi bi-check-circle-fill text-success fs-1"></i>
+                            <p class="mt-2 text-muted">All medications are sufficiently stocked.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Quick Actions Grid -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4">
+                    <h5 class="mb-0 fw-semibold"><i class="bi bi-lightning-charge-fill text-danger me-2"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <a asp-controller="Pharmacist" asp-action="PrescriptionList" class="text-decoration-none">
+                                <div class="action-card text-center p-3 rounded-4 border bg-hover-light">
+                                    <i class="bi bi-file-earmark-medical fs-2 text-danger"></i>
+                                    <p class="mb-0 mt-2 fw-semibold">Verify Rx</p>
+                                    <small class="text-muted">Pending prescriptions</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a asp-controller="Pharmacist" asp-action="ListMedication" class="text-decoration-none">
+                                <div class="action-card text-center p-3 rounded-4 border bg-hover-light">
+                                    <i class="bi bi-capsule fs-2 text-danger"></i>
+                                    <p class="mb-0 mt-2 fw-semibold">Inventory</p>
+                                    <small class="text-muted">Manage stock</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a asp-controller="Pharmacist" asp-action="MedicationOrders" class="text-decoration-none">
+                                <div class="action-card text-center p-3 rounded-4 border bg-hover-light">
+                                    <i class="bi bi-truck fs-2 text-danger"></i>
+                                    <p class="mb-0 mt-2 fw-semibold">Orders</p>
+                                    <small class="text-muted">Track deliveries</small>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-6">
+                            <a asp-controller="Pharmacist" asp-action="PharmacistReport" class="text-decoration-none">
+                                <div class="action-card text-center p-3 rounded-4 border bg-hover-light">
+                                    <i class="bi bi-graph-up fs-2 text-danger"></i>
+                                    <p class="mb-0 mt-2 fw-semibold">Reports</p>
+                                    <small class="text-muted">Analytics & stats</small>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Medication Orders Summary / Recent Orders Timeline -->
+    <div class="row g-4">
         <div class="col-12">
-            <div class="table-responsive p-3 border bg-white shadow-sm">
-                <h3 class="section-title text-center">Prescriptions List</h3>
-                <input class="form-control mb-2" id="searchSurgery" placeholder="Search..." />
-                <table class="table table-striped table-hover table-bordered" id="surgeryTable">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Name</th>
-                            <th>Surname</th>
-                            <th>Surgeon</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Theatre</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                       @*  @foreach (var Data in Model.AllSurgeryData)
-                        {
-                            <tr>
-                                <td>@Data.Name</td>
-                                <td>@Data.Surname</td>
-                                <td>@ViewBag.UserName @ViewBag.UserSurname</td>
-                                <td>@Data.SurgeryDate.ToShortDateString()</td>
-                                <td>@Data.SurgeryTime</td>
-                                <td>@Data.Theater</td>
-                            </tr>
-                        } *@
-                    </tbody>
-                </table>
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap">
+                    <h5 class="mb-0 fw-semibold"><i class="bi bi-box-seam text-danger me-2"></i> Recent Medication Orders</h5>
+                    <a asp-controller="Pharmacist" asp-action="MedicationOrders" class="btn btn-sm btn-outline-secondary rounded-pill">Manage Orders</a>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-borderless" id="ordersTable">
+                            <thead class="table-light rounded-3">
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Supplier</th>
+                                    <th>Items</th>
+                                    <th>Order Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @*  @if (Model.RecentOrders != null && Model.RecentOrders.Any())
+                                {
+                                    foreach (var order in Model.RecentOrders)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold">#@order.OrderNumber</td>
+                                            <td>@order.SupplierName</td>
+                                            <td>@order.TotalItems items</td>
+                                            <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                                            <td>
+                                                @if (order.Status == "Processing")
+                                                {
+                                                    <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">Processing</span>
+                                                }
+                                                else if (order.Status == "Shipped")
+                                                {
+                                                    <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">Shipped</span>
+                                                }
+                                                else if (order.Status == "Delivered")
+                                                {
+                                                    <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">Delivered</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-secondary-subtle text-secondary px-3 py-2 rounded-pill">Pending</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-controller="Pharmacist" asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-sm btn-outline-danger rounded-pill">Track</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted py-4">No recent medication orders found.</td>
+                                    </tr>
+                                }
+         *@                   
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
+
+<!-- Additional Styles for the upgraded pharmacist landing -->
+<style>
+    /* red-theme refinements */
+    .text-gradient {
+        background: linear-gradient(135deg, #c5283d, #e25c3c);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .stat-card {
+        transition: all 0.25s ease-in-out;
+        border-radius: 1.25rem !important;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 2rem rgba(0,0,0,0.08) !important;
+        }
+
+    .stat-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .bg-warning-subtle {
+        background-color: #fff3e0;
+    }
+
+    .bg-success-subtle {
+        background-color: #e0f5ed;
+    }
+
+    .bg-danger-subtle {
+        background-color: #ffe6e3;
+    }
+
+    .bg-primary-subtle {
+        background-color: #eef2ff;
+    }
+
+    .bg-info-subtle {
+        background-color: #e0f2fe;
+    }
+
+    .action-card {
+        transition: 0.2s;
+        background: white;
+        border-color: #ffe0db !important;
+    }
+
+        .action-card:hover {
+            background-color: #fff5f3;
+            transform: scale(0.98);
+            border-color: #dc7a6b !important;
+        }
+
+    .btn-outline-danger {
+        border-color: #e2b3ab;
+        color: #bc3a2c;
+    }
+
+        .btn-outline-danger:hover {
+            background-color: #d9534f;
+            border-color: #d9534f;
+            color: white;
+        }
+
+    .table-light {
+        background-color: #fef2f0;
+    }
+
+    .badge.bg-warning-subtle {
+        background-color: #ffeed9;
+        color: #b65f22;
+    }
+
+    .badge.bg-success-subtle {
+        background-color: #e0f2e9;
+        color: #1f7840;
+    }
+
+    .badge.bg-danger-subtle {
+        background-color: #fee2de;
+        color: #bc2c2c;
+    }
+
+    /* search input radius */
+    .rounded-pill .form-control, .rounded-pill .input-group-text {
+        border-radius: 50px !important;
+    }
+
+    input:focus {
+        box-shadow: none;
+        border-color: #e07a6b;
+    }
+
+    a {
+        transition: all 0.2s;
+    }
+
+    .card-footer a {
+        font-weight: 600;
+        color: #c5283d;
+    }
+
+        .card-footer a:hover {
+            color: #8b2c1e;
+        }
+
+    @@media (max-width: 768px) {
+        .container-fluid {
+            padding: 0.75rem;
+        }
+    }
+</style>
+
+<script>
+    // simple table search for prescriptions
+    document.getElementById('searchPrescriptions')?.addEventListener('keyup', function() {
+        let input = this.value.toLowerCase();
+        let rows = document.querySelectorAll('#recentPrescriptionsTable tbody tr');
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(input) ? '' : 'none';
+        });
+    });
+</script>
