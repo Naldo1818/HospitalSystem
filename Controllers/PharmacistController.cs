@@ -79,11 +79,23 @@ namespace DEMO.Controllers
                 ActiveIngredients = activeIngredients
             };
 
-            // Set ViewBag properties
-            ViewBag.UserAccountID = HttpContext.Session.GetString("UserAccountId");
-            ViewBag.UserName = HttpContext.Session.GetString("UserName");
-            ViewBag.UserSurname = HttpContext.Session.GetString("UserSurname");
-            ViewBag.UserEmail = HttpContext.Session.GetString("UserEmail");
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
 
             return View(viewModel);
         }
@@ -286,6 +298,24 @@ namespace DEMO.Controllers
                 TempData["ErrorMessage"] = $"Error sending email: {ex.Message}";
             }
 
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+
             return RedirectToAction("ListMedication", "Pharmacist");
         }
 
@@ -320,6 +350,24 @@ namespace DEMO.Controllers
                 SelectedMedicationId = medicationId
             };
 
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+
             return View(model);
         }
 
@@ -331,10 +379,7 @@ namespace DEMO.Controllers
         //View All scripts 
         public IActionResult PrescriptionList()
         {
-            var accountIDString = HttpContext.Session.GetString("UserAccountId");
-
-            if (!int.TryParse(accountIDString, out int accountID))
-                accountID = 0;
+           
 
             var Prescribed = (from p in _dbContext.PatientInfo
                               join bs in _dbContext.BookSurgery on p.PatientID equals bs.PatientID
@@ -397,6 +442,20 @@ namespace DEMO.Controllers
                 AllPrescribedDispensed = PrescribedDispensed,
                 AllPrescribedRejected = PrescribedRejected
             };
+
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
             ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
@@ -707,14 +766,22 @@ namespace DEMO.Controllers
                 AllcombinedData = allCombinedData
             };
 
+          
+
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
 
             return View(viewModel);
         }
@@ -733,6 +800,10 @@ namespace DEMO.Controllers
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
+
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
             return View();
         }
         //Dispens button
