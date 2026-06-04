@@ -24,6 +24,7 @@ namespace DEMO.Controllers
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
+        ///Tables need Configiration
         public IActionResult PharmacistHomePage()
         {
             var accountIDString = HttpContext.Session.GetString("UserAccountId");
@@ -47,10 +48,7 @@ namespace DEMO.Controllers
 
             return View();
         }
-        //View Medication 
-        //Add Medication with active ingredients
-        //Restock Medication
-        //Email notification to supplier
+     
         public IActionResult ListMedication(int medicationId)
         {
             // Fetch the combined data
@@ -376,7 +374,7 @@ namespace DEMO.Controllers
 
 
 
-        //View All scripts 
+        //Rejected modal BUG 
         public IActionResult PrescriptionList()
         {
            
