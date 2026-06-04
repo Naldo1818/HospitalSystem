@@ -24,50 +24,27 @@ namespace DEMO.Controllers
             _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
-        //add show uregent scripts on home page
-           //Dispens button
-        public IActionResult PharmacistHomePage(int accountId)
+        public IActionResult PharmacistHomePage()
         {
-            var pharmacist = _dbContext.Accounts
-                .Where(a => a.AccountID == accountId)
-                .Select(a => new PharmacistView
-                {
-                    AccountID = a.AccountID,
-                    Name = a.Name,
-                    Surname = a.Surname,
-                    Email = a.Email
-                })
-                .SingleOrDefault();
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
 
-            if (pharmacist == null)
-            {
-                return NotFound();
-            }
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
 
-            var count = (from item in _dbContext.Prescription
-                         where item.Status == "Prescribed"
-                         select item
-                     ).Count();
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
-            //var lowlevelstock = (from pm in _dbContext.PharmacyMedication
-            //                     join m in _dbContext.Medication
-            //                     on pm.MedicationID equals m.MedicationID
-            //                     where pm.StockonHand <= pm.ReorderLevel
-            //                     select pm).Count();
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
 
-            // Store user data in session
-            HttpContext.Session.SetString("UserAccountId", pharmacist.AccountID.ToString());
-            HttpContext.Session.SetString("UserName", pharmacist.Name);
-            HttpContext.Session.SetString("UserSurname", pharmacist.Surname);
-            HttpContext.Session.SetString("UserEmail", pharmacist.Email);
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+         
 
-            ViewBag.UserName = pharmacist.AccountID.ToString();
-            ViewBag.UserName = pharmacist.Name;
-            ViewBag.UserSurname = pharmacist.Surname;
-            ViewBag.UserEmail = pharmacist.Email;
-            ViewBag.Count = count;
-            //ViewBag.LowLevelStock = lowlevelstock;
-           
             return View();
         }
         //View Medication 

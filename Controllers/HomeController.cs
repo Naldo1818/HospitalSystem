@@ -119,11 +119,44 @@ namespace DEMO.Controllers
                     else if (user.Role == "Pharmacist")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
-                        return RedirectToAction("PharmacistHomePage","Pharmacist", new { AccountID });
+
+                        var Pharmacist = _dbContext.Accounts
+                .Where(a => a.AccountID == AccountID)
+                .Select(a => new NurseView
+                {
+                    AccountID = a.AccountID,
+                    Name = a.Name,
+                    Surname = a.Surname,
+                    Email = a.Email
+                })
+                .SingleOrDefault();
+
+                        if (Pharmacist == null)
+                        {
+                            return NotFound();
+                        }
+
+                        // Store critical user data in session
+                        HttpContext.Session.SetString("UserAccountId", Pharmacist.AccountID.ToString());
+                        HttpContext.Session.SetString("UserName", Pharmacist.Name);
+                        HttpContext.Session.SetString("UserSurname", Pharmacist.Surname);
+                        HttpContext.Session.SetString("UserEmail", Pharmacist.Email);
+
+                        // Optionally, you can use ViewBag for non-critical or UI-specific data
+                        ViewBag.AccountID = Pharmacist.AccountID;
+                        ViewBag.UserName = Pharmacist.Name;
+                        ViewBag.UserSurname = Pharmacist.Surname;
+                        ViewBag.Email = Pharmacist.Email;
+
+
+
+
+                        return RedirectToAction("PharmacistHomePage","Pharmacist");
                     }
                     else if (user.Role == "Nurse")
                     {
                         int AccountID = _dbContext.Accounts.FirstOrDefault(p => p.Username == login.Username)?.AccountID ?? 0;
+
                         var nurse = _dbContext.Accounts
                 .Where(a => a.AccountID == AccountID)
                 .Select(a => new NurseView

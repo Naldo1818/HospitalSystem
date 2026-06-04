@@ -1,164 +1,365 @@
 ﻿@using Microsoft.AspNetCore.Http
 @{
     var userName = Context.Session.GetString("UserName");
-    var userSurname = Context.Session.GetString("UserSurname");
-    var userEmail = Context.Session.GetString("UserEmail");
 }
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apollo+</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Apollo+ | Pharmacist Hub</title>
+    <!-- Bootstrap 5 + Icons + Fonts -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site2.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="~/css/site2.css?v=2" rel="stylesheet">
     <style>
-        .custom-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            margin-top: 15px; /* Reduced margin-top to move the card higher */
+        /* ---------- RED THEME PHARMACIST DASHBOARD ---------- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-            .custom-card img {
-                width: 100px;
-                height: 100px;
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #fef2f0; /* soft red-tinted background */
+            overflow-x: hidden;
+        }
+
+        /* modern navbar - red accent */
+        .app-navbar {
+            background: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
+            height: 68px;
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            border-bottom: 1px solid #ffe2dd;
+        }
+
+            .app-navbar .brand {
+                background: linear-gradient(135deg, #a11f2f, #c5283d);
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                font-size: 24px;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+                text-decoration: none;
             }
 
-        .card-body {
+            .app-navbar .welcome {
+                color: #7a2e2a;
+                font-size: 14px;
+                font-weight: 500;
+                background: #ffe8e5;
+                padding: 6px 14px;
+                border-radius: 40px;
+            }
+
+        /* sidebar premium - red highlights */
+        .app-sidebar {
+            width: 260px;
+            background: #ffffff;
+            position: fixed;
+            top: 68px;
+            bottom: 0;
+            left: 0;
+            padding: 24px 12px;
+            z-index: 100;
+            overflow-y: auto;
+            border-right: 1px solid #ffe2dd;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.02);
+        }
+
+            .app-sidebar .nav-section-label {
+                padding: 0 16px;
+                font-size: 11px;
+                font-weight: 600;
+                color: #b34a3c;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                margin: 16px 0 8px 0;
+            }
+
+            .app-sidebar .nav-link {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 10px 16px;
+                color: #4a2c2a;
+                font-size: 14px;
+                font-weight: 500;
+                border-radius: 12px;
+                margin: 4px 8px;
+                transition: all 0.2s ease;
+                text-decoration: none;
+            }
+
+                .app-sidebar .nav-link i {
+                    font-size: 1.2rem;
+                    width: 24px;
+                    color: #c24a3a;
+                }
+
+                .app-sidebar .nav-link:hover {
+                    background: #fef0ed;
+                    color: #b12a2a;
+                    transform: translateX(2px);
+                }
+
+                .app-sidebar .nav-link.active {
+                    background: #ffece8;
+                    color: #bc2c2c;
+                    border-left: 3px solid #d32f2f;
+                }
+
+            .app-sidebar .nav-divider {
+                height: 1px;
+                background: #ffe2dd;
+                margin: 16px 12px;
+            }
+
+        /* main area */
+        .app-main {
+            margin-left: 260px;
+            margin-top: 68px;
+            padding: 32px 36px;
+            min-height: calc(100vh - 68px);
+            background: #fef7f5;
+        }
+
+        /* Pharmacist right card - replaced with new design (red theme) */
+        .profile-sidebar-card {
+            background: white;
+            border-radius: 28px;
+            border: 1px solid #ffded8;
+            overflow: hidden;
+            width: 280px;
+            flex-shrink: 0;
+            box-shadow: 0 10px 25px -8px rgba(190, 50, 30, 0.08);
+            transition: all 0.2s;
+        }
+
+            .profile-sidebar-card .p-header {
+                background: linear-gradient(145deg, #942a2a, #bc3a2c);
+                padding: 24px 16px;
+                text-align: center;
+            }
+
+            .profile-sidebar-card .p-avatar {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.2);
+                backdrop-filter: blur(4px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 28px;
+                font-weight: 600;
+                color: white;
+                margin: 0 auto 12px;
+                border: 2px solid rgba(255,255,240,0.5);
+            }
+
+            .profile-sidebar-card .p-name {
+                color: white;
+                font-size: 16px;
+                font-weight: 700;
+            }
+
+            .profile-sidebar-card .p-email {
+                color: #ffcfc5;
+                font-size: 12px;
+                margin-top: 6px;
+                word-break: break-all;
+            }
+
+            .profile-sidebar-card .p-body {
+                padding: 20px 18px;
+            }
+
+        .p-stat {
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #2e2a2a;
         }
 
-        .card-text {
-            margin: 5px 0;
+            .p-stat .badge-stat {
+                background: #fef0ed;
+                padding: 4px 12px;
+                border-radius: 40px;
+                font-weight: 600;
+                font-size: 12px;
+                color: #b13b2a;
+            }
+
+        /* new card styles for stats (exactly as requested) */
+        .stat-card-custom .badge.bg-primary {
+            background-color: #d9534f !important;
         }
 
-        .btn-primary {
-            margin-top: 0px;
+        .stat-card-custom .badge.bg-success {
+            background-color: #2b7a4b !important;
         }
 
-        .sideBar {
-            margin-top: -1rem;
+        .stat-card-custom .badge.bg-danger {
+            background-color: #c23321 !important;
+        }
+
+        .stat-card-custom .badge.bg-warning {
+            background-color: #e67e22 !important;
+        }
+
+        .btn-logout {
+            display: block;
+            margin: 8px 16px 20px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ffcdd2;
+            color: #c62828;
+            border-radius: 60px;
+            font-size: 13px;
+            font-weight: 500;
+            background: #fff5f5;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+            .btn-logout:hover {
+                background: #ffebee;
+                color: #b71c1c;
+                border-color: #ef9a9a;
+            }
+
+        @@media (max-width: 1024px) {
+            .app-main {
+                padding: 24px 20px;
+            }
+
+            .profile-sidebar-card {
+                width: 260px;
+            }
+
+            .app-sidebar {
+                width: 220px;
+            }
+
+            .app-main {
+                margin-left: 220px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .app-sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.2s;
+                z-index: 300;
+            }
+
+            .app-main {
+                margin-left: 0;
+            }
+
+            .profile-sidebar-card {
+                display: none;
+            }
+
+            .app-navbar .brand {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
-
 <body>
-    <nav class="navbar navbar-dark bg-dark fixed-top">
-        <div class="container-fluid d-flex align-items-center">
-            <!-- Toggle button and welcome text aligned -->
-            <div class="d-flex align-items-center me-3">
-                <button class="navbar-toggler me-2" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar"
-                        aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <span class="navbar-text text-white fw-bold">Welcome, Pharmacist</span>
-            </div>
 
-            <!-- Brand aligned to right -->
-            <a class="navbar-brand ms-auto" href="#">Apollo+</a>
+    <nav class="app-navbar">
+        <div class="d-flex align-items-center gap-3">
+            <span class="welcome">
+                <i class="bi bi-capsule-pill"></i> Welcome back,
+                <strong style="color:#a43426;">Pharmacist @ViewBag.UserName @ViewBag.UserSurname</strong>
+            </span>
         </div>
+        <a class="brand" href="#"><i class="bi bi-heart-pulse-fill" style="color:#c0392b;"></i> Apollo+ Pharmacy</a>
     </nav>
 
-    <div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-        <div class="offcanvas-header">
-            <h3 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Main Menu</h3>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                    <a class="nav-link active" asp-controller="Pharmacist" asp-action="PharmacistHomePage" style="font-size: 1.3rem;">Home</a>
-                    <a class="nav-link active" asp-controller="Pharmacist" asp-action="PrescriptionList" style="font-size: 1.3rem;">Prescriptions</a>
-                    <a class="nav-link active" asp-controller="Pharmacist" asp-action="ListMedication" style="font-size: 1.3rem;">Medication</a>
-                    <a class="nav-link active" asp-controller="Pharmacist" asp-action="MedicationOrders" style="font-size: 1.3rem;">Medication Orders</a>
-                    <a class="nav-link active" asp-controller="Pharmacist" asp-action="InfoPharmacist" style="font-size: 1.3rem;">Info</a>
-                    <a class="nav-link active" asp-controller="Pharmacist" asp-action="PharmacistReport" style="font-size: 1.3rem;">Reports</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    <aside class="app-sidebar">
+        <span class="nav-section-label">Main</span>
+        <!-- Replaced with pharmacist links exactly as requested -->
+        <li class="nav-item" style="list-style: none;">
+            <a class="nav-link active" asp-controller="Pharmacist" asp-action="MainPage" style="font-size: 1rem; display: flex;"><i class="bi bi-house-door-fill"></i> Home</a>
+            <a class="nav-link" asp-controller="Pharmacist" asp-action="PrescriptionList" style="font-size: 1rem; display: flex;"><i class="bi bi-file-earmark-medical"></i> Prescriptions</a>
+            <a class="nav-link" asp-controller="Pharmacist" asp-action="ListMedication" style="font-size: 1rem; display: flex;"><i class="bi bi-capsule"></i> Medication</a>
+            <a class="nav-link" asp-controller="Pharmacist" asp-action="MedicationOrders" style="font-size: 1rem; display: flex;"><i class="bi bi-truck"></i> Medication Orders</a>
+            <a class="nav-link" asp-controller="Pharmacist" asp-action="InfoPharmacist" style="font-size: 1rem; display: flex;"><i class="bi bi-info-circle"></i> Info</a>
+            <a class="nav-link" asp-controller="Pharmacist" asp-action="PharmacistReport" style="font-size: 1rem; display: flex;"><i class="bi bi-graph-up"></i> Reports</a>
+        </li>
+        <div class="nav-divider"></div>
+        <!-- extra quick access (can stay) -->
+        <a class="nav-link" asp-controller="Home" asp-action="Index" style="color:#b34a3c;"><i class="bi bi-box-arrow-right"></i> Log out</a>
+    </aside>
 
-    <div class="container-fluid">
-        <main role="main">
-            <div class="row">
-                <!-- Main content -->
-                <div class="col-md-9">
-                    @RenderBody()
-                </div>
-
-                <!-- Sidebar -->
-                <div id="sideBar" class="d-flex justify-content-end align-self-start"
-                     style="width:270px; min-width:270px; max-width:270px; flex-shrink:0;margin-top:30px;">
-
-                    <div class="card shadow-sm text-center"
-                         style="width:400px; border-radius:15px; overflow:hidden; height:auto;">
-
-                        <!-- User Header -->
-                        <div style="background: linear-gradient(135deg, #4e73df, #1cc88a); color:white; padding:20px;">
-                            <img src="~/css/user.png" class="rounded-circle mb-2"
-                                 style="width:80px; height:80px; border:3px solid white;">
-                            <h5 class="mb-0">@ViewBag.UserName @ViewBag.UserSurname</h5>
-                            <small>@ViewBag.UserEmail</small>
-                        </div>
-
-                        <div class="card-body">
-                            <!-- your stats here -->
-
-                            <h6 class="text-uppercase text-muted mb-3">Prescriptions</h6>
-
-                            <div class="d-flex flex-column align-items-center mb-2">
-                                <div><i class="bi bi-journal-medical"></i> Prescribed</div>
-                                <span class="badge bg-primary rounded-pill mt-1">@ViewBag.prescribedCount</span>
-                            </div>
-
-                            <div class="d-flex flex-column align-items-center mb-2">
-                                <div><i class="bi bi-check2-circle"></i> Dispensed</div>
-                                <span class="badge bg-success rounded-pill mt-1">@ViewBag.dispensedCount</span>
-                            </div>
-
-                            <div class="d-flex flex-column align-items-center mb-2">
-                                <div><i class="bi bi-x-circle"></i> Rejected</div>
-                                <span class="badge bg-danger rounded-pill mt-1">@ViewBag.rejectedCount</span>
-                            </div>
-
-                            <hr>
-
-                            <h6 class="text-uppercase text-muted mb-2">Medication</h6>
-
-                            <div class="d-flex flex-column align-items-center mb-2">
-                                <div><i class="bi bi-hospital"></i> Low Stock </div>
-                                <span class="badge bg-warning rounded-pill mt-1">@ViewBag.surgeryCount</span>
-                            </div>
-
-                            <a class="btn btn-outline-danger w-100"
-                               asp-controller="Home"
-                               asp-action="Index">Log Out</a>
-
-                        </div>
-
-
-                    </div>
-                </div>
-
-
-
-                <!-- Include Bootstrap Icons CDN in <head> if not already -->
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <main class="app-main">
+        <div class="d-flex gap-4 align-items-start flex-wrap">
+            <div style="flex: 1; min-width: 0;">
+                @RenderBody()
             </div>
-        </main>
-    </div>
+            <!-- REPLACED RIGHT CARD: Pharmacist stats with new badge layout and logout inside card-body -->
+            <div class="profile-sidebar-card">
+                <div class="p-header">
+                    <div class="p-avatar">@ViewBag.UserName?.Substring(0, 1)@ViewBag.UserSurname?.Substring(0, 1)</div>
+                    <div class="p-name">@ViewBag.UserName @ViewBag.UserSurname</div>
+                    <div class="p-email">@ViewBag.UserEmail</div>
+                </div>
+                <!-- new stats card body exactly as required with red/matching theme -->
+                <div class="card-body p-body stat-card-custom">
+                    <h6 class="text-uppercase text-muted mb-3" style="color:#a53f2f !important;"><i class="bi bi-journal-bookmark-fill"></i> Prescriptions</h6>
 
-    <!-- Scripts -->
+                    <div class="d-flex flex-column align-items-center mb-2">
+                        <div><i class="bi bi-journal-medical"></i> Prescribed</div>
+                        <span class="badge bg-primary rounded-pill mt-1">@ViewBag.prescribedCount</span>
+                    </div>
+
+                    <div class="d-flex flex-column align-items-center mb-2">
+                        <div><i class="bi bi-check2-circle"></i> Dispensed</div>
+                        <span class="badge bg-success rounded-pill mt-1">@ViewBag.dispensedCount</span>
+                    </div>
+
+                    <div class="d-flex flex-column align-items-center mb-2">
+                        <div><i class="bi bi-x-circle"></i> Rejected</div>
+                        <span class="badge bg-danger rounded-pill mt-1">@ViewBag.rejectedCount</span>
+                    </div>
+
+                    <hr class="my-2" style="border-color:#ffe2dd;">
+
+                    <h6 class="text-uppercase text-muted mb-2"><i class="bi bi-capsule"></i> Medication</h6>
+
+                    <div class="d-flex flex-column align-items-center mb-2">
+                        <div><i class="bi bi-exclamation-triangle-fill"></i> Low Stock</div>
+                        <span class="badge bg-warning rounded-pill mt-1">@ViewBag.lowStockCount</span>
+                    </div>
+
+                    <a class="btn btn-outline-danger w-100 mt-3" style="border-radius: 40px; border-color: #dc6b5c; color:#b12a2a;"
+                       asp-controller="Home"
+                       asp-action="Index">Log Out</a>
+                </div>
+                <!-- optional bottom note: removed redundant logout link because it's inside the card-body now -->
+            </div>
+        </div>
+    </main>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
