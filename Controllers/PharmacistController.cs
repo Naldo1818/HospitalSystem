@@ -44,11 +44,11 @@ namespace DEMO.Controllers
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
             ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
             ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
-         
+            ViewBag.LowStockCount = _dbContext.Medication.Count(m => m.StockonHand <= m.ReorderLevel);
 
             return View();
         }
-     
+         //Medication Searchs
         public IActionResult ListMedication(int medicationId)
         {
             // Fetch the combined data
@@ -200,6 +200,24 @@ namespace DEMO.Controllers
         [HttpGet]
         public async Task<IActionResult> EmailMedication(int MedicationID)
         {
+            var accountIDString = HttpContext.Session.GetString("UserAccountId");
+            int.TryParse(accountIDString, out int accountID);
+
+            var userName = HttpContext.Session.GetString("UserName");
+            var userSurname = HttpContext.Session.GetString("UserSurname");
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            ViewBag.UserAccountID = accountID;
+            ViewBag.UserName = userName;
+            ViewBag.UserSurname = userSurname;
+            ViewBag.UserEmail = userEmail;
+
+            ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
+            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+
             var orderData = await (from o in _dbContext.OrderStockModel
                                    join m in _dbContext.Medication on o.MedicationID equals m.MedicationID
                                    where o.MedicationID == MedicationID
