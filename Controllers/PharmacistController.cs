@@ -42,9 +42,8 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
-            ViewBag.LowStockCount = _dbContext.Medication.Count(m => m.StockonHand <= m.ReorderLevel);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
 
             return View();
         }
@@ -92,8 +91,8 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
 
             return View(viewModel);
         }
@@ -215,8 +214,8 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
 
             var orderData = await (from o in _dbContext.OrderStockModel
                                    join m in _dbContext.Medication on o.MedicationID equals m.MedicationID
@@ -329,8 +328,8 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
 
             return RedirectToAction("ListMedication", "Pharmacist");
         }
@@ -381,8 +380,8 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
 
             return View(model);
         }
@@ -474,9 +473,8 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
-
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
             return View(viewModel);
         }
         [HttpPost]
@@ -720,24 +718,18 @@ namespace DEMO.Controllers
                                         orderby pr.DateGiven descending
                                         select new PharmacistReportItem
                                         {
-                                            PrescriptionDate = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day),
-                                            Date = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day), // For view
+                                            Date = pr.DateGiven.ToDateTime(TimeOnly.MinValue),
                                             Patient = p.Name + " " + p.Surname,
-                                            Surgeon = a.Name + " " + a.Surname,
-                                            Medication = m.MedicationName,
-                                            MedicationName = m.MedicationName, // For view
-                                            qty = mi.Quantity,
-                                            Quantity = mi.Quantity, // For view
-                                            status = "Dispensed",
-                                            Urgency = pr.Urgency
+                                            MedicationName = m.MedicationName,
+                                            Quantity = mi.Quantity,
+                                            Urgency = pr.Urgency,
+                                            Status = "Dispensed"
                                         }).ToList();
 
             // Get rejected medications
             var rejectedMedications = (from r in _dbContext.RejectScriptModel
-                                       join d in _dbContext.DispensedScriptsModel
-                                           on r.PrescriptionID equals d.PrescriptionID
                                        join pr in _dbContext.Prescription
-                                           on d.PrescriptionID equals pr.PrescriptionID
+                                           on r.PrescriptionID equals pr.PrescriptionID
                                        join ap in _dbContext.AdmittedPatients
                                            on pr.AdmittedPatientID equals ap.AdmittedPatientID
                                        join bs in _dbContext.BookSurgery
@@ -750,54 +742,41 @@ namespace DEMO.Controllers
                                            on pr.PrescriptionID equals mi.PrescriptionID
                                        join m in _dbContext.Medication
                                            on mi.MedicationID equals m.MedicationID
-                                       where d.AccountID == accountID
+                                       where r.AccountID == accountID
                                        orderby pr.DateGiven descending
                                        select new PharmacistReportItem
                                        {
-                                           PrescriptionDate = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day),
-                                           Date = new DateTime(pr.DateGiven.Year, pr.DateGiven.Month, pr.DateGiven.Day), // For view
+                                           Date = pr.DateGiven.ToDateTime(TimeOnly.MinValue),
                                            Patient = p.Name + " " + p.Surname,
-                                           Surgeon = a.Name + " " + a.Surname,
-                                           Medication = m.MedicationName,
-                                           MedicationName = m.MedicationName, // For view
-                                           qty = mi.Quantity,
-                                           Quantity = mi.Quantity, // For view
-                                           status = "Rejected",
+                                           MedicationName = m.MedicationName,
+                                           Quantity = mi.Quantity,
                                            Urgency = pr.Urgency,
+                                           Status = "Rejected",
                                            RejectionReason = r.RejectionReason
                                        }).ToList();
-
-            // Combine both lists for the view
-            var allCombinedData = new List<PharmacistReportItem>();
-            allCombinedData.AddRange(dispensedMedications);
-            allCombinedData.AddRange(rejectedMedications);
-
-            // Order by date descending
-            allCombinedData = allCombinedData.OrderByDescending(x => x.PrescriptionDate).ToList();
 
             var viewModel = new PharmacistReportViewModel
             {
                 DispensedMedications = dispensedMedications,
                 RejectedMedications = rejectedMedications,
-                AllcombinedData = allCombinedData
+                AllcombinedData = dispensedMedications.Cast<PharmacistReportItem>()
+                                    .Concat(rejectedMedications)
+                                    .OrderByDescending(x => x.Date)
+                                    .ToList()
             };
 
-          
-
+            // Set ViewBag values
             var userName = HttpContext.Session.GetString("UserName");
             var userSurname = HttpContext.Session.GetString("UserSurname");
             var userEmail = HttpContext.Session.GetString("UserEmail");
-
-            var today = DateOnly.FromDateTime(DateTime.Today);
 
             ViewBag.UserAccountID = accountID;
             ViewBag.UserName = userName;
             ViewBag.UserSurname = userSurname;
             ViewBag.UserEmail = userEmail;
-
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID);
 
             return View(viewModel);
         }
@@ -818,8 +797,9 @@ namespace DEMO.Controllers
             ViewBag.UserEmail = userEmail;
 
             ViewBag.PrescribedCount = _dbContext.Prescription.Count(p => p.Status == "Prescribed");
-            ViewBag.DispensedCount = _dbContext.Prescription.Count(p => p.Status == "Dispensed" && p.AccountID == accountID);
-            ViewBag.RejectedCount = _dbContext.Prescription.Count(p => p.Status == "Rejected" && p.AccountID == accountID);
+            ViewBag.DispensedCount = _dbContext.DispensedScriptsModel.Count(d => d.AccountID == accountID);
+            ViewBag.RejectedCount = _dbContext.RejectScriptModel.Count(r => r.AccountID == accountID); 
+            
             return View();
         }
         //Dispens button

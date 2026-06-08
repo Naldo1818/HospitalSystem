@@ -24,7 +24,7 @@ namespace DEMO.ViewModels
         public string MedicationName { get; set; }  // For the view
         public int qty { get; set; }
         public int Quantity { get; set; }  // For the view
-        public string status { get; set; }
+        public string Status { get; set; }
         public string RejectionReason { get; set; }
         public string Urgency { get; set; }
     }
