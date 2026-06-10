@@ -8,389 +8,663 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prescription List</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Prescription Management | Nurse Portal</title>
+
+    <!-- Bootstrap 5 CSS (modern) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 (icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts (Inter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
 
     <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.dataTables.min.css">
 
     <!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
-
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- DataTables JS -->
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
         body {
-            background: #f5f7fb;
-            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e9eef5 100%);
+            min-height: 100vh;
         }
 
-        /* Card containers */
-        .p-3.border {
+        /* Main container styling */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        /* Header Card */
+        .header-card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
         }
 
-        /* Page title */
-        h2 {
-            font-weight: 600;
-            color: #2c3e50;
+        .page-title {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: #1e2a3e;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Inputs */
-        .form-control {
-            border-radius: 6px;
-            border: 1px solid #ced4da;
-            padding: 8px 12px;
-            width: 300px;
-        }
-
-            .form-control:focus {
-                border-color: #0d6efd;
-                box-shadow: 0 0 5px rgba(13,110,253,0.3);
+            .page-title i {
+                color: #2c7da0;
+                font-size: 2rem;
             }
 
-        /* Table */
-        table.dataTable {
-            border-collapse: collapse !important;
-            width: 100%;
+        .page-subtitle {
+            color: #5a6e7c;
+            font-size: 0.9rem;
+            font-weight: 400;
+            margin-top: 4px;
+            border-left: 3px solid #2c7da0;
+            padding-left: 12px;
         }
 
-            table.dataTable thead {
-                background: #1f1f1f;
+        /* Search section */
+        .search-wrapper {
+            background: #f8fafc;
+            border-radius: 60px;
+            padding: 0.2rem 0.2rem 0.2rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+            .search-wrapper:focus-within {
+                border-color: #2c7da0;
+                box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+            }
+
+            .search-wrapper i {
+                color: #94a3b8;
+                font-size: 1.1rem;
+            }
+
+        .search-input-custom {
+            border: none;
+            background: transparent;
+            padding: 0.7rem 0;
+            font-size: 0.95rem;
+            width: 260px;
+            outline: none;
+        }
+
+        /* Filter button group */
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        .filter-btn {
+            border-radius: 40px;
+            padding: 0.5rem 1.4rem;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #334155;
+        }
+
+            .filter-btn i {
+                margin-right: 6px;
+                font-size: 0.85rem;
+            }
+
+            .filter-btn:hover {
+                background: #f1f5f9;
+                border-color: #cbd5e1;
+                transform: translateY(-1px);
+            }
+
+            .filter-btn.active {
+                background: #2c7da0;
+                border-color: #2c7da0;
                 color: white;
+                box-shadow: 0 4px 12px rgba(44,125,160,0.25);
             }
 
-                table.dataTable thead th {
-                    padding: 12px;
-                    font-weight: 600;
+                .filter-btn.active i {
+                    color: white;
                 }
 
-            table.dataTable tbody td {
-                padding: 10px;
+        /* Section Cards */
+        .section-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .section-header {
+            padding: 1.2rem 1.8rem;
+            background: #ffffff;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .section-title i {
+                font-size: 1.4rem;
             }
 
-            table.dataTable tbody tr:hover {
-                background: #f1f5ff;
+        .badge-count {
+            background: #eef2ff;
+            color: #1e40af;
+            border-radius: 40px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .section-content {
+            padding: 1rem 1rem 1.2rem 1rem;
+        }
+
+        /* DataTables overrides */
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_paginate {
+            padding: 0.5rem 0.8rem;
+        }
+
+        table.dataTable {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            margin-top: 0 !important;
+        }
+
+            table.dataTable thead th {
+                background: #f8fafc;
+                color: #1e293b;
+                font-weight: 600;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                padding: 1rem 1rem;
+                border-bottom: 1px solid #e2e8f0;
+                border-top: none;
             }
+
+            table.dataTable tbody td {
+                padding: 0.9rem 1rem;
+                font-size: 0.9rem;
+                color: #334155;
+                vertical-align: middle;
+                border-bottom: 1px solid #f1f5f9;
+            }
+
+            table.dataTable tbody tr:hover td {
+                background-color: #fafcff;
+            }
+
+        /* Urgency badge */
+        .urgency-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .urgency-high {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+            .urgency-high i {
+                color: #dc2626;
+            }
+
+        .urgency-normal {
+            background: #e6f7ec;
+            color: #15803d;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.85rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .status-progress {
+            background: #fff7e5;
+            color: #b45309;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .status-dispensed {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-left: 3px solid #0ea5e9;
+        }
+
+        .status-administered {
+            background: #dcfce7;
+            color: #166534;
+            border-left: 3px solid #22c55e;
+        }
 
         /* Buttons */
-        .btn-primary {
-            background: #0d6efd;
-            border: none;
-            border-radius: 6px;
-            margin-bottom: 5px;
+        .btn-action {
+            border-radius: 40px;
+            padding: 0.45rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 500;
             transition: all 0.2s;
+            border: none;
         }
 
-            .btn-primary:hover {
-                background: #0b5ed7;
-                transform: scale(1.03);
+        .btn-administer {
+            background: #059669;
+            color: white;
+        }
+
+            .btn-administer:hover {
+                background: #047857;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(5,150,105,0.3);
             }
 
-        .btn-success {
-            background: #198754;
-            border: none;
-            border-radius: 6px;
-            transition: all 0.2s;
+        .btn-view {
+            background: #3b82f6;
+            color: white;
         }
 
-            .btn-success:hover {
-                background: #157347;
-                transform: scale(1.03);
+            .btn-view:hover {
+                background: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(59,130,246,0.3);
             }
 
-        /* Table container spacing */
-        .mt-5 {
-            margin-top: 30px !important;
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
         }
 
+      
+        .header-card {
+            padding: 1.2rem;
+        }
+
+        .search-input-custom {
+            width: 180px;
+        }
+
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form>
-                            <h2>Prescription Page</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="searchInput" class="form-label">Search</label>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search" style="width:300px">
-                                </div>
-                            </div>
-                            <div class="form-group row mt-3">
-                                <div class="col-12">
-                                    <button type="button" id="showDispensed" class="btn btn-primary">Show Dispensed</button>
-                                    <button type="button" id="showInProgress" class="btn btn-primary">Show In Progress</button>
-                                    <button type="button" id="showAdministered" class="btn btn-primary">Show Administered</button>
-                                    <button type="button" id="showAll" class="btn btn-primary">Show All</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="main-container">
+        <!-- Header Card -->
+        <div class="header-card">
+            <div class="page-title">
+                <i class="fas fa-prescription-bottle"></i>
+                Prescription Management
+            </div>
+            <div class="page-subtitle">
+                Monitor and administer patient prescriptions • Real-time status tracking
             </div>
 
-            <div class="row" style="width:auto ;display:none" id="inProgressRow">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <h2>Prescription In Progress</h2>
-                        <table id="inProgressTable" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Prescription Date</th>
-                                    <th scope="col">Pharmacist Name</th>
-                                    <th scope="col">Pharmacist Surname</th>
-                                    <th scope="col">Urgency</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var Data in Model.AllPrescribedInProgress)
-                                {
-                                    <tr>
-                                        <td>@Data.PatientName</td>
-                                        <td>@Data.PatientSurname</td>
-                                        <td>@Data.DateGiven</td>
-                                        <td>@Data.PharmacistName</td>
-                                        <td>@Data.PharmacistSurname</td>
-                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
-                                        <td>@Data.Status</td>
-                                        <td>
-                                            <button class="btn btn-success administer-btn" data-id="@Data.PrescriptionID">
-                                                Administer Prescription
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
+            <div class="row align-items-end mt-4">
+                <div class="col-md-5 mb-3 mb-md-0">
+                    <div class="search-wrapper d-flex align-items-center justify-content-between">
+                        <i class="fas fa-search me-2"></i>
+                        <input type="text" id="globalSearchInput" class="search-input-custom" placeholder="Search by patient, pharmacist or date...">
+                        <span class="text-muted small px-2">⌘K</span>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="filter-group">
+                        <button type="button" id="showAllBtn" class="filter-btn active">
+                            <i class="fas fa-th-large"></i> All Prescriptions
+                        </button>
+                        <button type="button" id="showInProgressBtn" class="filter-btn">
+                            <i class="fas fa-spinner fa-fw"></i> In Progress
+                        </button>
+                        <button type="button" id="showDispensedBtn" class="filter-btn">
+                            <i class="fas fa-capsules"></i> Dispensed
+                        </button>
+                        <button type="button" id="showAdministeredBtn" class="filter-btn">
+                            <i class="fas fa-check-circle"></i> Administered
+                        </button>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="row" style="width:auto;display:none" id="dispensedRow">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <h2>Prescription Dispensed</h2>
-                        <table id="dispensedTable" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Prescription Date</th>
-                                    <th scope="col">Pharmacist Name</th>
-                                    <th scope="col">Pharmacist Surname</th>
-                                    <th scope="col">Urgency</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var Data in Model.AllPrescribedDispensed)
-                                {
-                                    <tr>
-                                        <td>@Data.PatientName</td>
-                                        <td>@Data.PatientSurname</td>
-                                        <td>@Data.DateGiven</td>
-                                        <td>@Data.PharmacistName</td>
-                                        <td>@Data.PharmacistSurname</td>
-                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
-                                        <td>@Data.Status</td>
-                                        <td>
-                                            <button class="btn btn-success administer-btn" data-id="@Data.PrescriptionID">
-                                                Administer Prescription
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+        <!-- In Progress Section -->
+        <div class="section-card" id="inProgressSection">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-hourglass-half" style="color: #f59e0b;"></i>
+                    Awaiting Administration
+                    <span class="badge-count" id="inProgressCount">0</span>
                 </div>
+                <div><i class="fas fa-clock text-muted small"></i> <span class="text-muted small">Priority: High urgency marked in red</span></div>
             </div>
+            <div class="section-content">
+                <table id="inProgressTable" class="display responsive" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Prescription Date</th>
+                            <th>Pharmacist</th>
+                            <th>Urgency</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var Data in Model.AllPrescribedInProgress)
+                        {
+                            <tr>
+                                <td><strong>@Data.PatientName @Data.PatientSurname</strong></td>
+                                <td>@Data.DateGiven.ToString("dd MMM yyyy")</td>
+                                <td>@Data.PharmacistName @Data.PharmacistSurname</td>
+                                <td>
+                                    @if (Data.Urgency == "Yes")
+                                    {
+                                        <span class="urgency-badge urgency-high"><i class="fas fa-exclamation-triangle"></i> High Urgency</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="urgency-badge urgency-normal"><i class="fas fa-clock"></i> Standard</span>
+                                    }
+                                </td>
+                                <td><span class="status-badge status-progress"><i class="fas fa-sync-alt fa-fw"></i> In Progress</span></td>
+                                <td>
+                                    <button class="btn-action btn-administer administer-btn" data-id="@Data.PrescriptionID">
+                                        <i class="fas fa-syringe"></i> Administer
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-            <div class="row" style="width:auto ;display:none" id="administeredRow">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <h2>Prescription Administered</h2>
-                        <table id="administeredTable" class="display" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Surname</th>
-                                    <th scope="col">Prescription Date</th>
-                                    <th scope="col">Pharmacist Name</th>
-                                    <th scope="col">Pharmacist Surname</th>
-                                    <th scope="col">Urgency</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var Data in Model.AllPrescribedAdministered)
-                                {
-                                    <tr>
-                                        <td>@Data.PatientName</td>
-                                        <td>@Data.PatientSurname</td>
-                                        <td>@Data.DateGiven</td>
-                                        <td>@Data.PharmacistName</td>
-                                        <td>@Data.PharmacistSurname</td>
-                                        <td class="@(Data.Urgency == "Yes" ? "table-danger" : "")">@Data.Urgency</td>
-                                        <td>@Data.Status</td>
-                                        <td>
-                                            <button class="btn btn-info view-btn" data-id="@Data.PrescriptionID">
-                                                View Prescription
-                                            </button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+        <!-- Dispensed Section -->
+        <div class="section-card" id="dispensedSection">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-box-open" style="color: #0ea5e9;"></i>
+                    Ready for Administration
+                    <span class="badge-count" id="dispensedCount">0</span>
                 </div>
+                <div><i class="fas fa-check-circle text-muted small"></i> <span class="text-muted small">Dispensed by pharmacy</span></div>
             </div>
-        </main>
+            <div class="section-content">
+                <table id="dispensedTable" class="display responsive" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Prescription Date</th>
+                            <th>Pharmacist</th>
+                            <th>Urgency</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var Data in Model.AllPrescribedDispensed)
+                        {
+                            <tr>
+                                <td><strong>@Data.PatientName @Data.PatientSurname</strong></td>
+                                <td>@Data.DateGiven.ToString("dd MMM yyyy")</td>
+                                <td>@Data.PharmacistName @Data.PharmacistSurname</td>
+                                <td>
+                                    @if (Data.Urgency == "Yes")
+                                    {
+                                        <span class="urgency-badge urgency-high"><i class="fas fa-exclamation-triangle"></i> High Urgency</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="urgency-badge urgency-normal"><i class="fas fa-clock"></i> Standard</span>
+                                    }
+                                </td>
+                                <td><span class="status-badge status-dispensed"><i class="fas fa-pills"></i> Dispensed</span></td>
+                                <td>
+                                    <button class="btn-action btn-administer administer-btn" data-id="@Data.PrescriptionID">
+                                        <i class="fas fa-syringe"></i> Administer
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Administered Section -->
+        <div class="section-card" id="administeredSection">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fas fa-history" style="color: #22c55e;"></i>
+                    Completed Administrations
+                    <span class="badge-count" id="administeredCount">0</span>
+                </div>
+                <div><i class="fas fa-file-alt text-muted small"></i> <span class="text-muted small">Historical records (view only)</span></div>
+            </div>
+            <div class="section-content">
+                <table id="administeredTable" class="display responsive" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Patient Name</th>
+                            <th>Prescription Date</th>
+                            <th>Pharmacist</th>
+                            <th>Urgency</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var Data in Model.AllPrescribedAdministered)
+                        {
+                            <tr>
+                                <td><strong>@Data.PatientName @Data.PatientSurname</strong></td>
+                                <td>@Data.DateGiven.ToString("dd MMM yyyy")</td>
+                                <td>@Data.PharmacistName @Data.PharmacistSurname</td>
+                                <td>
+                                    @if (Data.Urgency == "Yes")
+                                    {
+                                        <span class="urgency-badge urgency-high"><i class="fas fa-exclamation-triangle"></i> High Urgency</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="urgency-badge urgency-normal"><i class="fas fa-clock"></i> Standard</span>
+                                    }
+                                </td>
+                                <td><span class="status-badge status-administered"><i class="fas fa-check-double"></i> Administered</span></td>
+                                <td>
+                                    <button class="btn-action btn-view view-btn" data-id="@Data.PrescriptionID">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>
         $(document).ready(function () {
-            // Initialize DataTables
+            // Initialize DataTables with responsive and improved styling
             var inProgressTable = $('#inProgressTable').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
+                responsive: true,
+                pageLength: 8,
+                language: { zeroRecords: "No prescriptions in progress", search: "Filter:", infoEmpty: "No entries" },
+                dom: '<"top"f>rt<"bottom"lip>',
+                columnDefs: [{ orderable: false, targets: 5 }]
             });
 
             var dispensedTable = $('#dispensedTable').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
+                responsive: true,
+                pageLength: 8,
+                language: { zeroRecords: "No dispensed prescriptions ready", search: "Filter:" },
+                dom: '<"top"f>rt<"bottom"lip>',
+                columnDefs: [{ orderable: false, targets: 5 }]
             });
 
             var administeredTable = $('#administeredTable').DataTable({
-                "language": {
-                    "zeroRecords": "No matching records found"
-                }
+                responsive: true,
+                pageLength: 8,
+                language: { zeroRecords: "No administered prescriptions", search: "Filter:" },
+                dom: '<"top"f>rt<"bottom"lip>',
+                columnDefs: [{ orderable: false, targets: 5 }]
             });
 
-            // Initially show all rows with data
-            if (inProgressTable.page.info().recordsDisplay > 0) {
-                $('#inProgressRow').show();
-            }
-            if (dispensedTable.page.info().recordsDisplay > 0) {
-                $('#dispensedRow').show();
-            }
-            if (administeredTable.page.info().recordsDisplay > 0) {
-                $('#administeredRow').show();
+            // Update badge counts
+            function updateCounts() {
+                $('#inProgressCount').text(inProgressTable.page.info().recordsDisplay);
+                $('#dispensedCount').text(dispensedTable.page.info().recordsDisplay);
+                $('#administeredCount').text(administeredTable.page.info().recordsDisplay);
             }
 
-            // Custom search function for the search input
-            $('#searchInput').on('keyup', function () {
-                var searchText = this.value.trim();
+            // Show/hide logic with animation
+            function applyFilter(filter) {
+                $('.filter-btn').removeClass('active');
+                if (filter === 'all') $('#showAllBtn').addClass('active');
+                if (filter === 'progress') $('#showInProgressBtn').addClass('active');
+                if (filter === 'dispensed') $('#showDispensedBtn').addClass('active');
+                if (filter === 'administered') $('#showAdministeredBtn').addClass('active');
 
-                // Apply search to all tables
-                inProgressTable.search(searchText).draw();
-                dispensedTable.search(searchText).draw();
-                administeredTable.search(searchText).draw();
-
-                // Show/hide rows based on search results and active filter
-                var activeFilter = $('.btn-primary.active').attr('id');
-
-                if (activeFilter === 'showInProgress') {
-                    $('#inProgressRow').show();
-                    $('#dispensedRow').hide();
-                    $('#administeredRow').hide();
-                } else if (activeFilter === 'showDispensed') {
-                    $('#dispensedRow').show();
-                    $('#inProgressRow').hide();
-                    $('#administeredRow').hide();
-                } else if (activeFilter === 'showAdministered') {
-                    $('#administeredRow').show();
-                    $('#inProgressRow').hide();
-                    $('#dispensedRow').hide();
+                if (filter === 'progress') {
+                    $('#inProgressSection').fadeIn(200);
+                    $('#dispensedSection').fadeOut(150);
+                    $('#administeredSection').fadeOut(150);
+                } else if (filter === 'dispensed') {
+                    $('#inProgressSection').fadeOut(150);
+                    $('#dispensedSection').fadeIn(200);
+                    $('#administeredSection').fadeOut(150);
+                } else if (filter === 'administered') {
+                    $('#inProgressSection').fadeOut(150);
+                    $('#dispensedSection').fadeOut(150);
+                    $('#administeredSection').fadeIn(200);
                 } else {
-                    // Show all with search results
-                    $('#inProgressRow').toggle(inProgressTable.page.info().recordsDisplay > 0);
-                    $('#dispensedRow').toggle(dispensedTable.page.info().recordsDisplay > 0);
-                    $('#administeredRow').toggle(administeredTable.page.info().recordsDisplay > 0);
+                    $('#inProgressSection').fadeIn(200);
+                    $('#dispensedSection').fadeIn(200);
+                    $('#administeredSection').fadeIn(200);
                 }
+                updateCounts();
+            }
+
+            // Global search across all tables
+            $('#globalSearchInput').on('keyup', function () {
+                var val = this.value.trim();
+                inProgressTable.search(val).draw();
+                dispensedTable.search(val).draw();
+                administeredTable.search(val).draw();
+                updateCounts();
+
+                var activeFilter = $('.filter-btn.active').attr('id');
+                if (activeFilter === 'showInProgressBtn') applyFilter('progress');
+                else if (activeFilter === 'showDispensedBtn') applyFilter('dispensed');
+                else if (activeFilter === 'showAdministeredBtn') applyFilter('administered');
+                else applyFilter('all');
             });
 
-            // Button click handlers
-            $('#showInProgress').on('click', function () {
-                $('.btn-primary').removeClass('active');
-                $(this).addClass('active');
-                $('#inProgressRow').show();
-                $('#dispensedRow').hide();
-                $('#administeredRow').hide();
-                // Clear search when changing filter
-                $('#searchInput').val('');
-                inProgressTable.search('').draw();
-            });
+            // Button events
+            $('#showInProgressBtn').on('click', function () { applyFilter('progress'); });
+            $('#showDispensedBtn').on('click', function () { applyFilter('dispensed'); });
+            $('#showAdministeredBtn').on('click', function () { applyFilter('administered'); });
+            $('#showAllBtn').on('click', function () { applyFilter('all'); });
 
-            $('#showDispensed').on('click', function () {
-                $('.btn-primary').removeClass('active');
-                $(this).addClass('active');
-                $('#dispensedRow').show();
-                $('#inProgressRow').hide();
-                $('#administeredRow').hide();
-                $('#searchInput').val('');
-                dispensedTable.search('').draw();
-            });
+            // Initially show all and set counts
+            applyFilter('all');
 
-            $('#showAdministered').on('click', function () {
-                $('.btn-primary').removeClass('active');
-                $(this).addClass('active');
-                $('#administeredRow').show();
-                $('#inProgressRow').hide();
-                $('#dispensedRow').hide();
-                $('#searchInput').val('');
-                administeredTable.search('').draw();
-            });
-
-            $('#showAll').on('click', function () {
-                $('.btn-primary').removeClass('active');
-                $(this).addClass('active');
-                $('#inProgressRow').show();
-                $('#dispensedRow').show();
-                $('#administeredRow').show();
-                $('#searchInput').val('');
-                inProgressTable.search('').draw();
-                dispensedTable.search('').draw();
-                administeredTable.search('').draw();
-            });
-
-            // Redirect to PrescriptionAdminister view for In Progress and Dispensed prescriptions
+            // Administer button redirect
             $(document).on('click', '.administer-btn', function () {
-                var prescriptionId = $(this).data('id');
-                if (prescriptionId) {
-                    window.location.href = '@Url.Action("PrescriptionAdminister", "Nurse")/' + prescriptionId;
-                }
+                var id = $(this).data('id');
+                if (id) window.location.href = '@Url.Action("PrescriptionAdminister", "Nurse")/' + id;
             });
 
-            // For Administered prescriptions - just view (optional - can redirect to a view-only page)
+            // View details button
             $(document).on('click', '.view-btn', function () {
-                var prescriptionId = $(this).data('id');
-                if (prescriptionId) {
-                    // You can change this to a view-only page if needed
-                    window.location.href = '@Url.Action("PrescriptionDetails", "Nurse")/' + prescriptionId;
-                }
+                var id = $(this).data('id');
+                if (id) window.location.href = '@Url.Action("PrescriptionDetails", "Nurse")/' + id;
             });
+
+            // Remove default DataTables filter input and style our own
+            $('.dataTables_filter').hide();
+
+            // Handle empty state messaging gracefully
+            inProgressTable.on('draw', updateCounts);
+            dispensedTable.on('draw', updateCounts);
+            administeredTable.on('draw', updateCounts);
+
+            // Optional: if any table has zero records after draw, show clean message
+            function handleZeroState() {
+                if(inProgressTable.data().any() === false) $('#inProgressSection .section-content').find('.dataTables_empty').closest('td').text('✨ No pending prescriptions');
+                if(dispensedTable.data().any() === false) $('#dispensedSection .section-content').find('.dataTables_empty').closest('td').text('📦 No dispensed prescriptions waiting');
+                if(administeredTable.data().any() === false) $('#administeredSection .section-content').find('.dataTables_empty').closest('td').text('📋 No administered records yet');
+            }
+            setTimeout(handleZeroState, 100);
         });
+    </script>
+
+    @* Ensure model exists and fallback for null dates *@
+    <script>
+        // Minor fix: handle potential date formatting gracefully if needed
+        (function() {
+            // improves readability for any missing urgency
+            $('.urgency-badge.urgency-high').each(function() { $(this).prepend('<i class="fas fa-bolt me-1"></i>'); });
+        })();
     </script>
 </body>
 </html>
