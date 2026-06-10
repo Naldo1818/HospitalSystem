@@ -9,273 +9,745 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nurse Report</title>
+    <title>Nurse Report | Clinical Dashboard</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <!-- Bootstrap 5 CSS (Modern) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap JS -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome 6 (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!-- html2pdf bundle -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        #example {
-            display: none;
+        * {
+            font-family: 'Inter', sans-serif;
         }
 
-        .modal-lg-custom {
-            max-width: 90% !important;
-            width: 1000px;
+        body {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e9eef5 100%);
+            min-height: 100vh;
         }
 
-        .modal-dialog-centered {
+        .report-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.8rem;
+        }
+
+        .filter-card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            padding: 1.8rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .page-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eef2ff;
+            color: #1e40af;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #0f2b3d;
+            margin-bottom: 0.25rem;
             display: flex;
             align-items: center;
-            min-height: calc(100% - 60px);
-            height: 80vh;
+            gap: 14px;
         }
 
-        .modal-content-custom {
-            position: relative;
-            display: -ms-flexbox;
+            .page-title i {
+                color: #2c7da0;
+                font-size: 2rem;
+            }
+
+        .title-desc {
+            color: #5a6e7c;
+            font-size: 0.9rem;
+            border-left: 3px solid #2c7da0;
+            padding-left: 14px;
+            margin-top: 8px;
+        }
+
+        .date-group {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 0.3rem 0.3rem 0.3rem 1.2rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+
+            .date-group:focus-within {
+                border-color: #2c7da0;
+                box-shadow: 0 0 0 3px rgba(44,125,160,0.1);
+            }
+
+            .date-group i {
+                color: #94a3b8;
+                font-size: 1rem;
+            }
+
+        .date-input-custom {
+            border: none;
+            background: transparent;
+            padding: 0.7rem 0.5rem;
+            font-size: 0.9rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .report-card {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, #1e2a3e 0%, #0f2b3d 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+        }
+
+        .nurse-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.3px;
+        }
+
+            .nurse-name i {
+                margin-right: 10px;
+                color: #7ab3c8;
+            }
+
+        .meta-info {
             display: flex;
-            -ms-flex-direction: column;
+            flex-wrap: wrap;
+            gap: 1.8rem;
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+            .meta-info span i {
+                margin-right: 6px;
+            }
+
+        .section-title-modern {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e2a3e;
+            padding: 1.2rem 1.8rem 0.5rem 1.8rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid #eef2ff;
+        }
+
+            .section-title-modern i {
+                color: #2c7da0;
+                font-size: 1.3rem;
+            }
+
+        .table-wrapper {
+            padding: 0 1.5rem 1rem 1.5rem;
+        }
+
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            padding: 0.5rem 0.8rem;
+        }
+
+        table.dataTable {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            margin-top: 0 !important;
+        }
+
+            table.dataTable thead th {
+                background: #f8fafd;
+                color: #1e2a3e;
+                font-weight: 600;
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 0.6px;
+                padding: 1rem 1rem;
+                border-bottom: 2px solid #e2edf7;
+            }
+
+            table.dataTable tbody td {
+                padding: 0.85rem 1rem;
+                font-size: 0.85rem;
+                color: #2c3e50;
+                vertical-align: middle;
+                border-bottom: 1px solid #f0f4fa;
+            }
+
+            table.dataTable tbody tr:hover td {
+                background-color: #fafcff;
+            }
+
+        .totals-panel {
+            background: #f0f9ff;
+            margin: 1rem 1.8rem;
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .total-badge {
+            background: #2c7da0;
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .summary-table-wrapper {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+            .summary-table-wrapper table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #ffffff;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            }
+
+            .summary-table-wrapper th {
+                background: #eef2ff;
+                color: #1e2a3e;
+                font-weight: 600;
+                padding: 0.9rem 1rem;
+            }
+
+            .summary-table-wrapper td {
+                padding: 0.7rem 1rem;
+                border-bottom: 1px solid #eef2ff;
+            }
+
+        .btn-print {
+            background: #2c7da0;
+            border: none;
+            border-radius: 40px;
+            padding: 0.7rem 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            margin: 0 1.8rem 1.8rem auto;
+            display: inline-block;
+            color: white;
+        }
+
+            .btn-print:hover {
+                background: #1f5e7a;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(44,125,160,0.3);
+            }
+
+        .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .btn-outline-secondary {
+            border: 1px solid #cbd5e1;
+            background: white;
+            transition: all 0.2s;
+        }
+
+            .btn-outline-secondary:hover {
+                background: #f1f5f9;
+                border-color: #94a3b8;
+            }
+
+        .table-modern-summary {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 16px;
+        }
+
+            .table-modern-summary th, .table-modern-summary td {
+                padding: 0.85rem 1rem;
+                border-bottom: 1px solid #eef2ff;
+            }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 60px !important;
+            padding: 0.4rem 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge.bg-light {
+            background: #eef2ff !important;
+            color: #1e2a3e;
+        }
+
+
+        .filter-card, .report-header {
+            padding: 1.2rem;
+        }
+
+        .meta-info {
             flex-direction: column;
-            width: 105%;
-            pointer-events: auto;
-            background-color: #fff;
-            border: 1px solid rgba(0, 0, 0, .2);
-            border-radius: .3rem;
-            height: 61vh;
+            gap: 0.5rem;
+        }
+
+        }
+
+        /* Print / PDF enhancements */
+        .pdf-printing .dataTables_filter,
+        .pdf-printing .dataTables_length,
+        .pdf-printing .dataTables_paginate,
+        .pdf-printing .dataTables_info {
+            display: none !important;
+        }
+
+        .pdf-printing .table-wrapper,
+        .pdf-printing .summary-table-wrapper {
+            overflow-x: visible;
+        }
+
+        .pdf-printing .totals-panel {
+            break-inside: avoid;
+        }
+
+        .pdf-printing .report-header {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <main role="main" class="pb-5">
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-5 border" style="background-color: white;">
-                        <form>
-                            <h2>Nurse Reports</h2>
-                            <div class="form-group row">
-                                <div class="col-4">
-                                    <br>
-                                    <label for="StartDateInput" class="form-label">Start Date</label>
-                                    <input type="date" class="form-control" id="StartDateInput" style="width:300px">
-                                </div>
-                                <div class="col-4">
-                                    <br>
-                                    <label for="EndDateInput" class="form-label">End Date</label>
-                                    <input type="date" class="form-control" id="EndDateInput" style="width:300px">
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="report-container">
+        <!-- Filter Section Card -->
+        <div class="filter-card">
+            <div class="page-badge">
+                <i class="fas fa-chart-line"></i> CLINICAL REPORTING
             </div>
-            <div class="row" style="width:auto">
-                <div class="col">
-                    <div class="p-3 mt-6 border" style="background-color: white;">
-                        <h2>Reports of:  @ViewBag.UserName @ViewBag.UserSurname</h2>
-                        <h2>Report Generated: <span id="todayDate"></span></h2>
-                        <h2>Date Range: <span id="selectedDateRange"></span></h2>
+            <div class="page-title">
+                <i class="fas fa-file-alt"></i> Nurse Administration Reports
+                <span style="font-size: 0.8rem; background: #eef2ff; padding: 4px 12px; border-radius: 60px; font-weight: 500;">Medication Log</span>
+            </div>
+            <div class="title-desc">
+                Track administered medications, patient summaries, and generate comprehensive reports
+            </div>
 
-                        <table id="Medications" class="table" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">DATE</th>
-                                    <th scope="col">PATIENT</th>
-                                    <th scope="col">MEDICATION</th>
-                                    <th scope="col">QTY</th>
-                                    <th scope="col">TIME</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var Data in Model.AllcombinedData)
-                                {
-                                    <tr>
-                                        <td>@Data.Date</td>
-                                        <td>@Data.Patient</td>
-                                        <td>@Data.MedicationName</td>
-                                        <td>@Data.Quantity</td>
-                                        <td>@Data.Time</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <div class="totals">
-                            TOTAL PATIENTS: <span id="totalPatients"></span>
-                        </div>
-                        <h3>SUMMARY PER MEDICINE:</h3>
-                        <table id="Summary" class="table" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th scope="col">MEDICINE </th>
-                                    <th scope="col">QTY ADMINISTERED</th>
-                                   
-                                </tr>
-                            </thead>
-                            <tbody id="summaryBody">
-                                
-                            </tbody>
-                        </table>
-                        <br>
+            <div class="row mt-4 g-4 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary"><i class="far fa-calendar-alt me-1"></i> START DATE</label>
+                    <div class="date-group d-flex align-items-center">
+                        <i class="fas fa-calendar-day me-2"></i>
+                        <input type="date" id="StartDateInput" class="date-input-custom">
                     </div>
-                    <a class="btn btn-primary" style="width:100px" aria-hidden="true" onclick="generatePDF()">Print</a>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary"><i class="far fa-calendar-check me-1"></i> END DATE</label>
+                    <div class="date-group d-flex align-items-center">
+                        <i class="fas fa-calendar-week me-2"></i>
+                        <input type="date" id="EndDateInput" class="date-input-custom">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-secondary w-50" id="clearDatesBtn" style="border-radius: 60px;"><i class="fas fa-undo-alt"></i> Reset</button>
+                    </div>
                 </div>
             </div>
-        </main>
+        </div>
+
+        <!-- Main Report Card (Printable Area) -->
+        <div class="report-card" id="reportContent">
+            <div class="report-header">
+                <div class="nurse-name">
+                    <i class="fas fa-user-nurse"></i> @ViewBag.UserName @ViewBag.UserSurname
+                </div>
+                <div class="meta-info">
+                    <span><i class="fas fa-calendar-alt"></i> Report Generated: <strong id="todayDate"></strong></span>
+                    <span><i class="fas fa-chart-simple"></i> Date Range: <strong id="selectedDateRange"></strong></span>
+                    <span><i class="fas fa-syringe"></i> Total administrations tracked</span>
+                </div>
+            </div>
+
+            <!-- Medication Administration Table -->
+            <div class="section-title-modern">
+                <i class="fas fa-table-list"></i> Detailed Administration Log
+                <span class="badge bg-light text-dark ms-2" id="rowCountBadge">0 records</span>
+            </div>
+            <div class="table-wrapper">
+                <table id="MedicationsTable" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th><i class="far fa-calendar-alt me-1"></i> DATE</th>
+                            <th><i class="fas fa-user-injured me-1"></i> PATIENT</th>
+                            <th><i class="fas fa-capsules me-1"></i> MEDICATION</th>
+                            <th><i class="fas fa-hashtag me-1"></i> QTY</th>
+                            <th><i class="far fa-clock me-1"></i> TIME</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medicationsTableBody">
+                        @foreach (var Data in Model.AllcombinedData)
+                        {
+                            <tr>
+                                <td>@Data.Date.ToString("yyyy-MM-dd")</td>
+                                <td><strong>@Data.Patient</strong></td>
+                                <td>@Data.MedicationName</td>
+                                <td>@Data.Quantity</td>
+                                <td>@Data.Time</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Totals & unique patients -->
+            <div class="totals-panel">
+                <div><i class="fas fa-users me-2"></i> Total Unique Patients</div>
+                <div class="total-badge" id="totalPatientsDisplay">0</div>
+            </div>
+
+            <!-- Summary per Medicine Section -->
+            <div class="section-title-modern">
+                <i class="fas fa-chart-pie"></i> Medication Summary
+                <span class="badge bg-light text-dark ms-2">Aggregated quantities</span>
+            </div>
+            <div class="summary-table-wrapper">
+                <table class="table-modern-summary" id="summaryTable" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>MEDICATION NAME</th>
+                            <th>TOTAL QTY ADMINISTERED</th>
+                        </tr>
+                    </thead>
+                    <tbody id="summaryBody">
+                        <!-- Dynamic summary rows -->
+                    </tbody>
+                </table>
+                <div id="emptySummaryMsg" class="empty-message" style="display: none;">
+                    <i class="fas fa-chart-simple fa-2x mb-2"></i><br>No data in selected date range
+                </div>
+            </div>
+            <div style="text-align: right; padding: 0.5rem 1.8rem 1.8rem 0;">
+                <button class="btn-print" onclick="generatePDF()"><i class="fas fa-print me-2"></i> Generate PDF Report</button>
+            </div>
+        </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Function to filter rows based on the selected date range
-            function filterByDate() {
-                var startDate = document.getElementById('StartDateInput').value;
-                var endDate = document.getElementById('EndDateInput').value;
-                var uniquePatients = new Set();
+            // Store original row data for filtering
+            var originalRows = [];
+            var medicationsTable = null;
 
-                // Reset the summary table and total patients count
-                document.getElementById('summaryBody').innerHTML = '';
-                var totalPatients = 0;
-
-                // Get all rows of the Medications table
-                var rows = document.querySelectorAll('#Medications tbody tr');
-
-                // Loop through each row and filter based on date
-                rows.forEach(function (row) {
-                    var rowDate = row.cells[0].textContent; // Get the date from the first column
-                    var rowDateObj = new Date(rowDate); // Convert the date string to a Date object
-
-                    // Convert startDate and endDate to Date objects
-                    var startDateObj = startDate ? new Date(startDate) : null;
-                    var endDateObj = endDate ? new Date(endDate) : null;
-
-                    // Flag to determine if the row should be shown
-                    var isWithinDateRange = true;
-
-                    // Compare the row date with the selected start and end dates
-                    if (startDateObj && rowDateObj < startDateObj) {
-                        isWithinDateRange = false; // Row is before the start date
-                    }
-                    if (endDateObj && rowDateObj > endDateObj) {
-                        isWithinDateRange = false; // Row is after the end date
-                    }
-
-                    // Show or hide the row based on date range
-                    if (isWithinDateRange) {
-                        row.style.display = ''; // Show row
-                        uniquePatients.add(row.cells[1].textContent); // Add unique patient names to the set
-                        var MedicationName = row.cells[2].textContent;
-                        var Quantity = row.cells[3].textContent;
-                        updateSummary(MedicationName, Quantity); // Update the summary table
-                    } else {
-                        row.style.display = 'none'; // Hide row
-                    }
-                });
-
-                // Update total patient count
-                document.getElementById('totalPatients').textContent = uniquePatients.size;
-            }
-
-            // Function to update the summary table for medication quantities
-            function updateSummary(MedicationName, Quantity) {
-                var summaryBody = document.getElementById('summaryBody');
-
-                // Check if the summary already has a row for this medication
-                var existingRow = Array.from(summaryBody.querySelectorAll('tr')).find(function (row) {
-                    return row.dataset.medicationName === MedicationName;
-                });
-
-                if (existingRow) {
-                    // If the row exists, update the quantity
-                    var quantityCell = existingRow.querySelector('td:last-child');
-                    quantityCell.textContent = parseInt(quantityCell.textContent) + parseInt(Quantity);
-                } else {
-                    // If no row exists for this medication, create a new row
-                    var newRow = document.createElement('tr');
-                    newRow.dataset.medicationName = MedicationName;
-
-                    // Add the medication name and quantity to the row
-                    newRow.innerHTML = `
-                        <td>${MedicationName}</td>
-                        <td>${Quantity}</td>
-                    `;
-
-                    // Append the new row to the summary table body
-                    summaryBody.appendChild(newRow);
+            // Collect all original data from the table body
+            var tableBodyRows = document.querySelectorAll('#MedicationsTable tbody tr');
+            tableBodyRows.forEach(function(row) {
+                var cells = row.cells;
+                if (cells.length >= 5) {
+                    originalRows.push({
+                        date: cells[0].textContent.trim(),
+                        patient: cells[1].textContent.trim(),
+                        medication: cells[2].textContent.trim(),
+                        quantity: cells[3].textContent.trim(),
+                        time: cells[4].textContent.trim()
+                    });
                 }
+            });
+
+            // Helper: parse date string safely
+            function parseDate(dateStr) {
+                if (!dateStr) return null;
+                // Try parsing as YYYY-MM-DD or other common formats
+                let d = new Date(dateStr);
+                if (isNaN(d.getTime())) {
+                    // Try alternative parsing
+                    let parts = dateStr.split(/[-/]/);
+                    if (parts.length === 3) {
+                        d = new Date(parts[0], parts[1] - 1, parts[2]);
+                    }
+                }
+                return isNaN(d.getTime()) ? null : d;
             }
 
-            // Function to display the selected date range
-            function displaySelectedDates() {
+            // Format date for display
+            function formatDateDisplay(dateStr) {
+                let d = parseDate(dateStr);
+                if (!d) return dateStr;
+                return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' });
+            }
+
+            // Initialize DataTable
+            function initDataTable(dataArray) {
+                if (medicationsTable) {
+                    medicationsTable.clear();
+                    medicationsTable.destroy();
+                }
+
+                var formattedData = dataArray.map(row => [
+                    row.date,
+                    row.patient,
+                    row.medication,
+                    row.quantity,
+                    row.time
+                ]);
+
+                medicationsTable = $('#MedicationsTable').DataTable({
+                    data: formattedData,
+                    responsive: false,
+                    pageLength: 10,
+                    language: {
+                        zeroRecords: "No medication records found",
+                        search: "Filter:",
+                        infoEmpty: "No entries"
+                    },
+                    order: [[0, 'desc']],
+                    dom: '<"top"f>rt<"bottom"lip>',
+                    columns: [
+                        { title: "DATE" },
+                        { title: "PATIENT" },
+                        { title: "MEDICATION" },
+                        { title: "QTY" },
+                        { title: "TIME" }
+                    ]
+                });
+
+                return medicationsTable;
+            }
+
+            // Function to filter by date range
+            function filterByDateRange() {
+                var startDateInput = document.getElementById('StartDateInput').value;
+                var endDateInput = document.getElementById('EndDateInput').value;
+
+                var startDateObj = startDateInput ? parseDate(startDateInput) : null;
+                var endDateObj = endDateInput ? parseDate(endDateInput) : null;
+
+                // Reset time part for accurate comparison
+                if (startDateObj) {
+                    startDateObj.setHours(0, 0, 0, 0);
+                }
+                if (endDateObj) {
+                    endDateObj.setHours(23, 59, 59, 999);
+                }
+
+                // Filter the original rows
+                var filteredRows = [];
+                var summaryMap = new Map();
+                var uniquePatientsSet = new Set();
+
+                for (var i = 0; i < originalRows.length; i++) {
+                    var row = originalRows[i];
+                    var rowDate = parseDate(row.date);
+                    var shouldInclude = true;
+
+                    if (rowDate) {
+                        if (startDateObj && rowDate < startDateObj) shouldInclude = false;
+                        if (endDateObj && rowDate > endDateObj) shouldInclude = false;
+                    } else {
+                        // If date parsing fails, include by default
+                        shouldInclude = true;
+                    }
+
+                    if (shouldInclude) {
+                        filteredRows.push(row);
+                        uniquePatientsSet.add(row.patient);
+                        var quantity = parseInt(row.quantity) || 0;
+                        if (summaryMap.has(row.medication)) {
+                            summaryMap.set(row.medication, summaryMap.get(row.medication) + quantity);
+                        } else {
+                            summaryMap.set(row.medication, quantity);
+                        }
+                    }
+                }
+
+                // Update DataTable with filtered data
+                if (medicationsTable) {
+                    medicationsTable.clear();
+                    var formattedFiltered = filteredRows.map(row => [
+                        formatDateDisplay(row.date),
+                        row.patient,
+                        row.medication,
+                        row.quantity,
+                        row.time
+                    ]);
+                    medicationsTable.rows.add(formattedFiltered);
+                    medicationsTable.draw();
+                } else {
+                    initDataTable(filteredRows);
+                }
+
+                // Update total patients display
+                document.getElementById('totalPatientsDisplay').innerHTML = uniquePatientsSet.size;
+                document.getElementById('rowCountBadge').innerHTML = filteredRows.length + ' records';
+
+                // Update summary table
+                var summaryBody = document.getElementById('summaryBody');
+                summaryBody.innerHTML = '';
+                var emptyMsgDiv = document.getElementById('emptySummaryMsg');
+
+                if (summaryMap.size === 0) {
+                    emptyMsgDiv.style.display = 'block';
+                    var emptyRow = document.createElement('tr');
+                    emptyRow.innerHTML = '<td colspan="2" class="text-center text-muted py-4">No medications administered in this period</td>';
+                    summaryBody.appendChild(emptyRow);
+                } else {
+                    emptyMsgDiv.style.display = 'none';
+                    var sortedEntries = Array.from(summaryMap.entries()).sort(function(a, b) {
+                        return a[0].localeCompare(b[0]);
+                    });
+                    sortedEntries.forEach(function(entry) {
+                        var med = entry[0];
+                        var totalQty = entry[1];
+                        var tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><i class="fas fa-capsules me-2 text-primary"></i> ${med}</td>
+                            <td><span class="fw-bold">${totalQty}</span> units</td>
+                        `;
+                        summaryBody.appendChild(tr);
+                    });
+                }
+
+                // Update date range display
+                updateDateRangeDisplay();
+            }
+
+            // Update the date range display in header
+            function updateDateRangeDisplay() {
                 var startDate = document.getElementById('StartDateInput').value;
                 var endDate = document.getElementById('EndDateInput').value;
-                var today = new Date().toLocaleDateString();
+                var today = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
 
-                // Format the selected start and end dates for display
-                var formattedStartDate = startDate ? new Date(startDate).toLocaleDateString() : 'Not selected';
-                var formattedEndDate = endDate ? new Date(endDate).toLocaleDateString() : 'Not selected';
+                function formatDateForDisplay(dateStr) {
+                    if (!dateStr) return null;
+                    var d = parseDate(dateStr);
+                    return d ? d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' }) : dateStr;
+                }
 
-                // Update the displayed date range
-                document.getElementById('todayDate').textContent = today;
-                document.getElementById('selectedDateRange').textContent = formattedStartDate + ' to ' + formattedEndDate;
+                var formattedStart = startDate ? formatDateForDisplay(startDate) : 'All records';
+                var formattedEnd = endDate ? formatDateForDisplay(endDate) : 'All records';
+
+                if (!startDate && !endDate) {
+                    document.getElementById('selectedDateRange').innerHTML = 'Complete History';
+                } else if (startDate && !endDate) {
+                    document.getElementById('selectedDateRange').innerHTML = 'From ' + formattedStart + ' onwards';
+                } else if (!startDate && endDate) {
+                    document.getElementById('selectedDateRange').innerHTML = 'Until ' + formattedEnd;
+                } else {
+                    document.getElementById('selectedDateRange').innerHTML = formattedStart + ' — ' + formattedEnd;
+                }
+
+                document.getElementById('todayDate').innerHTML = today;
             }
 
-            // Event listeners for the Start Date and End Date input fields
-            document.getElementById('StartDateInput').addEventListener('change', function () {
-                filterByDate(); // Apply date filter
-                displaySelectedDates(); // Display the selected date range
+            // Clear dates handler
+            document.getElementById('clearDatesBtn').addEventListener('click', function() {
+                document.getElementById('StartDateInput').value = '';
+                document.getElementById('EndDateInput').value = '';
+                filterByDateRange();
             });
 
-            document.getElementById('EndDateInput').addEventListener('change', function () {
-                filterByDate(); // Apply date filter
-                displaySelectedDates(); // Display the selected date range
-            });
+            // Event listeners for date inputs
+            document.getElementById('StartDateInput').addEventListener('change', filterByDateRange);
+            document.getElementById('EndDateInput').addEventListener('change', filterByDateRange);
 
-            // Initial filter and display of selected dates
-            filterByDate();
-            displaySelectedDates();
+            // Initialize with all data
+            initDataTable(originalRows);
+            filterByDateRange();
+
+            // Style DataTables filter input
+            $('.dataTables_filter input').addClass('form-control form-control-sm rounded-pill');
+            $('.dataTables_filter label').addClass('text-muted');
         });
 
-    </script>
-
-    <script>
+        // PDF Generation
         function generatePDF() {
-            var element = document.querySelector('.p-3.mt-6.border');
+            var element = document.getElementById('reportContent');
+            var originalOverflow = element.style.overflow;
+            element.style.overflow = 'visible';
+
+            var nurseName = '@ViewBag.UserName@ViewBag.UserSurname'.replace(/\s+/g, '_');
+            var timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
 
             var opt = {
-                margin: 1,
-                filename: 'report.pdf',
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: 'Nurse_Report_' + nurseName + '_' + timestamp + '.pdf',
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
+                html2canvas: { scale: 2, letterRendering: true, useCORS: true, logging: false },
                 jsPDF: {
                     unit: 'in',
-                    format: 'letter',
-                    orientation: 'landscape',
+                    format: 'a4',
+                    orientation: 'landscape'
                 },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak: { mode: ['css', 'legacy'] }
             };
 
-            function addPageNumbers(pdf) {
-                const pageCount = pdf.internal.getNumberOfPages();
+            element.classList.add('pdf-printing');
 
-                for (let i = 1; i <= pageCount; i++) {
+            html2pdf().from(element).set(opt).toPdf().get('pdf').then(function(pdf) {
+                var pageCount = pdf.internal.getNumberOfPages();
+                for (var i = 1; i <= pageCount; i++) {
                     pdf.setPage(i);
-                    const text = "Page " + i + " of " + pageCount;
-                    const pageWidth = pdf.internal.pageSize.width || pdf.internal.pageSize.getWidth();
-                    const pageHeight = pdf.internal.pageSize.height || pdf.internal.pageSize.getHeight();
-                    const xOffset = (pageWidth - pdf.getStringUnitWidth(text) * pdf.internal.getFontSize() / pdf.internal.scaleFactor) / 2;
-                    const yOffset = pageHeight - 0.5;
-                    pdf.text(text, xOffset, yOffset);
+                    var pageText = 'Page ' + i + ' of ' + pageCount;
+                    var pageWidth = pdf.internal.pageSize.getWidth();
+                    var pageHeight = pdf.internal.pageSize.getHeight();
+                    pdf.setFontSize(9);
+                    pdf.setTextColor(100);
+                    pdf.text(pageText, pageWidth - 1.2, pageHeight - 0.3);
+                    pdf.setDrawColor(200, 200, 200);
+                    pdf.line(0.5, pageHeight - 0.45, pageWidth - 0.5, pageHeight - 0.45);
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(150);
+                    pdf.text('Generated: ' + new Date().toLocaleString(), 0.5, 0.4);
                 }
-            }
-
-            html2pdf().from(element).set(opt).toPdf().get('pdf').then(function (pdf) {
-                addPageNumbers(pdf);
-            }).save();
+                return pdf;
+            }).save().then(function() {
+                element.classList.remove('pdf-printing');
+                element.style.overflow = originalOverflow;
+            }).catch(function(err) {
+                console.error('PDF error:', err);
+                element.classList.remove('pdf-printing');
+                element.style.overflow = originalOverflow;
+            });
         }
     </script>
 </body>
